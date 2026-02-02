@@ -8,7 +8,7 @@ struct DashboardView: View {
     @State private var isRefreshing = false
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             Theme.background.ignoresSafeArea()
 
             ScrollView {
@@ -27,6 +27,7 @@ struct DashboardView: View {
                 .padding(.bottom, 40)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .task {
             await refreshSignals()
         }
@@ -155,5 +156,11 @@ struct DashboardView: View {
             return "\(Int(snapshot.temperatureC))°C"
         }
         return "--"
+    }
+}
+
+#Preview("Dashboard") {
+    PreviewEnvironment {
+        DashboardView()
     }
 }

@@ -4,7 +4,7 @@ struct InsightsView: View {
     @EnvironmentObject private var store: HydrationStore
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             Theme.background.ignoresSafeArea()
 
             ScrollView {
@@ -86,6 +86,7 @@ struct InsightsView: View {
                 .padding(.bottom, 40)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
     private var lastSevenDays: [(date: Date, label: String, totalML: Double)] {
@@ -127,4 +128,10 @@ private extension DateFormatter {
         formatter.dateFormat = "EEE"
         return formatter
     }()
+}
+
+#Preview("Insights") {
+    PreviewEnvironment {
+        InsightsView()
+    }
 }

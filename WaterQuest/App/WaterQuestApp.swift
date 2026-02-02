@@ -17,6 +17,9 @@ struct WaterQuestApp: App {
     var body: some Scene {
         WindowGroup {
             RootView()
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(Theme.background)
+                .ignoresSafeArea()
                 .environmentObject(store)
                 .environmentObject(healthKit)
                 .environmentObject(notifier)

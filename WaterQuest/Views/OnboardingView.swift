@@ -23,7 +23,7 @@ struct OnboardingView: View {
     @State private var prefersHealthKit = true
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             Theme.background.ignoresSafeArea()
             WaveView()
                 .opacity(0.35)
@@ -38,6 +38,7 @@ struct OnboardingView: View {
                     permissionsPage.tag(3)
                 }
                 .tabViewStyle(.page(indexDisplayMode: .always))
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
 
                 HStack(spacing: 12) {
                     if pageIndex > 0 {
@@ -59,7 +60,9 @@ struct OnboardingView: View {
                 .padding(.horizontal, 24)
                 .padding(.bottom, 20)
             }
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
     private var introPage: some View {
@@ -265,5 +268,11 @@ struct OnboardingView: View {
             RoundedRectangle(cornerRadius: 16)
                 .fill(Theme.card)
         )
+    }
+}
+
+#Preview("Onboarding") {
+    PreviewEnvironment {
+        OnboardingView { }
     }
 }

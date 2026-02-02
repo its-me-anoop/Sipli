@@ -28,3 +28,35 @@ enum Theme {
         .custom("AvenirNext-Regular", size: size)
     }
 }
+
+#if DEBUG
+struct PreviewEnvironment<Content: View>: View {
+    @StateObject private var store = HydrationStore()
+    @StateObject private var healthKit = HealthKitManager()
+    @StateObject private var notifier = NotificationScheduler()
+    @StateObject private var locationManager: LocationManager
+    @StateObject private var weatherClient: WeatherClient
+
+    private let content: Content
+
+    init(@ViewBuilder content: () -> Content) {
+        let location = LocationManager()
+        _locationManager = StateObject(wrappedValue: location)
+        _weatherClient = StateObject(wrappedValue: WeatherClient(locationManager: location))
+        self.content = content()
+    }
+
+    var body: some View {
+        ZStack {
+            Theme.background.ignoresSafeArea()
+            content
+        }
+        .environmentObject(store)
+        .environmentObject(healthKit)
+        .environmentObject(notifier)
+        .environmentObject(locationManager)
+        .environmentObject(weatherClient)
+        .preferredColorScheme(.dark)
+    }
+}
+#endif

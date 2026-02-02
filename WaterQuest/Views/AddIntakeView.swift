@@ -8,7 +8,7 @@ struct AddIntakeView: View {
     @State private var note: String = ""
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             Theme.background.ignoresSafeArea()
 
             VStack(spacing: 20) {
@@ -59,6 +59,7 @@ struct AddIntakeView: View {
             }
             .padding(.top, 30)
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
     private var amountRange: ClosedRange<Double> {
@@ -79,5 +80,11 @@ struct AddIntakeView: View {
             await healthKit.saveWaterIntake(ml: store.profile.unitSystem.ml(from: amount))
         }
         note = ""
+    }
+}
+
+#Preview("Add Intake") {
+    PreviewEnvironment {
+        AddIntakeView()
     }
 }

@@ -32,3 +32,9 @@ struct MainTabView: View {
         .tint(Theme.mint)
     }
 }
+
+#Preview("Main Tabs") {
+    PreviewEnvironment {
+        MainTabView()
+    }
+}

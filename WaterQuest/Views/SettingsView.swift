@@ -14,7 +14,7 @@ struct SettingsView: View {
     @State private var sleepTime: Date = Date()
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             Theme.background.ignoresSafeArea()
 
             ScrollView {
@@ -150,6 +150,7 @@ struct SettingsView: View {
                 .padding(.bottom, 40)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .onAppear {
             manualTemp = store.activeWeather?.temperatureC ?? 22
             manualHumidity = store.activeWeather?.humidityPercent ?? 55
@@ -215,5 +216,11 @@ struct SettingsView: View {
         }
         .padding(12)
         .background(RoundedRectangle(cornerRadius: 16).fill(Theme.card))
+    }
+}
+
+#Preview("Settings") {
+    PreviewEnvironment {
+        SettingsView()
     }
 }

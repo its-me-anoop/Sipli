@@ -6,7 +6,7 @@ struct AchievementsView: View {
     private let columns = [GridItem(.flexible()), GridItem(.flexible())]
 
     var body: some View {
-        ZStack {
+        ZStack(alignment: .top) {
             Theme.background.ignoresSafeArea()
 
             ScrollView {
@@ -47,5 +47,12 @@ struct AchievementsView: View {
                 .padding(.bottom, 40)
             }
         }
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+    }
+}
+
+#Preview("Quests") {
+    PreviewEnvironment {
+        AchievementsView()
     }
 }
