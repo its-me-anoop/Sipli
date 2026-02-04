@@ -20,14 +20,16 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
     }
 
     func requestLocation() {
-        manager.requestLocation()
+        // startUpdatingLocation is a no-op if not yet authorized;
+        // didChangeAuthorization will call it again once permission is granted.
+        manager.startUpdatingLocation()
     }
 
     nonisolated func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         Task { @MainActor in
             self.authorizationStatus = status
             if status == .authorizedWhenInUse || status == .authorizedAlways {
-                self.manager.requestLocation()
+                self.manager.startUpdatingLocation()
             }
         }
     }
@@ -35,6 +37,8 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
     nonisolated func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         Task { @MainActor in
             self.lastLocation = locations.last
+            // One location is all we need — stop to conserve battery
+            self.manager.stopUpdatingLocation()
         }
     }
 

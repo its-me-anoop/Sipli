@@ -8,8 +8,6 @@ struct SettingsView: View {
     @EnvironmentObject private var healthKit: HealthKitManager
     @EnvironmentObject private var locationManager: LocationManager
 
-    @State private var manualTemp: Double = 22
-    @State private var manualHumidity: Double = 55
     @State private var customGoalEnabled: Bool = false
     @State private var customGoalValue: Double = 2200
     @State private var wakeTime: Date = Date()
@@ -54,8 +52,6 @@ struct SettingsView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .onAppear {
-            manualTemp = store.activeWeather?.temperatureC ?? 22
-            manualHumidity = store.activeWeather?.humidityPercent ?? 55
             if let custom = store.profile.customGoalML {
                 customGoalEnabled = true
                 customGoalValue = store.profile.unitSystem.amount(fromML: custom)
@@ -216,68 +212,17 @@ struct SettingsView: View {
 
             toggleRow(title: "Use weather adjustment", subtitle: "Adapt goal for heat and humidity", isOn: binding(get: { store.profile.prefersWeatherGoal }, set: { value in
                 store.updateProfile { $0.prefersWeatherGoal = value }
+                if value {
+                    locationManager.requestLocation()
+                }
             }), tint: Theme.sun)
 
             toggleRow(title: "Use workouts adjustment", subtitle: "Boost goal for active days", isOn: binding(get: { store.profile.prefersHealthKit }, set: { value in
                 store.updateProfile { $0.prefersHealthKit = value }
             }), tint: Theme.mint)
 
-            manualWeatherCard
         }
         .animation(.spring(response: 0.45, dampingFraction: 0.85), value: customGoalEnabled)
-    }
-
-    private var manualWeatherCard: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack {
-                Text("Manual Weather Override")
-                    .font(Theme.bodyFont(size: 14))
-                    .foregroundColor(.white)
-                Spacer()
-                valuePill("\(Int(manualTemp))\u{00B0}C \u{00B7} \(Int(manualHumidity))%", color: Theme.lagoon)
-            }
-
-            VStack(alignment: .leading, spacing: 8) {
-                Text("Temperature")
-                    .font(Theme.bodyFont(size: 12))
-                    .foregroundColor(.white.opacity(0.6))
-                Slider(value: $manualTemp, in: -5...40, step: 1) { editing in
-                    if !editing {
-                        Haptics.selection()
-                    }
-                }
-                    .tint(Theme.lagoon)
-
-                Text("Humidity")
-                    .font(Theme.bodyFont(size: 12))
-                    .foregroundColor(.white.opacity(0.6))
-                Slider(value: $manualHumidity, in: 10...95, step: 5) { editing in
-                    if !editing {
-                        Haptics.selection()
-                    }
-                }
-                    .tint(Theme.lagoon)
-            }
-
-            HStack {
-                Spacer()
-                LiquidGlassButton("Apply", icon: "checkmark", style: .primary, size: .small) {
-                    let snapshot = WeatherSnapshot(temperatureC: manualTemp, humidityPercent: manualHumidity, condition: "Manual")
-                    withAnimation(.spring(response: 0.4, dampingFraction: 0.85)) {
-                        store.updateManualWeather(snapshot)
-                    }
-                }
-            }
-        }
-        .padding(14)
-        .background(
-            RoundedRectangle(cornerRadius: 16)
-                .fill(Color.white.opacity(0.06))
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 16)
-                .strokeBorder(Color.white.opacity(0.08), lineWidth: 1)
-        )
     }
 
     private var scheduleSection: some View {

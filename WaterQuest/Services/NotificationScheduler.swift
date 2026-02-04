@@ -145,7 +145,11 @@ final class NotificationScheduler: ObservableObject {
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
         let request = UNNotificationRequest(identifier: "waterquest.smart", content: content, trigger: trigger)
-        UNUserNotificationCenter.current().add(request, withCompletionHandler: nil)
+        do {
+            try await UNUserNotificationCenter.current().add(request)
+        } catch {
+            // Notification could not be scheduled; nothing to recover.
+        }
 
         if isQuiet { didFireEscalation = true }
     }

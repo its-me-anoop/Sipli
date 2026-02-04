@@ -5,6 +5,7 @@ struct DashboardView: View {
     @EnvironmentObject private var store: HydrationStore
     @EnvironmentObject private var weather: WeatherClient
     @EnvironmentObject private var healthKit: HealthKitManager
+    @EnvironmentObject private var locationManager: LocationManager
 
     @StateObject private var aiService = HydrationAIService()
     @Namespace private var glassNamespace
@@ -33,6 +34,9 @@ struct DashboardView: View {
                         .scaleEffect(progressScale)
                         .opacity(showContent ? 1 : 0)
 
+                    weatherWidget
+                        .opacity(cardsOpacity)
+
                     aiTipCard
                         .opacity(cardsOpacity)
 
@@ -56,6 +60,15 @@ struct DashboardView: View {
         .task {
             await refreshSignals()
             await generateAITip()
+        }
+        .onChange(of: locationManager.lastLocation) {
+            guard store.profile.prefersWeatherGoal else { return }
+            Task {
+                await weather.refresh()
+                if let snapshot = weather.currentWeather {
+                    store.updateWeather(snapshot)
+                }
+            }
         }
         .onAppear {
             animateEntrance()
@@ -260,48 +273,160 @@ struct DashboardView: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
-    // MARK: - Stats Grid
-    private var statsGrid: some View {
-        VStack(alignment: .leading, spacing: 14) {
-            Text("Today's Context")
-                .font(Theme.titleFont(size: 18))
-                .foregroundColor(.white)
+    // MARK: - Weather Widget
+    @ViewBuilder
+    private var weatherWidget: some View {
+        if store.profile.prefersWeatherGoal {
+            // Prefer live fetch; fall back to last persisted snapshot
+            if let snapshot = weather.currentWeather ?? store.activeWeather {
+                let isLive = weather.status != .failed
+                LiquidGlassCard(cornerRadius: 20, tintColor: Theme.lagoon.opacity(0.3), isInteractive: false) {
+                    HStack(spacing: 16) {
+                        // Weather icon
+                        ZStack {
+                            Circle()
+                                .fill(Theme.lagoon.opacity(0.2))
+                                .frame(width: 52, height: 52)
+                            Image(systemName: weatherIconName)
+                                .font(.system(size: 24))
+                                .foregroundColor(Theme.lagoon)
+                        }
 
-            HStack(spacing: 12) {
-                FluidStatCard(
-                    label: "Weather",
-                    value: weatherText,
-                    icon: weatherIcon,
-                    accentColor: Theme.lagoon
-                )
+                        // Temperature & condition
+                        VStack(alignment: .leading, spacing: 3) {
+                            HStack(spacing: 6) {
+                                Text("\(Int(snapshot.temperatureC))°C")
+                                    .font(Theme.titleFont(size: 22))
+                                    .foregroundColor(.white)
+                                if !snapshot.condition.isEmpty {
+                                    Text(snapshot.condition)
+                                        .font(Theme.bodyFont(size: 14))
+                                        .foregroundColor(.white.opacity(0.7))
+                                }
+                            }
+                            Text(isLive
+                                ? "Humidity \(Int(snapshot.humidityPercent))%"
+                                : "Humidity \(Int(snapshot.humidityPercent))% · Estimated")
+                                .font(Theme.bodyFont(size: 12))
+                                .foregroundColor(.white.opacity(0.55))
+                        }
 
-                FluidStatCard(
-                    label: "Activity",
-                    value: "\(Int(store.lastWorkout.exerciseMinutes)) min",
-                    icon: "figure.run",
-                    accentColor: Theme.coral
-                )
+                        Spacer()
+
+                        // Goal adjustment badge
+                        VStack(spacing: 2) {
+                            Text("Goal")
+                                .font(Theme.bodyFont(size: 11))
+                                .foregroundColor(.white.opacity(0.5))
+                            Text(Formatters.volumeString(ml: store.dailyGoal.totalML, unit: store.profile.unitSystem))
+                                .font(Theme.titleFont(size: 16))
+                                .foregroundColor(Theme.mint)
+                        }
+                        .padding(.horizontal, 12)
+                        .padding(.vertical, 8)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Theme.mint.opacity(0.12))
+                                .overlay(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .strokeBorder(Theme.mint.opacity(0.25), lineWidth: 1)
+                                )
+                        )
+                    }
+                    .padding(16)
+                }
+            } else {
+                weatherPlaceholder
             }
         }
     }
 
-    private var weatherText: String {
+    private var weatherPlaceholder: some View {
+        let isLoading = weather.status == .loading
+        let locationDenied = locationManager.authorizationStatus == .denied || locationManager.authorizationStatus == .restricted
+        let message = isLoading ? "Fetching local conditions…"
+            : locationDenied ? "Enable location in Settings"
+            : "Weather unavailable right now"
+        let icon = locationDenied && !isLoading ? "location.slash.fill" : "cloud.fill"
+        let tint = locationDenied && !isLoading ? Theme.coral : Theme.lagoon
+
+        return LiquidGlassCard(cornerRadius: 20, tintColor: tint.opacity(0.2), isInteractive: false) {
+            HStack(spacing: 16) {
+                ZStack {
+                    Circle()
+                        .fill(tint.opacity(0.15))
+                        .frame(width: 52, height: 52)
+                    if isLoading {
+                        ProgressView()
+                            .tint(tint)
+                    } else {
+                        Image(systemName: icon)
+                            .font(.system(size: 22))
+                            .foregroundColor(tint.opacity(0.6))
+                    }
+                }
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Weather")
+                        .font(Theme.titleFont(size: 16))
+                        .foregroundColor(.white.opacity(0.7))
+                    Text(message)
+                        .font(Theme.bodyFont(size: 13))
+                        .foregroundColor(.white.opacity(0.45))
+                }
+                Spacer()
+            }
+            .padding(16)
+        }
+    }
+
+    // MARK: - Stats Grid
+    @ViewBuilder
+    private var statsGrid: some View {
+        if store.profile.prefersWeatherGoal || store.profile.prefersHealthKit {
+            VStack(alignment: .leading, spacing: 14) {
+                Text("Today's Context")
+                    .font(Theme.titleFont(size: 18))
+                    .foregroundColor(.white)
+
+                HStack(spacing: 12) {
+                    if store.profile.prefersWeatherGoal {
+                        FluidStatCard(
+                            label: "Weather",
+                            value: weatherValue,
+                            icon: weatherIconName,
+                            accentColor: Theme.lagoon
+                        )
+                    }
+
+                    if store.profile.prefersHealthKit {
+                        FluidStatCard(
+                            label: "Activity",
+                            value: "\(Int(store.lastWorkout.exerciseMinutes)) min",
+                            icon: "figure.run",
+                            accentColor: Theme.coral
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    private var weatherValue: String {
         guard let snapshot = store.activeWeather else { return "--" }
         let temp = "\(Int(snapshot.temperatureC))°C"
         if snapshot.condition.isEmpty { return temp }
         return "\(temp) · \(snapshot.condition)"
     }
 
-    private var weatherIcon: String {
-        guard let key = store.activeWeather?.conditionKey, !key.isEmpty else {
-            // Fallback for legacy snapshots with no conditionKey
-            guard let temp = store.activeWeather?.temperatureC else { return "cloud.fill" }
-            if temp > 30 { return "sun.max.fill" }
-            if temp > 20 { return "sun.min.fill" }
-            if temp > 10 { return "cloud.sun.fill" }
+    private var weatherIconName: String {
+        guard let snapshot = store.activeWeather else { return "cloud.fill" }
+        guard !snapshot.conditionKey.isEmpty else {
+            if snapshot.temperatureC > 30 { return "sun.max.fill" }
+            if snapshot.temperatureC > 20 { return "sun.min.fill" }
+            if snapshot.temperatureC > 10 { return "cloud.sun.fill" }
             return "cloud.fill"
         }
-        return WeatherSnapshot.sfSymbol(for: key)
+        return WeatherSnapshot.sfSymbol(for: snapshot.conditionKey)
     }
 
     // MARK: - Quests Section
@@ -381,6 +506,16 @@ struct DashboardView: View {
             if let snapshot = weather.currentWeather {
                 await MainActor.run {
                     store.updateWeather(snapshot)
+                }
+            } else {
+                await MainActor.run {
+                    // Kick off location so onChange can retry when it arrives
+                    locationManager.requestLocation()
+                    // If nothing is persisted either, seed in-memory only so the
+                    // widget renders. Real data from onChange will overwrite this.
+                    if store.activeWeather == nil {
+                        weather.currentWeather = .mild
+                    }
                 }
             }
         }
@@ -600,81 +735,84 @@ struct LiquidFillGauge: View {
             let ringInset = ringWidth
 
             ZStack {
-                if #available(iOS 19.0, *) {
-                    Circle()
-                        .glassEffect(.regular.tint(Theme.lagoon.opacity(0.08)).interactive(), in: .circle)
-                        .frame(width: diameter, height: diameter)
-                } else {
-                    Circle()
-                        .fill(.ultraThinMaterial)
-                        .frame(width: diameter, height: diameter)
-                }
-
-                TimelineView(.animation) { timeline in
-                    let time = timeline.date.timeIntervalSinceReferenceDate
-                    let phase1 = CGFloat(time * 1.2)
-                    let phase2 = CGFloat(time * 1.6)
-
-                    ZStack {
+                // Ring background + liquid fill, both masked to the donut stroke
+                ZStack {
+                    if #available(iOS 19.0, *) {
                         Circle()
-                            .fill(
-                                LinearGradient(
-                                    colors: [Theme.mint.opacity(0.6), Theme.lagoon.opacity(0.9)],
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )
-                            )
+                            .glassEffect(.regular.tint(Theme.lagoon.opacity(0.08)).interactive(), in: .circle)
                             .frame(width: diameter, height: diameter)
-
-                        WaveShape(phase: phase1, strength: 5)
-                            .fill(
-                                LinearGradient(
-                                    colors: [Theme.mint.opacity(0.8), Theme.lagoon.opacity(0.9)],
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )
-                            )
-                            .frame(width: diameter, height: 26)
-                            .offset(
-                                x: tiltOffset.width * 0.6,
-                                y: liquidTop - 8 + tiltOffset.height * 0.35
-                            )
-
-                        WaveShape(phase: phase2, strength: 4)
-                            .fill(
-                                LinearGradient(
-                                    colors: [Theme.mint.opacity(0.5), Theme.lagoon.opacity(0.75)],
-                                    startPoint: .top,
-                                    endPoint: .bottom
-                                )
-                            )
-                            .frame(width: diameter, height: 22)
-                            .offset(
-                                x: -tiltOffset.width * 0.45,
-                                y: liquidTop - 4 + tiltOffset.height * 0.25
-                            )
+                    } else {
+                        Circle()
+                            .fill(.ultraThinMaterial)
+                            .frame(width: diameter, height: diameter)
                     }
-                    .mask(
-                        Rectangle()
-                            .frame(width: diameter, height: fillHeight)
-                            .offset(y: liquidTop)
+
+                    TimelineView(.animation) { timeline in
+                        let time = timeline.date.timeIntervalSinceReferenceDate
+                        let phase1 = CGFloat(time * 1.2)
+                        let phase2 = CGFloat(time * 1.6)
+
+                        ZStack {
+                            Circle()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [Theme.mint.opacity(0.6), Theme.lagoon.opacity(0.9)],
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    )
+                                )
+                                .frame(width: diameter, height: diameter)
+
+                            WaveShape(phase: phase1, strength: 5)
+                                .fill(
+                                    LinearGradient(
+                                        colors: [Theme.mint.opacity(0.8), Theme.lagoon.opacity(0.9)],
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    )
+                                )
+                                .frame(width: diameter, height: 26)
+                                .offset(
+                                    x: tiltOffset.width * 0.6,
+                                    y: liquidTop - 8 + tiltOffset.height * 0.35
+                                )
+
+                            WaveShape(phase: phase2, strength: 4)
+                                .fill(
+                                    LinearGradient(
+                                        colors: [Theme.mint.opacity(0.5), Theme.lagoon.opacity(0.75)],
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    )
+                                )
+                                .frame(width: diameter, height: 22)
+                                .offset(
+                                    x: -tiltOffset.width * 0.45,
+                                    y: liquidTop - 4 + tiltOffset.height * 0.25
+                                )
+                        }
+                        .mask(
+                            VStack(spacing: 0) {
+                                Spacer()
+                                Rectangle()
+                                    .frame(width: diameter, height: fillHeight)
+                            }
+                            .frame(width: diameter, height: diameter)
+                        )
+                        .mask(Circle().frame(width: diameter, height: diameter))
+                    }
+                    .overlay(
+                        Circle()
+                            .strokeBorder(Color.white.opacity(0.22), lineWidth: 1)
+                            .frame(width: diameter, height: diameter)
                     )
-                    .mask(Circle().frame(width: diameter, height: diameter))
                 }
-                .overlay(
-                    Circle()
-                        .strokeBorder(Color.white.opacity(0.22), lineWidth: 1)
-                        .frame(width: diameter, height: diameter)
-                )
+                // Mask the entire ring group to the donut stroke so the centre stays hollow
                 .mask(
                     Circle()
                         .strokeBorder(style: StrokeStyle(lineWidth: ringWidth))
                         .frame(width: diameter, height: diameter)
                 )
-
-                Circle()
-                    .fill(Color.clear)
-                    .frame(width: innerDiameter, height: innerDiameter)
 
                 VStack(spacing: 6) {
                     Text(Formatters.percentString(progress))

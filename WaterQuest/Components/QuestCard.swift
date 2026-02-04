@@ -146,8 +146,12 @@ struct QuestCard: View {
         }
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
-                .onChanged { _ in isPressed = true }
-                .onEnded { _ in isPressed = false }
+                .onChanged { _ in
+                    withAnimation(Theme.quickSpring) { isPressed = true }
+                }
+                .onEnded { _ in
+                    withAnimation(Theme.quickSpring) { isPressed = false }
+                }
         )
     }
 

@@ -76,8 +76,10 @@ struct PreviewEnvironment<Content: View>: View {
 
     init(@ViewBuilder content: () -> Content) {
         let location = LocationManager()
+        let client = WeatherClient(locationManager: location)
+        client.currentWeather = .mild
         _locationManager = StateObject(wrappedValue: location)
-        _weatherClient = StateObject(wrappedValue: WeatherClient(locationManager: location))
+        _weatherClient = StateObject(wrappedValue: client)
         self.content = content()
     }
 

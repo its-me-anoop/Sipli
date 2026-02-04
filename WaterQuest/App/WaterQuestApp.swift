@@ -30,6 +30,7 @@ struct WaterQuestApp: App {
             .task {
                 store.notificationScheduler = notifier
                 await notifier.refreshAuthorizationStatus()
+                locationManager.requestPermission()
                 locationManager.requestLocation()
                 notifier.scheduleReminders(profile: store.profile, entries: store.entries, goalML: store.dailyGoal.totalML)
             }
