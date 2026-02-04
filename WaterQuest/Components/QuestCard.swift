@@ -144,15 +144,9 @@ struct QuestCard: View {
                 Haptics.questComplete()
             }
         }
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { _ in
-                    withAnimation(Theme.quickSpring) { isPressed = true }
-                }
-                .onEnded { _ in
-                    withAnimation(Theme.quickSpring) { isPressed = false }
-                }
-        )
+        .onLongPressGesture(minimumDuration: 0, maximumDistance: 12, pressing: { isPressing in
+            withAnimation(Theme.quickSpring) { isPressed = isPressing }
+        }, perform: {})
     }
 
     private var questIcon: String {

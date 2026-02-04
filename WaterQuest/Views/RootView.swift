@@ -184,9 +184,17 @@ private extension View {
 struct RootView: View {
     @AppStorage("hasOnboarded") private var hasOnboarded: Bool = false
     @EnvironmentObject private var store: HydrationStore
+    @State private var showSplash = true
 
     var body: some View {
         content
+            .task {
+                guard showSplash else { return }
+                try? await Task.sleep(for: .seconds(1.4))
+                withAnimation(.easeOut(duration: 0.35)) {
+                    showSplash = false
+                }
+            }
     }
 
     @ViewBuilder
@@ -198,6 +206,12 @@ struct RootView: View {
                 OnboardingView {
                     hasOnboarded = true
                 }
+            }
+
+            if showSplash {
+                SplashScreenView()
+                    .transition(.opacity)
+                    .zIndex(20)
             }
 
             if let achievement = store.activeAchievement {

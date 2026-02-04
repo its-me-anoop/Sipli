@@ -26,6 +26,7 @@
 		5315257190E860C18C6545B0 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6862392928A13FBD5E45D6E3 /* LocationManager.swift */; };
 		5D5BF32CEAF21645C51E5442 /* GoalCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38731A03D043511C9AAD4C2 /* GoalCalculator.swift */; };
 		6A42E67FE95A983C7A9E106B /* GamificationEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075168DFCFD4D945172BE8D5 /* GamificationEngine.swift */; };
+		6B38F9CF2F334D4300C83AB0 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B38F9CE2F334D4300C83AB0 /* SplashScreenView.swift */; };
 		6BFFE5AF2F329DB000284097 /* WaterRipple.metal in Sources */ = {isa = PBXBuildFile; fileRef = 6BFFE5AE2F329DB000284097 /* WaterRipple.metal */; };
 		6BFFE5B12F329E2200284097 /* LiquidGlassCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BFFE5B02F329E2200284097 /* LiquidGlassCard.swift */; };
 		6BFFE5B32F329E5000284097 /* HydrationAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BFFE5B22F329E5000284097 /* HydrationAIService.swift */; };
@@ -69,6 +70,7 @@
 		67F4E6C8E0FC1E4A6D3765EB /* AchievementBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementBadgeView.swift; sourceTree = "<group>"; };
 		6862392928A13FBD5E45D6E3 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		69F362557BEECECFAA26285A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6B38F9CE2F334D4300C83AB0 /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 		6BFFE5AE2F329DB000284097 /* WaterRipple.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = WaterRipple.metal; sourceTree = "<group>"; };
 		6BFFE5B02F329E2200284097 /* LiquidGlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassCard.swift; sourceTree = "<group>"; };
 		6BFFE5B22F329E5000284097 /* HydrationAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationAIService.swift; sourceTree = "<group>"; };
@@ -193,6 +195,7 @@
 				98496F0A352BC5A580943E39 /* OnboardingView.swift */,
 				22C158CF127D3436999E3C2B /* RootView.swift */,
 				FD0B42119D7BD312FCDAF766 /* SettingsView.swift */,
+				6B38F9CE2F334D4300C83AB0 /* SplashScreenView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -327,6 +330,7 @@
 				368738D16B3E40D6E50CF1D8 /* StatPill.swift in Sources */,
 				524BE8DF8217231DA89BF9FE /* Theme.swift in Sources */,
 				8CE43E783BB223277701CF7E /* UnitSystem.swift in Sources */,
+				6B38F9CF2F334D4300C83AB0 /* SplashScreenView.swift in Sources */,
 				B45B8AFC80046E64CEA7EE18 /* UserProfile.swift in Sources */,
 				3F684105CCCD5783655879E4 /* WaterQuestApp.swift in Sources */,
 				3BB230DF2DB8B5BC7C5AEECE /* WaveView.swift in Sources */,

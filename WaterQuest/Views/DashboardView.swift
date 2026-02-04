@@ -18,6 +18,8 @@ struct DashboardView: View {
     @State private var rippleTrigger = false
     @State private var tiltOffset: CGSize = .zero
     @State private var motionManager = CMMotionManager()
+    @State private var isInitialLoadComplete = false
+    @State private var loadingPulse = false
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -57,22 +59,34 @@ struct DashboardView: View {
             .modifier(ScrollEdgeEffectModifier())
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .task {
-            await refreshSignals()
-            await generateAITip()
+        .overlay {
+            if !isInitialLoadComplete {
+                launchLoadingOverlay
+            }
         }
-        .onChange(of: locationManager.lastLocation) {
+        .task {
+            async let refreshTask: Void = refreshSignals()
+            async let tipTask: Void = generateAITip()
+            _ = await (refreshTask, tipTask)
+        }
+        .onChange(of: aiService.currentTip) { _, _ in
+            updateInitialLoadState()
+        }
+        .onChange(of: aiService.isGenerating) { _, _ in
+            updateInitialLoadState()
+        }
+        .task(id: locationManager.lastLocation?.timestamp) {
             guard store.profile.prefersWeatherGoal else { return }
-            Task {
-                await weather.refresh()
-                if let snapshot = weather.currentWeather {
-                    store.updateWeather(snapshot)
-                }
+            await weather.refresh()
+            if let snapshot = weather.currentWeather {
+                store.updateWeather(snapshot)
             }
         }
         .onAppear {
             animateEntrance()
             startMotionUpdates()
+            loadingPulse = true
+            updateInitialLoadState()
         }
         .onDisappear {
             stopMotionUpdates()
@@ -276,67 +290,62 @@ struct DashboardView: View {
     // MARK: - Weather Widget
     @ViewBuilder
     private var weatherWidget: some View {
-        if store.profile.prefersWeatherGoal {
-            // Prefer live fetch; fall back to last persisted snapshot
-            if let snapshot = weather.currentWeather ?? store.activeWeather {
-                let isLive = weather.status != .failed
-                LiquidGlassCard(cornerRadius: 20, tintColor: Theme.lagoon.opacity(0.3), isInteractive: false) {
-                    HStack(spacing: 16) {
-                        // Weather icon
-                        ZStack {
-                            Circle()
-                                .fill(Theme.lagoon.opacity(0.2))
-                                .frame(width: 52, height: 52)
-                            Image(systemName: weatherIconName)
-                                .font(.system(size: 24))
-                                .foregroundColor(Theme.lagoon)
-                        }
-
-                        // Temperature & condition
-                        VStack(alignment: .leading, spacing: 3) {
-                            HStack(spacing: 6) {
-                                Text("\(Int(snapshot.temperatureC))°C")
-                                    .font(Theme.titleFont(size: 22))
-                                    .foregroundColor(.white)
-                                if !snapshot.condition.isEmpty {
-                                    Text(snapshot.condition)
-                                        .font(Theme.bodyFont(size: 14))
-                                        .foregroundColor(.white.opacity(0.7))
-                                }
-                            }
-                            Text(isLive
-                                ? "Humidity \(Int(snapshot.humidityPercent))%"
-                                : "Humidity \(Int(snapshot.humidityPercent))% · Estimated")
-                                .font(Theme.bodyFont(size: 12))
-                                .foregroundColor(.white.opacity(0.55))
-                        }
-
-                        Spacer()
-
-                        // Goal adjustment badge
-                        VStack(spacing: 2) {
-                            Text("Goal")
-                                .font(Theme.bodyFont(size: 11))
-                                .foregroundColor(.white.opacity(0.5))
-                            Text(Formatters.volumeString(ml: store.dailyGoal.totalML, unit: store.profile.unitSystem))
-                                .font(Theme.titleFont(size: 16))
-                                .foregroundColor(Theme.mint)
-                        }
-                        .padding(.horizontal, 12)
-                        .padding(.vertical, 8)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12)
-                                .fill(Theme.mint.opacity(0.12))
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 12)
-                                        .strokeBorder(Theme.mint.opacity(0.25), lineWidth: 1)
-                                )
-                        )
+        if store.profile.prefersWeatherGoal, let snapshot = weather.currentWeather {
+            let isLive = weather.status != .failed
+            LiquidGlassCard(cornerRadius: 20, tintColor: Theme.lagoon.opacity(0.3), isInteractive: false) {
+                HStack(spacing: 16) {
+                    // Weather icon
+                    ZStack {
+                        Circle()
+                            .fill(Theme.lagoon.opacity(0.2))
+                            .frame(width: 52, height: 52)
+                        Image(systemName: weatherIconName(snapshot: snapshot))
+                            .font(.system(size: 24))
+                            .foregroundColor(Theme.lagoon)
                     }
-                    .padding(16)
+
+                    // Temperature & condition
+                    VStack(alignment: .leading, spacing: 3) {
+                        HStack(spacing: 6) {
+                            Text("\(Int(snapshot.temperatureC))°C")
+                                .font(Theme.titleFont(size: 22))
+                                .foregroundColor(.white)
+                            if !snapshot.condition.isEmpty {
+                                Text(snapshot.condition)
+                                    .font(Theme.bodyFont(size: 14))
+                                    .foregroundColor(.white.opacity(0.7))
+                            }
+                        }
+                        Text(isLive
+                            ? "Humidity \(Int(snapshot.humidityPercent))%"
+                            : "Humidity \(Int(snapshot.humidityPercent))% · Estimated")
+                            .font(Theme.bodyFont(size: 12))
+                            .foregroundColor(.white.opacity(0.55))
+                    }
+
+                    Spacer()
+
+                    // Goal adjustment badge
+                    VStack(spacing: 2) {
+                        Text("Goal")
+                            .font(Theme.bodyFont(size: 11))
+                            .foregroundColor(.white.opacity(0.5))
+                        Text(Formatters.volumeString(ml: store.dailyGoal.totalML, unit: store.profile.unitSystem))
+                            .font(Theme.titleFont(size: 16))
+                            .foregroundColor(Theme.mint)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 8)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Theme.mint.opacity(0.12))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 12)
+                                    .strokeBorder(Theme.mint.opacity(0.25), lineWidth: 1)
+                            )
+                    )
                 }
-            } else {
-                weatherPlaceholder
+                .padding(16)
             }
         }
     }
@@ -389,11 +398,11 @@ struct DashboardView: View {
                     .foregroundColor(.white)
 
                 HStack(spacing: 12) {
-                    if store.profile.prefersWeatherGoal {
+                    if store.profile.prefersWeatherGoal, let snapshot = weather.currentWeather {
                         FluidStatCard(
                             label: "Weather",
-                            value: weatherValue,
-                            icon: weatherIconName,
+                            value: weatherValue(snapshot: snapshot),
+                            icon: weatherIconName(snapshot: snapshot),
                             accentColor: Theme.lagoon
                         )
                     }
@@ -411,15 +420,15 @@ struct DashboardView: View {
         }
     }
 
-    private var weatherValue: String {
-        guard let snapshot = store.activeWeather else { return "--" }
+    private func weatherValue(snapshot: WeatherSnapshot?) -> String {
+        guard let snapshot else { return "--" }
         let temp = "\(Int(snapshot.temperatureC))°C"
         if snapshot.condition.isEmpty { return temp }
         return "\(temp) · \(snapshot.condition)"
     }
 
-    private var weatherIconName: String {
-        guard let snapshot = store.activeWeather else { return "cloud.fill" }
+    private func weatherIconName(snapshot: WeatherSnapshot?) -> String {
+        guard let snapshot else { return "cloud.fill" }
         guard !snapshot.conditionKey.isEmpty else {
             if snapshot.temperatureC > 30 { return "sun.max.fill" }
             if snapshot.temperatureC > 20 { return "sun.min.fill" }
@@ -509,13 +518,8 @@ struct DashboardView: View {
                 }
             } else {
                 await MainActor.run {
-                    // Kick off location so onChange can retry when it arrives
+                    // Kick off location so onChange can retry when it arrives.
                     locationManager.requestLocation()
-                    // If nothing is persisted either, seed in-memory only so the
-                    // widget renders. Real data from onChange will overwrite this.
-                    if store.activeWeather == nil {
-                        weather.currentWeather = .mild
-                    }
                 }
             }
         }
@@ -523,6 +527,45 @@ struct DashboardView: View {
         await MainActor.run {
             store.refreshQuests()
             isRefreshing = false
+        }
+    }
+
+    private var launchLoadingOverlay: some View {
+        ZStack {
+            Theme.background
+                .opacity(0.92)
+                .ignoresSafeArea()
+
+            VStack(spacing: 16) {
+                ZStack {
+                    Circle()
+                        .fill(Theme.lagoon.opacity(0.2))
+                        .frame(width: 110, height: 110)
+                        .scaleEffect(loadingPulse ? 1.05 : 0.94)
+                        .animation(.easeInOut(duration: 1.2).repeatForever(autoreverses: true), value: loadingPulse)
+
+                    ProgressRing(progress: 0.65, lineWidth: 10, showRippleEffect: false)
+                        .frame(width: 78, height: 78)
+                }
+
+                Text("Preparing your dashboard")
+                    .font(Theme.titleFont(size: 16))
+                    .foregroundColor(.white)
+
+                Text("Syncing hydration and quests…")
+                    .font(Theme.bodyFont(size: 13))
+                    .foregroundColor(.white.opacity(0.6))
+            }
+            .padding(.horizontal, 24)
+        }
+        .transition(.opacity)
+    }
+
+    private func updateInitialLoadState() {
+        guard !isInitialLoadComplete else { return }
+        guard aiService.currentTip != nil, !aiService.isGenerating else { return }
+        withAnimation(Theme.gentleSpring) {
+            isInitialLoadComplete = true
         }
     }
 
