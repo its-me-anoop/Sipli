@@ -2,7 +2,6 @@ import SwiftUI
 
 struct SplashScreenView: View {
     @State private var pulse = false
-    @State private var shimmer = false
     @Environment(\.horizontalSizeClass) private var sizeClass
 
     private var isRegular: Bool { sizeClass == .regular }
@@ -32,23 +31,11 @@ struct SplashScreenView: View {
                         .frame(width: isRegular ? 152 : 112, height: isRegular ? 152 : 112)
                         .blur(radius: 0.2)
 
-                    Image(systemName: "drop.fill")
-                        .font(.system(size: isRegular ? 62 : 46, weight: .semibold))
-                        .foregroundStyle(Theme.glowGradient)
+                    Image("Mascot")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: isRegular ? 112 : 84, height: isRegular ? 112 : 84)
                         .shadow(color: Theme.lagoon.opacity(0.35), radius: 16, x: 0, y: 6)
-                        .overlay(
-                            LinearGradient(
-                                colors: [.white.opacity(0.95), .clear],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                            .blendMode(.screen)
-                            .opacity(shimmer ? 0.6 : 0.15)
-                            .mask(
-                                Image(systemName: "drop.fill")
-                                    .font(.system(size: isRegular ? 62 : 46, weight: .semibold))
-                            )
-                        )
                 }
                 .animation(.easeInOut(duration: 1.6).repeatForever(autoreverses: true), value: pulse)
 
@@ -78,7 +65,6 @@ struct SplashScreenView: View {
         }
         .onAppear {
             pulse = true
-            shimmer = true
         }
     }
 }

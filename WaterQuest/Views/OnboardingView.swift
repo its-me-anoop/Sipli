@@ -1,10 +1,12 @@
 import SwiftUI
+import StoreKit
 
 struct OnboardingView: View {
     @EnvironmentObject private var store: HydrationStore
     @EnvironmentObject private var healthKit: HealthKitManager
     @EnvironmentObject private var notifier: NotificationScheduler
     @EnvironmentObject private var locationManager: LocationManager
+    @EnvironmentObject private var subscriptionManager: SubscriptionManager
 
     var onComplete: () -> Void
 
@@ -25,10 +27,14 @@ struct OnboardingView: View {
     @State private var wakeTime = Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: Date()) ?? Date()
     @State private var sleepTime = Calendar.current.date(bySettingHour: 22, minute: 0, second: 0, of: Date()) ?? Date()
 
+    @State private var selectedPlan: Product?
+    @State private var isPurchasing = false
+    @State private var purchaseError: String?
+
     @Environment(\.horizontalSizeClass) private var sizeClass
     private var isRegular: Bool { sizeClass == .regular }
 
-    private let totalSteps = 7
+    private let totalSteps = 8
 
     var body: some View {
         ZStack {
@@ -45,6 +51,7 @@ struct OnboardingView: View {
                         case 4: goalStep
                         case 5: scheduleStep
                         case 6: remindersStep
+                        case 7: paywallStep
                         default: EmptyView()
                         }
                     }
@@ -281,6 +288,219 @@ struct OnboardingView: View {
         }
     }
 
+    private var paywallStep: some View {
+        ScrollView {
+            VStack(spacing: 24) {
+                Spacer(minLength: 20)
+
+                Image("Mascot")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 100, height: 100)
+                    .background(
+                        Circle()
+                            .fill(.ultraThinMaterial)
+                            .overlay(
+                                Circle()
+                                    .stroke(
+                                        LinearGradient(
+                                            colors: [.white.opacity(0.8), .white.opacity(0.1)],
+                                            startPoint: .topLeading,
+                                            endPoint: .bottomTrailing
+                                        ),
+                                        lineWidth: 1.5
+                                    )
+                            )
+                            .shadow(color: Theme.lagoon.opacity(0.15), radius: 24, x: 0, y: 12)
+                    )
+
+                VStack(spacing: 12) {
+                    Text("You're all set!")
+                        .font(.title.bold())
+                        .multilineTextAlignment(.center)
+
+                    Text("Start your free trial and build better hydration habits with personalized goals.")
+                        .font(.body)
+                        .foregroundStyle(.secondary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 20)
+                }
+
+                VStack(alignment: .leading, spacing: 12) {
+                    OnboardingFeatureRow(icon: "target", text: "Personalized daily hydration goal")
+                    OnboardingFeatureRow(icon: "sun.max.fill", text: "Weather-based goal adjustment")
+                    OnboardingFeatureRow(icon: "figure.run", text: "Workout-based goal adjustment")
+                    OnboardingFeatureRow(icon: "drop.fill", text: "Quick water logging & progress tracking")
+                    OnboardingFeatureRow(icon: "chart.line.uptrend.xyaxis", text: "Insights and streak tracking")
+                }
+                .padding(20)
+                .background(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .fill(.ultraThinMaterial)
+                )
+                .overlay(
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .stroke(Theme.glassBorder, lineWidth: 1)
+                )
+
+                // Plan selector
+                VStack(spacing: 12) {
+                    if subscriptionManager.products.isEmpty {
+                        ProgressView()
+                            .frame(maxWidth: .infinity, minHeight: 60)
+                    } else {
+                        if let annual = subscriptionManager.annualProduct {
+                            onboardingPlanRow(
+                                title: "Yearly",
+                                subtitle: "Best value",
+                                price: annual.displayPrice,
+                                isSelected: selectedPlan?.id == annual.id,
+                                isBestValue: true
+                            ) { selectedPlan = annual }
+                        }
+
+                        if let monthly = subscriptionManager.monthlyProduct {
+                            onboardingPlanRow(
+                                title: "Monthly",
+                                subtitle: "Flexible billing",
+                                price: monthly.displayPrice,
+                                isSelected: selectedPlan?.id == monthly.id,
+                                isBestValue: false
+                            ) { selectedPlan = monthly }
+                        }
+                    }
+                }
+
+                // Subscribe button
+                if let plan = selectedPlan ?? subscriptionManager.annualProduct ?? subscriptionManager.monthlyProduct {
+                    Button {
+                        purchasePlan(plan)
+                    } label: {
+                        Group {
+                            if isPurchasing {
+                                HStack(spacing: 8) {
+                                    ProgressView().tint(.white)
+                                    Text("Processing...")
+                                }
+                            } else {
+                                Text("Subscribe \u{2013} \(plan.displayPrice)")
+                            }
+                        }
+                        .font(.headline)
+                        .foregroundStyle(.white)
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 14)
+                        .background(Theme.lagoon)
+                        .clipShape(Capsule())
+                        .shadow(color: Theme.lagoon.opacity(0.3), radius: 8, y: 4)
+                    }
+                    .disabled(isPurchasing)
+                    .buttonStyle(BouncyButtonStyle())
+                }
+
+                if let error = purchaseError {
+                    Text(error)
+                        .font(.footnote)
+                        .foregroundStyle(.red)
+                }
+
+                Button("Restore Purchase") {
+                    restorePurchase()
+                }
+                .font(.subheadline)
+                .foregroundStyle(Theme.lagoon)
+                .disabled(isPurchasing)
+
+                Text("Payment is charged to your Apple ID at confirmation. Subscription renews automatically unless canceled at least 24 hours before renewal. Manage in Settings \u{203A} Apple ID \u{203A} Subscriptions.")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 20)
+
+                Spacer(minLength: 40)
+            }
+            .padding(.horizontal, 24)
+        }
+        .task {
+            if selectedPlan == nil {
+                selectedPlan = subscriptionManager.annualProduct ?? subscriptionManager.monthlyProduct
+            }
+        }
+    }
+
+    private func onboardingPlanRow(title: String, subtitle: String, price: String, isSelected: Bool, isBestValue: Bool, onSelect: @escaping () -> Void) -> some View {
+        Button(action: {
+            Haptics.selection()
+            onSelect()
+        }) {
+            HStack(alignment: .center, spacing: 10) {
+                VStack(alignment: .leading, spacing: 2) {
+                    HStack(spacing: 6) {
+                        Text(title)
+                            .font(.subheadline.weight(.semibold))
+                        if isBestValue {
+                            Text("Best Value")
+                                .font(.caption2.weight(.semibold))
+                                .padding(.horizontal, 6)
+                                .padding(.vertical, 2)
+                                .background(Capsule().fill(Theme.sun.opacity(0.2)))
+                        }
+                    }
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+                Text(price)
+                    .font(.headline)
+                Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
+                    .foregroundStyle(isSelected ? Theme.lagoon : .secondary)
+            }
+            .padding(14)
+            .background(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(.ultraThinMaterial)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .stroke(isSelected ? Theme.lagoon : Theme.glassBorder, lineWidth: isSelected ? 1.5 : 1)
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func purchasePlan(_ product: Product) {
+        isPurchasing = true
+        purchaseError = nil
+        Task {
+            let success = await subscriptionManager.purchase(product)
+            isPurchasing = false
+            if success {
+                Haptics.success()
+                finishOnboarding()
+            } else {
+                Haptics.error()
+                purchaseError = "Purchase did not complete. Please try again."
+            }
+        }
+    }
+
+    private func restorePurchase() {
+        isPurchasing = true
+        purchaseError = nil
+        Task {
+            let success = await subscriptionManager.restore()
+            isPurchasing = false
+            if success {
+                Haptics.success()
+                finishOnboarding()
+            } else {
+                Haptics.warning()
+                purchaseError = "No previous purchase found."
+            }
+        }
+    }
+
     private var navigationBar: some View {
         VStack(spacing: 12) {
             // Step counter
@@ -329,7 +549,7 @@ struct OnboardingView: View {
                         }
                     }
                 }) {
-                    Text(step == totalSteps - 1 ? "Start" : "Continue")
+                    Text(step == totalSteps - 1 ? "Start Free Trial" : "Continue")
                         .font(.headline)
                         .foregroundStyle(.white)
                         .padding(.horizontal, 32)
