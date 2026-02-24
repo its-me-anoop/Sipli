@@ -319,8 +319,8 @@ struct OnboardingView: View {
                         .font(.title.bold())
                         .multilineTextAlignment(.center)
 
-                    Text("Start your 7-day free trial and build better hydration habits with personalized goals.")
-                        .font(.body)
+                    Text("Build better hydration habits with personalized goals. Start with a 7-day free trial.")
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 20)
@@ -352,8 +352,9 @@ struct OnboardingView: View {
                         if let annual = subscriptionManager.annualProduct {
                             onboardingPlanRow(
                                 title: "Yearly",
-                                subtitle: "Best value",
+                                subtitle: perMonthText(for: annual).map { "(\($0)/mo)" } ?? "",
                                 price: annual.displayPrice,
+                                period: billingPeriod(for: annual),
                                 isSelected: selectedPlan?.id == annual.id,
                                 isBestValue: true
                             ) { selectedPlan = annual }
@@ -362,8 +363,9 @@ struct OnboardingView: View {
                         if let monthly = subscriptionManager.monthlyProduct {
                             onboardingPlanRow(
                                 title: "Monthly",
-                                subtitle: "Flexible billing",
+                                subtitle: "",
                                 price: monthly.displayPrice,
+                                period: billingPeriod(for: monthly),
                                 isSelected: selectedPlan?.id == monthly.id,
                                 isBestValue: false
                             ) { selectedPlan = monthly }
@@ -383,7 +385,7 @@ struct OnboardingView: View {
                                     Text("Processing...")
                                 }
                             } else {
-                                Text("Subscribe \u{2013} \(plan.displayPrice)")
+                                Text("Subscribe — \(plan.displayPrice)\(billingPeriod(for: plan))")
                             }
                         }
                         .font(.headline)
@@ -411,7 +413,7 @@ struct OnboardingView: View {
                 .foregroundStyle(Theme.lagoon)
                 .disabled(isPurchasing)
 
-                Text("Your 7-day free trial begins now. After the trial, your subscription will automatically renew unless canceled at least 24 hours before the end of the current period. Payment is charged to your Apple ID. Manage or cancel anytime in Settings \u{203A} Apple ID \u{203A} Subscriptions.")
+                Text("After the 7-day free trial, your subscription automatically renews at the price shown above unless canceled at least 24 hours before the end of the current period. Payment is charged to your Apple ID. Manage or cancel anytime in Settings \u{203A} Apple ID \u{203A} Subscriptions.")
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
                     .multilineTextAlignment(.center)
@@ -437,13 +439,13 @@ struct OnboardingView: View {
         }
     }
 
-    private func onboardingPlanRow(title: String, subtitle: String, price: String, isSelected: Bool, isBestValue: Bool, onSelect: @escaping () -> Void) -> some View {
+    private func onboardingPlanRow(title: String, subtitle: String, price: String, period: String, isSelected: Bool, isBestValue: Bool, onSelect: @escaping () -> Void) -> some View {
         Button(action: {
             Haptics.selection()
             onSelect()
         }) {
             HStack(alignment: .center, spacing: 10) {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 6) {
                         Text(title)
                             .font(.subheadline.weight(.semibold))
@@ -455,13 +457,22 @@ struct OnboardingView: View {
                                 .background(Capsule().fill(Theme.sun.opacity(0.2)))
                         }
                     }
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    if !subtitle.isEmpty {
+                        Text(subtitle)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
                 Spacer()
-                Text(price)
-                    .font(.headline)
+                // Total billed amount — most prominent pricing element
+                HStack(alignment: .firstTextBaseline, spacing: 1) {
+                    Text(price)
+                        .font(.title3.weight(.bold))
+                        .foregroundStyle(Theme.lagoon)
+                    Text(period)
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.secondary)
+                }
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .foregroundStyle(isSelected ? Theme.lagoon : .secondary)
             }
@@ -476,6 +487,31 @@ struct OnboardingView: View {
             )
         }
         .buttonStyle(.plain)
+    }
+
+    private var trialButtonLabel: String {
+        if let plan = selectedPlan ?? subscriptionManager.annualProduct ?? subscriptionManager.monthlyProduct {
+            return "Try Free — then \(plan.displayPrice)\(billingPeriod(for: plan))"
+        }
+        return "Start Free Trial"
+    }
+
+    private func billingPeriod(for product: Product) -> String {
+        guard let period = product.subscription?.subscriptionPeriod else { return "" }
+        switch period.unit {
+        case .year: return "/yr"
+        case .month: return "/mo"
+        case .week: return "/wk"
+        case .day: return "/day"
+        @unknown default: return ""
+        }
+    }
+
+    private func perMonthText(for annual: Product) -> String? {
+        let monthly = annual.price / 12
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .currency
+        return formatter.string(from: NSDecimalNumber(decimal: monthly))
     }
 
     private func purchasePlan(_ product: Product) {
@@ -558,10 +594,10 @@ struct OnboardingView: View {
                         }
                     }
                 }) {
-                    Text(step == totalSteps - 1 ? "Start 7-Day Free Trial" : "Continue")
+                    Text(step == totalSteps - 1 ? trialButtonLabel : "Continue")
                         .font(.headline)
                         .foregroundStyle(.white)
-                        .padding(.horizontal, 32)
+                        .padding(.horizontal, step == totalSteps - 1 ? 20 : 32)
                         .padding(.vertical, 14)
                         .background(Theme.lagoon)
                         .clipShape(Capsule())

@@ -50,7 +50,7 @@ struct PaywallView: View {
                                     }
                                     .frame(maxWidth: .infinity)
                                 } else {
-                                    Text("Start Pro - \(product.displayPrice)")
+                                    Text("Start Pro — \(product.displayPrice)\(billingPeriod(for: product))")
                                         .frame(maxWidth: .infinity)
                                 }
                             }
@@ -148,8 +148,9 @@ struct PaywallView: View {
             if let annual = subscriptionManager.annualProduct {
                 PlanRow(
                     title: "Yearly",
-                    subtitle: perMonthText(for: annual).map { "\($0)/month" } ?? "Best value",
+                    subtitle: perMonthText(for: annual).map { "(\($0)/mo)" } ?? "",
                     price: annual.displayPrice,
+                    period: billingPeriod(for: annual),
                     isSelected: selectedProduct?.id == annual.id,
                     isBestValue: true
                 ) {
@@ -160,8 +161,9 @@ struct PaywallView: View {
             if let monthly = subscriptionManager.monthlyProduct {
                 PlanRow(
                     title: "Monthly",
-                    subtitle: "Flexible monthly billing",
+                    subtitle: "",
                     price: monthly.displayPrice,
+                    period: billingPeriod(for: monthly),
                     isSelected: selectedProduct?.id == monthly.id,
                     isBestValue: false
                 ) {
@@ -190,6 +192,17 @@ struct PaywallView: View {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
         return formatter.string(from: NSDecimalNumber(decimal: monthly))
+    }
+
+    private func billingPeriod(for product: Product) -> String {
+        guard let period = product.subscription?.subscriptionPeriod else { return "" }
+        switch period.unit {
+        case .year: return "/year"
+        case .month: return "/month"
+        case .week: return "/week"
+        case .day: return "/day"
+        @unknown default: return ""
+        }
     }
 
     private func doPurchase(_ product: Product) {
@@ -236,6 +249,7 @@ private struct PlanRow: View {
     let title: String
     let subtitle: String
     let price: String
+    let period: String
     let isSelected: Bool
     let isBestValue: Bool
     let onSelect: () -> Void
@@ -246,7 +260,7 @@ private struct PlanRow: View {
             onSelect()
         }) {
             HStack(alignment: .center, spacing: 10) {
-                VStack(alignment: .leading, spacing: 2) {
+                VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 6) {
                         Text(title)
                             .font(.subheadline.weight(.semibold))
@@ -258,20 +272,29 @@ private struct PlanRow: View {
                                 .background(Capsule().fill(Theme.sun.opacity(0.2)))
                         }
                     }
-                    Text(subtitle)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
+                    if !subtitle.isEmpty {
+                        Text(subtitle)
+                            .font(.caption)
+                            .foregroundStyle(.secondary)
+                    }
                 }
 
                 Spacer()
 
-                Text(price)
-                    .font(.headline)
+                // Total billed amount — most prominent pricing element
+                HStack(alignment: .firstTextBaseline, spacing: 1) {
+                    Text(price)
+                        .font(.title3.weight(.bold))
+                        .foregroundStyle(Theme.lagoon)
+                    Text(period)
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.secondary)
+                }
 
                 Image(systemName: isSelected ? "checkmark.circle.fill" : "circle")
                     .foregroundStyle(isSelected ? Theme.lagoon : .secondary)
             }
-            .padding(10)
+            .padding(12)
             .background(
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
                     .fill(Theme.cardSurface)
