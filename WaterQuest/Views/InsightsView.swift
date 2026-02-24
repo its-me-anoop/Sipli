@@ -74,7 +74,6 @@ struct InsightsView: View {
                         if !store.entries.isEmpty {
                             DashboardCard(title: "Beverage Breakdown (Past \(timeframe.rawValue))", icon: "cup.and.saucer.fill") { beverageBreakdownSection }
                         }
-                            DashboardCard(title: "Recent Entries", icon: "clock.fill") { recentEntriesSection }
                         }
                     }
                 } else {
@@ -85,7 +84,6 @@ struct InsightsView: View {
                         if !store.entries.isEmpty {
                             DashboardCard(title: "Beverage Breakdown (Past \(timeframe.rawValue))", icon: "cup.and.saucer.fill") { beverageBreakdownSection }
                         }
-                        DashboardCard(title: "Recent Entries", icon: "clock.fill") { recentEntriesSection }
                     }
                 }
             }
@@ -267,44 +265,6 @@ struct InsightsView: View {
         }
     }
 
-    private var recentEntriesSection: some View {
-        let recent = store.entries.sorted { $0.date > $1.date }.prefix(8)
-
-        return Group {
-            if recent.isEmpty {
-                Text("No entries yet.")
-                    .foregroundStyle(.secondary)
-            } else {
-                ForEach(Array(recent)) { entry in
-                    HStack(spacing: 12) {
-                        Image(systemName: entry.fluidType.iconName)
-                            .foregroundStyle(entry.fluidType.color)
-                            .frame(width: 24)
-
-                        VStack(alignment: .leading, spacing: 2) {
-                            HStack(spacing: 4) {
-                                Text(Formatters.volumeString(ml: entry.volumeML, unit: store.profile.unitSystem))
-                                if entry.fluidType != .water {
-                                    Text(entry.fluidType.displayName)
-                                        .font(.caption2)
-                                        .foregroundStyle(entry.fluidType.color)
-                                }
-                            }
-                            Text(entry.date, style: .time)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
-                        }
-
-                        Spacer()
-
-                        Text(entry.date, format: .dateTime.month(.abbreviated).day())
-                            .font(.caption)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
-        }
-    }
 }
 
 private struct WeeklyDay: Identifiable {
