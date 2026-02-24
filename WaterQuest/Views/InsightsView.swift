@@ -169,6 +169,18 @@ struct InsightsView: View {
                 Text(Formatters.volumeString(ml: goal.totalML, unit: store.profile.unitSystem))
                     .font(.headline)
             }
+
+            if goal.weatherAdjustmentML != 0 {
+                Link(destination: URL(string: "https://weatherkit.apple.com/legal-attribution.html")!) {
+                    HStack(spacing: 4) {
+                        Text("Weather data provided by")
+                        Image(systemName: "applelogo")
+                        Text("Weather")
+                    }
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                }
+            }
         }
         .padding(.vertical, 6)
     }
