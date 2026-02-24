@@ -661,7 +661,7 @@ private struct LogRow: View {
     }
 }
 
-private struct EntryEditorSheet: View {
+struct EntryEditorSheet: View {
     let entry: HydrationEntry
     let unitSystem: UnitSystem
     let onSave: (_ amount: Double, _ fluidType: FluidType, _ note: String?) -> Void
@@ -811,7 +811,7 @@ private struct ActivityMetric: View {
     }
 }
 
-private struct DetailedLogRow: View {
+struct DetailedLogRow: View {
     let entry: HydrationEntry
     let unitSystem: UnitSystem
     let fluidTypeTotalML: Double

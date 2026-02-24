@@ -4,6 +4,7 @@ struct MainTabView: View {
     private enum Tab: Int {
         case dashboard
         case insights
+        case diary
         case settings
     }
 
@@ -105,6 +106,16 @@ struct MainTabView: View {
                 Label("Insights", systemImage: "chart.line.uptrend.xyaxis")
             }
             .tag(Tab.insights)
+
+            NavigationStack {
+                DiaryView()
+            }
+            .background(Color.clear)
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .tabItem {
+                Label("Diary", systemImage: "book.fill")
+            }
+            .tag(Tab.diary)
 
             NavigationStack {
                 SettingsView()

@@ -43,6 +43,7 @@
 		D1A2B3C4E5F60718293A4B5C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E2B3C4D5F6071829A3B4C5D6 /* PrivacyInfo.xcprivacy */; };
 		BBBF0A2E700E876678D8DA69 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD0B42119D7BD312FCDAF766 /* SettingsView.swift */; };
 		C0AC658494F0FF61381C286D /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB90E806138FFE1C09E7187A /* InsightsView.swift */; };
+		D1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift */; };
 		C4B819181FF00CD089496479 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D58355784786E63DFFB9EC4 /* Haptics.swift */; };
 		CAA880E64AF96B5C0988D2A3 /* WorkoutSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE15D5810B84C7C96E0EA4C /* WorkoutSummary.swift */; };
 
@@ -97,6 +98,7 @@
 		BD7043107E62B2C04F4C58EB /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		C5DD4230940B25D30C9598B4 /* Gemini_Generated_Image_15xog715xog715xo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Gemini_Generated_Image_15xog715xog715xo.png"; sourceTree = "<group>"; };
 		E4A8068B4418852446BD78E6 /* MotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryView.swift; sourceTree = "<group>"; };
 		EB90E806138FFE1C09E7187A /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
 		F021A59BB7CB33328B5ABBC4 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 		F38731A03D043511C9AAD4C2 /* GoalCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalCalculator.swift; sourceTree = "<group>"; };
@@ -204,6 +206,7 @@
 			children = (
 				9FBC0C7A2F89C0FD52822D48 /* AddIntakeView.swift */,
 				BD7043107E62B2C04F4C58EB /* DashboardView.swift */,
+				A1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift */,
 				EB90E806138FFE1C09E7187A /* InsightsView.swift */,
 				B2126EAEDD87BD49B24C7BE2 /* MainTabView.swift */,
 				98496F0A352BC5A580943E39 /* OnboardingView.swift */,
@@ -329,6 +332,7 @@
 				7C578D3D8C788EDEDD9F383C /* HydrationAIService.swift in Sources */,
 				0E54D9CCCA944AAEB6EA20F8 /* HydrationEntry.swift in Sources */,
 				0A98E6835256CBC9D3B2DF65 /* HydrationStore.swift in Sources */,
+				D1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift in Sources */,
 				C0AC658494F0FF61381C286D /* InsightsView.swift in Sources */,
 				2CA08ED2F08EB233538DC4D5 /* LiquidGlassCard.swift in Sources */,
 				E5EDB875107A7CBE67F2F031 /* LiquidProgressView.swift in Sources */,
