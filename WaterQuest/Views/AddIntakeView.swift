@@ -213,8 +213,10 @@ private struct SavedBanner: View {
     }
 }
 
+#if DEBUG
 #Preview("Add Intake") {
     PreviewEnvironment {
         AddIntakeView()
     }
 }
+#endif

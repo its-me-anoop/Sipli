@@ -810,8 +810,10 @@ private struct AnimatedWelcomeStep: View {
     }
 }
 
+#if DEBUG
 #Preview("Onboarding") {
     PreviewEnvironment {
         OnboardingView { }
     }
 }
+#endif

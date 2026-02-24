@@ -69,8 +69,10 @@ struct SplashScreenView: View {
     }
 }
 
+#if DEBUG
 #Preview("Splash") {
     PreviewEnvironment {
         SplashScreenView()
     }
 }
+#endif

@@ -897,8 +897,10 @@ struct DetailedLogRow: View {
 }
 
 
+#if DEBUG
 #Preview("Dashboard") {
     PreviewEnvironment {
         DashboardView()
     }
 }
+#endif

@@ -627,8 +627,10 @@ struct SettingsView: View {
     }
 }
 
+#if DEBUG
 #Preview("Settings") {
     PreviewEnvironment {
         SettingsView()
     }
 }
+#endif

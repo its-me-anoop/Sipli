@@ -773,8 +773,10 @@ private struct BreakdownRow: View {
     }
 }
 
+#if DEBUG
 #Preview("Insights") {
     PreviewEnvironment {
         InsightsView()
     }
 }
+#endif

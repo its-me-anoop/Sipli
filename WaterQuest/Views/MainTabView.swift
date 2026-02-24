@@ -133,8 +133,10 @@ private extension View {
     }
 }
 
+#if DEBUG
 #Preview("Main Tabs") {
     PreviewEnvironment {
         MainTabView()
     }
 }
+#endif

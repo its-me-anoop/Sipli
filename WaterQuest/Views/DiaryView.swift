@@ -211,8 +211,10 @@ struct DiaryView: View {
     }
 }
 
+#if DEBUG
 #Preview("Diary") {
     PreviewEnvironment {
         DiaryView()
     }
 }
+#endif
