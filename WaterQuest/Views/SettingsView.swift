@@ -23,6 +23,7 @@ struct SettingsView: View {
             scheduleSection
             reminderSection
             permissionsSection
+            aboutSection
         }
         .navigationTitle("Settings")
         .scrollContentBackground(.hidden)
@@ -233,6 +234,35 @@ struct SettingsView: View {
                 tint: notificationEnabled ? Theme.mint : Theme.sun
             ) {
                 Task { await notifier.requestAuthorization() }
+            }
+        }
+    }
+
+    private var aboutSection: some View {
+        Section("About") {
+            Link(destination: Legal.privacyURL) {
+                HStack {
+                    Label("Privacy Policy", systemImage: "hand.raised.fill")
+                    Spacer()
+                    Image(systemName: "arrow.up.right")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+            Link(destination: Legal.termsURL) {
+                HStack {
+                    Label("Terms of Use", systemImage: "doc.text.fill")
+                    Spacer()
+                    Image(systemName: "arrow.up.right")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                }
+            }
+            HStack {
+                Text("Version")
+                Spacer()
+                Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")
+                    .foregroundStyle(.secondary)
             }
         }
     }

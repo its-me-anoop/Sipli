@@ -182,7 +182,7 @@ struct OnboardingView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Apple Health")
                             .font(.headline)
-                        Text("We'll read your workout data to automatically boost your water goal on active days.")
+                        Text("We can read your workout data to automatically adjust your water goal on active days. You can skip this if you prefer.")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -241,7 +241,7 @@ struct OnboardingView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text("Weather Adjustments")
                             .font(.headline)
-                        Text("We'll check local weather conditions and increase your goal on hot or humid days.")
+                        Text("We can check local weather to adjust your goal on hot or humid days. You can skip this if you prefer.")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -275,7 +275,7 @@ struct OnboardingView: View {
     private var remindersStep: some View {
         AnimatedOnboardingPage(
             title: "Stay on track",
-            subtitle: "We'll send friendly reminders so you never fall behind on your hydration.",
+            subtitle: "We can send friendly reminders so you never fall behind on your hydration.",
             iconName: "bell.and.waves.left.and.right.fill",
             iconAnimation: .ring,
             iconColor: Theme.lavender
@@ -319,7 +319,7 @@ struct OnboardingView: View {
                         .font(.title.bold())
                         .multilineTextAlignment(.center)
 
-                    Text("Start your free trial and build better hydration habits with personalized goals.")
+                    Text("Start your 7-day free trial and build better hydration habits with personalized goals.")
                         .font(.body)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
@@ -411,11 +411,20 @@ struct OnboardingView: View {
                 .foregroundStyle(Theme.lagoon)
                 .disabled(isPurchasing)
 
-                Text("Payment is charged to your Apple ID at confirmation. Subscription renews automatically unless canceled at least 24 hours before renewal. Manage in Settings \u{203A} Apple ID \u{203A} Subscriptions.")
+                Text("Your 7-day free trial begins now. After the trial, your subscription will automatically renew unless canceled at least 24 hours before the end of the current period. Payment is charged to your Apple ID. Manage or cancel anytime in Settings \u{203A} Apple ID \u{203A} Subscriptions.")
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 20)
+
+                HStack {
+                    Link("Privacy Policy", destination: Legal.privacyURL)
+                    Spacer()
+                    Link("Terms of Use", destination: Legal.termsURL)
+                }
+                .font(.footnote)
+                .foregroundStyle(Theme.lagoon)
+                .padding(.horizontal, 20)
 
                 Spacer(minLength: 40)
             }
@@ -549,7 +558,7 @@ struct OnboardingView: View {
                         }
                     }
                 }) {
-                    Text(step == totalSteps - 1 ? "Start Free Trial" : "Continue")
+                    Text(step == totalSteps - 1 ? "Start 7-Day Free Trial" : "Continue")
                         .font(.headline)
                         .foregroundStyle(.white)
                         .padding(.horizontal, 32)

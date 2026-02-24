@@ -1,5 +1,10 @@
 import SwiftUI
 
+enum Legal {
+    static let privacyURL = URL(string: "https://anoopjose.github.io/WaterQuest/privacy")!
+    static let termsURL = URL(string: "https://anoopjose.github.io/WaterQuest/terms")!
+}
+
 enum Theme {
     // MARK: Palette
     static let night = Color(uiColor: .systemGroupedBackground)

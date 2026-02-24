@@ -14,8 +14,6 @@ struct PaywallView: View {
 
     @Environment(\.horizontalSizeClass) private var sizeClass
 
-    private let privacyURL = URL(string: "https://example.com/privacy")!
-    private let termsURL = URL(string: "https://example.com/terms")!
 
     var body: some View {
         NavigationStack {
@@ -82,9 +80,9 @@ struct PaywallView: View {
                             .foregroundStyle(.secondary)
 
                         HStack {
-                            Link("Privacy Policy", destination: privacyURL)
+                            Link("Privacy Policy", destination: Legal.privacyURL)
                             Spacer()
-                            Link("Terms of Use", destination: termsURL)
+                            Link("Terms of Use", destination: Legal.termsURL)
                         }
                         .font(.footnote)
                     }
