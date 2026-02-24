@@ -4,13 +4,10 @@ import Foundation
 final class HydrationStore: ObservableObject {
     @Published var entries: [HydrationEntry]
     @Published var profile: UserProfile
-    @Published var gameState: GameState
     @Published var lastWeather: WeatherSnapshot?
     @Published var lastWorkout: WorkoutSummary
-    @Published var activeAchievement: Achievement?
 
     private let persistence = PersistenceService.shared
-    private var pendingAchievements: [Achievement] = []
 
     /// Set by the app after both objects are created so the store can notify
     /// the scheduler when new intake is logged.
@@ -20,12 +17,8 @@ final class HydrationStore: ObservableObject {
         let state = persistence.load(PersistedState.self, fallback: .default)
         self.entries = state.entries
         self.profile = state.profile
-        self.gameState = state.gameState
         self.lastWeather = state.lastWeather
         self.lastWorkout = state.lastWorkout
-        self.activeAchievement = nil
-        GamificationEngine.ensureAchievements(state: &self.gameState)
-        GamificationEngine.refreshDailyQuests(state: &self.gameState, goalML: dailyGoal.totalML)
     }
 
     var dailyGoal: GoalBreakdown {
@@ -41,48 +34,49 @@ final class HydrationStore: ObservableObject {
     }
 
     var todayTotalML: Double {
+        todayEntries.reduce(0) { $0 + $1.effectiveML }
+    }
+
+    /// Raw total without hydration factor adjustment (for display/HealthKit).
+    var todayRawTotalML: Double {
         todayEntries.reduce(0) { $0 + $1.volumeML }
     }
 
+    var todayCompositions: [FluidComposition] {
+        let total = max(1, todayTotalML) // Avoid division by zero
+        var grouped: [FluidType: Double] = [:]
+        
+        for entry in todayEntries {
+            grouped[entry.fluidType, default: 0] += entry.effectiveML
+        }
+        
+        // Convert to proportions and sort by volume descending
+        return grouped
+            .map { FluidComposition(type: $0.key, proportion: $0.value / total) }
+            .sorted { $0.proportion > $1.proportion }
+    }
+
     @discardableResult
-    func addIntake(amount: Double, unitSystem: UnitSystem? = nil, source: HydrationSource = .manual, note: String? = nil) -> HydrationEntry {
-        let previouslyUnlocked = Set(gameState.achievements.filter { $0.isUnlocked }.map { $0.id })
+    func addIntake(amount: Double, unitSystem: UnitSystem? = nil, source: HydrationSource = .manual, fluidType: FluidType = .water, note: String? = nil) -> HydrationEntry {
         let units = unitSystem ?? profile.unitSystem
         let ml = units.ml(from: amount)
-        let entry = HydrationEntry(date: Date(), volumeML: ml, source: source, note: note)
+        let entry = HydrationEntry(date: Date(), volumeML: ml, source: source, fluidType: fluidType, note: note)
         entries.append(entry)
-        GamificationEngine.refreshDailyQuests(state: &gameState, goalML: dailyGoal.totalML)
-        GamificationEngine.applyIntake(state: &gameState, entry: entry, todayTotalML: todayTotalML, goalML: dailyGoal.totalML, allEntries: entries)
         notificationScheduler?.onIntakeLogged(entry: entry)
         persist()
-        let newlyUnlocked = gameState.achievements.filter { $0.isUnlocked && !previouslyUnlocked.contains($0.id) }
-        enqueueAchievements(newlyUnlocked)
         return entry
     }
 
     func deleteEntry(_ entry: HydrationEntry) {
         entries.removeAll { $0.id == entry.id }
-        GamificationEngine.refreshDailyQuests(state: &gameState, goalML: dailyGoal.totalML)
-        GamificationEngine.refreshMilestones(
-            state: &gameState,
-            entries: entries,
-            goalML: dailyGoal.totalML,
-            todayTotalML: todayTotalML
-        )
         persist()
     }
 
-    func updateEntry(id: UUID, volumeML: Double, note: String?) {
+    func updateEntry(id: UUID, volumeML: Double, fluidType: FluidType? = nil, note: String?) {
         guard let index = entries.firstIndex(where: { $0.id == id }) else { return }
         entries[index].volumeML = volumeML
+        if let fluidType { entries[index].fluidType = fluidType }
         entries[index].note = note
-        GamificationEngine.refreshDailyQuests(state: &gameState, goalML: dailyGoal.totalML)
-        GamificationEngine.refreshMilestones(
-            state: &gameState,
-            entries: entries,
-            goalML: dailyGoal.totalML,
-            todayTotalML: todayTotalML
-        )
         persist()
     }
 
@@ -90,7 +84,6 @@ final class HydrationStore: ObservableObject {
         var copy = profile
         update(&copy)
         profile = copy
-        GamificationEngine.refreshDailyQuests(state: &gameState, goalML: dailyGoal.totalML)
         persist()
     }
 
@@ -108,13 +101,6 @@ final class HydrationStore: ObservableObject {
         entries.removeAll { $0.source == .healthKit && $0.date.isSameDay(as: date) }
         entries.append(contentsOf: healthKitEntries)
         entries.sort { $0.date < $1.date }
-        GamificationEngine.refreshDailyQuests(state: &gameState, goalML: dailyGoal.totalML)
-        GamificationEngine.refreshMilestones(
-            state: &gameState,
-            entries: entries,
-            goalML: dailyGoal.totalML,
-            todayTotalML: todayTotalML
-        )
         persist()
     }
 
@@ -124,18 +110,6 @@ final class HydrationStore: ObservableObject {
         entries.removeAll { $0.source == .healthKit && $0.date >= start }
         entries.append(contentsOf: healthKitEntries)
         entries.sort { $0.date < $1.date }
-        GamificationEngine.refreshDailyQuests(state: &gameState, goalML: dailyGoal.totalML)
-        GamificationEngine.refreshMilestones(
-            state: &gameState,
-            entries: entries,
-            goalML: dailyGoal.totalML,
-            todayTotalML: todayTotalML
-        )
-        persist()
-    }
-
-    func refreshQuests() {
-        GamificationEngine.refreshDailyQuests(state: &gameState, goalML: dailyGoal.totalML)
         persist()
     }
 
@@ -144,50 +118,31 @@ final class HydrationStore: ObservableObject {
         persist()
     }
 
-    func dismissActiveAchievement() {
-        if pendingAchievements.isEmpty {
-            activeAchievement = nil
-        } else {
-            activeAchievement = pendingAchievements.removeFirst()
-        }
-    }
-
     private func persist() {
         let state = PersistedState(
             entries: entries,
             profile: profile,
-            gameState: gameState,
             lastWeather: lastWeather,
             lastWorkout: lastWorkout
         )
         persistence.save(state)
-    }
-
-    private func enqueueAchievements(_ achievements: [Achievement]) {
-        guard !achievements.isEmpty else { return }
-        pendingAchievements.append(contentsOf: achievements)
-        if activeAchievement == nil {
-            activeAchievement = pendingAchievements.removeFirst()
-        }
     }
 }
 
 struct PersistedState: Codable {
     var entries: [HydrationEntry]
     var profile: UserProfile
-    var gameState: GameState
     var lastWeather: WeatherSnapshot?
     var lastWorkout: WorkoutSummary
 
-    // manualWeather removed; kept as ignored key so old persisted JSON decodes without error
+    // Keep gameState and manualWeather as ignored keys so old persisted JSON decodes without error
     private enum CodingKeys: String, CodingKey {
-        case entries, profile, gameState, lastWeather, lastWorkout, manualWeather
+        case entries, profile, lastWeather, lastWorkout, gameState, manualWeather
     }
 
-    init(entries: [HydrationEntry], profile: UserProfile, gameState: GameState, lastWeather: WeatherSnapshot?, lastWorkout: WorkoutSummary) {
+    init(entries: [HydrationEntry], profile: UserProfile, lastWeather: WeatherSnapshot?, lastWorkout: WorkoutSummary) {
         self.entries = entries
         self.profile = profile
-        self.gameState = gameState
         self.lastWeather = lastWeather
         self.lastWorkout = lastWorkout
     }
@@ -196,17 +151,15 @@ struct PersistedState: Codable {
         let c = try decoder.container(keyedBy: CodingKeys.self)
         entries      = try c.decode([HydrationEntry].self, forKey: .entries)
         profile      = try c.decode(UserProfile.self,       forKey: .profile)
-        gameState    = try c.decode(GameState.self,         forKey: .gameState)
         lastWeather  = try c.decodeIfPresent(WeatherSnapshot.self, forKey: .lastWeather)
         lastWorkout  = try c.decode(WorkoutSummary.self,    forKey: .lastWorkout)
-        // .manualWeather silently ignored if present in old JSON
+        // .gameState and .manualWeather silently ignored if present in old JSON
     }
 
     func encode(to encoder: Encoder) throws {
         var c = encoder.container(keyedBy: CodingKeys.self)
         try c.encode(entries,     forKey: .entries)
         try c.encode(profile,     forKey: .profile)
-        try c.encode(gameState,   forKey: .gameState)
         try c.encode(lastWeather, forKey: .lastWeather)
         try c.encode(lastWorkout, forKey: .lastWorkout)
     }
@@ -214,7 +167,6 @@ struct PersistedState: Codable {
     static let `default` = PersistedState(
         entries: [],
         profile: .default,
-        gameState: .default,
         lastWeather: nil,
         lastWorkout: .empty
     )

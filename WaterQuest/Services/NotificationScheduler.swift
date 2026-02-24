@@ -65,7 +65,7 @@ final class NotificationScheduler: ObservableObject {
 
         if profile.smartRemindersEnabled {
             // Snapshot lightweight date+volume pairs for the polling loop.
-            lastKnownEntries = entries.map { DateEntry(date: $0.date, volumeML: $0.volumeML) }
+            lastKnownEntries = entries.map { DateEntry(date: $0.date, volumeML: $0.effectiveML) }
             didFireEscalation = false
             startSmartLoop(profile: profile, goalML: goalML)
         } else {
@@ -76,7 +76,7 @@ final class NotificationScheduler: ObservableObject {
     /// Call this when a new intake is logged so the smart loop can react
     /// immediately (cancel any pending escalation, reset state).
     func onIntakeLogged(entry: HydrationEntry) {
-        lastKnownEntries.append(DateEntry(date: entry.date, volumeML: entry.volumeML))
+        lastKnownEntries.append(DateEntry(date: entry.date, volumeML: entry.effectiveML))
         didFireEscalation = false
         // Remove any pending smart notification that hasn't fired yet.
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["waterquest.smart"])
@@ -226,7 +226,7 @@ final class NotificationScheduler: ObservableObject {
         "It's been a while — time for a sip!",
         "Your body's been waiting. Water up!",
         "A quiet stretch calls for a quiet sip.",
-        "Don't forget your streak — one glass does it.",
+        "One glass can make a difference — give it a go!",
         "Check in with yourself: when did you last drink?"
     ]
 
@@ -248,7 +248,7 @@ final class NotificationScheduler: ObservableObject {
         "Almost at your goal — one more glass!",
         "The finish line is close. Sip it home!",
         "You're doing great — just a bit more.",
-        "Hydrate to keep your streak alive."
+        "You're so close — finish strong!"
     ]
 
     // MARK: - Classic (fixed-schedule) reminders
@@ -257,9 +257,9 @@ final class NotificationScheduler: ObservableObject {
         let times = classicReminderTimes(wakeMinutes: profile.wakeMinutes, sleepMinutes: profile.sleepMinutes, count: profile.dailyReminderCount)
         let staticMessages = [
             "Sip time! Your future self is cheering.",
-            "Take a water break and claim some XP.",
-            "Quest check-in: a few sips goes far.",
-            "Hydrate to keep your streak alive.",
+            "Take a water break — you deserve it.",
+            "Quick check-in: a few sips goes far.",
+            "A little hydration goes a long way.",
             "Tiny sip, big win. Let's go!"
         ]
 

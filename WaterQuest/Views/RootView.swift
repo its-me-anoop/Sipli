@@ -19,22 +19,12 @@ struct RootView: View {
                 }
             }
 
-            if let achievement = store.activeAchievement {
-                AchievementCelebrationView(achievement: achievement) {
-                    store.dismissActiveAchievement()
-                }
-                .id(achievement.id)
-                .transition(.scale(scale: 0.94).combined(with: .opacity))
-                .zIndex(8)
-            }
-
             if showSplash {
                 SplashScreenView()
                     .transition(.opacity)
                     .zIndex(20)
             }
         }
-        .animation(.spring(response: 0.45, dampingFraction: 0.82), value: store.activeAchievement)
         .task {
             await bootstrapAppFlow()
         }

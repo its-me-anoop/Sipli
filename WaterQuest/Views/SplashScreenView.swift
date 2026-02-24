@@ -3,34 +3,37 @@ import SwiftUI
 struct SplashScreenView: View {
     @State private var pulse = false
     @State private var shimmer = false
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
+    private var isRegular: Bool { sizeClass == .regular }
 
     var body: some View {
         ZStack {
             AppWaterBackground().ignoresSafeArea()
 
             VStack(spacing: 0) {
-                Spacer(minLength: 120)
+                Spacer(minLength: isRegular ? 180 : 120)
 
                 ZStack {
                     Circle()
                         .stroke(Theme.lagoon.opacity(0.22), lineWidth: 1.4)
-                        .frame(width: 176, height: 176)
+                        .frame(width: isRegular ? 240 : 176, height: isRegular ? 240 : 176)
                         .scaleEffect(pulse ? 1.04 : 0.9)
                         .opacity(pulse ? 0.9 : 0.45)
 
                     Circle()
                         .stroke(Theme.mint.opacity(0.18), lineWidth: 1)
-                        .frame(width: 132, height: 132)
+                        .frame(width: isRegular ? 180 : 132, height: isRegular ? 180 : 132)
                         .scaleEffect(pulse ? 0.98 : 1.08)
                         .opacity(0.9)
 
                     Circle()
                         .fill(Theme.lagoon.opacity(0.14))
-                        .frame(width: 112, height: 112)
+                        .frame(width: isRegular ? 152 : 112, height: isRegular ? 152 : 112)
                         .blur(radius: 0.2)
 
                     Image(systemName: "drop.fill")
-                        .font(.system(size: 46, weight: .semibold))
+                        .font(.system(size: isRegular ? 62 : 46, weight: .semibold))
                         .foregroundStyle(Theme.glowGradient)
                         .shadow(color: Theme.lagoon.opacity(0.35), radius: 16, x: 0, y: 6)
                         .overlay(
@@ -43,21 +46,21 @@ struct SplashScreenView: View {
                             .opacity(shimmer ? 0.6 : 0.15)
                             .mask(
                                 Image(systemName: "drop.fill")
-                                    .font(.system(size: 46, weight: .semibold))
+                                    .font(.system(size: isRegular ? 62 : 46, weight: .semibold))
                             )
                         )
                 }
                 .animation(.easeInOut(duration: 1.6).repeatForever(autoreverses: true), value: pulse)
 
-                VStack(spacing: 8) {
+                VStack(spacing: isRegular ? 12 : 8) {
                     Text("WaterQuest")
-                        .font(.system(size: 38, weight: .bold, design: .rounded))
+                        .font(.system(size: isRegular ? 48 : 38, weight: .bold, design: .rounded))
                         .kerning(0.3)
                     Text("Hydration that fits your day")
-                        .font(.subheadline.weight(.medium))
+                        .font(isRegular ? .title3.weight(.medium) : .subheadline.weight(.medium))
                         .foregroundStyle(.secondary)
                 }
-                .padding(.top, 26)
+                .padding(.top, isRegular ? 36 : 26)
 
                 Spacer()
 
@@ -66,10 +69,10 @@ struct SplashScreenView: View {
                         .tint(Theme.lagoon)
                         .controlSize(.regular)
                     Text("Getting things ready...")
-                        .font(.footnote)
+                        .font(isRegular ? .subheadline : .footnote)
                         .foregroundStyle(.secondary)
                 }
-                .padding(.bottom, 56)
+                .padding(.bottom, isRegular ? 72 : 56)
             }
             .padding(.horizontal, 24)
         }

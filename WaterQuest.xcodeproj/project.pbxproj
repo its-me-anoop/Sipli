@@ -9,100 +9,96 @@
 /* Begin PBXBuildFile section */
 		00E5359EB56D89B045DDBDF1 /* AddIntakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBC0C7A2F89C0FD52822D48 /* AddIntakeView.swift */; };
 		0252DDA30195EA614A439A3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9FC934C6863AFC8E01D302CE /* Assets.xcassets */; };
-		07B278F93A38A595542E5E2F /* Achievement.swift in Sources */ = {isa = PBXBuildFile; fileRef = AAA7C7B6DF9BEEE2624F08AE /* Achievement.swift */; };
 		0A5C95DCB74AE59638E495D3 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98496F0A352BC5A580943E39 /* OnboardingView.swift */; };
 		0A6AF1AF6B3D3222F30C3E85 /* WeatherSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */; };
 		0A98E6835256CBC9D3B2DF65 /* HydrationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */; };
 		0E54D9CCCA944AAEB6EA20F8 /* HydrationEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */; };
 		11DFD61DBBED6087CAF037CC /* WeatherClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2DDAD6DD4B924CCA0509D0 /* WeatherClient.swift */; };
+		1DCE9DE6A19E823BA1E5079B /* DashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97414883E4C0F357148B7EC7 /* DashboardCard.swift */; };
 		289CD9C4C7D7FC94DDA3DEB7 /* GoalBreakdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */; };
+		2935FCF5A46AC8630A581FE4 /* Screenshot 2026-02-04 at 21.57.28 2.png in Resources */ = {isa = PBXBuildFile; fileRef = C5DD4230940B25D30C9598B4 /* Screenshot 2026-02-04 at 21.57.28 2.png */; };
+		2CA08ED2F08EB233538DC4D5 /* LiquidGlassCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E0244F70DCB30BB868A196 /* LiquidGlassCard.swift */; };
 		35CC573F0348943EF21D693D /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F661B4016F8BE1E8DDA5B5 /* HealthKitManager.swift */; };
 		368738D16B3E40D6E50CF1D8 /* StatPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABC282C313B061E1E34EDF7 /* StatPill.swift */; };
+		371AD185C88F6CB932BDEF79 /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26785D44340E5C0A267B325 /* SubscriptionManager.swift */; };
 		3BB230DF2DB8B5BC7C5AEECE /* WaveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9728B3EA3CEC0654348AC8A3 /* WaveView.swift */; };
+		3CF5B71CC12E2A9212F122C0 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E104C11EDA7CCFEDC3F822C /* PaywallView.swift */; };
 		3F684105CCCD5783655879E4 /* WaterQuestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4AE7C21F7B60BC9212AFC46 /* WaterQuestApp.swift */; };
 		449C15C42674C41122CC02B6 /* ProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8BDAA9F823F748DDAD26EB /* ProgressRing.swift */; };
 		4E93E1598D092FFCC6C6381F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C158CF127D3436999E3C2B /* RootView.swift */; };
 		524BE8DF8217231DA89BF9FE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CBD2C7DC27199FF61EB613 /* Theme.swift */; };
 		5315257190E860C18C6545B0 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6862392928A13FBD5E45D6E3 /* LocationManager.swift */; };
 		5D5BF32CEAF21645C51E5442 /* GoalCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38731A03D043511C9AAD4C2 /* GoalCalculator.swift */; };
-		6A42E67FE95A983C7A9E106B /* GamificationEngine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 075168DFCFD4D945172BE8D5 /* GamificationEngine.swift */; };
-		6B38F9CF2F334D4300C83AB0 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B38F9CE2F334D4300C83AB0 /* SplashScreenView.swift */; };
-		6B38F9D12F33EA4400C83AB0 /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B38F9D02F33EA4400C83AB0 /* SubscriptionManager.swift */; };
-		6B38F9D32F33EA7700C83AB0 /* PaywallView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B38F9D22F33EA7700C83AB0 /* PaywallView.swift */; };
-		6B38F9D72F33FF7700C83AB0 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 6B38F9D62F33FF7700C83AB0 /* AppIcon.icon */; };
-		6BFFE5B12F329E2200284097 /* LiquidGlassCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BFFE5B02F329E2200284097 /* LiquidGlassCard.swift */; };
-		6BFFE5B32F329E5000284097 /* HydrationAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BFFE5B22F329E5000284097 /* HydrationAIService.swift */; };
+		7077C5CF3469D64E94804983 /* FluidType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A139EF313607077443D4FCFE /* FluidType.swift */; };
 		747A7C4F8A906C71164AB9DE /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */; };
 		75107A8584630E7E2B030165 /* MascotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD53555ACD00A8A78268A7F /* MascotView.swift */; };
+		7C578D3D8C788EDEDD9F383C /* HydrationAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B57443B7032DDCF70ACB8C /* HydrationAIService.swift */; };
 		83C67F5F3E24629A72299C6E /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37EBA9FC9F1233C2BC105DD /* PersistenceService.swift */; };
 		8CE43E783BB223277701CF7E /* UnitSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032684376DE05B0CC4838664 /* UnitSystem.swift */; };
-		958B1C2F83C964D965306256 /* Quest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3E37CAAD74350623BF9808BC /* Quest.swift */; };
-		A1E4F7B0C3D6E9F2A5B8C1D4 /* AchievementCelebrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2F5A8C1D4E7F0A3B6C9D2E5 /* AchievementCelebrationView.swift */; };
+		94AF3267A3C90279716F2BE6 /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A8068B4418852446BD78E6 /* MotionManager.swift */; };
+		A1B2326FF853A75236509F2C /* icon.json in Resources */ = {isa = PBXBuildFile; fileRef = 732CBE184502476DC56921F8 /* icon.json */; };
 		A543E5598AAD6E7D7CD5164C /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 161A82CD61225A1F302ECA9D /* DateExtensions.swift */; };
 		B45B8AFC80046E64CEA7EE18 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50CF0F6325F9C80BFB71AA0D /* UserProfile.swift */; };
-		B91FE976DAC2A0581CD3D1F2 /* QuestCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9E9EF4DEEA3946532D058B8E /* QuestCard.swift */; };
+		B67E99532D94983258FFDC94 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 39EF82B8B03A482B4BC8CBF9 /* LaunchScreen.storyboard */; };
 		BBBF0A2E700E876678D8DA69 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD0B42119D7BD312FCDAF766 /* SettingsView.swift */; };
 		C0AC658494F0FF61381C286D /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB90E806138FFE1C09E7187A /* InsightsView.swift */; };
-		C3D6E9F2A5B8C1D4E7F0A3B6 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4E7F0A3B6C9D2E5F8A1B4C7 /* Haptics.swift */; };
-		C55AEDA72862AE982B3B6E79 /* AchievementBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67F4E6C8E0FC1E4A6D3765EB /* AchievementBadgeView.swift */; };
+		C4B819181FF00CD089496479 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D58355784786E63DFFB9EC4 /* Haptics.swift */; };
 		CAA880E64AF96B5C0988D2A3 /* WorkoutSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE15D5810B84C7C96E0EA4C /* WorkoutSummary.swift */; };
-		DFEBF0DC3353892C6D5C935D /* AchievementsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19211A94C2ECCF53FAF30E8D /* AchievementsView.swift */; };
+		E054558C7B7CF349F6CDD709 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE848C59D9014D3ABE6E04BE /* SplashScreenView.swift */; };
 		E27FB3C46FDAA80AD7E43C6F /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F021A59BB7CB33328B5ABBC4 /* Formatters.swift */; };
 		E367CAB1741850BAFCE4F3F9 /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B9CF2D397867B06457E11FA /* PrimaryButton.swift */; };
+		E5EDB875107A7CBE67F2F031 /* LiquidProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C07CD814951765EE1A1499 /* LiquidProgressView.swift */; };
 		EB9033481146A1C9561176DB /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2126EAEDD87BD49B24C7BE2 /* MainTabView.swift */; };
-		EFEF8A00109D571594592114 /* GameState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD7B235512DB0FFF29E820AE /* GameState.swift */; };
 		F9760161C65BFA2368DB8094 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7043107E62B2C04F4C58EB /* DashboardView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		032684376DE05B0CC4838664 /* UnitSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitSystem.swift; sourceTree = "<group>"; };
-		075168DFCFD4D945172BE8D5 /* GamificationEngine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GamificationEngine.swift; sourceTree = "<group>"; };
 		161A82CD61225A1F302ECA9D /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensions.swift; sourceTree = "<group>"; };
-		19211A94C2ECCF53FAF30E8D /* AchievementsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementsView.swift; sourceTree = "<group>"; };
 		1BD898210B2BA8EE347F72F4 /* WaterQuest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WaterQuest.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22C158CF127D3436999E3C2B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationEntry.swift; sourceTree = "<group>"; };
 		32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationStore.swift; sourceTree = "<group>"; };
+		39EF82B8B03A482B4BC8CBF9 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3ABC282C313B061E1E34EDF7 /* StatPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatPill.swift; sourceTree = "<group>"; };
 		3BE15D5810B84C7C96E0EA4C /* WorkoutSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSummary.swift; sourceTree = "<group>"; };
-		3E37CAAD74350623BF9808BC /* Quest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Quest.swift; sourceTree = "<group>"; };
+		3D58355784786E63DFFB9EC4 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
+		42E0244F70DCB30BB868A196 /* LiquidGlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassCard.swift; sourceTree = "<group>"; };
 		4B013DED6E9276AA1DBE33BC /* WaterQuest.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WaterQuest.entitlements; sourceTree = "<group>"; };
 		50CF0F6325F9C80BFB71AA0D /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		55B57443B7032DDCF70ACB8C /* HydrationAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationAIService.swift; sourceTree = "<group>"; };
+		5E104C11EDA7CCFEDC3F822C /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
 		63F661B4016F8BE1E8DDA5B5 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
-		67F4E6C8E0FC1E4A6D3765EB /* AchievementBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementBadgeView.swift; sourceTree = "<group>"; };
 		6862392928A13FBD5E45D6E3 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		69F362557BEECECFAA26285A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
-		6B38F9CE2F334D4300C83AB0 /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
-		6B38F9D02F33EA4400C83AB0 /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
-		6B38F9D22F33EA7700C83AB0 /* PaywallView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaywallView.swift; sourceTree = "<group>"; };
-		6B38F9D62F33FF7700C83AB0 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
-		6BFFE5B02F329E2200284097 /* LiquidGlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassCard.swift; sourceTree = "<group>"; };
-		6BFFE5B22F329E5000284097 /* HydrationAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationAIService.swift; sourceTree = "<group>"; };
+		732CBE184502476DC56921F8 /* icon.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = icon.json; sourceTree = "<group>"; };
 		7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSnapshot.swift; sourceTree = "<group>"; };
 		7B8BDAA9F823F748DDAD26EB /* ProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRing.swift; sourceTree = "<group>"; };
+		85C07CD814951765EE1A1499 /* LiquidProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidProgressView.swift; sourceTree = "<group>"; };
 		8B9CF2D397867B06457E11FA /* PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButton.swift; sourceTree = "<group>"; };
 		8C2DDAD6DD4B924CCA0509D0 /* WeatherClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherClient.swift; sourceTree = "<group>"; };
 		9728B3EA3CEC0654348AC8A3 /* WaveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveView.swift; sourceTree = "<group>"; };
+		97414883E4C0F357148B7EC7 /* DashboardCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardCard.swift; sourceTree = "<group>"; };
 		98496F0A352BC5A580943E39 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
-		9E9EF4DEEA3946532D058B8E /* QuestCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuestCard.swift; sourceTree = "<group>"; };
 		9FBC0C7A2F89C0FD52822D48 /* AddIntakeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddIntakeView.swift; sourceTree = "<group>"; };
 		9FC934C6863AFC8E01D302CE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A139EF313607077443D4FCFE /* FluidType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FluidType.swift; sourceTree = "<group>"; };
 		A37EBA9FC9F1233C2BC105DD /* PersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceService.swift; sourceTree = "<group>"; };
-		AAA7C7B6DF9BEEE2624F08AE /* Achievement.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Achievement.swift; sourceTree = "<group>"; };
 		ACD53555ACD00A8A78268A7F /* MascotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MascotView.swift; sourceTree = "<group>"; };
 		B2126EAEDD87BD49B24C7BE2 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
-		B2F5A8C1D4E7F0A3B6C9D2E5 /* AchievementCelebrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AchievementCelebrationView.swift; sourceTree = "<group>"; };
+		B26785D44340E5C0A267B325 /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
 		B4AE7C21F7B60BC9212AFC46 /* WaterQuestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterQuestApp.swift; sourceTree = "<group>"; };
 		B9CBD2C7DC27199FF61EB613 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
 		BD7043107E62B2C04F4C58EB /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
-		D4E7F0A3B6C9D2E5F8A1B4C7 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
-		DD7B235512DB0FFF29E820AE /* GameState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameState.swift; sourceTree = "<group>"; };
+		C5DD4230940B25D30C9598B4 /* Screenshot 2026-02-04 at 21.57.28 2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Screenshot 2026-02-04 at 21.57.28 2.png"; sourceTree = "<group>"; };
+		E4A8068B4418852446BD78E6 /* MotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
 		EB90E806138FFE1C09E7187A /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
 		F021A59BB7CB33328B5ABBC4 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 		F38731A03D043511C9AAD4C2 /* GoalCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalCalculator.swift; sourceTree = "<group>"; };
 		FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalBreakdown.swift; sourceTree = "<group>"; };
 		FD0B42119D7BD312FCDAF766 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		FE848C59D9014D3ABE6E04BE /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
@@ -117,9 +113,9 @@
 		120E9D2B9013FCD931926A20 /* WaterQuest */ = {
 			isa = PBXGroup;
 			children = (
-				6B38F9D62F33FF7700C83AB0 /* AppIcon.icon */,
 				9FC934C6863AFC8E01D302CE /* Assets.xcassets */,
 				B34C79C5F2BC714D04DBDF95 /* App */,
+				6676ED6B664E8F56F653FFFF /* AppIcon.icon */,
 				8314F97AB0A474B5CB47AF27 /* Components */,
 				44EAA4E4ABDD288F8271E4DF /* Models */,
 				FFB2F05A9B4A3597CB9CEBB3 /* Services */,
@@ -132,11 +128,9 @@
 		44EAA4E4ABDD288F8271E4DF /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				AAA7C7B6DF9BEEE2624F08AE /* Achievement.swift */,
-				DD7B235512DB0FFF29E820AE /* GameState.swift */,
+				A139EF313607077443D4FCFE /* FluidType.swift */,
 				FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */,
 				31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */,
-				3E37CAAD74350623BF9808BC /* Quest.swift */,
 				032684376DE05B0CC4838664 /* UnitSystem.swift */,
 				50CF0F6325F9C80BFB71AA0D /* UserProfile.swift */,
 				7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */,
@@ -145,20 +139,28 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		6676ED6B664E8F56F653FFFF /* AppIcon.icon */ = {
+			isa = PBXGroup;
+			children = (
+				732CBE184502476DC56921F8 /* icon.json */,
+				BC5D505465A768A4E4640AB4 /* Assets */,
+			);
+			path = AppIcon.icon;
+			sourceTree = "<group>";
+		};
 		8314F97AB0A474B5CB47AF27 /* Components */ = {
 			isa = PBXGroup;
 			children = (
-				67F4E6C8E0FC1E4A6D3765EB /* AchievementBadgeView.swift */,
-				B2F5A8C1D4E7F0A3B6C9D2E5 /* AchievementCelebrationView.swift */,
-				D4E7F0A3B6C9D2E5F8A1B4C7 /* Haptics.swift */,
+				97414883E4C0F357148B7EC7 /* DashboardCard.swift */,
+				3D58355784786E63DFFB9EC4 /* Haptics.swift */,
+				42E0244F70DCB30BB868A196 /* LiquidGlassCard.swift */,
+				85C07CD814951765EE1A1499 /* LiquidProgressView.swift */,
 				ACD53555ACD00A8A78268A7F /* MascotView.swift */,
 				8B9CF2D397867B06457E11FA /* PrimaryButton.swift */,
 				7B8BDAA9F823F748DDAD26EB /* ProgressRing.swift */,
-				9E9EF4DEEA3946532D058B8E /* QuestCard.swift */,
 				3ABC282C313B061E1E34EDF7 /* StatPill.swift */,
 				B9CBD2C7DC27199FF61EB613 /* Theme.swift */,
 				9728B3EA3CEC0654348AC8A3 /* WaveView.swift */,
-				6BFFE5B02F329E2200284097 /* LiquidGlassCard.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -167,6 +169,7 @@
 			isa = PBXGroup;
 			children = (
 				69F362557BEECECFAA26285A /* Info.plist */,
+				39EF82B8B03A482B4BC8CBF9 /* LaunchScreen.storyboard */,
 				4B013DED6E9276AA1DBE33BC /* WaterQuest.entitlements */,
 			);
 			path = Supporting;
@@ -180,19 +183,26 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+		BC5D505465A768A4E4640AB4 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				C5DD4230940B25D30C9598B4 /* Screenshot 2026-02-04 at 21.57.28 2.png */,
+			);
+			path = Assets;
+			sourceTree = "<group>";
+		};
 		D5CFBAA6834C033BD13BB3DF /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				19211A94C2ECCF53FAF30E8D /* AchievementsView.swift */,
 				9FBC0C7A2F89C0FD52822D48 /* AddIntakeView.swift */,
 				BD7043107E62B2C04F4C58EB /* DashboardView.swift */,
 				EB90E806138FFE1C09E7187A /* InsightsView.swift */,
 				B2126EAEDD87BD49B24C7BE2 /* MainTabView.swift */,
 				98496F0A352BC5A580943E39 /* OnboardingView.swift */,
+				5E104C11EDA7CCFEDC3F822C /* PaywallView.swift */,
 				22C158CF127D3436999E3C2B /* RootView.swift */,
 				FD0B42119D7BD312FCDAF766 /* SettingsView.swift */,
-				6B38F9CE2F334D4300C83AB0 /* SplashScreenView.swift */,
-				6B38F9D22F33EA7700C83AB0 /* PaywallView.swift */,
+				FE848C59D9014D3ABE6E04BE /* SplashScreenView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -210,16 +220,16 @@
 			children = (
 				161A82CD61225A1F302ECA9D /* DateExtensions.swift */,
 				F021A59BB7CB33328B5ABBC4 /* Formatters.swift */,
-				075168DFCFD4D945172BE8D5 /* GamificationEngine.swift */,
 				F38731A03D043511C9AAD4C2 /* GoalCalculator.swift */,
 				63F661B4016F8BE1E8DDA5B5 /* HealthKitManager.swift */,
+				55B57443B7032DDCF70ACB8C /* HydrationAIService.swift */,
 				32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */,
 				6862392928A13FBD5E45D6E3 /* LocationManager.swift */,
+				E4A8068B4418852446BD78E6 /* MotionManager.swift */,
 				BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */,
 				A37EBA9FC9F1233C2BC105DD /* PersistenceService.swift */,
+				B26785D44340E5C0A267B325 /* SubscriptionManager.swift */,
 				8C2DDAD6DD4B924CCA0509D0 /* WeatherClient.swift */,
-				6BFFE5B22F329E5000284097 /* HydrationAIService.swift */,
-				6B38F9D02F33EA4400C83AB0 /* SubscriptionManager.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -252,7 +262,7 @@
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = YES;
-				LastUpgradeCheck = 2620;
+				LastUpgradeCheck = 1430;
 				TargetAttributes = {
 					8696EFE2052B0D0EA16BCADF = {
 						ProvisioningStyle = Automatic;
@@ -283,7 +293,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				0252DDA30195EA614A439A3C /* Assets.xcassets in Resources */,
-				6B38F9D72F33FF7700C83AB0 /* AppIcon.icon in Resources */,
+				B67E99532D94983258FFDC94 /* LaunchScreen.storyboard in Resources */,
+				2935FCF5A46AC8630A581FE4 /* Screenshot 2026-02-04 at 21.57.28 2.png in Resources */,
+				A1B2326FF853A75236509F2C /* icon.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -294,43 +306,39 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				07B278F93A38A595542E5E2F /* Achievement.swift in Sources */,
-				C55AEDA72862AE982B3B6E79 /* AchievementBadgeView.swift in Sources */,
-				A1E4F7B0C3D6E9F2A5B8C1D4 /* AchievementCelebrationView.swift in Sources */,
-				DFEBF0DC3353892C6D5C935D /* AchievementsView.swift in Sources */,
 				00E5359EB56D89B045DDBDF1 /* AddIntakeView.swift in Sources */,
-				6B38F9D32F33EA7700C83AB0 /* PaywallView.swift in Sources */,
+				1DCE9DE6A19E823BA1E5079B /* DashboardCard.swift in Sources */,
 				F9760161C65BFA2368DB8094 /* DashboardView.swift in Sources */,
-				6BFFE5B32F329E5000284097 /* HydrationAIService.swift in Sources */,
 				A543E5598AAD6E7D7CD5164C /* DateExtensions.swift in Sources */,
+				7077C5CF3469D64E94804983 /* FluidType.swift in Sources */,
 				E27FB3C46FDAA80AD7E43C6F /* Formatters.swift in Sources */,
-				EFEF8A00109D571594592114 /* GameState.swift in Sources */,
-				6A42E67FE95A983C7A9E106B /* GamificationEngine.swift in Sources */,
-				6B38F9D12F33EA4400C83AB0 /* SubscriptionManager.swift in Sources */,
 				289CD9C4C7D7FC94DDA3DEB7 /* GoalBreakdown.swift in Sources */,
 				5D5BF32CEAF21645C51E5442 /* GoalCalculator.swift in Sources */,
+				C4B819181FF00CD089496479 /* Haptics.swift in Sources */,
 				35CC573F0348943EF21D693D /* HealthKitManager.swift in Sources */,
+				7C578D3D8C788EDEDD9F383C /* HydrationAIService.swift in Sources */,
 				0E54D9CCCA944AAEB6EA20F8 /* HydrationEntry.swift in Sources */,
 				0A98E6835256CBC9D3B2DF65 /* HydrationStore.swift in Sources */,
-				C3D6E9F2A5B8C1D4E7F0A3B6 /* Haptics.swift in Sources */,
 				C0AC658494F0FF61381C286D /* InsightsView.swift in Sources */,
+				2CA08ED2F08EB233538DC4D5 /* LiquidGlassCard.swift in Sources */,
+				E5EDB875107A7CBE67F2F031 /* LiquidProgressView.swift in Sources */,
 				5315257190E860C18C6545B0 /* LocationManager.swift in Sources */,
 				EB9033481146A1C9561176DB /* MainTabView.swift in Sources */,
 				75107A8584630E7E2B030165 /* MascotView.swift in Sources */,
-				6BFFE5B12F329E2200284097 /* LiquidGlassCard.swift in Sources */,
+				94AF3267A3C90279716F2BE6 /* MotionManager.swift in Sources */,
 				747A7C4F8A906C71164AB9DE /* NotificationScheduler.swift in Sources */,
 				0A5C95DCB74AE59638E495D3 /* OnboardingView.swift in Sources */,
+				3CF5B71CC12E2A9212F122C0 /* PaywallView.swift in Sources */,
 				83C67F5F3E24629A72299C6E /* PersistenceService.swift in Sources */,
 				E367CAB1741850BAFCE4F3F9 /* PrimaryButton.swift in Sources */,
 				449C15C42674C41122CC02B6 /* ProgressRing.swift in Sources */,
-				958B1C2F83C964D965306256 /* Quest.swift in Sources */,
-				B91FE976DAC2A0581CD3D1F2 /* QuestCard.swift in Sources */,
 				4E93E1598D092FFCC6C6381F /* RootView.swift in Sources */,
 				BBBF0A2E700E876678D8DA69 /* SettingsView.swift in Sources */,
+				E054558C7B7CF349F6CDD709 /* SplashScreenView.swift in Sources */,
 				368738D16B3E40D6E50CF1D8 /* StatPill.swift in Sources */,
+				371AD185C88F6CB932BDEF79 /* SubscriptionManager.swift in Sources */,
 				524BE8DF8217231DA89BF9FE /* Theme.swift in Sources */,
 				8CE43E783BB223277701CF7E /* UnitSystem.swift in Sources */,
-				6B38F9CF2F334D4300C83AB0 /* SplashScreenView.swift in Sources */,
 				B45B8AFC80046E64CEA7EE18 /* UserProfile.swift in Sources */,
 				3F684105CCCD5783655879E4 /* WaterQuestApp.swift in Sources */,
 				3BB230DF2DB8B5BC7C5AEECE /* WaveView.swift in Sources */,
@@ -347,7 +355,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = WaterQuest/Supporting/WaterQuest.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
@@ -361,7 +368,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration;
 				PRODUCT_NAME = WaterQuest;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
@@ -429,7 +436,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = WaterQuest/Supporting/WaterQuest.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 1;
@@ -443,7 +449,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration;
 				PRODUCT_NAME = WaterQuest;
 				SDKROOT = iphoneos;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};

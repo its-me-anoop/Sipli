@@ -3,15 +3,14 @@ import SwiftUI
 struct MainTabView: View {
     private enum Tab: Int {
         case dashboard
-        case add
         case insights
-        case achievements
         case settings
     }
 
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @State private var selectedTab: Tab = .dashboard
     @State private var showPaywall = false
+    @State private var showAddIntake = false
 
     init() {
         let tabAppearance = UITabBarAppearance()
@@ -29,72 +28,18 @@ struct MainTabView: View {
         UINavigationBar.appearance().compactAppearance = navAppearance
     }
 
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
     var body: some View {
-        ZStack {
-            AppWaterBackground().ignoresSafeArea()
+        ZStack(alignment: .bottomTrailing) {
+            ZStack {
+                AppWaterBackground().ignoresSafeArea()
 
-            TabView(selection: $selectedTab) {
-                NavigationStack {
-                    DashboardView()
-                }
-                .background(Color.clear)
-                .toolbarBackground(.hidden, for: .navigationBar)
-                .tabItem {
-                    Label("Home", systemImage: "house")
-                }
-                .tag(Tab.dashboard)
-
-                NavigationStack {
-                    AddIntakeView()
-                }
-                .background(Color.clear)
-                .toolbarBackground(.hidden, for: .navigationBar)
-                .tabItem {
-                    Label("Log", systemImage: "plus.circle")
-                }
-                .tag(Tab.add)
-
-                NavigationStack {
-                    gatedContainer(
-                        title: "Insights",
-                        systemImage: "chart.line.uptrend.xyaxis",
-                        description: "Unlock weekly trends and richer hydration analysis.",
-                        content: { InsightsView() }
-                    )
-                }
-                .background(Color.clear)
-                .toolbarBackground(.hidden, for: .navigationBar)
-                .tabItem {
-                    Label("Insights", systemImage: "chart.line.uptrend.xyaxis")
-                }
-                .tag(Tab.insights)
-
-                NavigationStack {
-                    gatedContainer(
-                        title: "Goals",
-                        systemImage: "trophy",
-                        description: "Unlock full quests, rewards, and milestone tracking.",
-                        content: { AchievementsView() }
-                    )
-                }
-                .background(Color.clear)
-                .toolbarBackground(.hidden, for: .navigationBar)
-                .tabItem {
-                    Label("Goals", systemImage: "trophy")
-                }
-                .tag(Tab.achievements)
-
-                NavigationStack {
-                    SettingsView()
-                }
-                .background(Color.clear)
-                .toolbarBackground(.hidden, for: .navigationBar)
-                .tabItem {
-                    Label("Settings", systemImage: "gearshape")
-                }
-                .tag(Tab.settings)
+                tabContent
             }
-            .background(Color.clear)
+
+            // Floating log button
+            logButton
         }
         .tint(Theme.lagoon)
         .onChange(of: selectedTab) {
@@ -103,6 +48,76 @@ struct MainTabView: View {
         .sheet(isPresented: $showPaywall) {
             PaywallView(isDismissible: true)
         }
+        .sheet(isPresented: $showAddIntake) {
+            NavigationStack {
+                AddIntakeView()
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button("Done") { showAddIntake = false }
+                        }
+                    }
+            }
+        }
+    }
+
+    private var logButton: some View {
+        Button {
+            Haptics.impact(.medium)
+            showAddIntake = true
+        } label: {
+            Image(systemName: "plus")
+                .font(.title2.weight(.semibold))
+                .foregroundStyle(.white)
+                .frame(width: 58, height: 58)
+                .background(
+                    Circle()
+                        .fill(Theme.lagoon)
+                        .shadow(color: Theme.lagoon.opacity(0.4), radius: 12, x: 0, y: 6)
+                )
+        }
+        .padding(.trailing, sizeClass == .regular ? 32 : 20)
+        .padding(.bottom, sizeClass == .regular ? 32 : 78)
+    }
+
+    private var tabContent: some View {
+        TabView(selection: $selectedTab) {
+            NavigationStack {
+                DashboardView()
+            }
+            .background(Color.clear)
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .tabItem {
+                Label("Home", systemImage: "house")
+            }
+            .tag(Tab.dashboard)
+
+            NavigationStack {
+                gatedContainer(
+                    title: "Insights",
+                    systemImage: "chart.line.uptrend.xyaxis",
+                    description: "Unlock weekly trends and richer hydration analysis.",
+                    content: { InsightsView() }
+                )
+            }
+            .background(Color.clear)
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .tabItem {
+                Label("Insights", systemImage: "chart.line.uptrend.xyaxis")
+            }
+            .tag(Tab.insights)
+
+            NavigationStack {
+                SettingsView()
+            }
+            .background(Color.clear)
+            .toolbarBackground(.hidden, for: .navigationBar)
+            .tabItem {
+                Label("Settings", systemImage: "gearshape")
+            }
+            .tag(Tab.settings)
+        }
+        .background(Color.clear)
+        .iPadSidebarStyle()
     }
 
     @ViewBuilder
@@ -168,6 +183,17 @@ private struct LockedFeatureView: View {
         .background(AppWaterBackground().ignoresSafeArea())
         .navigationTitle(title)
         .navigationBarTitleDisplayMode(.large)
+    }
+}
+
+private extension View {
+    @ViewBuilder
+    func iPadSidebarStyle() -> some View {
+        if #available(iOS 18.0, *) {
+            self.tabViewStyle(.sidebarAdaptable)
+        } else {
+            self
+        }
     }
 }
 

@@ -50,18 +50,6 @@ enum Haptics {
         playPattern(.splash)
     }
 
-    static func achievement() {
-        playPattern(.achievement)
-    }
-
-    static func levelUp() {
-        playPattern(.levelUp)
-    }
-
-    static func questComplete() {
-        playPattern(.questComplete)
-    }
-
     // MARK: - Core Haptics Engine
     private static func initializeEngine() {
         guard CHHapticEngine.capabilitiesForHardware().supportsHaptics else { return }
@@ -109,16 +97,12 @@ enum HapticPattern {
     case waterDrop
     case ripple
     case splash
-    case achievement
-    case levelUp
-    case questComplete
 
     var fallbackStyle: UIImpactFeedbackGenerator.FeedbackStyle {
         switch self {
         case .waterDrop: return .light
         case .ripple: return .medium
         case .splash: return .heavy
-        case .achievement, .levelUp, .questComplete: return .rigid
         }
     }
 
@@ -178,79 +162,6 @@ enum HapticPattern {
                     ],
                     relativeTime: 0.05,
                     duration: 0.15
-                )
-            ]
-
-        case .achievement:
-            return [
-                CHHapticEvent(
-                    eventType: .hapticTransient,
-                    parameters: [
-                        CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.8),
-                        CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.6)
-                    ],
-                    relativeTime: 0
-                ),
-                CHHapticEvent(
-                    eventType: .hapticTransient,
-                    parameters: [
-                        CHHapticEventParameter(parameterID: .hapticIntensity, value: 1.0),
-                        CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.8)
-                    ],
-                    relativeTime: 0.1
-                ),
-                CHHapticEvent(
-                    eventType: .hapticTransient,
-                    parameters: [
-                        CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.6),
-                        CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.4)
-                    ],
-                    relativeTime: 0.2
-                )
-            ]
-
-        case .levelUp:
-            var events: [CHHapticEvent] = []
-            for i in 0..<5 {
-                let intensity = 0.4 + Float(i) * 0.15
-                let sharpness = 0.3 + Float(i) * 0.1
-                events.append(CHHapticEvent(
-                    eventType: .hapticTransient,
-                    parameters: [
-                        CHHapticEventParameter(parameterID: .hapticIntensity, value: intensity),
-                        CHHapticEventParameter(parameterID: .hapticSharpness, value: sharpness)
-                    ],
-                    relativeTime: Double(i) * 0.06
-                ))
-            }
-            return events
-
-        case .questComplete:
-            return [
-                CHHapticEvent(
-                    eventType: .hapticTransient,
-                    parameters: [
-                        CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.7),
-                        CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.5)
-                    ],
-                    relativeTime: 0
-                ),
-                CHHapticEvent(
-                    eventType: .hapticContinuous,
-                    parameters: [
-                        CHHapticEventParameter(parameterID: .hapticIntensity, value: 0.5),
-                        CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.3)
-                    ],
-                    relativeTime: 0.05,
-                    duration: 0.1
-                ),
-                CHHapticEvent(
-                    eventType: .hapticTransient,
-                    parameters: [
-                        CHHapticEventParameter(parameterID: .hapticIntensity, value: 1.0),
-                        CHHapticEventParameter(parameterID: .hapticSharpness, value: 0.8)
-                    ],
-                    relativeTime: 0.2
                 )
             ]
         }

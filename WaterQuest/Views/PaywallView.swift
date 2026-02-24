@@ -12,6 +12,8 @@ struct PaywallView: View {
     @State private var purchaseError: String?
     @State private var restoreSuccess = false
 
+    @Environment(\.horizontalSizeClass) private var sizeClass
+
     private let privacyURL = URL(string: "https://example.com/privacy")!
     private let termsURL = URL(string: "https://example.com/terms")!
 
@@ -110,28 +112,30 @@ struct PaywallView: View {
         }
     }
 
+    private var isRegular: Bool { sizeClass == .regular }
+
     private var header: some View {
-        VStack(spacing: 10) {
+        VStack(spacing: isRegular ? 14 : 10) {
             Image(systemName: "drop.fill")
-                .font(.system(size: 44, weight: .semibold))
+                .font(.system(size: isRegular ? 54 : 44, weight: .semibold))
                 .foregroundStyle(Theme.lagoon)
-                .frame(width: 96, height: 96)
+                .frame(width: isRegular ? 112 : 96, height: isRegular ? 112 : 96)
                 .background(
                     Circle()
                         .fill(.ultraThinMaterial)
                 )
 
             Text("Upgrade for deeper hydration guidance")
-                .font(.title3.weight(.semibold))
+                .font(isRegular ? .title2.weight(.semibold) : .title3.weight(.semibold))
                 .multilineTextAlignment(.center)
 
             Text("Choose monthly or yearly access. Cancel anytime in App Store settings.")
-                .font(.subheadline)
+                .font(isRegular ? .body : .subheadline)
                 .foregroundStyle(.secondary)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 8)
+        .padding(.vertical, isRegular ? 12 : 8)
     }
 
     @ViewBuilder

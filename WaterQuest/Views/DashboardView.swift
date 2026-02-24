@@ -15,65 +15,13 @@ struct DashboardView: View {
     private var progress: Double { min(1, store.todayTotalML / max(1, goal.totalML)) }
 
     var body: some View {
-        List {
-            Section {
-                summarySection
-            }
-
-            Section("Quick Add") {
-                quickAddSection
-            }
-
-            if let tip = aiService.currentTip {
-                Section("Hydration Coach") {
-                    tipSection(tip)
-                }
-            }
-
-            if store.profile.prefersWeatherGoal {
-                Section("Weather") {
-                    weatherSection
-                }
-            }
-
-            Section("Today\'s Quests") {
-                if store.gameState.quests.isEmpty {
-                    Text("No quests available right now.")
-                        .foregroundStyle(.secondary)
-                } else {
-                    ForEach(store.gameState.quests) { quest in
-                        QuestRow(quest: quest)
-                    }
-                }
-            }
-
-            Section("Today\'s Log") {
-                if todayEntries.isEmpty {
-                    Text("No water logged yet.")
-                        .foregroundStyle(.secondary)
-                } else {
-                    ForEach(todayEntries) { entry in
-                        Button {
-                            Haptics.selection()
-                            entryToEdit = entry
-                        } label: {
-                            LogRow(entry: entry, unitSystem: store.profile.unitSystem)
-                        }
-                        .buttonStyle(.plain)
-                        .swipeActions(edge: .trailing, allowsFullSwipe: true) {
-                            Button(role: .destructive) {
-                                deleteEntry(entry)
-                            } label: {
-                                Label("Delete", systemImage: "trash")
-                            }
-                        }
-                    }
-                }
+        Group {
+            if sizeClass == .regular {
+                iPadLayout
+            } else {
+                iPhoneLayout
             }
         }
-        .listStyle(.insetGrouped)
-        .scrollContentBackground(.hidden)
-        .background(AppWaterBackground().ignoresSafeArea())
         .navigationTitle("Today")
         .refreshable {
             await refreshSignals()
@@ -87,14 +35,186 @@ struct DashboardView: View {
             await refreshWeather()
         }
         .sheet(item: $entryToEdit) { entry in
-            EntryEditorSheet(entry: entry, unitSystem: store.profile.unitSystem) { updatedAmount, updatedNote in
+            EntryEditorSheet(entry: entry, unitSystem: store.profile.unitSystem) { updatedAmount, updatedFluidType, updatedNote in
                 store.updateEntry(
                     id: entry.id,
                     volumeML: store.profile.unitSystem.ml(from: updatedAmount),
+                    fluidType: updatedFluidType,
                     note: updatedNote
                 )
             } onDelete: {
                 deleteEntry(entry)
+            }
+        }
+    }
+
+    // MARK: - Layouts
+
+    private var iPhoneLayout: some View {
+        ScrollView {
+            VStack(spacing: 16) {
+                summarySection
+                    .padding(.top, 8)
+
+                if let tip = aiService.currentTip {
+                    DashboardCard(title: "Hydration Coach", icon: "sparkles") {
+                        tipSection(tip)
+                    }
+                }
+
+                if store.profile.prefersWeatherGoal {
+                    DashboardCard(title: "Weather", icon: "cloud.sun.fill") {
+                        weatherSection
+                    }
+                }
+
+                DashboardCard(title: "Today's Activity", icon: "figure.run") {
+                    activitySection
+                }
+
+                DashboardCard(title: "Today's Log", icon: "drop.fill") {
+                    if todayEntries.isEmpty {
+                        VStack(spacing: 12) {
+                            Image(systemName: "drop")
+                                .font(.largeTitle)
+                                .foregroundStyle(.tertiary)
+                            Text("No water logged yet.")
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 20)
+                    } else {
+                        VStack(spacing: 12) {
+                            ForEach(todayEntries) { entry in
+                                let fluidTypeTotal = todayEntries
+                                    .filter { $0.fluidType == entry.fluidType }
+                                    .reduce(0) { $0 + $1.effectiveML }
+                                
+                                Button {
+                                    Haptics.selection()
+                                    entryToEdit = entry
+                                } label: {
+                                    DetailedLogRow(
+                                        entry: entry,
+                                        unitSystem: store.profile.unitSystem,
+                                        fluidTypeTotalML: fluidTypeTotal
+                                    )
+                                }
+                                .buttonStyle(.plain)
+                                .contextMenu {
+                                    Button(role: .destructive) {
+                                        deleteEntry(entry)
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 24)
+        }
+        .scrollIndicators(.hidden)
+        .background(AppWaterBackground().ignoresSafeArea())
+    }
+
+    private var iPadLayout: some View {
+        ScrollView {
+            VStack(spacing: 20) {
+                // Summary card spans full width
+                HydrationSummaryCard(
+                    greeting: greeting,
+                    progress: progress,
+                    todayTotalML: store.todayTotalML,
+                    goalTotalML: goal.totalML,
+                    compositions: store.todayCompositions,
+                    unitSystem: store.profile.unitSystem
+                )
+
+                // Two columns: Coach (left), Weather + Activity (right)
+                HStack(alignment: .top, spacing: 20) {
+                    // Left column: Hydration Coach (larger)
+                    VStack(spacing: 16) {
+                        if let tip = aiService.currentTip {
+                            DashboardCard(title: "Hydration Coach", icon: "sparkles") {
+                                iPadTipSection(tip)
+                            }
+                        }
+                    }
+                    .frame(minWidth: 0, maxWidth: .infinity)
+
+                    // Right column: Weather + Activity
+                    VStack(spacing: 16) {
+                        if store.profile.prefersWeatherGoal {
+                            DashboardCard(title: "Weather", icon: "cloud.sun.fill") {
+                                weatherSection
+                            }
+                        }
+
+                        DashboardCard(title: "Today\'s Activity", icon: "figure.run") {
+                            activitySection
+                        }
+                    }
+                    .frame(minWidth: 0, maxWidth: .infinity)
+                }
+
+                // Full-width log at bottom
+                DashboardCard(title: "Today\'s Log", icon: "drop.fill") {
+                    if todayEntries.isEmpty {
+                        VStack(spacing: 12) {
+                            Image(systemName: "drop")
+                                .font(.largeTitle)
+                                .foregroundStyle(.tertiary)
+                            Text("No water logged yet.")
+                                .foregroundStyle(.secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 30)
+                    } else {
+                        iPadLogGrid
+                    }
+                }
+            }
+            .padding(.horizontal, 24)
+            .padding(.vertical, 16)
+            .frame(maxWidth: 1200)
+            .frame(maxWidth: .infinity)
+        }
+        .background(AppWaterBackground().ignoresSafeArea())
+    }
+
+    private var iPadLogGrid: some View {
+        let columns = [
+            GridItem(.flexible(), spacing: 12),
+            GridItem(.flexible(), spacing: 12)
+        ]
+
+        return LazyVGrid(columns: columns, spacing: 10) {
+            ForEach(Array(todayEntries.enumerated()), id: \.element.id) { index, entry in
+                let fluidTypeTotal = todayEntries
+                    .filter { $0.fluidType == entry.fluidType }
+                    .reduce(0) { $0 + $1.effectiveML }
+
+                Button {
+                    Haptics.selection()
+                    entryToEdit = entry
+                } label: {
+                    DetailedLogRow(
+                        entry: entry,
+                        unitSystem: store.profile.unitSystem,
+                        fluidTypeTotalML: fluidTypeTotal
+                    )
+                }
+                .buttonStyle(.plain)
+                .contextMenu {
+                    Button(role: .destructive) {
+                        deleteEntry(entry)
+                    } label: {
+                        Label("Delete", systemImage: "trash")
+                    }
+                }
             }
         }
     }
@@ -105,48 +225,12 @@ struct DashboardView: View {
             progress: progress,
             todayTotalML: store.todayTotalML,
             goalTotalML: goal.totalML,
-            unitSystem: store.profile.unitSystem,
-            streakDays: store.gameState.streakDays,
-            level: store.gameState.level,
-            xp: store.gameState.xp
+            compositions: store.todayCompositions,
+            unitSystem: store.profile.unitSystem
         )
-        .listRowInsets(EdgeInsets(top: 8, leading: 0, bottom: 8, trailing: 0))
-        .listRowBackground(Color.clear)
-        .listRowSeparator(.hidden)
     }
 
     @Environment(\.horizontalSizeClass) private var sizeClass
-
-    private var quickAddSection: some View {
-        let unit = store.profile.unitSystem
-        let options = unit == .metric ? [200, 350, 500, 750] : [8, 12, 16, 24]
-        let isRegular = sizeClass == .regular
-
-        return VStack(alignment: .leading, spacing: isRegular ? 16 : 12) {
-            Text("Tap to log instantly")
-                .font(isRegular ? .subheadline : .footnote)
-                .foregroundStyle(.secondary)
-
-            HStack(spacing: isRegular ? 14 : 8) {
-                ForEach(options, id: \.self) { value in
-                    Button {
-                        addIntake(Double(value))
-                    } label: {
-                        VStack(spacing: isRegular ? 4 : 2) {
-                            Text("\(value)")
-                                .font(isRegular ? .title3.weight(.semibold) : .headline)
-                            Text(unit.volumeUnit)
-                                .font(isRegular ? .subheadline : .caption)
-                                .foregroundStyle(.secondary)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, isRegular ? 6 : 0)
-                    }
-                    .buttonStyle(.bordered)
-                }
-            }
-        }
-    }
 
     private func tipSection(_ tip: HydrationTip) -> some View {
         Button {
@@ -180,31 +264,124 @@ struct DashboardView: View {
         .buttonStyle(.plain)
     }
 
-    @ViewBuilder
-    private var weatherSection: some View {
-        if let snapshot = activeWeather {
-            HStack(spacing: 12) {
-                Image(systemName: weatherIcon(snapshot))
-                    .font(.title3)
-                    .foregroundStyle(Theme.lagoon)
-                    .frame(width: 30)
+    private func iPadTipSection(_ tip: HydrationTip) -> some View {
+        VStack(alignment: .leading, spacing: 16) {
+            // Category header
+            HStack(spacing: 10) {
+                Image(systemName: tip.category.icon)
+                    .font(.title2)
+                    .foregroundStyle(tip.category.color)
 
-                VStack(alignment: .leading, spacing: 4) {
-                    Text(snapshot.condition.isEmpty ? "Current weather" : snapshot.condition)
-                        .font(.body.weight(.medium))
-                    Text("\(Int(snapshot.temperatureC))°C • Humidity \(Int(snapshot.humidityPercent))%")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
+                Text(tip.category.label)
+                    .font(.headline)
+                    .foregroundStyle(tip.category.color)
 
                 Spacer()
 
-                VStack(alignment: .trailing, spacing: 2) {
-                    Text("Adjusted Goal")
-                        .font(.caption)
+                if aiService.isGenerating {
+                    ProgressView()
+                }
+            }
+
+            // Main message
+            Text(tip.message)
+                .font(.title3)
+                .multilineTextAlignment(.leading)
+                .fixedSize(horizontal: false, vertical: true)
+
+            // Progress context
+            VStack(alignment: .leading, spacing: 8) {
+                let pct = Int(progress * 100)
+                HStack(spacing: 6) {
+                    Image(systemName: "drop.fill")
+                        .foregroundStyle(Theme.lagoon)
+                    Text("\(pct)% of daily goal reached")
+                        .font(.subheadline)
                         .foregroundStyle(.secondary)
-                    Text(Formatters.volumeString(ml: goal.totalML, unit: store.profile.unitSystem))
-                        .font(.subheadline.weight(.semibold))
+                }
+
+                if let temp = activeWeather?.temperatureC {
+                    HStack(spacing: 6) {
+                        Image(systemName: "thermometer.medium")
+                            .foregroundStyle(Theme.coral)
+                        Text("Current temperature: \(Int(temp))°C")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+
+                if store.lastWorkout.exerciseMinutes > 0 {
+                    HStack(spacing: 6) {
+                        Image(systemName: "figure.run")
+                            .foregroundStyle(Theme.sun)
+                        Text("\(Int(store.lastWorkout.exerciseMinutes)) min of activity today")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+
+            Divider()
+
+            // Refresh button
+            Button {
+                Task {
+                    Haptics.selection()
+                    await generateAITip()
+                }
+            } label: {
+                HStack {
+                    Image(systemName: "arrow.clockwise")
+                    Text("Get new tip")
+                }
+                .font(.subheadline.weight(.medium))
+                .foregroundStyle(tip.category.color)
+            }
+            .buttonStyle(.plain)
+        }
+    }
+
+    @ViewBuilder
+    private var weatherSection: some View {
+        if let snapshot = activeWeather {
+            VStack(alignment: .leading, spacing: 14) {
+                HStack(spacing: 12) {
+                    Image(systemName: weatherIcon(snapshot))
+                        .font(.title)
+                        .foregroundStyle(Theme.lagoon)
+                        .symbolRenderingMode(.multicolor)
+                        .frame(width: 36)
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(snapshot.condition.isEmpty ? "Current weather" : snapshot.condition)
+                            .font(.system(.body, design: .rounded).weight(.semibold))
+                        Text("\(Int(snapshot.temperatureC))°C • Humidity \(Int(snapshot.humidityPercent))%")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+
+                    Spacer()
+
+                    VStack(alignment: .trailing, spacing: 2) {
+                        Text("Adj. Goal")
+                            .font(.caption2.weight(.bold))
+                            .foregroundStyle(.secondary)
+                            .textCase(.uppercase)
+                        Text(Formatters.volumeString(ml: goal.totalML, unit: store.profile.unitSystem))
+                            .font(.system(.subheadline, design: .rounded).weight(.heavy))
+                            .foregroundStyle(Theme.lagoon)
+                    }
+                }
+                
+                // Apple Weather Attribution
+                Link(destination: URL(string: "https://weatherkit.apple.com/legal-attribution.html")!) {
+                    HStack(spacing: 4) {
+                        Text("Weather data provided by")
+                        Image(systemName: "applelogo")
+                        Text("Weather")
+                    }
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
                 }
             }
         } else {
@@ -214,6 +391,66 @@ struct DashboardView: View {
                 Text(weatherMessage)
                     .font(.footnote)
                     .foregroundStyle(.secondary)
+            }
+        }
+    }
+
+    private var activitySection: some View {
+        let workout = store.lastWorkout
+        let hasActivity = workout.exerciseMinutes > 0 || workout.activeEnergyKcal > 0
+
+        return VStack(spacing: 14) {
+            if hasActivity {
+                HStack(spacing: 0) {
+                    ActivityMetric(
+                        icon: "figure.run",
+                        value: "\(Int(workout.exerciseMinutes))",
+                        label: "min",
+                        tint: Theme.coral
+                    )
+
+                    Divider()
+                        .frame(height: 36)
+                        .padding(.horizontal, 12)
+
+                    ActivityMetric(
+                        icon: "flame.fill",
+                        value: "\(Int(workout.activeEnergyKcal))",
+                        label: "kcal",
+                        tint: Theme.sun
+                    )
+
+                    if goal.workoutAdjustmentML > 0 {
+                        Divider()
+                            .frame(height: 36)
+                            .padding(.horizontal, 12)
+
+                        ActivityMetric(
+                            icon: "drop.fill",
+                            value: "+\(Formatters.shortVolume(ml: goal.workoutAdjustmentML, unit: store.profile.unitSystem))",
+                            label: store.profile.unitSystem.volumeUnit,
+                            tint: Theme.lagoon
+                        )
+                    }
+                }
+                .frame(maxWidth: .infinity)
+
+                if goal.workoutAdjustmentML > 0 {
+                    Text("Goal adjusted for today\u{2019}s activity")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            } else {
+                VStack(spacing: 8) {
+                    Image(systemName: "figure.run")
+                        .font(.title2)
+                        .foregroundStyle(.quaternary)
+                    Text("No workouts recorded today")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 8)
             }
         }
     }
@@ -264,16 +501,6 @@ struct DashboardView: View {
         return WeatherSnapshot.sfSymbol(for: snapshot.conditionKey)
     }
 
-    private func addIntake(_ amount: Double) {
-        Haptics.waterDrop()
-        let entry = store.addIntake(amount: amount, source: .manual)
-
-        Task {
-            await healthKit.saveWaterIntake(ml: entry.volumeML, date: entry.date, entryID: entry.id)
-            await generateAITip()
-        }
-    }
-
     private func deleteEntry(_ entry: HydrationEntry) {
         Haptics.impact(.medium)
         if entry.source == .manual {
@@ -301,8 +528,6 @@ struct DashboardView: View {
         if store.profile.prefersWeatherGoal {
             await refreshWeather()
         }
-
-        store.refreshQuests()
     }
 
     private func refreshWeather() async {
@@ -318,7 +543,6 @@ struct DashboardView: View {
         await aiService.generateTip(
             currentIntake: store.todayTotalML,
             goalML: goal.totalML,
-            streakDays: store.gameState.streakDays,
             weatherTemp: activeWeather?.temperatureC,
             exerciseMinutes: Int(store.lastWorkout.exerciseMinutes),
             timeOfDay: TimeOfDay.current
@@ -332,152 +556,53 @@ private struct HydrationSummaryCard: View {
     let progress: Double
     let todayTotalML: Double
     let goalTotalML: Double
+    let compositions: [FluidComposition]
     let unitSystem: UnitSystem
-    let streakDays: Int
-    let level: Int
-    let xp: Int
 
     @Environment(\.horizontalSizeClass) private var sizeClass
 
     private var isRegular: Bool { sizeClass == .regular }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: isRegular ? 20 : 14) {
-            HStack(alignment: .top, spacing: isRegular ? 20 : 12) {
-                VStack(alignment: .leading, spacing: isRegular ? 8 : 4) {
+        VStack(spacing: isRegular ? 28 : 24) {
+            
+            // Header Text Area
+            HStack {
+                VStack(alignment: .leading, spacing: isRegular ? 8 : 6) {
                     Text(greeting)
-                        .font(isRegular ? .title.weight(.semibold) : .title3.weight(.semibold))
-                    Text("\(Formatters.volumeString(ml: todayTotalML, unit: unitSystem)) of \(Formatters.volumeString(ml: goalTotalML, unit: unitSystem))")
-                        .font(isRegular ? .title3 : .subheadline)
-                        .foregroundStyle(.secondary)
+                        .font(.system(isRegular ? .title : .title2, design: .rounded).weight(.bold))
+                        .foregroundStyle(Theme.textPrimary)
+                    
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text(Formatters.volumeString(ml: todayTotalML, unit: unitSystem))
+                            .font(.system(isRegular ? .title2 : .title3, design: .rounded).weight(.heavy))
+                            .foregroundStyle(Theme.lagoon)
+                        Text("of \(Formatters.volumeString(ml: goalTotalML, unit: unitSystem)) today")
+                            .font(.subheadline)
+                            .foregroundStyle(Theme.textSecondary)
+                    }
+                    .padding(.top, 4)
                 }
-
-                Spacer(minLength: 8)
-
-                AnimatedProgressLoader(progress: progress, isRegular: isRegular)
-                    .frame(width: isRegular ? 120 : 84, height: isRegular ? 120 : 84)
+                Spacer()
             }
 
-            VStack(alignment: .leading, spacing: isRegular ? 14 : 10) {
-                ProgressView(value: progress)
-                    .tint(Theme.lagoon)
-
-                HStack(spacing: isRegular ? 12 : 8) {
-                    statChip(text: "\(streakDays) day streak", icon: "flame.fill", tint: Theme.coral)
-                    statChip(text: "Level \(level)", icon: "star.fill", tint: Theme.sun)
-                    statChip(text: "\(xp) XP", icon: "sparkles", tint: Theme.lagoon)
-                }
-            }
+            // Big Centered Layout
+            LiquidProgressView(
+                progress: progress,
+                compositions: compositions,
+                isRegular: isRegular
+            )
         }
-        .padding(isRegular ? 24 : 16)
+        .padding(isRegular ? 24 : 20)
         .background(
-            RoundedRectangle(cornerRadius: isRegular ? 22 : 18, style: .continuous)
-                .fill(Theme.card)
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(.thickMaterial)
         )
         .overlay(
-            RoundedRectangle(cornerRadius: isRegular ? 22 : 18, style: .continuous)
-                .stroke(Theme.glassBorder, lineWidth: 1)
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .stroke(Color.white.opacity(0.5), lineWidth: 1)
         )
-        .shadow(color: Theme.shadowColor, radius: 12, x: 0, y: 6)
-        .padding(.horizontal, 2)
-    }
-
-    private func statChip(text: String, icon: String, tint: Color) -> some View {
-        Label(text, systemImage: icon)
-            .font(isRegular ? .subheadline.weight(.semibold) : .caption.weight(.semibold))
-            .foregroundStyle(tint)
-            .padding(.horizontal, isRegular ? 14 : 10)
-            .padding(.vertical, isRegular ? 8 : 6)
-            .background(
-                Capsule(style: .continuous)
-                    .fill(tint.opacity(0.12))
-            )
-    }
-}
-
-private struct AnimatedProgressLoader: View {
-    let progress: Double
-    var isRegular: Bool = false
-
-    var body: some View {
-        TimelineView(.animation) { timeline in
-            let time = timeline.date.timeIntervalSinceReferenceDate
-            let clamped = min(1, max(0, progress))
-            let pulse = 1 + (sin(time * 2.4) * 0.04)
-            let strokeWidth: CGFloat = isRegular ? 9 : 7
-
-            ZStack {
-                Circle()
-                    .fill(Theme.lagoon.opacity(0.08))
-
-                Circle()
-                    .stroke(Theme.glassBorder, lineWidth: strokeWidth)
-
-                Circle()
-                    .trim(from: 0, to: max(0.03, clamped))
-                    .stroke(
-                        AngularGradient(
-                            colors: [Theme.lagoon, Theme.mint, Theme.lagoon],
-                            center: .center
-                        ),
-                        style: StrokeStyle(lineWidth: strokeWidth, lineCap: .round)
-                    )
-                    .rotationEffect(.degrees(-90))
-                    .animation(.spring(response: 0.45, dampingFraction: 0.84), value: clamped)
-
-                Circle()
-                    .stroke(Theme.lagoon.opacity(0.16), lineWidth: 2)
-                    .scaleEffect(pulse)
-                    .opacity(0.8 - (pulse - 1) * 9)
-
-                VStack(spacing: 1) {
-                    Text(Formatters.percentString(clamped))
-                        .font(isRegular ? .body.weight(.bold) : .caption.weight(.bold))
-                    Text("Goal")
-                        .font(isRegular ? .caption : .caption2)
-                        .foregroundStyle(.secondary)
-                }
-            }
-        }
-    }
-}
-
-private struct QuestRow: View {
-    let quest: Quest
-
-    private var progress: Double {
-        min(1, quest.progressML / max(1, quest.targetML))
-    }
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 8) {
-            HStack(alignment: .top) {
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(quest.title)
-                        .font(.subheadline.weight(.semibold))
-                        .strikethrough(quest.isCompleted)
-                    Text(quest.detail)
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-
-                Spacer()
-
-                Label("+\(quest.rewardXP)", systemImage: "star.fill")
-                    .font(.caption.weight(.semibold))
-                    .foregroundStyle(Theme.sun)
-            }
-
-            ProgressView(value: progress)
-                .tint(quest.isCompleted ? Theme.mint : Theme.lagoon)
-
-            if quest.isCompleted {
-                Label("Completed", systemImage: "checkmark.circle.fill")
-                    .font(.caption)
-                    .foregroundStyle(Theme.mint)
-            }
-        }
-        .padding(.vertical, 2)
+        .shadow(color: Theme.shadowColor.opacity(0.6), radius: 15, x: 0, y: 8)
     }
 }
 
@@ -493,13 +618,31 @@ private struct LogRow: View {
 
     var body: some View {
         HStack(spacing: 12) {
-            Image(systemName: entry.source == .healthKit ? "heart.fill" : "drop.fill")
-                .foregroundStyle(entry.source == .healthKit ? Theme.coral : Theme.lagoon)
+            Image(systemName: entry.fluidType.iconName)
+                .foregroundStyle(entry.fluidType.color)
                 .frame(width: 24)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text(Formatters.volumeString(ml: entry.volumeML, unit: unitSystem))
-                    .font(.body)
+                HStack(spacing: 4) {
+                    Text(Formatters.volumeString(ml: entry.volumeML, unit: unitSystem))
+                        .font(.body)
+                    if entry.fluidType != .water {
+                        Text(entry.fluidType.displayName)
+                            .font(.caption2.weight(.medium))
+                            .foregroundStyle(entry.fluidType.color)
+                            .padding(.horizontal, 5)
+                            .padding(.vertical, 1)
+                            .background(
+                                Capsule()
+                                    .fill(entry.fluidType.color.opacity(0.1))
+                            )
+                    }
+                }
+                if entry.fluidType != .water {
+                    Text("Effective: \(Formatters.volumeString(ml: entry.effectiveML, unit: unitSystem))")
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
                 if let note = entry.note, !note.isEmpty {
                     Text(note)
                         .font(.caption)
@@ -520,19 +663,20 @@ private struct LogRow: View {
 private struct EntryEditorSheet: View {
     let entry: HydrationEntry
     let unitSystem: UnitSystem
-    let onSave: (_ amount: Double, _ note: String?) -> Void
+    let onSave: (_ amount: Double, _ fluidType: FluidType, _ note: String?) -> Void
     let onDelete: () -> Void
 
     @Environment(\.dismiss) private var dismiss
 
     @State private var amount: Double
+    @State private var selectedFluidType: FluidType
     @State private var note: String
     @State private var showDeleteConfirm = false
 
     init(
         entry: HydrationEntry,
         unitSystem: UnitSystem,
-        onSave: @escaping (_ amount: Double, _ note: String?) -> Void,
+        onSave: @escaping (_ amount: Double, _ fluidType: FluidType, _ note: String?) -> Void,
         onDelete: @escaping () -> Void
     ) {
         self.entry = entry
@@ -540,6 +684,7 @@ private struct EntryEditorSheet: View {
         self.onSave = onSave
         self.onDelete = onDelete
         _amount = State(initialValue: unitSystem.amount(fromML: entry.volumeML))
+        _selectedFluidType = State(initialValue: entry.fluidType)
         _note = State(initialValue: entry.note ?? "")
     }
 
@@ -561,7 +706,48 @@ private struct EntryEditorSheet: View {
                         Spacer()
                     }
                     Slider(value: $amount, in: amountRange, step: amountStep)
-                        .tint(Theme.lagoon)
+                        .tint(selectedFluidType.color)
+                }
+
+                Section("Beverage") {
+                    ScrollView(.horizontal, showsIndicators: false) {
+                        HStack(spacing: 8) {
+                            ForEach(FluidType.allCases) { type in
+                                Button {
+                                    Haptics.selection()
+                                    selectedFluidType = type
+                                } label: {
+                                    VStack(spacing: 4) {
+                                        Image(systemName: type.iconName)
+                                            .font(.title3)
+                                            .foregroundStyle(selectedFluidType == type ? .white : type.color)
+                                            .frame(width: 40, height: 40)
+                                            .background(
+                                                Circle()
+                                                    .fill(selectedFluidType == type ? type.color : type.color.opacity(0.12))
+                                            )
+                                        Text(type.displayName)
+                                            .font(.caption2)
+                                            .foregroundStyle(selectedFluidType == type ? .primary : .secondary)
+                                            .lineLimit(1)
+                                            .frame(width: 60)
+                                    }
+                                }
+                                .buttonStyle(.plain)
+                            }
+                        }
+                        .padding(.vertical, 4)
+                    }
+
+                    if selectedFluidType != .water {
+                        HStack {
+                            Image(systemName: "info.circle")
+                                .foregroundStyle(.secondary)
+                            Text("\(selectedFluidType.displayName) counts as \(selectedFluidType.hydrationLabel)")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
                 }
 
                 Section("Note") {
@@ -573,7 +759,7 @@ private struct EntryEditorSheet: View {
                     Button("Save") {
                         Haptics.impact(.medium)
                         let trimmed = note.trimmingCharacters(in: .whitespacesAndNewlines)
-                        onSave(amount, trimmed.isEmpty ? nil : trimmed)
+                        onSave(amount, selectedFluidType, trimmed.isEmpty ? nil : trimmed)
                         dismiss()
                     }
                 }
@@ -601,6 +787,114 @@ private struct EntryEditorSheet: View {
         }
     }
 }
+
+private struct ActivityMetric: View {
+    let icon: String
+    let value: String
+    let label: String
+    let tint: Color
+
+    var body: some View {
+        VStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.title3)
+                .foregroundStyle(tint)
+            Text(value)
+                .font(.title3.weight(.semibold))
+                .monospacedDigit()
+            Text(label)
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+private struct DetailedLogRow: View {
+    let entry: HydrationEntry
+    let unitSystem: UnitSystem
+    let fluidTypeTotalML: Double
+
+    private static let formatter: DateFormatter = {
+        let f = DateFormatter()
+        f.dateFormat = "h:mm a"
+        return f
+    }()
+
+    var body: some View {
+        HStack(spacing: 12) {
+            ZStack {
+                Circle()
+                    .fill(entry.fluidType.color.opacity(0.15))
+                    .frame(width: 44, height: 44)
+                Image(systemName: entry.fluidType.iconName)
+                    .font(.title3)
+                    .foregroundStyle(entry.fluidType.color)
+            }
+
+            VStack(alignment: .leading, spacing: 4) {
+                HStack(spacing: 6) {
+                    Text(Formatters.volumeString(ml: entry.volumeML, unit: unitSystem))
+                        .font(.system(.subheadline, design: .rounded).weight(.heavy))
+
+                    Text(entry.fluidType.displayName)
+                        .font(.caption2.weight(.bold))
+                        .foregroundStyle(entry.fluidType.color)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(
+                            Capsule()
+                                .fill(entry.fluidType.color.opacity(0.15))
+                        )
+                }
+
+                if entry.fluidType != .water {
+                    Text("Effective: \(Formatters.volumeString(ml: entry.effectiveML, unit: unitSystem))")
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(.secondary)
+                }
+
+                HStack(spacing: 4) {
+                    Text(Self.formatter.string(from: entry.date))
+                        .font(.caption2.weight(.medium))
+                        .foregroundStyle(.tertiary)
+
+                    if let note = entry.note, !note.isEmpty {
+                        Text("·")
+                            .foregroundStyle(.tertiary)
+                        Text(note)
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                            .lineLimit(1)
+                    }
+                }
+            }
+
+            Spacer(minLength: 4)
+
+            // Fluid type total
+            VStack(alignment: .trailing, spacing: 2) {
+                Text(Formatters.volumeString(ml: fluidTypeTotalML, unit: unitSystem))
+                    .font(.caption.weight(.heavy))
+                    .monospacedDigit()
+                Text("\(entry.fluidType.displayName) today")
+                    .font(.caption2)
+                    .foregroundStyle(.tertiary)
+            }
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 12)
+        .background(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(.thickMaterial)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(Color.white.opacity(0.4), lineWidth: 1)
+        )
+    }
+}
+
 
 #Preview("Dashboard") {
     PreviewEnvironment {

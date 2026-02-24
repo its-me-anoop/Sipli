@@ -28,6 +28,15 @@ struct HydrationTip: Identifiable, Equatable {
             case .celebration: return Theme.sun
             }
         }
+
+        var label: String {
+            switch self {
+            case .tip: return "Hydration Tip"
+            case .reminder: return "Reminder"
+            case .encouragement: return "Keep Going!"
+            case .celebration: return "Goal Reached!"
+            }
+        }
     }
 }
 
@@ -65,7 +74,6 @@ final class HydrationAIService: ObservableObject {
             await generateTip(
                 currentIntake: 0,
                 goalML: 2000,
-                streakDays: 0,
                 weatherTemp: nil,
                 exerciseMinutes: 0,
                 timeOfDay: TimeOfDay.current
@@ -85,7 +93,6 @@ final class HydrationAIService: ObservableObject {
     func generateTip(
         currentIntake: Double,
         goalML: Double,
-        streakDays: Int,
         weatherTemp: Double?,
         exerciseMinutes: Int,
         timeOfDay: TimeOfDay
@@ -98,7 +105,6 @@ final class HydrationAIService: ObservableObject {
         withAnimation(Theme.fluidSpring) {
             currentTip = getContextualTip(
                 progress: progress,
-                streakDays: streakDays,
                 weatherTemp: weatherTemp,
                 exerciseMinutes: exerciseMinutes,
                 timeOfDay: timeOfDay
@@ -117,7 +123,6 @@ final class HydrationAIService: ObservableObject {
     // MARK: - Private Helpers
     private func getContextualTip(
         progress: Int,
-        streakDays: Int,
         weatherTemp: Double?,
         exerciseMinutes: Int,
         timeOfDay: TimeOfDay
@@ -126,7 +131,6 @@ final class HydrationAIService: ObservableObject {
         let message = selectMessage(
             category: category,
             progress: progress,
-            streakDays: streakDays,
             weatherTemp: weatherTemp,
             exerciseMinutes: exerciseMinutes,
             timeOfDay: timeOfDay
@@ -154,7 +158,6 @@ final class HydrationAIService: ObservableObject {
     private func selectMessage(
         category: HydrationTip.Category,
         progress: Int,
-        streakDays: Int,
         weatherTemp: Double?,
         exerciseMinutes: Int,
         timeOfDay: TimeOfDay
@@ -173,9 +176,6 @@ final class HydrationAIService: ObservableObject {
             return generalReminders[timeOfDay]?.randomElement() ?? "Time for a hydration break!"
 
         case .encouragement:
-            if streakDays > 3 {
-                return streakEncouragements.randomElement() ?? "Your streak is going strong!"
-            }
             return generalEncouragements.randomElement() ?? "You're doing great! Almost there!"
 
         case .tip:
@@ -239,13 +239,6 @@ final class HydrationAIService: ObservableObject {
             "A small sip before sleep is beneficial!",
             "End your day on a hydrated note."
         ]
-    ]
-
-    private let streakEncouragements = [
-        "Your streak is impressive! Keep it flowing!",
-        "Consistency is key, and you've got it!",
-        "Your dedication to hydration is inspiring!",
-        "Streak master! Your commitment shows!"
     ]
 
     private let generalEncouragements = [
