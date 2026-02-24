@@ -24,11 +24,6 @@ struct OnboardingView: View {
     @State private var customGoalValue: Double = 2200
     @State private var wakeTime = Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: Date()) ?? Date()
     @State private var sleepTime = Calendar.current.date(bySettingHour: 22, minute: 0, second: 0, of: Date()) ?? Date()
-    @State private var remindersEnabled = true
-    @State private var reminderCount = 7
-
-    @State private var prefersWeather = true
-    @State private var prefersHealthKit = true
 
     @Environment(\.horizontalSizeClass) private var sizeClass
     private var isRegular: Bool { sizeClass == .regular }
@@ -172,12 +167,19 @@ struct OnboardingView: View {
                 Divider().background(Color.white.opacity(0.1))
                     .padding(.vertical, 8)
 
-                Toggle("Workout Goal Adjustments", isOn: $prefersHealthKit)
-                    .tint(Theme.coral)
-                    .font(.headline)
-                    .onChange(of: prefersHealthKit) { _, _ in
-                        Haptics.selection()
+                HStack(alignment: .top, spacing: 12) {
+                    Image(systemName: "heart.fill")
+                        .foregroundStyle(Theme.coral)
+                        .font(.title3)
+                        .frame(width: 28)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Apple Health")
+                            .font(.headline)
+                        Text("We'll read your workout data to automatically boost your water goal on active days.")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
                     }
+                }
             }
         }
     }
@@ -224,12 +226,19 @@ struct OnboardingView: View {
                 Divider().background(Color.white.opacity(0.1))
                     .padding(.vertical, 4)
 
-                Toggle("Weather Goal Adjustments", isOn: $prefersWeather)
-                    .tint(Theme.sun)
-                    .font(.headline)
-                    .onChange(of: prefersWeather) { _, _ in
-                        Haptics.selection()
+                HStack(alignment: .top, spacing: 12) {
+                    Image(systemName: "location.fill")
+                        .foregroundStyle(Theme.sun)
+                        .font(.title3)
+                        .frame(width: 28)
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Weather Adjustments")
+                            .font(.headline)
+                        Text("We'll check local weather conditions and increase your goal on hot or humid days.")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
                     }
+                }
             }
             .animation(Theme.fluidSpring, value: customGoalEnabled)
         }
@@ -259,17 +268,16 @@ struct OnboardingView: View {
     private var remindersStep: some View {
         AnimatedOnboardingPage(
             title: "Stay on track",
-            subtitle: "Let us gently nudge you throughout the day so you never fall behind.",
+            subtitle: "We'll send friendly reminders so you never fall behind on your hydration.",
             iconName: "bell.and.waves.left.and.right.fill",
             iconAnimation: .ring,
             iconColor: Theme.lavender
         ) {
-            Toggle("Enable smart reminders", isOn: $remindersEnabled)
-                .tint(Theme.lagoon)
-                .font(.headline)
-                .onChange(of: remindersEnabled) { _, _ in
-                    Haptics.selection()
-                }
+            VStack(alignment: .leading, spacing: 16) {
+                OnboardingFeatureRow(icon: "bell.badge.fill", text: "Gentle nudges throughout your waking hours")
+                OnboardingFeatureRow(icon: "clock.fill", text: "Smart scheduling based on your daily routine")
+                OnboardingFeatureRow(icon: "slider.horizontal.3", text: "Customizable frequency to match your pace")
+            }
         }
     }
 
@@ -309,12 +317,15 @@ struct OnboardingView: View {
                 // Continue / Start button
                 Button(action: {
                     Haptics.impact(.medium)
-                    if step == totalSteps - 1 {
-                        finishOnboarding()
-                    } else {
-                        direction = .forward
-                        withAnimation(Theme.fluidSpring) {
-                            step += 1
+                    Task {
+                        await requestPermissionForCurrentStep()
+                        if step == totalSteps - 1 {
+                            finishOnboarding()
+                        } else {
+                            direction = .forward
+                            withAnimation(Theme.fluidSpring) {
+                                step += 1
+                            }
                         }
                     }
                 }) {
@@ -358,6 +369,28 @@ struct OnboardingView: View {
         }
     }
 
+    private func requestPermissionForCurrentStep() async {
+        switch step {
+        case 3: // Activity → HealthKit
+            await healthKit.requestAuthorization()
+        case 4: // Goal → Location
+            await requestLocationPermission()
+        case 6: // Reminders → Notifications
+            await notifier.requestAuthorization()
+        default:
+            break
+        }
+    }
+
+    private func requestLocationPermission() async {
+        guard locationManager.authorizationStatus == .notDetermined else { return }
+        locationManager.requestPermission()
+        // Wait for the user to respond to the system dialog
+        while locationManager.authorizationStatus == .notDetermined {
+            try? await Task.sleep(for: .milliseconds(100))
+        }
+    }
+
     private func finishOnboarding() {
         let finalName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let weightKg = unitSystem.kg(from: weight)
@@ -369,27 +402,15 @@ struct OnboardingView: View {
             profile.weightKg = weightKg
             profile.activityLevel = activityLevel
             profile.customGoalML = customGoalML
-            profile.remindersEnabled = remindersEnabled
+            profile.remindersEnabled = true
             profile.wakeMinutes = minutes(from: wakeTime)
             profile.sleepMinutes = minutes(from: sleepTime)
-            profile.dailyReminderCount = reminderCount
-            profile.prefersWeatherGoal = prefersWeather
-            profile.prefersHealthKit = prefersHealthKit
+            profile.dailyReminderCount = 7
+            profile.prefersWeatherGoal = true
+            profile.prefersHealthKit = true
         }
 
-        Task {
-            if prefersHealthKit {
-                await healthKit.requestAuthorization()
-            }
-            if prefersWeather {
-                locationManager.requestPermission()
-            }
-            if remindersEnabled {
-                await notifier.requestAuthorization()
-                notifier.scheduleReminders(profile: store.profile)
-            }
-        }
-
+        notifier.scheduleReminders(profile: store.profile)
         onComplete()
     }
 
