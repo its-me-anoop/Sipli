@@ -1,4 +1,4 @@
-# WaterQuest
+# Thirsty.ai
 
 A playful, gamified iOS hydration tracker with smart goals that adapt to weather and workouts.
 
@@ -11,7 +11,7 @@ A playful, gamified iOS hydration tracker with smart goals that adapt to weather
 
 ## Getting Started
 1. Open `WaterQuest.xcodeproj` in Xcode.
-2. Select a signing team for the `WaterQuest` target.
+2. Select a signing team for the `Thirsty.ai` target.
 3. Build and run on the iOS simulator or a device.
 
 ## Required Capabilities

@@ -93,7 +93,7 @@ struct PaywallView: View {
                 .scrollContentBackground(.hidden)
                 .background(Color.clear)
             }
-            .navigationTitle("WaterQuest Pro")
+            .navigationTitle("Thirsty.ai Pro")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 if isDismissible {

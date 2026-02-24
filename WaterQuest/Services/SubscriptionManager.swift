@@ -4,8 +4,8 @@ import StoreKit
 // MARK: - Product IDs
 // Replace these with your actual App Store Connect product identifiers before shipping.
 enum ProductID: String, CaseIterable {
-    case monthly = "com.waterquest.pro.monthly"
-    case annual  = "com.waterquest.pro.annual"
+    case monthly = "com.thirsty.ai.pro.monthly"
+    case annual  = "com.thirsty.ai.pro.annual"
 }
 
 // MARK: - SubscriptionManager
@@ -34,7 +34,7 @@ final class SubscriptionManager: ObservableObject {
     }
 
     // MARK: - Private
-    private static let trialStartKey = "WaterQuest.trialStartDate"
+    private static let trialStartKey = "Thirsty.ai.trialStartDate"
     private let trialDuration: TimeInterval = 7 * 24 * 60 * 60  // 7 days
 
     private var trialStartDate: Date? {

@@ -53,7 +53,7 @@ struct SplashScreenView: View {
                 .animation(.easeInOut(duration: 1.6).repeatForever(autoreverses: true), value: pulse)
 
                 VStack(spacing: isRegular ? 12 : 8) {
-                    Text("WaterQuest")
+                    Text("Thirsty.ai")
                         .font(.system(size: isRegular ? 48 : 38, weight: .bold, design: .rounded))
                         .kerning(0.3)
                     Text("Hydration that fits your day")

@@ -79,7 +79,7 @@ final class NotificationScheduler: ObservableObject {
         lastKnownEntries.append(DateEntry(date: entry.date, volumeML: entry.effectiveML))
         didFireEscalation = false
         // Remove any pending smart notification that hasn't fired yet.
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["waterquest.smart"])
+        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: ["thirsty.ai.smart"])
     }
 
     // MARK: - Smart reminder loop
@@ -144,7 +144,7 @@ final class NotificationScheduler: ObservableObject {
         content.sound = .default
 
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 1, repeats: false)
-        let request = UNNotificationRequest(identifier: "waterquest.smart", content: content, trigger: trigger)
+        let request = UNNotificationRequest(identifier: "thirsty.ai.smart", content: content, trigger: trigger)
         do {
             try await UNUserNotificationCenter.current().add(request)
         } catch {
@@ -190,7 +190,7 @@ final class NotificationScheduler: ObservableObject {
                 """
 
             let session = LanguageModelSession(instructions: """
-                You are a cheerful hydration coach inside a mobile app called WaterQuest.
+                You are a cheerful hydration coach inside a mobile app called Thirsty.ai.
                 You write short, warm, motivational nudges to help people drink more water.
                 Keep every response under 12 words. Be encouraging, never guilt-tripping.
                 """)
@@ -274,7 +274,7 @@ final class NotificationScheduler: ObservableObject {
             content.sound = .default
 
             let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
-            let request = UNNotificationRequest(identifier: "waterquest.classic.\(index)", content: content, trigger: trigger)
+            let request = UNNotificationRequest(identifier: "thirsty.ai.classic.\(index)", content: content, trigger: trigger)
             UNUserNotificationCenter.current().add(request)
         }
     }

@@ -366,7 +366,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration;
-				PRODUCT_NAME = WaterQuest;
+				PRODUCT_NAME = "Thirsty.ai";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -447,7 +447,7 @@
 				);
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration;
-				PRODUCT_NAME = WaterQuest;
+				PRODUCT_NAME = "Thirsty.ai";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
