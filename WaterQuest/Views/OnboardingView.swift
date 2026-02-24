@@ -9,6 +9,11 @@ struct OnboardingView: View {
     var onComplete: () -> Void
 
     @State private var step = 0
+    @State private var direction: NavigationDirection = .forward
+
+    private enum NavigationDirection {
+        case forward, backward
+    }
 
     @State private var name = ""
     @State private var unitSystem: UnitSystem = .metric
@@ -35,23 +40,24 @@ struct OnboardingView: View {
             AppWaterBackground().ignoresSafeArea()
 
             VStack(spacing: 0) {
-                WaterDropProgressIndicator(currentStep: step, totalSteps: totalSteps)
-
-                TabView(selection: $step) {
-                    welcomeStep.tag(0)
-                    nameStep.tag(1)
-                    weightStep.tag(2)
-                    activityStep.tag(3)
-                    goalStep.tag(4)
-                    scheduleStep.tag(5)
-                    remindersStep.tag(6)
+                ZStack {
+                    Group {
+                        switch step {
+                        case 0: welcomeStep
+                        case 1: nameStep
+                        case 2: weightStep
+                        case 3: activityStep
+                        case 4: goalStep
+                        case 5: scheduleStep
+                        case 6: remindersStep
+                        default: EmptyView()
+                        }
+                    }
+                    .id(step)
+                    .transition(pageTransition)
                 }
-                .tabViewStyle(.page(indexDisplayMode: .never))
-                .animation(.spring(response: 0.4, dampingFraction: 0.8), value: step)
-                .transition(.asymmetric(
-                    insertion: .opacity.combined(with: .scale(scale: 0.95)),
-                    removal: .opacity.combined(with: .scale(scale: 1.05))
-                ))
+                .clipped()
+                .animation(Theme.fluidSpring, value: step)
 
                 navigationBar
                     .padding(.horizontal, 24)
@@ -169,11 +175,8 @@ struct OnboardingView: View {
                 Toggle("Workout Goal Adjustments", isOn: $prefersHealthKit)
                     .tint(Theme.coral)
                     .font(.headline)
-                    .onChange(of: prefersHealthKit) { _, newValue in
+                    .onChange(of: prefersHealthKit) { _, _ in
                         Haptics.selection()
-                        if newValue {
-                            Task { await healthKit.requestAuthorization() }
-                        }
                     }
             }
         }
@@ -224,11 +227,8 @@ struct OnboardingView: View {
                 Toggle("Weather Goal Adjustments", isOn: $prefersWeather)
                     .tint(Theme.sun)
                     .font(.headline)
-                    .onChange(of: prefersWeather) { _, newValue in
+                    .onChange(of: prefersWeather) { _, _ in
                         Haptics.selection()
-                        if newValue {
-                            locationManager.requestPermission()
-                        }
                     }
             }
             .animation(Theme.fluidSpring, value: customGoalEnabled)
@@ -267,11 +267,8 @@ struct OnboardingView: View {
             Toggle("Enable smart reminders", isOn: $remindersEnabled)
                 .tint(Theme.lagoon)
                 .font(.headline)
-                .onChange(of: remindersEnabled) { _, newValue in
+                .onChange(of: remindersEnabled) { _, _ in
                     Haptics.selection()
-                    if newValue {
-                        Task { await notifier.requestAuthorization() }
-                    }
                 }
         }
     }
@@ -289,6 +286,7 @@ struct OnboardingView: View {
                 // Back button with animated fade
                 Button(action: {
                     Haptics.selection()
+                    direction = .backward
                     withAnimation(Theme.fluidSpring) {
                         step -= 1
                     }
@@ -314,6 +312,7 @@ struct OnboardingView: View {
                     if step == totalSteps - 1 {
                         finishOnboarding()
                     } else {
+                        direction = .forward
                         withAnimation(Theme.fluidSpring) {
                             step += 1
                         }
@@ -343,6 +342,22 @@ struct OnboardingView: View {
         }
     }
 
+    private var pageTransition: AnyTransition {
+        let offset: CGFloat = 60
+        switch direction {
+        case .forward:
+            return .asymmetric(
+                insertion: .opacity.combined(with: .offset(x: offset)).combined(with: .scale(scale: 0.97, anchor: .trailing)),
+                removal: .opacity.combined(with: .offset(x: -offset)).combined(with: .scale(scale: 0.97, anchor: .leading))
+            )
+        case .backward:
+            return .asymmetric(
+                insertion: .opacity.combined(with: .offset(x: -offset)).combined(with: .scale(scale: 0.97, anchor: .leading)),
+                removal: .opacity.combined(with: .offset(x: offset)).combined(with: .scale(scale: 0.97, anchor: .trailing))
+            )
+        }
+    }
+
     private func finishOnboarding() {
         let finalName = name.trimmingCharacters(in: .whitespacesAndNewlines)
         let weightKg = unitSystem.kg(from: weight)
@@ -362,8 +377,17 @@ struct OnboardingView: View {
             profile.prefersHealthKit = prefersHealthKit
         }
 
-        if remindersEnabled {
-            notifier.scheduleReminders(profile: store.profile)
+        Task {
+            if prefersHealthKit {
+                await healthKit.requestAuthorization()
+            }
+            if prefersWeather {
+                locationManager.requestPermission()
+            }
+            if remindersEnabled {
+                await notifier.requestAuthorization()
+                notifier.scheduleReminders(profile: store.profile)
+            }
         }
 
         onComplete()
@@ -596,20 +620,20 @@ private struct AnimatedOnboardingPage<Content: View>: View {
             }
         }
         .onAppear {
-            withAnimation(.spring(response: 0.6, dampingFraction: 0.6).delay(0.1)) {
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.6).delay(0.15)) {
                 showIcon = true
             }
-            withAnimation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.3)) {
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.30)) {
                 showTitle = true
             }
-            withAnimation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.45)) {
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.43)) {
                 showSubtitle = true
             }
-            withAnimation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.6)) {
+            withAnimation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.55)) {
                 showCard = true
             }
             // Start icon loop animation after entrance
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
                 isAnimating = true
             }
         }
@@ -753,7 +777,7 @@ private struct AnimatedWelcomeStep: View {
             .padding(24)
         }
         .onAppear {
-            withAnimation(.spring(response: 0.6, dampingFraction: 0.6).delay(0.1)) {
+            withAnimation(.spring(response: 0.6, dampingFraction: 0.6).delay(0.15)) {
                 appearStep1 = true
             }
             withAnimation(.spring(response: 0.5, dampingFraction: 0.8).delay(0.3)) {
