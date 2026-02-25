@@ -7,12 +7,12 @@
       "id" : "A1B2C3D4",
       "localizations" : [
         {
-          "description" : "Sipli Premium",
-          "displayName" : "Premium",
+          "description" : "Sipli Subscription",
+          "displayName" : "Sipli",
           "locale" : "en_US"
         }
       ],
-      "name" : "Premium",
+      "name" : "Sipli",
       "subscriptions" : [
         {
           "adHocOffers" : [],
@@ -30,7 +30,7 @@
           },
           "localizations" : [
             {
-              "description" : "Monthly access to all features",
+              "description" : "Monthly subscription to use Sipli",
               "displayName" : "Monthly",
               "locale" : "en_US"
             }

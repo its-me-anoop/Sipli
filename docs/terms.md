@@ -24,7 +24,7 @@ Sipli is a wellness and lifestyle tool. It is **not a medical device** and does 
 
 ## 4. Subscription and Payment
 
-Sipli offers a subscription for access to the app's features:
+A subscription is required to use Sipli. There is no free tier.
 
 - **Free trial** — New users receive a 1-week free trial.
 - **Monthly subscription** — After the trial, the subscription automatically renews at the listed price unless canceled at least 24 hours before the end of the current billing period.

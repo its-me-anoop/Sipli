@@ -11,7 +11,7 @@ struct RootView: View {
     var body: some View {
         ZStack {
             if hasOnboarded {
-                if subscriptionManager.isPro {
+                if subscriptionManager.isSubscribed {
                     MainTabView()
                 } else if subscriptionManager.isInitialized {
                     SubscriptionRequiredView()

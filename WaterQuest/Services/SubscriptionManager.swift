@@ -11,7 +11,7 @@ enum ProductID: String, CaseIterable {
 @MainActor
 final class SubscriptionManager: ObservableObject {
     /// `true` when the user has an active subscription.
-    @Published private(set) var isPro: Bool = false
+    @Published private(set) var isSubscribed: Bool = false
     /// `true` once initial products and status have been loaded.
     @Published private(set) var isInitialized: Bool = false
 
@@ -84,7 +84,7 @@ final class SubscriptionManager: ObservableObject {
         do {
             try await AppStore.sync()
             await refreshSubscriptionStatus()
-            return isPro
+            return isSubscribed
         } catch {
             #if DEBUG
             print("SubscriptionManager: restore failed – \(error)")
@@ -95,7 +95,7 @@ final class SubscriptionManager: ObservableObject {
 
     // MARK: - Status
     /// Checks `Transaction.currentEntitlements` for an active subscription
-    /// and updates `isPro` accordingly.
+    /// and updates `isSubscribed` accordingly.
     private func refreshSubscriptionStatus() async {
         var hasActive = false
         for await result in Transaction.currentEntitlements {
@@ -106,7 +106,7 @@ final class SubscriptionManager: ObservableObject {
                 }
             }
         }
-        isPro = hasActive
+        isSubscribed = hasActive
     }
 
     /// Public wrapper to re-check the current entitlement state.
