@@ -22,6 +22,8 @@ struct OnboardingView: View {
 
     @State private var customGoalEnabled = false
     @State private var customGoalValue: Double = 2200
+    @State private var prefersHealthKit = true
+    @State private var prefersWeatherGoal = true
     @State private var wakeTime = Calendar.current.date(bySettingHour: 7, minute: 0, second: 0, of: Date()) ?? Date()
     @State private var sleepTime = Calendar.current.date(bySettingHour: 22, minute: 0, second: 0, of: Date()) ?? Date()
 
@@ -167,19 +169,22 @@ struct OnboardingView: View {
                 Divider().background(Color.white.opacity(0.1))
                     .padding(.vertical, 8)
 
-                HStack(alignment: .top, spacing: 12) {
-                    Image(systemName: "heart.fill")
-                        .foregroundStyle(Theme.coral)
-                        .font(.title3)
-                        .frame(width: 28)
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Apple Health")
-                            .font(.headline)
-                        Text("We can read your workout data to automatically adjust your water goal on active days. You can skip this if you prefer.")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                Toggle(isOn: $prefersHealthKit) {
+                    HStack(alignment: .top, spacing: 12) {
+                        Image(systemName: "heart.fill")
+                            .foregroundStyle(Theme.coral)
+                            .font(.title3)
+                            .frame(width: 28)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Apple Health")
+                                .font(.headline)
+                            Text("Read your workout data to automatically adjust your water goal on active days.")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
+                .tint(Theme.lagoon)
             }
         }
     }
@@ -226,19 +231,22 @@ struct OnboardingView: View {
                 Divider().background(Color.white.opacity(0.1))
                     .padding(.vertical, 4)
 
-                HStack(alignment: .top, spacing: 12) {
-                    Image(systemName: "location.fill")
-                        .foregroundStyle(Theme.sun)
-                        .font(.title3)
-                        .frame(width: 28)
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text("Weather Adjustments")
-                            .font(.headline)
-                        Text("We can check local weather to adjust your goal on hot or humid days. You can skip this if you prefer.")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                Toggle(isOn: $prefersWeatherGoal) {
+                    HStack(alignment: .top, spacing: 12) {
+                        Image(systemName: "location.fill")
+                            .foregroundStyle(Theme.sun)
+                            .font(.title3)
+                            .frame(width: 28)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text("Weather Adjustments")
+                                .font(.headline)
+                            Text("Check local weather to adjust your goal on hot or humid days.")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                        }
                     }
                 }
+                .tint(Theme.lagoon)
             }
             .animation(Theme.fluidSpring, value: customGoalEnabled)
         }
@@ -362,10 +370,14 @@ struct OnboardingView: View {
 
     private func requestPermissionForCurrentStep() async {
         switch step {
-        case 3: // Activity → HealthKit
-            await healthKit.requestAuthorization()
-        case 4: // Goal → Location
-            await requestLocationPermission()
+        case 3: // Activity → HealthKit (only if opted in)
+            if prefersHealthKit {
+                await healthKit.requestAuthorization()
+            }
+        case 4: // Goal → Location (only if weather opted in)
+            if prefersWeatherGoal {
+                await requestLocationPermission()
+            }
         case 6: // Reminders → Notifications
             await notifier.requestAuthorization()
         default:
@@ -396,8 +408,8 @@ struct OnboardingView: View {
             profile.remindersEnabled = true
             profile.wakeMinutes = minutes(from: wakeTime)
             profile.sleepMinutes = minutes(from: sleepTime)
-            profile.prefersWeatherGoal = true
-            profile.prefersHealthKit = true
+            profile.prefersWeatherGoal = prefersWeatherGoal
+            profile.prefersHealthKit = prefersHealthKit
         }
 
         notifier.scheduleReminders(profile: store.profile)
