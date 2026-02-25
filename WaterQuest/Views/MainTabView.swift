@@ -49,7 +49,7 @@ struct MainTabView: View {
                 AddIntakeView()
                     .toolbar {
                         ToolbarItem(placement: .cancellationAction) {
-                            Button("Done") { showAddIntake = false }
+                            Button("Cancel") { showAddIntake = false }
                         }
                     }
             }
