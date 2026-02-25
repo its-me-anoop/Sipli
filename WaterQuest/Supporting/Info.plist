@@ -45,5 +45,16 @@
   <string>Sipli writes your water intake to Health.</string>
   <key>NSLocationWhenInUseUsageDescription</key>
   <string>Sipli uses your location to estimate local weather for smarter hydration goals.</string>
+  <key>CFBundleURLTypes</key>
+  <array>
+    <dict>
+      <key>CFBundleURLSchemes</key>
+      <array>
+        <string>sipli</string>
+      </array>
+      <key>CFBundleURLName</key>
+      <string>com.waterquest.hydration</string>
+    </dict>
+  </array>
 </dict>
 </plist>

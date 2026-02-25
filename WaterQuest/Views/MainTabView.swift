@@ -10,6 +10,7 @@ struct MainTabView: View {
 
     @State private var selectedTab: Tab = .dashboard
     @State private var showAddIntake = false
+    @Environment(\.deepLinkAddIntake) private var deepLinkAddIntake
 
     init() {
         let tabAppearance = UITabBarAppearance()
@@ -43,6 +44,11 @@ struct MainTabView: View {
         .tint(Theme.lagoon)
         .onChange(of: selectedTab) {
             Haptics.selection()
+        }
+        .onChange(of: deepLinkAddIntake) {
+            if deepLinkAddIntake {
+                showAddIntake = true
+            }
         }
         .sheet(isPresented: $showAddIntake) {
             NavigationStack {

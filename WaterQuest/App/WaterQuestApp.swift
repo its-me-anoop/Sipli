@@ -5,6 +5,7 @@ struct WaterQuestApp: App {
     @AppStorage("appTheme") private var appTheme: AppTheme = .system
     @AppStorage("hasOnboarded") private var hasOnboarded: Bool = false
     @Environment(\.scenePhase) private var scenePhase
+    @State private var deepLinkAddIntake = false
 
     @StateObject private var store = HydrationStore()
     @StateObject private var healthKit = HealthKitManager()
@@ -60,6 +61,19 @@ struct WaterQuestApp: App {
                     }
                 }
             }
+            .onOpenURL { url in
+                if url.scheme == "sipli" && url.host == "add-intake" {
+                    deepLinkAddIntake = true
+                }
+            }
+            .environment(\.deepLinkAddIntake, deepLinkAddIntake)
+            .onChange(of: deepLinkAddIntake) {
+                if deepLinkAddIntake {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        deepLinkAddIntake = false
+                    }
+                }
+            }
         }
     }
 
@@ -76,5 +90,17 @@ struct WaterQuestApp: App {
         if let entries = await healthKit.fetchRecentWaterEntries(days: 7) {
             store.syncHealthKitEntriesRange(entries, days: 7)
         }
+    }
+}
+
+// MARK: - Deep Link Environment Key
+private struct DeepLinkAddIntakeKey: EnvironmentKey {
+    static let defaultValue = false
+}
+
+extension EnvironmentValues {
+    var deepLinkAddIntake: Bool {
+        get { self[DeepLinkAddIntakeKey.self] }
+        set { self[DeepLinkAddIntakeKey.self] = newValue }
     }
 }
