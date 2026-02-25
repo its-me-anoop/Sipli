@@ -11,9 +11,10 @@ struct LiquidProgressView: View {
     @State private var phase: CGFloat = 0
     
     var body: some View {
-        let size: CGFloat = isRegular ? 240 : 180
+        let height: CGFloat = isRegular ? 240 : 200
+        let width: CGFloat = height * 0.52
         let clampedProgress = max(0, progress) // Allow over 100% naturally
-        
+
         let layers: [FluidLayer] = {
             if compositions.isEmpty {
                 return [FluidLayer(type: .water, proportionTop: 1.0)]
@@ -26,7 +27,7 @@ struct LiquidProgressView: View {
             }
             return result.reversed()
         }()
-        
+
         // A physical container shape
         ZStack {
             // Background empty state
@@ -38,38 +39,38 @@ struct LiquidProgressView: View {
                 )
                 .shadow(color: Theme.shadowColor, radius: 8, x: 0, y: 4)
 
-            
+
             // The Liquid Fill
             GeometryReader { geo in
-                let height = geo.size.height
+                let h = geo.size.height
 
-                let fillHeight = height * CGFloat(clampedProgress)
-                
+                let fillHeight = h * CGFloat(clampedProgress)
+
                 ZStack {
                     // BACK LIQUID COLUMN
                     ZStack {
                         ForEach(layers) { layer in
                             let layerFillHeight = fillHeight * CGFloat(layer.proportionTop)
-                            
-                            Wave(phase: phase, strength: 8, frequency: 1.5)
+
+                            Wave(phase: phase, strength: 6, frequency: 1.8)
                                 .fill(layer.type.color)
-                                .offset(y: CGFloat(height - layerFillHeight))
+                                .offset(y: CGFloat(h - layerFillHeight))
                         }
                     }
                     .compositingGroup()
                     .opacity(0.6)
-                    
+
                     // FRONT LIQUID COLUMN
                     ZStack {
                         ForEach(layers) { layer in
                             let layerFillHeight = fillHeight * CGFloat(layer.proportionTop)
-                            
-                            Wave(phase: phase + .pi, strength: 12, frequency: 1.2)
+
+                            Wave(phase: phase + .pi, strength: 10, frequency: 1.5)
                                 .fill(layer.type.color)
-                                .offset(y: CGFloat(height - layerFillHeight))
+                                .offset(y: CGFloat(h - layerFillHeight))
                         }
                     }
-                    
+
                     // BUBBLE PARTICLES within the liquid
                     BubbleParticlesView(progress: clampedProgress)
                 }
@@ -79,13 +80,13 @@ struct LiquidProgressView: View {
                 .rotationEffect(.radians(-motionManager.roll), anchor: .center)
             }
             .mask(WaterBottleShape())
-            // Progress Text Overlay
+            // Progress Text Overlay — offset into the body area
             VStack(spacing: 0) {
                 Text(Formatters.percentString(clampedProgress))
-                    .font(.system(isRegular ? .largeTitle : .title, design: .rounded).weight(.heavy))
+                    .font(.system(isRegular ? .largeTitle : .title2, design: .rounded).weight(.heavy))
                     .foregroundColor(clampedProgress > 0.5 ? .white : Theme.textPrimary)
                     .contentTransition(.numericText())
-                
+
                 if clampedProgress >= 1.0 {
                     Image(systemName: "star.fill")
                         .font(isRegular ? .title3 : .subheadline)
@@ -94,9 +95,10 @@ struct LiquidProgressView: View {
                         .transition(.scale)
                 }
             }
+            .offset(y: height * 0.12)
             .shadow(color: clampedProgress > 0.5 ? .black.opacity(0.3) : .clear, radius: 2)
         }
-        .frame(width: size, height: size)
+        .frame(width: width, height: height)
         .onAppear {
             withAnimation(.linear(duration: 2.0).repeatForever(autoreverses: false)) {
                 phase = .pi * 2
@@ -224,54 +226,55 @@ struct WaterBottleShape: Shape {
         let h = rect.height
         let cx = w / 2
 
-        // Body: main rounded rectangle section (bottom ~75%)
-        let bodyHalfW = w * 0.46
+        // Proportions closely traced from the app icon water bottle
+        // Body: tall rectangle with small rounded bottom corners
+        let bodyHalfW = w * 0.48
         let bodyBottom = h
-        let bodyTop = h * 0.25
-        let bodyCorner = bodyHalfW * 0.18
+        let bodyTop = h * 0.26
+        let bodyCorner = w * 0.07
 
-        // Shoulder: transition from body to cap
-        let shoulderTop = h * 0.17
+        // Shoulder: quick inward curve from body to cap
+        let shoulderMid = h * 0.22
 
-        // Cap: dome-shaped lid
-        let capHalfW = w * 0.30
-        let capTop = h * 0.08
+        // Cap: wide dome (about 80% of body width)
+        let capHalfW = w * 0.40
+        let capTop = h * 0.10
 
-        // Spout: small nub on top
-        let spoutHalfW = w * 0.08
+        // Spout: small cylinder on top of cap
+        let spoutHalfW = w * 0.09
         let spoutTop: CGFloat = 0
-        let spoutBottom = h * 0.08
-        let spoutCorner = spoutHalfW * 0.5
+        let spoutBottom = h * 0.10
+        let spoutCorner = spoutHalfW * 0.6
 
-        // Bottom edge, left to right
+        // === Bottom edge (left to right) ===
         path.move(to: CGPoint(x: cx - bodyHalfW + bodyCorner, y: bodyBottom))
         path.addLine(to: CGPoint(x: cx + bodyHalfW - bodyCorner, y: bodyBottom))
 
-        // Bottom-right rounded corner
+        // Bottom-right corner
         path.addArc(
             tangent1End: CGPoint(x: cx + bodyHalfW, y: bodyBottom),
             tangent2End: CGPoint(x: cx + bodyHalfW, y: bodyBottom - bodyCorner),
             radius: bodyCorner
         )
 
-        // Right body wall going up
+        // === Right body wall (straight up) ===
         path.addLine(to: CGPoint(x: cx + bodyHalfW, y: bodyTop))
 
-        // Right shoulder curve (narrows from body to cap)
+        // === Right shoulder (quick curve inward to cap) ===
         path.addCurve(
-            to: CGPoint(x: cx + capHalfW, y: shoulderTop),
-            control1: CGPoint(x: cx + bodyHalfW, y: bodyTop - (bodyTop - shoulderTop) * 0.6),
-            control2: CGPoint(x: cx + capHalfW, y: shoulderTop + (bodyTop - shoulderTop) * 0.4)
+            to: CGPoint(x: cx + capHalfW, y: shoulderMid),
+            control1: CGPoint(x: cx + bodyHalfW, y: bodyTop - h * 0.02),
+            control2: CGPoint(x: cx + capHalfW, y: shoulderMid + h * 0.02)
         )
 
-        // Right cap dome curve to spout
+        // === Right cap dome (wide arc up to spout) ===
         path.addCurve(
             to: CGPoint(x: cx + spoutHalfW, y: spoutBottom),
             control1: CGPoint(x: cx + capHalfW, y: capTop),
-            control2: CGPoint(x: cx + spoutHalfW + capHalfW * 0.2, y: spoutBottom)
+            control2: CGPoint(x: cx + capHalfW * 0.55, y: spoutBottom)
         )
 
-        // Spout right side going up
+        // === Spout right side up ===
         path.addLine(to: CGPoint(x: cx + spoutHalfW, y: spoutTop + spoutCorner))
 
         // Spout top-right corner
@@ -291,27 +294,27 @@ struct WaterBottleShape: Shape {
             radius: spoutCorner
         )
 
-        // Spout left side going down
+        // === Spout left side down ===
         path.addLine(to: CGPoint(x: cx - spoutHalfW, y: spoutBottom))
 
-        // Left cap dome curve
+        // === Left cap dome (mirror of right) ===
         path.addCurve(
-            to: CGPoint(x: cx - capHalfW, y: shoulderTop),
-            control1: CGPoint(x: cx - spoutHalfW - capHalfW * 0.2, y: spoutBottom),
+            to: CGPoint(x: cx - capHalfW, y: shoulderMid),
+            control1: CGPoint(x: cx - capHalfW * 0.55, y: spoutBottom),
             control2: CGPoint(x: cx - capHalfW, y: capTop)
         )
 
-        // Left shoulder curve (widens from cap to body)
+        // === Left shoulder (quick curve outward to body) ===
         path.addCurve(
             to: CGPoint(x: cx - bodyHalfW, y: bodyTop),
-            control1: CGPoint(x: cx - capHalfW, y: shoulderTop + (bodyTop - shoulderTop) * 0.4),
-            control2: CGPoint(x: cx - bodyHalfW, y: bodyTop - (bodyTop - shoulderTop) * 0.6)
+            control1: CGPoint(x: cx - capHalfW, y: shoulderMid + h * 0.02),
+            control2: CGPoint(x: cx - bodyHalfW, y: bodyTop - h * 0.02)
         )
 
-        // Left body wall going down
+        // === Left body wall (straight down) ===
         path.addLine(to: CGPoint(x: cx - bodyHalfW, y: bodyBottom - bodyCorner))
 
-        // Bottom-left rounded corner
+        // Bottom-left corner
         path.addArc(
             tangent1End: CGPoint(x: cx - bodyHalfW, y: bodyBottom),
             tangent2End: CGPoint(x: cx - bodyHalfW + bodyCorner, y: bodyBottom),
