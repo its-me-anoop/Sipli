@@ -20,4 +20,14 @@ enum Formatters {
     static func percentString(_ value: Double) -> String {
         String(format: "%.0f%%", value * 100)
     }
+
+    static func temperatureString(celsius: Double, unit: UnitSystem) -> String {
+        switch unit {
+        case .metric:
+            return "\(Int(celsius))°C"
+        case .imperial:
+            let fahrenheit = celsius * 9.0 / 5.0 + 32
+            return "\(Int(fahrenheit))°F"
+        }
+    }
 }

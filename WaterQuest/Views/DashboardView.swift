@@ -304,7 +304,7 @@ struct DashboardView: View {
                     HStack(spacing: 6) {
                         Image(systemName: "thermometer.medium")
                             .foregroundStyle(Theme.coral)
-                        Text("Current temperature: \(Int(temp))°C")
+                        Text("Current temperature: \(Formatters.temperatureString(celsius: temp, unit: store.profile.unitSystem))")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
@@ -355,7 +355,7 @@ struct DashboardView: View {
                     VStack(alignment: .leading, spacing: 4) {
                         Text(snapshot.condition.isEmpty ? "Current weather" : snapshot.condition)
                             .font(.system(.body, design: .rounded).weight(.semibold))
-                        Text("\(Int(snapshot.temperatureC))°C • Humidity \(Int(snapshot.humidityPercent))%")
+                        Text("\(Formatters.temperatureString(celsius: snapshot.temperatureC, unit: store.profile.unitSystem)) • Humidity \(Int(snapshot.humidityPercent))%")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                     }
