@@ -9,6 +9,7 @@ struct DashboardView: View {
     @StateObject private var aiService = HydrationAIService()
 
     @State private var entryToEdit: HydrationEntry?
+    @State private var entryToDelete: HydrationEntry?
     @State private var isRefreshing = false
 
     private var goal: GoalBreakdown { store.dailyGoal }
@@ -33,6 +34,20 @@ struct DashboardView: View {
         .task(id: locationManager.lastLocation?.timestamp) {
             guard store.profile.prefersWeatherGoal else { return }
             await refreshWeather()
+        }
+        .confirmationDialog("Delete this entry?", isPresented: Binding(
+            get: { entryToDelete != nil },
+            set: { if !$0 { entryToDelete = nil } }
+        ), titleVisibility: .visible) {
+            Button("Delete", role: .destructive) {
+                if let entry = entryToDelete {
+                    deleteEntry(entry)
+                    entryToDelete = nil
+                }
+            }
+            Button("Cancel", role: .cancel) {
+                entryToDelete = nil
+            }
         }
         .sheet(item: $entryToEdit) { entry in
             EntryEditorSheet(entry: entry, unitSystem: store.profile.unitSystem) { updatedAmount, updatedFluidType, updatedNote in
@@ -103,7 +118,7 @@ struct DashboardView: View {
                                 .buttonStyle(.plain)
                                 .contextMenu {
                                     Button(role: .destructive) {
-                                        deleteEntry(entry)
+                                        entryToDelete = entry
                                     } label: {
                                         Label("Delete", systemImage: "trash")
                                     }
@@ -210,7 +225,7 @@ struct DashboardView: View {
                 .buttonStyle(.plain)
                 .contextMenu {
                     Button(role: .destructive) {
-                        deleteEntry(entry)
+                        entryToDelete = entry
                     } label: {
                         Label("Delete", systemImage: "trash")
                     }

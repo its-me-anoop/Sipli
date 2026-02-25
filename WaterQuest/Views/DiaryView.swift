@@ -6,6 +6,7 @@ struct DiaryView: View {
 
     @State private var selectedDate = Date()
     @State private var entryToEdit: HydrationEntry?
+    @State private var entryToDelete: HydrationEntry?
 
     @Environment(\.horizontalSizeClass) private var sizeClass
 
@@ -34,6 +35,20 @@ struct DiaryView: View {
             }
         }
         .navigationTitle("Diary")
+        .confirmationDialog("Delete this entry?", isPresented: Binding(
+            get: { entryToDelete != nil },
+            set: { if !$0 { entryToDelete = nil } }
+        ), titleVisibility: .visible) {
+            Button("Delete", role: .destructive) {
+                if let entry = entryToDelete {
+                    deleteEntry(entry)
+                    entryToDelete = nil
+                }
+            }
+            Button("Cancel", role: .cancel) {
+                entryToDelete = nil
+            }
+        }
         .sheet(item: $entryToEdit) { entry in
             EntryEditorSheet(entry: entry, unitSystem: store.profile.unitSystem) { updatedAmount, updatedFluidType, updatedNote in
                 store.updateEntry(
@@ -190,7 +205,7 @@ struct DiaryView: View {
                     .buttonStyle(.plain)
                     .contextMenu {
                         Button(role: .destructive) {
-                            deleteEntry(entry)
+                            entryToDelete = entry
                         } label: {
                             Label("Delete", systemImage: "trash")
                         }
