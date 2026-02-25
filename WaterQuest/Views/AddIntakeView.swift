@@ -99,6 +99,8 @@ struct AddIntakeView: View {
                             .fontWeight(.semibold)
                     }
                     .frame(maxWidth: .infinity)
+                    .padding(.vertical, 10)
+                    .font(isRegular ? .title3 : .body)
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(selectedFluidType.color)
