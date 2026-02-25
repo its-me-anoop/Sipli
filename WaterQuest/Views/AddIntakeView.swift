@@ -149,7 +149,7 @@ struct AddIntakeView: View {
             showSavedBanner = true
         }
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.8) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             dismiss()
         }
 
