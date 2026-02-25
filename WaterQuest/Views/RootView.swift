@@ -96,7 +96,7 @@ struct SubscriptionRequiredView: View {
                             .font(.title.bold())
                             .multilineTextAlignment(.center)
 
-                        Text("Start your 1-week free trial to continue using WaterQuest with personalized goals, smart reminders, and detailed insights.")
+                        Text("Start your 1-week free trial to continue using Sipstreak with personalized goals, smart reminders, and detailed insights.")
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)

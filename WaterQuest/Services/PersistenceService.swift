@@ -30,7 +30,7 @@ final class PersistenceService {
             }
             try data.write(to: url, options: [.atomic])
         } catch {
-            print("Failed to save WaterQuest state: \(error)")
+            print("Failed to save Sipstreak state: \(error)")
         }
     }
 }

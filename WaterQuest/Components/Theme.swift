@@ -1,8 +1,8 @@
 import SwiftUI
 
 enum Legal {
-    static let privacyURL = URL(string: "https://anoopjose.github.io/WaterQuest/privacy")!
-    static let termsURL = URL(string: "https://anoopjose.github.io/WaterQuest/terms")!
+    static let privacyURL = URL(string: "https://anoopjose.github.io/Sipstreak/privacy")!
+    static let termsURL = URL(string: "https://anoopjose.github.io/Sipstreak/terms")!
 }
 
 enum Theme {

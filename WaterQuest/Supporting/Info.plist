@@ -5,7 +5,7 @@
   <key>CFBundleDevelopmentRegion</key>
   <string>$(DEVELOPMENT_LANGUAGE)</string>
   <key>CFBundleDisplayName</key>
-  <string>Thirsty.ai</string>
+  <string>Sipstreak</string>
   <key>CFBundleExecutable</key>
   <string>$(EXECUTABLE_NAME)</string>
   <key>CFBundleIdentifier</key>
@@ -40,10 +40,10 @@
     <string>UIInterfaceOrientationLandscapeRight</string>
   </array>
   <key>NSHealthShareUsageDescription</key>
-  <string>Thirsty.ai reads workout data to personalize your hydration goal.</string>
+  <string>Sipstreak reads workout data to personalize your hydration goal.</string>
   <key>NSHealthUpdateUsageDescription</key>
-  <string>Thirsty.ai writes your water intake to Health.</string>
+  <string>Sipstreak writes your water intake to Health.</string>
   <key>NSLocationWhenInUseUsageDescription</key>
-  <string>Thirsty.ai uses your location to estimate local weather for smarter hydration goals.</string>
+  <string>Sipstreak uses your location to estimate local weather for smarter hydration goals.</string>
 </dict>
 </plist>
