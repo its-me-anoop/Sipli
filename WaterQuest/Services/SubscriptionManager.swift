@@ -43,27 +43,36 @@ final class SubscriptionManager: ObservableObject {
     }
 
     // MARK: - Purchase
-    /// Initiates a purchase for the given product.  Returns `true` on success.
-    func purchase(_ product: Product) async -> Bool {
+    enum PurchaseResult {
+        case success
+        case cancelled
+        case pending
+        case failed(String)
+    }
+
+    /// Initiates a purchase for the given product.
+    func purchase(_ product: Product) async -> PurchaseResult {
         do {
             let result = try await product.purchase()
             switch result {
             case .success(let verification):
                 switch verification {
-                case .verified:
+                case .verified(let transaction):
+                    await transaction.finish()
                     await refreshSubscriptionStatus()
-                    return true
-                case .unverified:
-                    return false
+                    return .success
+                case .unverified(_, let error):
+                    return .failed("Verification failed: \(error.localizedDescription)")
                 }
-            case .pending, .userCancelled:
-                return false
+            case .pending:
+                return .pending
+            case .userCancelled:
+                return .cancelled
             @unknown default:
-                return false
+                return .failed("Unexpected result")
             }
         } catch {
-            print("SubscriptionManager: purchase failed – \(error)")
-            return false
+            return .failed(error.localizedDescription)
         }
     }
 

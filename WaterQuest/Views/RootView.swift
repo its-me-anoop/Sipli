@@ -214,13 +214,18 @@ struct SubscriptionRequiredView: View {
         isPurchasing = true
         purchaseError = nil
         Task {
-            let success = await subscriptionManager.purchase(product)
+            let result = await subscriptionManager.purchase(product)
             isPurchasing = false
-            if success {
+            switch result {
+            case .success:
                 Haptics.success()
-            } else {
+            case .cancelled:
+                break
+            case .pending:
+                purchaseError = "Purchase is pending approval. It will complete shortly."
+            case .failed(let message):
                 Haptics.error()
-                purchaseError = "Purchase did not complete. Please try again."
+                purchaseError = message
             }
         }
     }
