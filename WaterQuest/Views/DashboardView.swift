@@ -522,9 +522,12 @@ struct DashboardView: View {
 
     private func deleteEntry(_ entry: HydrationEntry) {
         Haptics.impact(.medium)
-        if entry.source == .manual {
-            Task {
+        Task {
+            switch entry.source {
+            case .manual:
                 await healthKit.deleteWaterIntake(entryID: entry.id)
+            case .healthKit:
+                await healthKit.deleteWaterSample(uuid: entry.id)
             }
         }
         store.deleteEntry(entry)

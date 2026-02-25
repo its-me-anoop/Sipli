@@ -187,6 +187,7 @@ final class HealthKitManager: ObservableObject {
         }
     }
 
+    /// Deletes a water sample from HealthKit that was created by this app (matched by SipliEntryID metadata).
     func deleteWaterIntake(entryID: UUID) async {
         guard isAvailable else { return }
         let status = await authorizationRequestStatus()
@@ -196,6 +197,29 @@ final class HealthKitManager: ObservableObject {
         let predicate = HKQuery.predicateForObjects(withMetadataKey: waterEntryMetadataKey, allowedValues: [entryID.uuidString])
         await withCheckedContinuation { continuation in
             let query = HKSampleQuery(sampleType: waterType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { [weak self] _, samples, _ in
+                guard let self, let samples, !samples.isEmpty else {
+                    continuation.resume(returning: ())
+                    return
+                }
+                self.healthStore.delete(samples) { _, _ in
+                    continuation.resume(returning: ())
+                }
+            }
+            healthStore.execute(query)
+        }
+    }
+
+    /// Deletes a water sample from HealthKit by its HealthKit sample UUID.
+    /// Used for entries imported from HealthKit (where the entry ID is the sample UUID).
+    func deleteWaterSample(uuid: UUID) async {
+        guard isAvailable else { return }
+        let status = await authorizationRequestStatus()
+        guard status != .shouldRequest else { return }
+        guard let waterType = HKQuantityType.quantityType(forIdentifier: .dietaryWater) else { return }
+
+        let predicate = HKQuery.predicateForObject(with: uuid)
+        await withCheckedContinuation { continuation in
+            let query = HKSampleQuery(sampleType: waterType, predicate: predicate, limit: 1, sortDescriptors: nil) { [weak self] _, samples, _ in
                 guard let self, let samples, !samples.isEmpty else {
                     continuation.resume(returning: ())
                     return
