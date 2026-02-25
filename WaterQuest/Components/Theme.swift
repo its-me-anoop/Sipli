@@ -2,8 +2,8 @@ import SwiftUI
 
 enum Legal {
     // swiftlint:disable force_unwrapping
-    static let privacyURL = URL(string: "https://its-me-anoop.github.io/Sipstreak/privacy")!
-    static let termsURL = URL(string: "https://its-me-anoop.github.io/Sipstreak/terms")!
+    static let privacyURL = URL(string: "https://its-me-anoop.github.io/Sipli/privacy")!
+    static let termsURL = URL(string: "https://its-me-anoop.github.io/Sipli/terms")!
     static let weatherAttributionURL = URL(string: "https://weatherkit.apple.com/legal-attribution.html")!
     static let manageSubscriptionsURL = URL(string: "https://apps.apple.com/account/subscriptions")!
     // swiftlint:enable force_unwrapping

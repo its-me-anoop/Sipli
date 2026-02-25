@@ -4,7 +4,7 @@ import HealthKit
 @MainActor
 final class HealthKitManager: ObservableObject {
     private let healthStore = HKHealthStore()
-    private let waterEntryMetadataKey = "SipstreakEntryID"
+    private let waterEntryMetadataKey = "SipliEntryID"
     private var waterObserverQuery: HKObserverQuery?
 
     @Published var isAvailable: Bool = HKHealthStore.isHealthDataAvailable()

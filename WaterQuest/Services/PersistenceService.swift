@@ -31,7 +31,7 @@ final class PersistenceService {
             try data.write(to: url, options: [.atomic])
         } catch {
             #if DEBUG
-            print("Failed to save Sipstreak state: \(error)")
+            print("Failed to save Sipli state: \(error)")
             #endif
         }
     }

@@ -84,7 +84,7 @@ final class NotificationScheduler: ObservableObject {
 
         guard let profile = currentProfile, profile.remindersEnabled, profile.smartRemindersEnabled else { return }
         // Cancel pending smart notifications and reschedule based on new state.
-        let smartIds = (0..<20).map { "sipstreak.smart.\($0)" }
+        let smartIds = (0..<20).map { "sipli.smart.\($0)" }
         UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: smartIds)
         scheduleSmartReminders(profile: profile, goalML: currentGoalML)
     }
@@ -152,12 +152,12 @@ final class NotificationScheduler: ObservableObject {
             let body = curatedMessage(progress: progress, isEscalation: false)
 
             let content = UNMutableNotificationContent()
-            content.title = "Sipstreak"
+            content.title = "Sipli"
             content.body = body
             content.sound = .default
 
             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: delay, repeats: false)
-            let request = UNNotificationRequest(identifier: "sipstreak.smart.\(index)", content: content, trigger: trigger)
+            let request = UNNotificationRequest(identifier: "sipli.smart.\(index)", content: content, trigger: trigger)
             UNUserNotificationCenter.current().add(request)
 
             fireDate = fireDate.addingTimeInterval(intervalSeconds)
@@ -203,7 +203,7 @@ final class NotificationScheduler: ObservableObject {
                 """
 
             let session = LanguageModelSession(instructions: """
-                You are a cheerful hydration coach inside a mobile app called Sipstreak.
+                You are a cheerful hydration coach inside a mobile app called Sipli.
                 You write short, warm, motivational nudges to help people drink more water.
                 Keep every response under 12 words. Be encouraging, never guilt-tripping.
                 """)
@@ -284,12 +284,12 @@ final class NotificationScheduler: ObservableObject {
             dateComponents.minute = minutes % 60
 
             let content = UNMutableNotificationContent()
-            content.title = "Sipstreak"
+            content.title = "Sipli"
             content.body = staticMessages[index % staticMessages.count]
             content.sound = .default
 
             let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
-            let request = UNNotificationRequest(identifier: "sipstreak.classic.\(index)", content: content, trigger: trigger)
+            let request = UNNotificationRequest(identifier: "sipli.classic.\(index)", content: content, trigger: trigger)
             UNUserNotificationCenter.current().add(request)
         }
     }

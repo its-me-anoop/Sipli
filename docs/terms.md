@@ -1,21 +1,21 @@
 # Terms of Use
 
-**Sipstreak**
+**Sipli**
 **Last updated: February 25, 2026**
 
-Please read these Terms of Use ("Terms") carefully before using Sipstreak ("the app"). By downloading, installing, or using the app, you agree to be bound by these Terms.
+Please read these Terms of Use ("Terms") carefully before using Sipli ("the app"). By downloading, installing, or using the app, you agree to be bound by these Terms.
 
 ## 1. Acceptance of Terms
 
-By accessing or using Sipstreak, you agree to these Terms and our [Privacy Policy](/Sipstreak/privacy). If you do not agree, do not use the app.
+By accessing or using Sipli, you agree to these Terms and our [Privacy Policy](/Sipli/privacy). If you do not agree, do not use the app.
 
 ## 2. Description of Service
 
-Sipstreak is a personal hydration tracking app that helps you monitor daily water intake, set hydration goals, and build healthy drinking habits. The app integrates with Apple HealthKit, Apple WeatherKit, and local device sensors to provide personalized hydration recommendations.
+Sipli is a personal hydration tracking app that helps you monitor daily water intake, set hydration goals, and build healthy drinking habits. The app integrates with Apple HealthKit, Apple WeatherKit, and local device sensors to provide personalized hydration recommendations.
 
 ## 3. Not Medical Advice
 
-Sipstreak is a wellness and lifestyle tool. It is **not a medical device** and does not provide medical advice, diagnosis, or treatment.
+Sipli is a wellness and lifestyle tool. It is **not a medical device** and does not provide medical advice, diagnosis, or treatment.
 
 - Hydration goals are estimates based on general guidelines and your profile (weight, activity level, weather conditions).
 - The app is not a substitute for professional medical advice.
@@ -24,7 +24,7 @@ Sipstreak is a wellness and lifestyle tool. It is **not a medical device** and d
 
 ## 4. Subscription and Payment
 
-Sipstreak offers a subscription for access to the app's features:
+Sipli offers a subscription for access to the app's features:
 
 - **Free trial** — New users receive a 1-week free trial.
 - **Monthly subscription** — After the trial, the subscription automatically renews at the listed price unless canceled at least 24 hours before the end of the current billing period.
@@ -32,7 +32,7 @@ Sipstreak offers a subscription for access to the app's features:
 - **Cancellation** — You can manage or cancel your subscription at any time in iOS Settings > Apple ID > Subscriptions.
 - **Refunds** — Refund requests are handled by Apple per their [refund policy](https://support.apple.com/en-us/HT204084).
 
-Prices are set in App Store Connect and may vary by region. Sipstreak reserves the right to change subscription pricing with advance notice.
+Prices are set in App Store Connect and may vary by region. Sipli reserves the right to change subscription pricing with advance notice.
 
 ## 5. User Responsibilities
 
@@ -45,19 +45,19 @@ You agree to:
 
 ## 6. Health Data
 
-If you choose to connect Sipstreak with Apple HealthKit:
+If you choose to connect Sipli with Apple HealthKit:
 
 - You authorize the app to read workout and active energy data and to write water intake data to Apple Health.
 - You may revoke this access at any time in iOS Settings > Privacy & Security > Health.
-- Sipstreak processes health data locally on your device and does not transmit it to external servers.
+- Sipli processes health data locally on your device and does not transmit it to external servers.
 
 ## 7. Intellectual Property
 
-All content, design, graphics, and code in Sipstreak are owned by Anoop Jose and are protected by applicable intellectual property laws. You may not copy, modify, distribute, or create derivative works based on the app without prior written permission.
+All content, design, graphics, and code in Sipli are owned by Anoop Jose and are protected by applicable intellectual property laws. You may not copy, modify, distribute, or create derivative works based on the app without prior written permission.
 
 ## 8. Disclaimer of Warranties
 
-Sipstreak is provided "as is" and "as available" without warranties of any kind, either express or implied, including but not limited to:
+Sipli is provided "as is" and "as available" without warranties of any kind, either express or implied, including but not limited to:
 
 - Accuracy or reliability of hydration goal calculations.
 - Uninterrupted or error-free operation.
@@ -70,13 +70,13 @@ To the maximum extent permitted by applicable law, Anoop Jose shall not be liabl
 
 ## 10. Third-Party Services
 
-Sipstreak integrates with the following Apple services:
+Sipli integrates with the following Apple services:
 
 - **Apple HealthKit** — Governed by Apple's terms and your device privacy settings.
 - **Apple WeatherKit** — Weather data provided by Apple Weather. See [Apple Weather legal attribution](https://weatherkit.apple.com/legal-attribution.html).
 - **Apple StoreKit** — In-app purchases and subscriptions are processed by Apple.
 
-These services are subject to their own terms and privacy policies. Sipstreak is not responsible for the availability or accuracy of third-party services.
+These services are subject to their own terms and privacy policies. Sipli is not responsible for the availability or accuracy of third-party services.
 
 ## 11. Termination
 

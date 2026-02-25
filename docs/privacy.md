@@ -1,9 +1,9 @@
 # Privacy Policy
 
-**Sipstreak**
+**Sipli**
 **Last updated: February 25, 2026**
 
-Sipstreak ("we", "our", or "the app") is a hydration tracking app developed by Anoop Jose. Your privacy is important to us. This policy explains what data Sipstreak collects, how it is used, and your choices regarding that data.
+Sipli ("we", "our", or "the app") is a hydration tracking app developed by Anoop Jose. Your privacy is important to us. This policy explains what data Sipli collects, how it is used, and your choices regarding that data.
 
 ## Data We Collect
 
@@ -22,17 +22,17 @@ During onboarding and in Settings, you may provide:
 
 ### Health Data (Apple HealthKit)
 
-If you grant permission, Sipstreak reads and writes the following HealthKit data:
+If you grant permission, Sipli reads and writes the following HealthKit data:
 
-- **Dietary water** (read and write) — Sipstreak writes your manually logged water intake to Apple Health and reads water entries from other apps to avoid duplicates.
-- **Workouts** (read only) — Sipstreak reads today's workout duration to adjust your hydration goal for exercise.
-- **Active energy burned** (read only) — Sipstreak reads today's calorie burn to further personalize your hydration goal.
+- **Dietary water** (read and write) — Sipli writes your manually logged water intake to Apple Health and reads water entries from other apps to avoid duplicates.
+- **Workouts** (read only) — Sipli reads today's workout duration to adjust your hydration goal for exercise.
+- **Active energy burned** (read only) — Sipli reads today's calorie burn to further personalize your hydration goal.
 
-HealthKit data is stored securely by Apple and is never sent to external servers by Sipstreak.
+HealthKit data is stored securely by Apple and is never sent to external servers by Sipli.
 
 ### Location Data
 
-If you grant permission, Sipstreak accesses your approximate location (accuracy: ~1 kilometer) to retrieve local weather conditions via Apple WeatherKit. Your location is:
+If you grant permission, Sipli accesses your approximate location (accuracy: ~1 kilometer) to retrieve local weather conditions via Apple WeatherKit. Your location is:
 
 - Used only to fetch weather data (temperature and humidity).
 - Held temporarily in memory while the app is open.
@@ -44,7 +44,7 @@ Temperature, humidity, and weather conditions are fetched from Apple WeatherKit 
 
 ### Device Motion
 
-Sipstreak uses your device's accelerometer and gyroscope to animate the liquid effect in the progress view. Motion data is used in real time for visual effects only and is **never stored or transmitted**.
+Sipli uses your device's accelerometer and gyroscope to animate the liquid effect in the progress view. Motion data is used in real time for visual effects only and is **never stored or transmitted**.
 
 ### Preferences and Settings
 
@@ -70,17 +70,17 @@ All app data is stored locally on your device in the app's sandboxed storage:
 
 ## Data Sharing
 
-Sipstreak does not sell, share, or transfer your personal data to third parties.
+Sipli does not sell, share, or transfer your personal data to third parties.
 
 The only external data flows are:
 
 - **Apple WeatherKit** — Your approximate location is sent to Apple's WeatherKit service to retrieve weather conditions. This is governed by [Apple's Privacy Policy](https://www.apple.com/legal/privacy/).
-- **Apple StoreKit** — Subscription purchases and verification are handled entirely by Apple. Sipstreak does not process or store payment information.
+- **Apple StoreKit** — Subscription purchases and verification are handled entirely by Apple. Sipli does not process or store payment information.
 - **Apple HealthKit** — Health data is read from and written to Apple Health with your explicit permission.
 
 ## On-Device Intelligence
 
-Sipstreak may use Apple's on-device language models (Apple Intelligence) to generate personalized hydration tips and notification messages on supported devices. This processing happens entirely on your device. **No data is sent to external AI services.**
+Sipli may use Apple's on-device language models (Apple Intelligence) to generate personalized hydration tips and notification messages on supported devices. This processing happens entirely on your device. **No data is sent to external AI services.**
 
 ## Your Choices
 
@@ -94,7 +94,7 @@ You have full control over your data:
 
 ## Children's Privacy
 
-Sipstreak is not directed at children under the age of 13. We do not knowingly collect personal information from children.
+Sipli is not directed at children under the age of 13. We do not knowingly collect personal information from children.
 
 ## Changes to This Policy
 

@@ -5,7 +5,7 @@
   <key>CFBundleDevelopmentRegion</key>
   <string>$(DEVELOPMENT_LANGUAGE)</string>
   <key>CFBundleDisplayName</key>
-  <string>Sipstreak</string>
+  <string>Sipli</string>
   <key>CFBundleExecutable</key>
   <string>$(EXECUTABLE_NAME)</string>
   <key>CFBundleIdentifier</key>
@@ -40,10 +40,10 @@
     <string>UIInterfaceOrientationLandscapeRight</string>
   </array>
   <key>NSHealthShareUsageDescription</key>
-  <string>Sipstreak reads workout and activity data (exercise minutes and calories burned) to personalize your hydration goal.</string>
+  <string>Sipli reads workout and activity data (exercise minutes and calories burned) to personalize your hydration goal.</string>
   <key>NSHealthUpdateUsageDescription</key>
-  <string>Sipstreak writes your water intake to Health.</string>
+  <string>Sipli writes your water intake to Health.</string>
   <key>NSLocationWhenInUseUsageDescription</key>
-  <string>Sipstreak uses your location to estimate local weather for smarter hydration goals.</string>
+  <string>Sipli uses your location to estimate local weather for smarter hydration goals.</string>
 </dict>
 </plist>

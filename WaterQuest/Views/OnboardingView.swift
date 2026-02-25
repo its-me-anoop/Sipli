@@ -759,7 +759,7 @@ private struct AnimatedWelcomeStep: View {
                     .opacity(appearStep1 ? 1 : 0)
 
                 VStack(spacing: isRegular ? 14 : 10) {
-                    Text("Welcome to Sipstreak")
+                    Text("Welcome to Sipli")
                         .font(.largeTitle.weight(.bold))
                         .multilineTextAlignment(.center)
 

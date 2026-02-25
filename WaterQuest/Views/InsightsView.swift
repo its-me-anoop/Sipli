@@ -661,7 +661,7 @@ struct InsightsView: View {
             guard SystemLanguageModel.default.isAvailable else { return nil }
 
             let session = LanguageModelSession(instructions: """
-                You are a hydration coach inside Sipstreak, a mobile hydration tracking app.
+                You are a hydration coach inside Sipli, a mobile hydration tracking app.
                 Provide brief, personalized, encouraging insights about the user's hydration habits.
                 Keep responses to 2-3 sentences. Be specific about their data. No emojis.
                 """)
