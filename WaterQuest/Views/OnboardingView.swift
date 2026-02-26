@@ -289,6 +289,11 @@ struct OnboardingView: View {
         }
     }
 
+    @State private var continueRippleOrigin: CGPoint = .zero
+    @State private var continueRippleCounter: Int = 0
+    @State private var backRippleOrigin: CGPoint = .zero
+    @State private var backRippleCounter: Int = 0
+
     private var navigationBar: some View {
         VStack(spacing: 12) {
             // Step counter
@@ -316,6 +321,13 @@ struct OnboardingView: View {
                         .shadow(color: .black.opacity(0.1), radius: 5, y: 2)
                 }
                 .buttonStyle(BouncyButtonStyle())
+                .onPressingChanged { point in
+                    if let point {
+                        backRippleOrigin = point
+                        backRippleCounter += 1
+                    }
+                }
+                .modifier(RippleEffect(at: backRippleOrigin, trigger: backRippleCounter))
                 .opacity(step > 0 ? 1 : 0)
                 .disabled(step == 0)
                 .animation(Theme.fluidSpring, value: step)
@@ -347,6 +359,13 @@ struct OnboardingView: View {
                         .shadow(color: Theme.lagoon.opacity(0.3), radius: 8, y: 4)
                 }
                 .buttonStyle(BouncyButtonStyle())
+                .onPressingChanged { point in
+                    if let point {
+                        continueRippleOrigin = point
+                        continueRippleCounter += 1
+                    }
+                }
+                .modifier(RippleEffect(at: continueRippleOrigin, trigger: continueRippleCounter))
                 .animation(Theme.quickSpring, value: step)
             }
         }
@@ -549,6 +568,8 @@ private struct AnimatedOnboardingPage<Content: View>: View {
     @State private var showTitle = false
     @State private var showSubtitle = false
     @State private var showCard = false
+    @State private var iconRippleOrigin: CGPoint = .zero
+    @State private var iconRippleCounter: Int = 0
 
     var body: some View {
         ScrollView {
@@ -612,6 +633,13 @@ private struct AnimatedOnboardingPage<Content: View>: View {
                         )
                         .modifier(IconAnimationModifier(animation: iconAnimation, isAnimating: isAnimating))
                 }
+                .onPressingChanged { point in
+                    if let point {
+                        iconRippleOrigin = point
+                        iconRippleCounter += 1
+                    }
+                }
+                .modifier(RippleEffect(at: iconRippleOrigin, trigger: iconRippleCounter))
                 .scaleEffect(showIcon ? 1 : 0.6)
                 .opacity(showIcon ? 1 : 0)
 
@@ -728,6 +756,8 @@ private struct AnimatedWelcomeStep: View {
     @State private var appearStep4 = false // Row 1
     @State private var appearStep5 = false // Row 2
     @State private var appearStep6 = false // Row 3
+    @State private var mascotRippleOrigin: CGPoint = .zero
+    @State private var mascotRippleCounter: Int = 0
 
     var body: some View {
         ScrollView {
@@ -755,6 +785,13 @@ private struct AnimatedWelcomeStep: View {
                             )
                             .shadow(color: Theme.lagoon.opacity(0.15), radius: 24, x: 0, y: 12)
                     )
+                    .onPressingChanged { point in
+                        if let point {
+                            mascotRippleOrigin = point
+                            mascotRippleCounter += 1
+                        }
+                    }
+                    .modifier(RippleEffect(at: mascotRippleOrigin, trigger: mascotRippleCounter))
                     .scaleEffect(appearStep1 ? 1 : 0.6)
                     .opacity(appearStep1 ? 1 : 0)
 
