@@ -22,10 +22,7 @@ struct WaterQuestApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ZStack {
-                AppWaterBackground().ignoresSafeArea()
-                RootView()
-            }
+            RootView()
             .tint(Theme.lagoon)
             .environmentObject(store)
             .environmentObject(healthKit)
