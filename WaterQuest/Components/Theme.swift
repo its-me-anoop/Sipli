@@ -88,13 +88,13 @@ enum Theme {
         colors: [
             Color(uiColor: UIColor { traits in
                 traits.userInterfaceStyle == .dark
-                    ? UIColor(red: 0.12, green: 0.16, blue: 0.30, alpha: 1)
-                    : UIColor(red: 0.93, green: 0.95, blue: 1.0, alpha: 1)
+                    ? UIColor(red: 0.14, green: 0.16, blue: 0.34, alpha: 1)
+                    : UIColor(red: 0.88, green: 0.90, blue: 1.0, alpha: 1)
             }),
             Color(uiColor: UIColor { traits in
                 traits.userInterfaceStyle == .dark
-                    ? UIColor(red: 0.16, green: 0.12, blue: 0.28, alpha: 1)
-                    : UIColor(red: 0.95, green: 0.93, blue: 1.0, alpha: 1)
+                    ? UIColor(red: 0.20, green: 0.14, blue: 0.32, alpha: 1)
+                    : UIColor(red: 0.94, green: 0.88, blue: 1.0, alpha: 1)
             })
         ],
         startPoint: .topLeading,
@@ -105,13 +105,13 @@ enum Theme {
         colors: [
             Color(uiColor: UIColor { traits in
                 traits.userInterfaceStyle == .dark
-                    ? UIColor(red: 0.08, green: 0.16, blue: 0.24, alpha: 1)
-                    : UIColor(red: 0.92, green: 0.96, blue: 1.0, alpha: 1)
+                    ? UIColor(red: 0.08, green: 0.18, blue: 0.30, alpha: 1)
+                    : UIColor(red: 0.86, green: 0.93, blue: 1.0, alpha: 1)
             }),
             Color(uiColor: UIColor { traits in
                 traits.userInterfaceStyle == .dark
-                    ? UIColor(red: 0.10, green: 0.20, blue: 0.28, alpha: 1)
-                    : UIColor(red: 0.88, green: 0.95, blue: 0.97, alpha: 1)
+                    ? UIColor(red: 0.10, green: 0.24, blue: 0.34, alpha: 1)
+                    : UIColor(red: 0.82, green: 0.92, blue: 0.96, alpha: 1)
             })
         ],
         startPoint: .top,
