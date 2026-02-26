@@ -316,8 +316,9 @@ struct OnboardingView: View {
                         .font(.headline)
                         .padding(.horizontal, 24)
                         .padding(.vertical, 14)
-                        .background(.ultraThinMaterial)
+                        .background(Theme.cardSurface)
                         .clipShape(Capsule())
+                        .overlay(Capsule().stroke(Theme.glassBorder, lineWidth: 1))
                         .shadow(color: .black.opacity(0.1), radius: 5, y: 2)
                 }
                 .buttonStyle(BouncyButtonStyle())
