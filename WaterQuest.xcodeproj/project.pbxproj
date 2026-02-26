@@ -75,8 +75,6 @@
 		EE3333333333333333333333 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE1111111111111111111111 /* WidgetKit.framework */; };
 		EE4444444444444444444444 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE2222222222222222222222 /* SwiftUI.framework */; };
 		FF8888888888888888888888 /* SipliWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA9999999999999999999999 /* SipliWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		C3E4F5A6B7283940516C7D8E /* ThemeTransition.metal in Sources */ = {isa = PBXBuildFile; fileRef = A1C2D3E4F5061728394A5B6C /* ThemeTransition.metal */; };
-		D4F5A6B7C8394051627D8E9F /* ThemeTransitionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D3E4F5A6172839405B6C7D /* ThemeTransitionView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -165,8 +163,6 @@
 		FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalBreakdown.swift; sourceTree = "<group>"; };
 		FD0B42119D7BD312FCDAF766 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		FE848C59D9014D3ABE6E04BE /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
-		A1C2D3E4F5061728394A5B6C /* ThemeTransition.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = ThemeTransition.metal; sourceTree = "<group>"; };
-		B2D3E4F5A6172839405B6C7D /* ThemeTransitionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ThemeTransitionView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -202,7 +198,6 @@
 				8314F97AB0A474B5CB47AF27 /* Components */,
 				44EAA4E4ABDD288F8271E4DF /* Models */,
 				FFB2F05A9B4A3597CB9CEBB3 /* Services */,
-				E5A6B7C8D9405162738E9FA0 /* Shaders */,
 				9933CCDBB5AD1B9F1574F3ED /* Supporting */,
 				D5CFBAA6834C033BD13BB3DF /* Views */,
 			);
@@ -246,7 +241,6 @@
 				7B8BDAA9F823F748DDAD26EB /* ProgressRing.swift */,
 				3ABC282C313B061E1E34EDF7 /* StatPill.swift */,
 				B9CBD2C7DC27199FF61EB613 /* Theme.swift */,
-				B2D3E4F5A6172839405B6C7D /* ThemeTransitionView.swift */,
 				9728B3EA3CEC0654348AC8A3 /* WaveView.swift */,
 			);
 			path = Components;
@@ -353,14 +347,6 @@
 				8C2DDAD6DD4B924CCA0509D0 /* WeatherClient.swift */,
 			);
 			path = Services;
-			sourceTree = "<group>";
-		};
-		E5A6B7C8D9405162738E9FA0 /* Shaders */ = {
-			isa = PBXGroup;
-			children = (
-				A1C2D3E4F5061728394A5B6C /* ThemeTransition.metal */,
-			);
-			path = Shaders;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -526,8 +512,6 @@
 				368738D16B3E40D6E50CF1D8 /* StatPill.swift in Sources */,
 				371AD185C88F6CB932BDEF79 /* SubscriptionManager.swift in Sources */,
 				524BE8DF8217231DA89BF9FE /* Theme.swift in Sources */,
-				C3E4F5A6B7283940516C7D8E /* ThemeTransition.metal in Sources */,
-				D4F5A6B7C8394051627D8E9F /* ThemeTransitionView.swift in Sources */,
 				8CE43E783BB223277701CF7E /* UnitSystem.swift in Sources */,
 				B45B8AFC80046E64CEA7EE18 /* UserProfile.swift in Sources */,
 				3F684105CCCD5783655879E4 /* WaterQuestApp.swift in Sources */,
