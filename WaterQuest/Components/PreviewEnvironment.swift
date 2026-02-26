@@ -8,7 +8,6 @@ struct PreviewEnvironment<Content: View>: View {
     @StateObject private var locationManager: LocationManager
     @StateObject private var weatherClient: WeatherClient
     @StateObject private var subscriptionManager = SubscriptionManager()
-    @StateObject private var themeTransition = ThemeTransitionCoordinator()
 
     private let content: Content
 
@@ -31,7 +30,6 @@ struct PreviewEnvironment<Content: View>: View {
         .environmentObject(locationManager)
         .environmentObject(weatherClient)
         .environmentObject(subscriptionManager)
-        .environmentObject(themeTransition)
     }
 }
 #endif

@@ -9,7 +9,6 @@ struct SettingsView: View {
     @EnvironmentObject private var locationManager: LocationManager
 
     @AppStorage("appTheme") private var appTheme: AppTheme = .system
-    @EnvironmentObject private var themeTransition: ThemeTransitionCoordinator
 
     @State private var customGoalEnabled = false
     @State private var customGoalValue: Double = 2200
@@ -131,43 +130,33 @@ struct SettingsView: View {
         DashboardCard(title: "Appearance", icon: "paintbrush.fill") {
             HStack(spacing: 10) {
                 ForEach(AppTheme.allCases) { theme in
-                    themeButton(for: theme)
+                    Button {
+                        Haptics.selection()
+                        withAnimation(Theme.quickSpring) {
+                            appTheme = theme
+                        }
+                    } label: {
+                        VStack(spacing: 8) {
+                            Image(systemName: theme.icon)
+                                .font(.title3)
+                                .foregroundStyle(appTheme == theme ? .white : Theme.lagoon)
+                                .frame(width: 44, height: 44)
+                                .background(
+                                    Circle()
+                                        .fill(appTheme == theme ? Theme.lagoon : Theme.lagoon.opacity(0.12))
+                                )
+                            Text(theme.label)
+                                .font(.caption.weight(.medium))
+                                .foregroundStyle(appTheme == theme ? .primary : .secondary)
+                        }
+                        .frame(maxWidth: .infinity)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("\(theme.label) theme")
+                    .accessibilityAddTraits(appTheme == theme ? .isSelected : [])
                 }
             }
         }
-    }
-
-    private func themeButton(for theme: AppTheme) -> some View {
-        GeometryReader { geo in
-            Button {
-                guard theme != appTheme else { return }
-                Haptics.selection()
-                let frame = geo.frame(in: .global)
-                let tapOrigin = CGPoint(x: frame.midX, y: frame.midY)
-                themeTransition.startTransition(from: tapOrigin) {
-                    appTheme = theme
-                }
-            } label: {
-                VStack(spacing: 8) {
-                    Image(systemName: theme.icon)
-                        .font(.title3)
-                        .foregroundStyle(appTheme == theme ? .white : Theme.lagoon)
-                        .frame(width: 44, height: 44)
-                        .background(
-                            Circle()
-                                .fill(appTheme == theme ? Theme.lagoon : Theme.lagoon.opacity(0.12))
-                        )
-                    Text(theme.label)
-                        .font(.caption.weight(.medium))
-                        .foregroundStyle(appTheme == theme ? .primary : .secondary)
-                }
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
-            }
-            .buttonStyle(.plain)
-            .accessibilityLabel("\(theme.label) theme")
-            .accessibilityAddTraits(appTheme == theme ? .isSelected : [])
-        }
-        .frame(height: 70)
     }
 
     // MARK: - Daily Goal
