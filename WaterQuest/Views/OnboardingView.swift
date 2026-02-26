@@ -316,9 +316,7 @@ struct OnboardingView: View {
                         .font(.headline)
                         .padding(.horizontal, 24)
                         .padding(.vertical, 14)
-                        .background(Theme.cardSurface)
-                        .clipShape(Capsule())
-                        .overlay(Capsule().stroke(Theme.glassBorder, lineWidth: 1))
+                        .background(Theme.card, in: Capsule())
                         .shadow(color: .black.opacity(0.1), radius: 5, y: 2)
                 }
                 .buttonStyle(BouncyButtonStyle())
@@ -827,11 +825,7 @@ private struct AnimatedWelcomeStep: View {
                 .padding(20)
                 .background(
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(.ultraThinMaterial)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .stroke(Theme.glassBorder, lineWidth: 1)
+                        .fill(Theme.card)
                 )
                 .offset(y: appearStep3 ? 0 : 20)
                 .opacity(appearStep3 ? 1 : 0)

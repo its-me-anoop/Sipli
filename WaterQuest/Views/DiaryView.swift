@@ -122,11 +122,7 @@ struct DiaryView: View {
         .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(.thickMaterial)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .stroke(Color.white.opacity(0.4), lineWidth: 1)
+                .fill(Theme.card)
         )
     }
 
@@ -164,11 +160,7 @@ struct DiaryView: View {
         .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(.thickMaterial)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .stroke(Color.white.opacity(0.4), lineWidth: 1)
+                .fill(Theme.card)
         )
     }
 

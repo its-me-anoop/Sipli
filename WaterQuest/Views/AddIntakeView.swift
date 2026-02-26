@@ -174,11 +174,7 @@ private struct SavedBanner: View {
         .padding(.vertical, 10)
         .background(
             Capsule(style: .continuous)
-                .fill(.thinMaterial)
-        )
-        .overlay(
-            Capsule(style: .continuous)
-                .stroke(Theme.glassBorder, lineWidth: 1)
+                .fill(Theme.card)
         )
         .shadow(color: Theme.shadowColor, radius: 8, x: 0, y: 4)
     }

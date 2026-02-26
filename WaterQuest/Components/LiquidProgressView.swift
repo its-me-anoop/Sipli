@@ -35,11 +35,7 @@ struct LiquidProgressView: View {
         ZStack {
             // Background empty state
             ContainerShape()
-                .fill(Theme.glassLight)
-                .overlay(
-                    ContainerShape()
-                        .stroke(Theme.glassBorder, lineWidth: 2)
-                )
+                .fill(Theme.card)
                 .shadow(color: Theme.shadowColor, radius: 8, x: 0, y: 4)
 
 

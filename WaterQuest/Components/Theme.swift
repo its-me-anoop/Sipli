@@ -128,11 +128,7 @@ enum Theme {
 
     static func glassCard(cornerRadius: CGFloat = 20) -> some View {
         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-            .fill(cardSurface)
-            .overlay(
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .stroke(glassBorder, lineWidth: 1)
-            )
+            .fill(card)
             .shadow(color: shadowColor, radius: 10, x: 0, y: 4)
     }
 }

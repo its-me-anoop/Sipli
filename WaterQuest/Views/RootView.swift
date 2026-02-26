@@ -113,11 +113,7 @@ struct SubscriptionRequiredView: View {
                     .padding(20)
                     .background(
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .fill(.ultraThinMaterial)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .stroke(Theme.glassBorder, lineWidth: 1)
+                            .fill(Theme.card)
                     )
 
                     // Monthly plan display

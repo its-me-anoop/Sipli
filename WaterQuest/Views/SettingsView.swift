@@ -65,11 +65,7 @@ struct SettingsView: View {
                     .padding(12)
                     .background(
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(.ultraThinMaterial)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .stroke(Theme.glassBorder, lineWidth: 1)
+                            .fill(Theme.card)
                     )
                 }
 
@@ -348,11 +344,7 @@ struct SettingsView: View {
                     .padding(12)
                     .background(
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(.ultraThinMaterial)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .stroke(Theme.glassBorder, lineWidth: 1)
+                            .fill(Theme.card)
                     )
                 }
                 .buttonStyle(.plain)
@@ -401,11 +393,7 @@ struct SettingsView: View {
                     .padding(12)
                     .background(
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(.ultraThinMaterial)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .stroke(Theme.glassBorder, lineWidth: 1)
+                            .fill(Theme.card)
                     )
                 }
 
@@ -425,11 +413,7 @@ struct SettingsView: View {
                     .padding(12)
                     .background(
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(.ultraThinMaterial)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .stroke(Theme.glassBorder, lineWidth: 1)
+                            .fill(Theme.card)
                     )
                 }
 
@@ -447,11 +431,7 @@ struct SettingsView: View {
                 .padding(12)
                 .background(
                     RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .fill(.ultraThinMaterial)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 12, style: .continuous)
-                        .stroke(Theme.glassBorder, lineWidth: 1)
+                        .fill(Theme.card)
                 )
 
                 Link(destination: Legal.manageSubscriptionsURL) {
@@ -470,11 +450,7 @@ struct SettingsView: View {
                     .padding(12)
                     .background(
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(.ultraThinMaterial)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .stroke(Theme.glassBorder, lineWidth: 1)
+                            .fill(Theme.card)
                     )
                 }
             }
@@ -537,11 +513,7 @@ struct SettingsView: View {
             .padding(12)
             .background(
                 RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .fill(.ultraThinMaterial)
-            )
-            .overlay(
-                RoundedRectangle(cornerRadius: 12, style: .continuous)
-                    .stroke(Theme.glassBorder, lineWidth: 1)
+                    .fill(Theme.card)
             )
         }
         .buttonStyle(.plain)

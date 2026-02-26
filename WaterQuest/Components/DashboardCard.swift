@@ -28,11 +28,7 @@ struct DashboardCard<Content: View>: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(.thickMaterial)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .stroke(Color.white.opacity(0.5), lineWidth: 1)
+                .fill(Theme.card)
         )
         .shadow(color: Theme.shadowColor.opacity(0.5), radius: 10, x: 0, y: 5)
     }
