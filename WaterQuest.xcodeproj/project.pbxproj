@@ -75,6 +75,8 @@
 		EE3333333333333333333333 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE1111111111111111111111 /* WidgetKit.framework */; };
 		EE4444444444444444444444 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE2222222222222222222222 /* SwiftUI.framework */; };
 		FF8888888888888888888888 /* SipliWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA9999999999999999999999 /* SipliWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		C3D4E5F6A7B8C9D0E1F2A3B4 /* Ripple.metal in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E1F2 /* Ripple.metal */; };
+		D4E5F6A7B8C9D0E1F2A3B4C5 /* RippleEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7B8C9D0E1F2A3 /* RippleEffect.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -163,6 +165,8 @@
 		FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalBreakdown.swift; sourceTree = "<group>"; };
 		FD0B42119D7BD312FCDAF766 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		FE848C59D9014D3ABE6E04BE /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* Ripple.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Ripple.metal; sourceTree = "<group>"; };
+		B2C3D4E5F6A7B8C9D0E1F2A3 /* RippleEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RippleEffect.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -198,6 +202,7 @@
 				8314F97AB0A474B5CB47AF27 /* Components */,
 				44EAA4E4ABDD288F8271E4DF /* Models */,
 				FFB2F05A9B4A3597CB9CEBB3 /* Services */,
+				E5F6A7B8C9D0E1F2A3B4C5D6 /* Shaders */,
 				9933CCDBB5AD1B9F1574F3ED /* Supporting */,
 				D5CFBAA6834C033BD13BB3DF /* Views */,
 			);
@@ -239,11 +244,20 @@
 				A7F3E9B2C4D61805FA93B1E2 /* PreviewEnvironment.swift */,
 				8B9CF2D397867B06457E11FA /* PrimaryButton.swift */,
 				7B8BDAA9F823F748DDAD26EB /* ProgressRing.swift */,
+				B2C3D4E5F6A7B8C9D0E1F2A3 /* RippleEffect.swift */,
 				3ABC282C313B061E1E34EDF7 /* StatPill.swift */,
 				B9CBD2C7DC27199FF61EB613 /* Theme.swift */,
 				9728B3EA3CEC0654348AC8A3 /* WaveView.swift */,
 			);
 			path = Components;
+			sourceTree = "<group>";
+		};
+		E5F6A7B8C9D0E1F2A3B4C5D6 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A7B8C9D0E1F2 /* Ripple.metal */,
+			);
+			path = Shaders;
 			sourceTree = "<group>";
 		};
 		9933CCDBB5AD1B9F1574F3ED /* Supporting */ = {
@@ -506,6 +520,8 @@
 				D6E8A4F1B37C920E5D1A8F63 /* PreviewEnvironment.swift in Sources */,
 				E367CAB1741850BAFCE4F3F9 /* PrimaryButton.swift in Sources */,
 				449C15C42674C41122CC02B6 /* ProgressRing.swift in Sources */,
+				C3D4E5F6A7B8C9D0E1F2A3B4 /* Ripple.metal in Sources */,
+				D4E5F6A7B8C9D0E1F2A3B4C5 /* RippleEffect.swift in Sources */,
 				4E93E1598D092FFCC6C6381F /* RootView.swift in Sources */,
 				BBBF0A2E700E876678D8DA69 /* SettingsView.swift in Sources */,
 				E054558C7B7CF349F6CDD709 /* SplashScreenView.swift in Sources */,
