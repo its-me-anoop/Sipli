@@ -74,7 +74,7 @@ struct OnboardingView: View {
             subtitle: "What should we call you to keep things personal?",
             iconName: "person.wave.2.fill",
             iconAnimation: .wiggle,
-            iconColor: Theme.lagoon
+            circleColor: Theme.lagoon
         ) {
             TextField("Your Name", text: $name)
                 .textInputAutocapitalization(.words)
@@ -91,7 +91,7 @@ struct OnboardingView: View {
             subtitle: "We use your weight and preferred units to calculate a baseline hydration goal.",
             iconName: "scalemass.fill",
             iconAnimation: .tilt,
-            iconColor: Theme.lagoon
+            circleColor: Theme.coral
         ) {
             VStack(spacing: 24) {
                 Picker("Preferred Units", selection: $unitSystem) {
@@ -129,7 +129,7 @@ struct OnboardingView: View {
             subtitle: "More movement means more water. How active are you on an average day?",
             iconName: "figure.run",
             iconAnimation: .bounce,
-            iconColor: Theme.coral
+            circleColor: Theme.mint
         ) {
             VStack(spacing: 16) {
                 ForEach(ActivityLevel.allCases, id: \.self) { level in
@@ -195,7 +195,7 @@ struct OnboardingView: View {
             subtitle: "We'll suggest a dynamic goal, or you can take control and set a custom daily target.",
             iconName: "target",
             iconAnimation: .spin,
-            iconColor: Theme.sun
+            circleColor: Theme.sun
         ) {
             VStack(spacing: 24) {
                 Toggle("Set a custom daily goal", isOn: $customGoalEnabled)
@@ -258,7 +258,7 @@ struct OnboardingView: View {
             subtitle: "When does your day begin and end? We'll only send reminders while you're awake.",
             iconName: "sun.and.horizon.fill",
             iconAnimation: .rise,
-            iconColor: Theme.sun
+            circleColor: Theme.peach
         ) {
             VStack(spacing: 20) {
                 DatePicker("Wake Time", selection: $wakeTime, displayedComponents: .hourAndMinute)
@@ -279,7 +279,7 @@ struct OnboardingView: View {
             subtitle: "We can send friendly reminders so you never fall behind on your hydration.",
             iconName: "bell.and.waves.left.and.right.fill",
             iconAnimation: .ring,
-            iconColor: Theme.lavender
+            circleColor: Theme.lavender
         ) {
             VStack(alignment: .leading, spacing: 16) {
                 OnboardingFeatureRow(icon: "bell.badge.fill", text: "Gentle nudges throughout your waking hours")
@@ -561,7 +561,8 @@ private struct AnimatedOnboardingPage<Content: View>: View {
     let subtitle: String
     let iconName: String
     var iconAnimation: IconAnimation = .pulse
-    var iconColor: Color = Theme.lagoon
+    var iconColor: Color = .white
+    var circleColor: Color = Theme.lagoon
     @ViewBuilder let content: Content
 
     @State private var isAnimating = false
@@ -583,7 +584,7 @@ private struct AnimatedOnboardingPage<Content: View>: View {
                     if iconAnimation == .spin {
                         ForEach(0..<2, id: \.self) { i in
                             Circle()
-                                .stroke(iconColor.opacity(0.15), lineWidth: 1)
+                                .stroke(circleColor.opacity(0.25), lineWidth: 1)
                                 .frame(width: 140 + CGFloat(i) * 30, height: 140 + CGFloat(i) * 30)
                                 .scaleEffect(isAnimating ? 1.2 : 0.9)
                                 .opacity(isAnimating ? 0 : 0.5)
@@ -601,7 +602,7 @@ private struct AnimatedOnboardingPage<Content: View>: View {
                         Circle()
                             .fill(
                                 RadialGradient(
-                                    colors: [iconColor.opacity(isAnimating ? 0.25 : 0.08), .clear],
+                                    colors: [circleColor.opacity(isAnimating ? 0.3 : 0.1), .clear],
                                     center: .center,
                                     startRadius: 20,
                                     endRadius: 80
@@ -618,19 +619,19 @@ private struct AnimatedOnboardingPage<Content: View>: View {
                         .frame(width: 140, height: 140)
                         .background(
                             Circle()
-                                .fill(.ultraThinMaterial)
+                                .fill(circleColor.gradient)
                                 .overlay(
                                     Circle()
                                         .stroke(
                                             LinearGradient(
-                                                colors: [.white.opacity(0.8), .white.opacity(0.1)],
+                                                colors: [.white.opacity(0.4), .white.opacity(0.05)],
                                                 startPoint: .topLeading,
                                                 endPoint: .bottomTrailing
                                             ),
                                             lineWidth: 1.5
                                         )
                                 )
-                                .shadow(color: iconColor.opacity(0.15), radius: 24, x: 0, y: 12)
+                                .shadow(color: circleColor.opacity(0.35), radius: 24, x: 0, y: 12)
                         )
                         .modifier(IconAnimationModifier(animation: iconAnimation, isAnimating: isAnimating))
                 }
