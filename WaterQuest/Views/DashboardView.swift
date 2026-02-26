@@ -78,7 +78,7 @@ struct DashboardView: View {
                 }
 
                 if store.profile.prefersWeatherGoal {
-                    DashboardCard(title: "Weather", icon: "cloud.sun.fill") {
+                    DashboardCard(title: "Weather", icon: activeWeather.map { weatherIcon($0) } ?? "cloud.sun.fill") {
                         weatherSection
                     }
                 }
