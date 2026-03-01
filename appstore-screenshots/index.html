@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sipli - App Store Screenshots</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+      background: #1a1a2e;
+      color: #fff;
+      min-height: 100vh;
+    }
+
+    /* Control Panel */
+    .controls {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1000;
+      background: rgba(26, 26, 46, 0.95);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .controls h1 {
+      font-size: 18px;
+      font-weight: 600;
+      margin-right: auto;
+    }
+
+    .controls button {
+      padding: 8px 20px;
+      border: none;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .btn-nav {
+      background: rgba(255,255,255,0.1);
+      color: #fff;
+    }
+    .btn-nav:hover { background: rgba(255,255,255,0.2); }
+    .btn-nav.active { background: #1C78F4; }
+
+    .btn-export {
+      background: #34D399;
+      color: #000;
+    }
+    .btn-export:hover { background: #6EE7B7; }
+
+    .btn-export-all {
+      background: #F59E0B;
+      color: #000;
+    }
+    .btn-export-all:hover { background: #FCD34D; }
+
+    .zoom-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #9CA3AF;
+      font-size: 13px;
+    }
+
+    .zoom-control input {
+      width: 100px;
+      accent-color: #1C78F4;
+    }
+
+    /* Canvas Area */
+    .canvas-area {
+      padding-top: 80px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+      padding-bottom: 40px;
+    }
+
+    .canvas-wrapper {
+      transform-origin: top center;
+    }
+
+    /* Screenshot Frame - Exact App Store 6.7" dimensions */
+    .screenshot-frame {
+      width: 1290px;
+      height: 2796px;
+      position: relative;
+      overflow: hidden;
+      display: none;
+    }
+
+    .screenshot-frame.active {
+      display: block;
+    }
+
+    /* Backgrounds */
+    .bg-hero {
+      background: linear-gradient(165deg, #EDF4FF 0%, #D4E4FF 40%, #B8D4FF 100%);
+    }
+
+    .bg-log {
+      background: linear-gradient(180deg, #F8FBFF 0%, #E8F0FE 50%, #D6E8FF 100%);
+    }
+
+    .bg-insights {
+      background: linear-gradient(155deg, #F0F4FF 0%, #DDE6FA 50%, #C8D8F5 100%);
+    }
+
+    .bg-diary {
+      background: linear-gradient(170deg, #FFF9F0 0%, #F0F4FF 40%, #E4EDFF 100%);
+    }
+
+    .bg-coach {
+      background: linear-gradient(160deg, #F3EFFF 0%, #E8E0FF 30%, #DCE8FF 70%, #EDF4FF 100%);
+    }
+
+    .bg-widgets-light {
+      background: linear-gradient(175deg, #EFF4FF 0%, #E0EAFF 40%, #D0DFFF 100%);
+    }
+
+    .bg-widgets-dark {
+      background: linear-gradient(175deg, #111827 0%, #1F2937 50%, #111827 100%);
+    }
+
+    .bg-beverage {
+      background: linear-gradient(160deg, #FFF5EB 0%, #FFF0E0 20%, #EDF4FF 60%, #D4E4FF 100%);
+    }
+
+    .bg-weather {
+      background: linear-gradient(135deg, #FFF3E0 0%, #FFE8CC 25%, #E8F0FE 60%, #D4E4FF 100%);
+    }
+
+    .bg-overview {
+      background: linear-gradient(135deg, #E8F0FE 0%, #D4E4FF 50%, #C8E6D0 100%);
+    }
+
+    /* Decorative Elements */
+    .orb {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.4;
+    }
+
+    .orb-blue { background: rgba(28, 120, 244, 0.3); }
+    .orb-mint { background: rgba(52, 211, 153, 0.25); }
+    .orb-lavender { background: rgba(139, 92, 246, 0.2); }
+    .orb-peach { background: rgba(251, 146, 60, 0.2); }
+
+    /* Text Overlay */
+    .text-overlay {
+      position: absolute;
+      top: 100px;
+      left: 0;
+      right: 0;
+      text-align: center;
+      z-index: 10;
+    }
+
+    .headline {
+      font-size: 88px;
+      font-weight: 700;
+      letter-spacing: -2px;
+      line-height: 1.1;
+      color: #1B1B1B;
+      margin-bottom: 20px;
+    }
+
+    .headline-light {
+      color: #FFFFFF;
+    }
+
+    .subheadline {
+      font-size: 40px;
+      font-weight: 400;
+      color: #6B7280;
+      letter-spacing: -0.5px;
+      line-height: 1.3;
+      padding: 0 80px;
+    }
+
+    .subheadline-light {
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* iPhone Mockup */
+    .iphone-mockup {
+      position: absolute;
+      width: 860px;
+      left: 50%;
+      transform: translateX(-50%);
+      bottom: -40px;
+    }
+
+    .iphone-mockup.centered-higher {
+      bottom: 80px;
+    }
+
+    .iphone-body {
+      background: #1C1C1E;
+      border-radius: 68px;
+      padding: 18px;
+      box-shadow:
+        0 0 0 2px rgba(255,255,255,0.15),
+        0 40px 80px rgba(0,0,0,0.25),
+        0 20px 40px rgba(0,0,0,0.15),
+        inset 0 0 0 1px rgba(255,255,255,0.05);
+      position: relative;
+    }
+
+    .iphone-body::before {
+      content: '';
+      position: absolute;
+      top: -3px;
+      left: -3px;
+      right: -3px;
+      bottom: -3px;
+      border-radius: 71px;
+      background: linear-gradient(160deg, rgba(255,255,255,0.2) 0%, rgba(255,255,255,0.05) 50%, rgba(255,255,255,0.1) 100%);
+      z-index: -1;
+    }
+
+    .iphone-screen {
+      border-radius: 52px;
+      overflow: hidden;
+      position: relative;
+      background: #000;
+    }
+
+    .iphone-screen img {
+      width: 100%;
+      display: block;
+    }
+
+    /* Dynamic Island */
+    .dynamic-island {
+      position: absolute;
+      top: 30px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 150px;
+      height: 42px;
+      background: #000;
+      border-radius: 21px;
+      z-index: 5;
+    }
+
+    /* Side Buttons */
+    .btn-side-right {
+      position: absolute;
+      right: -4px;
+      width: 4px;
+      background: #2C2C2E;
+      border-radius: 0 2px 2px 0;
+    }
+
+    .btn-power { top: 280px; height: 100px; }
+
+    .btn-side-left {
+      position: absolute;
+      left: -4px;
+      width: 4px;
+      background: #2C2C2E;
+      border-radius: 2px 0 0 2px;
+    }
+
+    .btn-mute { top: 220px; height: 40px; }
+    .btn-vol-up { top: 310px; height: 70px; }
+    .btn-vol-down { top: 400px; height: 70px; }
+
+    /* Widget Display (no phone frame) */
+    .widget-showcase {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -45%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 50px;
+    }
+
+    .widget-row {
+      display: flex;
+      gap: 40px;
+      align-items: flex-start;
+    }
+
+    .widget-item {
+      border-radius: 28px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(0,0,0,0.08), 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    .widget-item-dark {
+      box-shadow: 0 15px 40px rgba(0,0,0,0.4), 0 0 60px rgba(28,120,244,0.08);
+    }
+
+    .widget-item img {
+      display: block;
+    }
+
+    .widget-label {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 500;
+      color: #9CA3AF;
+      margin-top: 16px;
+    }
+
+    .widget-label-light {
+      color: rgba(255,255,255,0.4);
+    }
+
+    /* Multi-screen layout */
+    .multi-phone-layout {
+      position: absolute;
+      bottom: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: -40px;
+      align-items: flex-end;
+    }
+
+    .multi-phone {
+      width: 520px;
+    }
+
+    .multi-phone .iphone-body {
+      border-radius: 44px;
+      padding: 12px;
+    }
+
+    .multi-phone .iphone-screen {
+      border-radius: 34px;
+    }
+
+    .multi-phone .dynamic-island {
+      width: 96px;
+      height: 28px;
+      border-radius: 14px;
+      top: 20px;
+    }
+
+    /* Sparkle decorations */
+    .sparkle {
+      position: absolute;
+      width: 24px;
+      height: 24px;
+      opacity: 0.3;
+    }
+
+    .sparkle::before, .sparkle::after {
+      content: '';
+      position: absolute;
+      background: #8B5CF6;
+    }
+
+    .sparkle::before {
+      width: 2px;
+      height: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .sparkle::after {
+      height: 2px;
+      width: 100%;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    /* Status indicator */
+    .status {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.8);
+      color: #9CA3AF;
+      padding: 8px 16px;
+      border-radius: 8px;
+      font-size: 12px;
+      z-index: 1000;
+    }
+
+    /* Lifestyle props */
+    .prop-glass {
+      position: absolute;
+      width: 120px;
+      height: 180px;
+      border: 3px solid rgba(200, 220, 255, 0.6);
+      border-radius: 8px 8px 12px 12px;
+      background: linear-gradient(180deg, rgba(200,230,255,0.15) 0%, rgba(180,210,250,0.3) 100%);
+      box-shadow: inset 0 -40px 30px rgba(180,210,250,0.15);
+    }
+
+    .prop-glass::after {
+      content: '';
+      position: absolute;
+      top: 10%;
+      left: 15%;
+      width: 20%;
+      height: 60%;
+      background: linear-gradient(180deg, rgba(255,255,255,0.4) 0%, transparent 100%);
+      border-radius: 2px;
+    }
+
+    .lemon-slice {
+      position: absolute;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 3px solid #FCD34D;
+      background: radial-gradient(circle, #FEF3C7 30%, #FCD34D 100%);
+    }
+
+    .mint-leaf {
+      position: absolute;
+      width: 40px;
+      height: 28px;
+      background: #34D399;
+      border-radius: 50% 0 50% 0;
+      transform: rotate(-30deg);
+      opacity: 0.7;
+    }
+
+    /* Data dots decoration */
+    .data-dot {
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: rgba(28, 120, 244, 0.15);
+    }
+
+    .data-line {
+      position: absolute;
+      height: 1px;
+      background: rgba(28, 120, 244, 0.08);
+      transform-origin: left center;
+    }
+
+    /* Sun/weather decorations */
+    .sun-glow {
+      position: absolute;
+      width: 300px;
+      height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(251,191,36,0.15) 0%, transparent 70%);
+    }
+
+    .cloud-wisp {
+      position: absolute;
+      width: 200px;
+      height: 60px;
+      background: rgba(255,255,255,0.3);
+      border-radius: 30px;
+      filter: blur(15px);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="controls">
+    <h1>Sipli — App Store Screenshots</h1>
+    <div class="zoom-control">
+      <span>Zoom:</span>
+      <input type="range" id="zoomSlider" min="10" max="50" value="25">
+      <span id="zoomValue">25%</span>
+    </div>
+    <button class="btn-export" onclick="exportCurrent()">Export Current</button>
+    <button class="btn-export-all" onclick="exportAll()">Export All</button>
+  </div>
+
+  <div class="controls" style="top: 64px; border-top: 1px solid rgba(255,255,255,0.05);">
+    <button class="btn-nav active" onclick="showFrame(0, this)">1. Hero</button>
+    <button class="btn-nav" onclick="showFrame(1, this)">2. Log</button>
+    <button class="btn-nav" onclick="showFrame(2, this)">3. Insights</button>
+    <button class="btn-nav" onclick="showFrame(3, this)">4. Diary</button>
+    <button class="btn-nav" onclick="showFrame(4, this)">5. Coach</button>
+    <button class="btn-nav" onclick="showFrame(5, this)">6. Widgets</button>
+    <button class="btn-nav" onclick="showFrame(6, this)">7. Dark</button>
+    <button class="btn-nav" onclick="showFrame(7, this)">8. Beverages</button>
+    <button class="btn-nav" onclick="showFrame(8, this)">9. Weather</button>
+    <button class="btn-nav" onclick="showFrame(9, this)">10. Overview</button>
+  </div>
+
+  <div class="canvas-area">
+    <div class="canvas-wrapper" id="canvasWrapper">
+
+      <!-- 1. HERO - DASHBOARD -->
+      <div class="screenshot-frame bg-hero active" id="frame-0">
+        <div class="orb orb-blue" style="width:500px;height:500px;top:200px;left:-100px;"></div>
+        <div class="orb orb-mint" style="width:400px;height:400px;top:600px;right:-50px;"></div>
+        <div class="orb orb-lavender" style="width:350px;height:350px;bottom:800px;left:200px;"></div>
+
+        <div class="text-overlay">
+          <div class="headline">Your Hydration,<br>Simplified.</div>
+          <div class="subheadline">Smart goals. Beautiful tracking.<br>Daily momentum.</div>
+        </div>
+
+        <div class="iphone-mockup">
+          <div class="iphone-body">
+            <div class="btn-side-right btn-power"></div>
+            <div class="btn-side-left btn-mute"></div>
+            <div class="btn-side-left btn-vol-up"></div>
+            <div class="btn-side-left btn-vol-down"></div>
+            <div class="iphone-screen">
+              <img src="/Users/anoopjose/Downloads/IMG_0262.png" alt="Dashboard">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 2. LOG INTAKE -->
+      <div class="screenshot-frame bg-log" id="frame-1">
+        <div class="orb orb-blue" style="width:400px;height:400px;top:300px;right:-80px;"></div>
+        <div class="orb orb-mint" style="width:300px;height:300px;bottom:600px;left:-60px;"></div>
+
+        <div class="prop-glass" style="left:80px;top:900px;transform:rotate(-8deg);"></div>
+        <div class="lemon-slice" style="left:120px;top:870px;"></div>
+        <div class="mint-leaf" style="right:120px;top:950px;"></div>
+        <div class="mint-leaf" style="right:160px;top:980px;transform:rotate(15deg);"></div>
+
+        <div class="text-overlay">
+          <div class="headline">Log in Seconds.</div>
+          <div class="subheadline">One slide. One tap. Done.</div>
+        </div>
+
+        <div class="iphone-mockup">
+          <div class="iphone-body">
+            <div class="btn-side-right btn-power"></div>
+            <div class="btn-side-left btn-mute"></div>
+            <div class="btn-side-left btn-vol-up"></div>
+            <div class="btn-side-left btn-vol-down"></div>
+            <div class="iphone-screen">
+              <img src="/Users/anoopjose/Downloads/IMG_0263.png" alt="Log Intake">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. INSIGHTS -->
+      <div class="screenshot-frame bg-insights" id="frame-2">
+        <!-- Data visualization dots -->
+        <div class="data-dot" style="top:400px;left:100px;width:12px;height:12px;"></div>
+        <div class="data-dot" style="top:500px;left:250px;"></div>
+        <div class="data-dot" style="top:350px;right:200px;width:10px;height:10px;"></div>
+        <div class="data-dot" style="top:550px;right:100px;width:6px;height:6px;"></div>
+        <div class="data-line" style="top:420px;left:112px;width:140px;transform:rotate(30deg);"></div>
+        <div class="data-line" style="top:510px;left:258px;width:200px;transform:rotate(-15deg);"></div>
+
+        <div class="orb orb-blue" style="width:350px;height:350px;top:100px;right:-80px;opacity:0.2;"></div>
+        <div class="orb orb-lavender" style="width:300px;height:300px;bottom:700px;left:-50px;opacity:0.2;"></div>
+
+        <div class="text-overlay">
+          <div class="headline">Know Your<br>Patterns.</div>
+          <div class="subheadline">Weekly trends. Goal streaks.<br>Real insights.</div>
+        </div>
+
+        <div class="iphone-mockup">
+          <div class="iphone-body">
+            <div class="btn-side-right btn-power"></div>
+            <div class="btn-side-left btn-mute"></div>
+            <div class="btn-side-left btn-vol-up"></div>
+            <div class="btn-side-left btn-vol-down"></div>
+            <div class="iphone-screen">
+              <img src="/Users/anoopjose/Downloads/IMG_0264.png" alt="Insights">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. DIARY -->
+      <div class="screenshot-frame bg-diary" id="frame-3">
+        <div class="orb orb-peach" style="width:400px;height:400px;top:150px;left:-80px;opacity:0.3;"></div>
+        <div class="orb orb-blue" style="width:350px;height:350px;top:500px;right:-60px;opacity:0.25;"></div>
+
+        <div class="text-overlay">
+          <div class="headline">Every Sip,<br>Remembered.</div>
+          <div class="subheadline">Browse your hydration history,<br>day by day.</div>
+        </div>
+
+        <div class="iphone-mockup">
+          <div class="iphone-body">
+            <div class="btn-side-right btn-power"></div>
+            <div class="btn-side-left btn-mute"></div>
+            <div class="btn-side-left btn-vol-up"></div>
+            <div class="btn-side-left btn-vol-down"></div>
+            <div class="iphone-screen">
+              <img src="/Users/anoopjose/Downloads/IMG_0269.png" alt="Diary">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. AI COACH -->
+      <div class="screenshot-frame bg-coach" id="frame-4">
+        <!-- Sparkle decorations -->
+        <div class="sparkle" style="top:380px;left:150px;opacity:0.2;"></div>
+        <div class="sparkle" style="top:300px;right:180px;width:32px;height:32px;opacity:0.15;"></div>
+        <div class="sparkle" style="top:500px;left:300px;width:18px;height:18px;opacity:0.25;"></div>
+        <div class="sparkle" style="top:420px;right:250px;width:20px;height:20px;opacity:0.18;"></div>
+
+        <div class="orb orb-lavender" style="width:500px;height:500px;top:200px;left:-100px;opacity:0.35;"></div>
+        <div class="orb orb-blue" style="width:400px;height:400px;top:400px;right:-80px;opacity:0.2;"></div>
+
+        <div class="text-overlay">
+          <div class="headline">Your Personal<br>Coach.</div>
+          <div class="subheadline">AI-powered tips that adapt<br>to your day.</div>
+        </div>
+
+        <div class="iphone-mockup">
+          <div class="iphone-body">
+            <div class="btn-side-right btn-power"></div>
+            <div class="btn-side-left btn-mute"></div>
+            <div class="btn-side-left btn-vol-up"></div>
+            <div class="btn-side-left btn-vol-down"></div>
+            <div class="iphone-screen">
+              <img src="/Users/anoopjose/Downloads/IMG_0262.png" alt="Dashboard with Coach">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. WIDGETS LIGHT -->
+      <div class="screenshot-frame bg-widgets-light" id="frame-5">
+        <div class="orb orb-blue" style="width:400px;height:400px;top:300px;right:-60px;opacity:0.2;"></div>
+        <div class="orb orb-mint" style="width:300px;height:300px;bottom:500px;left:-40px;opacity:0.2;"></div>
+
+        <div class="text-overlay" style="top:80px;">
+          <div class="headline">Always on Your<br>Home Screen.</div>
+          <div class="subheadline">Glanceable widgets. Quick-add buttons.<br>Zero friction.</div>
+        </div>
+
+        <div class="widget-showcase">
+          <div class="widget-row">
+            <div>
+              <div class="widget-item" style="width:330px;">
+                <img src="/Users/anoopjose/Downloads/IMG_0266.png" alt="Small Widget" style="width:100%;display:block;">
+              </div>
+              <div class="widget-label">Small</div>
+            </div>
+            <div>
+              <div class="widget-item" style="width:660px;">
+                <img src="/Users/anoopjose/Downloads/IMG_0267.png" alt="Medium Widget" style="width:100%;display:block;">
+              </div>
+              <div class="widget-label">Medium</div>
+            </div>
+          </div>
+          <div>
+            <div class="widget-item" style="width:660px;">
+              <img src="/Users/anoopjose/Downloads/IMG_0268.png" alt="Large Widget" style="width:100%;display:block;">
+            </div>
+            <div class="widget-label">Large</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. WIDGETS DARK -->
+      <div class="screenshot-frame bg-widgets-dark" id="frame-6">
+        <div class="orb orb-blue" style="width:500px;height:500px;top:400px;left:200px;opacity:0.08;"></div>
+
+        <div class="text-overlay" style="top:80px;">
+          <div class="headline headline-light">Beautiful<br>in the Dark.</div>
+          <div class="subheadline subheadline-light">Full dark mode. Easy on the eyes,<br>day or night.</div>
+        </div>
+
+        <div class="widget-showcase">
+          <div class="widget-row">
+            <div>
+              <div class="widget-item widget-item-dark" style="width:330px;">
+                <img src="/Users/anoopjose/Downloads/IMG_0260.png" alt="Small Dark Widget" style="width:100%;display:block;">
+              </div>
+              <div class="widget-label widget-label-light">Small</div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:20px;">
+              <div class="widget-item widget-item-dark" style="width:660px;">
+                <img src="/Users/anoopjose/Downloads/IMG_0261.png" alt="Large Dark Widget" style="width:100%;display:block;">
+              </div>
+              <div class="widget-label widget-label-light">Large</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 8. BEVERAGES -->
+      <div class="screenshot-frame bg-beverage" id="frame-7">
+        <div class="orb orb-peach" style="width:400px;height:400px;top:200px;left:-60px;opacity:0.3;"></div>
+        <div class="orb orb-blue" style="width:350px;height:350px;top:500px;right:-80px;opacity:0.2;"></div>
+        <div class="orb orb-mint" style="width:300px;height:300px;bottom:800px;left:300px;opacity:0.2;"></div>
+
+        <div class="text-overlay">
+          <div class="headline">Not Just Water.</div>
+          <div class="subheadline">Track tea, coffee, juice,<br>and 15+ beverages.</div>
+        </div>
+
+        <div class="iphone-mockup">
+          <div class="iphone-body">
+            <div class="btn-side-right btn-power"></div>
+            <div class="btn-side-left btn-mute"></div>
+            <div class="btn-side-left btn-vol-up"></div>
+            <div class="btn-side-left btn-vol-down"></div>
+            <div class="iphone-screen">
+              <img src="/Users/anoopjose/Downloads/IMG_0263.png" alt="Log Intake - Beverages">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 9. WEATHER SMART GOALS -->
+      <div class="screenshot-frame bg-weather" id="frame-8">
+        <div class="sun-glow" style="top:100px;left:-50px;"></div>
+        <div class="cloud-wisp" style="top:350px;right:50px;"></div>
+        <div class="cloud-wisp" style="top:450px;right:150px;width:140px;height:40px;opacity:0.2;"></div>
+
+        <div class="orb orb-peach" style="width:400px;height:400px;top:100px;left:-80px;opacity:0.3;"></div>
+        <div class="orb orb-blue" style="width:400px;height:400px;top:300px;right:-80px;opacity:0.25;"></div>
+
+        <div class="text-overlay">
+          <div class="headline">Goals That<br>Think.</div>
+          <div class="subheadline">Auto-adjusts for weather,<br>workouts, and your body.</div>
+        </div>
+
+        <div class="iphone-mockup">
+          <div class="iphone-body">
+            <div class="btn-side-right btn-power"></div>
+            <div class="btn-side-left btn-mute"></div>
+            <div class="btn-side-left btn-vol-up"></div>
+            <div class="btn-side-left btn-vol-down"></div>
+            <div class="iphone-screen">
+              <img src="/Users/anoopjose/Downloads/IMG_0262.png" alt="Dashboard with Weather">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 10. FULL OVERVIEW -->
+      <div class="screenshot-frame bg-overview" id="frame-9">
+        <div class="orb orb-blue" style="width:600px;height:600px;top:300px;left:-100px;opacity:0.2;"></div>
+        <div class="orb orb-mint" style="width:500px;height:500px;top:600px;right:-80px;opacity:0.2;"></div>
+
+        <div class="text-overlay" style="top:80px;">
+          <div class="headline">Hydration,<br>Reimagined.</div>
+          <div class="subheadline">Track &middot; Analyze &middot; Build habits &middot; Stay healthy</div>
+        </div>
+
+        <div class="multi-phone-layout">
+          <div class="multi-phone" style="transform:rotate(-6deg) translateY(60px);">
+            <div class="iphone-body">
+              <div class="iphone-screen">
+                <img src="/Users/anoopjose/Downloads/IMG_0263.png" alt="Log">
+              </div>
+            </div>
+          </div>
+          <div class="multi-phone" style="transform:rotate(-2deg) translateY(20px);">
+            <div class="iphone-body">
+              <div class="iphone-screen">
+                <img src="/Users/anoopjose/Downloads/IMG_0264.png" alt="Insights">
+              </div>
+            </div>
+          </div>
+          <div class="multi-phone" style="transform:rotate(0deg) translateY(0px);z-index:5;">
+            <div class="iphone-body">
+              <div class="iphone-screen">
+                <img src="/Users/anoopjose/Downloads/IMG_0262.png" alt="Dashboard">
+              </div>
+            </div>
+          </div>
+          <div class="multi-phone" style="transform:rotate(2deg) translateY(20px);">
+            <div class="iphone-body">
+              <div class="iphone-screen">
+                <img src="/Users/anoopjose/Downloads/IMG_0269.png" alt="Diary">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="status" id="status">1290 × 2796 · iPhone 6.7"</div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <script>
+    let currentFrame = 0;
+    const frames = document.querySelectorAll('.screenshot-frame');
+
+    function showFrame(index, btn) {
+      frames.forEach(f => f.classList.remove('active'));
+      frames[index].classList.add('active');
+      currentFrame = index;
+
+      document.querySelectorAll('.btn-nav').forEach(b => b.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+
+      const labels = ['Hero', 'Log Intake', 'Insights', 'Diary', 'Coach', 'Widgets Light', 'Widgets Dark', 'Beverages', 'Weather', 'Overview'];
+      document.getElementById('status').textContent = `1290 × 2796 · ${labels[index]}`;
+    }
+
+    // Zoom
+    const zoomSlider = document.getElementById('zoomSlider');
+    const zoomValue = document.getElementById('zoomValue');
+    const canvasWrapper = document.getElementById('canvasWrapper');
+
+    function updateZoom() {
+      const scale = zoomSlider.value / 100;
+      canvasWrapper.style.transform = `scale(${scale})`;
+      zoomValue.textContent = `${zoomSlider.value}%`;
+    }
+
+    zoomSlider.addEventListener('input', updateZoom);
+    updateZoom();
+
+    // Export current frame
+    async function exportCurrent() {
+      const frame = frames[currentFrame];
+      const labels = ['hero', 'log-intake', 'insights', 'diary', 'coach', 'widgets-light', 'widgets-dark', 'beverages', 'weather', 'overview'];
+
+      document.getElementById('status').textContent = 'Exporting...';
+
+      try {
+        const canvas = await html2canvas(frame, {
+          width: 1290,
+          height: 2796,
+          scale: 1,
+          useCORS: true,
+          allowTaint: true,
+          backgroundColor: null,
+        });
+
+        const link = document.createElement('a');
+        link.download = `sipli-appstore-${labels[currentFrame]}.png`;
+        link.href = canvas.toDataURL('image/png');
+        link.click();
+
+        document.getElementById('status').textContent = `Exported: sipli-appstore-${labels[currentFrame]}.png`;
+      } catch (e) {
+        document.getElementById('status').textContent = `Export error: ${e.message}`;
+        console.error(e);
+      }
+    }
+
+    // Export all frames
+    async function exportAll() {
+      const labels = ['hero', 'log-intake', 'insights', 'diary', 'coach', 'widgets-light', 'widgets-dark', 'beverages', 'weather', 'overview'];
+
+      for (let i = 0; i < frames.length; i++) {
+        frames.forEach(f => f.classList.remove('active'));
+        frames[i].classList.add('active');
+        document.getElementById('status').textContent = `Exporting ${i + 1}/${frames.length}...`;
+
+        await new Promise(r => setTimeout(r, 300));
+
+        try {
+          const canvas = await html2canvas(frames[i], {
+            width: 1290,
+            height: 2796,
+            scale: 1,
+            useCORS: true,
+            allowTaint: true,
+            backgroundColor: null,
+          });
+
+          const link = document.createElement('a');
+          link.download = `sipli-appstore-${labels[i]}.png`;
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+        } catch (e) {
+          console.error(`Failed to export frame ${i}:`, e);
+        }
+
+        await new Promise(r => setTimeout(r, 500));
+      }
+
+      showFrame(0, document.querySelector('.btn-nav'));
+      document.getElementById('status').textContent = 'All screenshots exported!';
+    }
+  </script>
+</body>
+</html>
