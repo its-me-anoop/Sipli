@@ -74,7 +74,7 @@ struct OnboardingView: View {
             subtitle: "What should we call you to keep things personal?",
             iconName: "person.wave.2.fill",
             iconAnimation: .wiggle,
-            iconColor: Theme.lagoon
+            circleColor: Theme.lagoon
         ) {
             TextField("Your Name", text: $name)
                 .textInputAutocapitalization(.words)
@@ -91,7 +91,7 @@ struct OnboardingView: View {
             subtitle: "We use your weight and preferred units to calculate a baseline hydration goal.",
             iconName: "scalemass.fill",
             iconAnimation: .tilt,
-            iconColor: Theme.lagoon
+            circleColor: Theme.coral
         ) {
             VStack(spacing: 24) {
                 Picker("Preferred Units", selection: $unitSystem) {
@@ -129,7 +129,7 @@ struct OnboardingView: View {
             subtitle: "More movement means more water. How active are you on an average day?",
             iconName: "figure.run",
             iconAnimation: .bounce,
-            iconColor: Theme.coral
+            circleColor: Theme.mint
         ) {
             VStack(spacing: 16) {
                 ForEach(ActivityLevel.allCases, id: \.self) { level in
@@ -195,7 +195,7 @@ struct OnboardingView: View {
             subtitle: "We'll suggest a dynamic goal, or you can take control and set a custom daily target.",
             iconName: "target",
             iconAnimation: .spin,
-            iconColor: Theme.sun
+            circleColor: Theme.sun
         ) {
             VStack(spacing: 24) {
                 Toggle("Set a custom daily goal", isOn: $customGoalEnabled)
@@ -258,7 +258,7 @@ struct OnboardingView: View {
             subtitle: "When does your day begin and end? We'll only send reminders while you're awake.",
             iconName: "sun.and.horizon.fill",
             iconAnimation: .rise,
-            iconColor: Theme.sun
+            circleColor: Theme.peach
         ) {
             VStack(spacing: 20) {
                 DatePicker("Wake Time", selection: $wakeTime, displayedComponents: .hourAndMinute)
@@ -279,7 +279,7 @@ struct OnboardingView: View {
             subtitle: "We can send friendly reminders so you never fall behind on your hydration.",
             iconName: "bell.and.waves.left.and.right.fill",
             iconAnimation: .ring,
-            iconColor: Theme.lavender
+            circleColor: Theme.lavender
         ) {
             VStack(alignment: .leading, spacing: 16) {
                 OnboardingFeatureRow(icon: "bell.badge.fill", text: "Gentle nudges throughout your waking hours")
@@ -288,6 +288,11 @@ struct OnboardingView: View {
             }
         }
     }
+
+    @State private var continueRippleOrigin: CGPoint = .zero
+    @State private var continueRippleCounter: Int = 0
+    @State private var backRippleOrigin: CGPoint = .zero
+    @State private var backRippleCounter: Int = 0
 
     private var navigationBar: some View {
         VStack(spacing: 12) {
@@ -311,11 +316,17 @@ struct OnboardingView: View {
                         .font(.headline)
                         .padding(.horizontal, 24)
                         .padding(.vertical, 14)
-                        .background(.ultraThinMaterial)
-                        .clipShape(Capsule())
+                        .background(Theme.card, in: Capsule())
                         .shadow(color: .black.opacity(0.1), radius: 5, y: 2)
                 }
                 .buttonStyle(BouncyButtonStyle())
+                .onPressingChanged { point in
+                    if let point {
+                        backRippleOrigin = point
+                        backRippleCounter += 1
+                    }
+                }
+                .modifier(RippleEffect(at: backRippleOrigin, trigger: backRippleCounter))
                 .opacity(step > 0 ? 1 : 0)
                 .disabled(step == 0)
                 .animation(Theme.fluidSpring, value: step)
@@ -347,6 +358,13 @@ struct OnboardingView: View {
                         .shadow(color: Theme.lagoon.opacity(0.3), radius: 8, y: 4)
                 }
                 .buttonStyle(BouncyButtonStyle())
+                .onPressingChanged { point in
+                    if let point {
+                        continueRippleOrigin = point
+                        continueRippleCounter += 1
+                    }
+                }
+                .modifier(RippleEffect(at: continueRippleOrigin, trigger: continueRippleCounter))
                 .animation(Theme.quickSpring, value: step)
             }
         }
@@ -541,7 +559,8 @@ private struct AnimatedOnboardingPage<Content: View>: View {
     let subtitle: String
     let iconName: String
     var iconAnimation: IconAnimation = .pulse
-    var iconColor: Color = Theme.lagoon
+    var iconColor: Color = .white
+    var circleColor: Color = Theme.lagoon
     @ViewBuilder let content: Content
 
     @State private var isAnimating = false
@@ -549,6 +568,8 @@ private struct AnimatedOnboardingPage<Content: View>: View {
     @State private var showTitle = false
     @State private var showSubtitle = false
     @State private var showCard = false
+    @State private var iconRippleOrigin: CGPoint = .zero
+    @State private var iconRippleCounter: Int = 0
 
     var body: some View {
         ScrollView {
@@ -561,7 +582,7 @@ private struct AnimatedOnboardingPage<Content: View>: View {
                     if iconAnimation == .spin {
                         ForEach(0..<2, id: \.self) { i in
                             Circle()
-                                .stroke(iconColor.opacity(0.15), lineWidth: 1)
+                                .stroke(circleColor.opacity(0.25), lineWidth: 1)
                                 .frame(width: 140 + CGFloat(i) * 30, height: 140 + CGFloat(i) * 30)
                                 .scaleEffect(isAnimating ? 1.2 : 0.9)
                                 .opacity(isAnimating ? 0 : 0.5)
@@ -579,7 +600,7 @@ private struct AnimatedOnboardingPage<Content: View>: View {
                         Circle()
                             .fill(
                                 RadialGradient(
-                                    colors: [iconColor.opacity(isAnimating ? 0.25 : 0.08), .clear],
+                                    colors: [circleColor.opacity(isAnimating ? 0.3 : 0.1), .clear],
                                     center: .center,
                                     startRadius: 20,
                                     endRadius: 80
@@ -596,22 +617,29 @@ private struct AnimatedOnboardingPage<Content: View>: View {
                         .frame(width: 140, height: 140)
                         .background(
                             Circle()
-                                .fill(.ultraThinMaterial)
+                                .fill(circleColor.gradient)
                                 .overlay(
                                     Circle()
                                         .stroke(
                                             LinearGradient(
-                                                colors: [.white.opacity(0.8), .white.opacity(0.1)],
+                                                colors: [.white.opacity(0.4), .white.opacity(0.05)],
                                                 startPoint: .topLeading,
                                                 endPoint: .bottomTrailing
                                             ),
                                             lineWidth: 1.5
                                         )
                                 )
-                                .shadow(color: iconColor.opacity(0.15), radius: 24, x: 0, y: 12)
+                                .shadow(color: circleColor.opacity(0.35), radius: 24, x: 0, y: 12)
                         )
                         .modifier(IconAnimationModifier(animation: iconAnimation, isAnimating: isAnimating))
                 }
+                .onPressingChanged { point in
+                    if let point {
+                        iconRippleOrigin = point
+                        iconRippleCounter += 1
+                    }
+                }
+                .modifier(RippleEffect(at: iconRippleOrigin, trigger: iconRippleCounter))
                 .scaleEffect(showIcon ? 1 : 0.6)
                 .opacity(showIcon ? 1 : 0)
 
@@ -728,6 +756,8 @@ private struct AnimatedWelcomeStep: View {
     @State private var appearStep4 = false // Row 1
     @State private var appearStep5 = false // Row 2
     @State private var appearStep6 = false // Row 3
+    @State private var mascotRippleOrigin: CGPoint = .zero
+    @State private var mascotRippleCounter: Int = 0
 
     var body: some View {
         ScrollView {
@@ -755,6 +785,13 @@ private struct AnimatedWelcomeStep: View {
                             )
                             .shadow(color: Theme.lagoon.opacity(0.15), radius: 24, x: 0, y: 12)
                     )
+                    .onPressingChanged { point in
+                        if let point {
+                            mascotRippleOrigin = point
+                            mascotRippleCounter += 1
+                        }
+                    }
+                    .modifier(RippleEffect(at: mascotRippleOrigin, trigger: mascotRippleCounter))
                     .scaleEffect(appearStep1 ? 1 : 0.6)
                     .opacity(appearStep1 ? 1 : 0)
 
@@ -788,11 +825,7 @@ private struct AnimatedWelcomeStep: View {
                 .padding(20)
                 .background(
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(.ultraThinMaterial)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .stroke(Theme.glassBorder, lineWidth: 1)
+                        .fill(Theme.card)
                 )
                 .offset(y: appearStep3 ? 0 : 20)
                 .opacity(appearStep3 ? 1 : 0)

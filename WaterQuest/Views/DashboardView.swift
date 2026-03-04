@@ -35,20 +35,6 @@ struct DashboardView: View {
             guard store.profile.prefersWeatherGoal else { return }
             await refreshWeather()
         }
-        .confirmationDialog("Delete this entry?", isPresented: Binding(
-            get: { entryToDelete != nil },
-            set: { if !$0 { entryToDelete = nil } }
-        ), titleVisibility: .visible) {
-            Button("Delete", role: .destructive) {
-                if let entry = entryToDelete {
-                    deleteEntry(entry)
-                    entryToDelete = nil
-                }
-            }
-            Button("Cancel", role: .cancel) {
-                entryToDelete = nil
-            }
-        }
         .sheet(item: $entryToEdit) { entry in
             EntryEditorSheet(entry: entry, unitSystem: store.profile.unitSystem) { updatedAmount, updatedFluidType, updatedNote in
                 store.updateEntry(
@@ -72,13 +58,13 @@ struct DashboardView: View {
                     .padding(.top, 8)
 
                 if let tip = aiService.currentTip {
-                    DashboardCard(title: "Hydration Coach", icon: "sparkles") {
+                    DashboardCard(title: "Hydration Coach", icon: "sparkles", backgroundGradient: Theme.coachCard) {
                         tipSection(tip)
                     }
                 }
 
                 if store.profile.prefersWeatherGoal {
-                    DashboardCard(title: "Weather", icon: "cloud.sun.fill") {
+                    DashboardCard(title: "Weather", icon: activeWeather.map { weatherIcon($0) } ?? "cloud.sun.fill") {
                         weatherSection
                     }
                 }
@@ -123,6 +109,15 @@ struct DashboardView: View {
                                         Label("Delete", systemImage: "trash")
                                     }
                                 }
+                                .confirmationDialog("Delete this entry?", isPresented: deleteDialogBinding(for: entry), titleVisibility: .visible) {
+                                    Button("Delete", role: .destructive) {
+                                        deleteEntry(entry)
+                                        entryToDelete = nil
+                                    }
+                                    Button("Cancel", role: .cancel) {
+                                        entryToDelete = nil
+                                    }
+                                }
                             }
                         }
                     }
@@ -132,7 +127,7 @@ struct DashboardView: View {
             .padding(.bottom, 24)
         }
         .scrollIndicators(.automatic)
-        .background(Color.clear)
+        .background { AppWaterBackground().ignoresSafeArea() }
     }
 
     private var iPadLayout: some View {
@@ -153,7 +148,7 @@ struct DashboardView: View {
                     // Left column: Hydration Coach (larger)
                     VStack(spacing: 16) {
                         if let tip = aiService.currentTip {
-                            DashboardCard(title: "Hydration Coach", icon: "sparkles") {
+                            DashboardCard(title: "Hydration Coach", icon: "sparkles", backgroundGradient: Theme.coachCard) {
                                 iPadTipSection(tip)
                             }
                         }
@@ -197,7 +192,7 @@ struct DashboardView: View {
             .frame(maxWidth: 1200)
             .frame(maxWidth: .infinity)
         }
-        .background(Color.clear)
+        .background { AppWaterBackground().ignoresSafeArea() }
     }
 
     private var iPadLogGrid: some View {
@@ -228,6 +223,15 @@ struct DashboardView: View {
                         entryToDelete = entry
                     } label: {
                         Label("Delete", systemImage: "trash")
+                    }
+                }
+                .confirmationDialog("Delete this entry?", isPresented: deleteDialogBinding(for: entry), titleVisibility: .visible) {
+                    Button("Delete", role: .destructive) {
+                        deleteEntry(entry)
+                        entryToDelete = nil
+                    }
+                    Button("Cancel", role: .cancel) {
+                        entryToDelete = nil
                     }
                 }
             }
@@ -513,6 +517,19 @@ struct DashboardView: View {
         store.todayEntries.sorted { $0.date > $1.date }
     }
 
+    private func deleteDialogBinding(for entry: HydrationEntry) -> Binding<Bool> {
+        Binding(
+            get: { entryToDelete?.id == entry.id },
+            set: { isPresented in
+                if isPresented {
+                    entryToDelete = entry
+                } else if entryToDelete?.id == entry.id {
+                    entryToDelete = nil
+                }
+            }
+        )
+    }
+
     private func weatherIcon(_ snapshot: WeatherSnapshot) -> String {
         if snapshot.conditionKey.isEmpty {
             return "cloud.sun"
@@ -582,50 +599,185 @@ private struct HydrationSummaryCard: View {
     let unitSystem: UnitSystem
 
     @Environment(\.horizontalSizeClass) private var sizeClass
+    @Environment(\.colorScheme) private var colorScheme
+
+    @State private var rippleCounter: Int = 0
+    @State private var rippleOrigin: CGPoint = .zero
 
     private var isRegular: Bool { sizeClass == .regular }
+    private var topCompositions: [FluidComposition] {
+        compositions
+            .sorted { $0.proportion > $1.proportion }
+            .prefix(5)
+            .map { $0 }
+    }
 
     var body: some View {
-        VStack(spacing: isRegular ? 28 : 24) {
-            
-            // Header Text Area
-            HStack {
-                VStack(alignment: .leading, spacing: isRegular ? 8 : 6) {
-                    Text(greeting)
-                        .font(.system(isRegular ? .title : .title2, design: .rounded).weight(.bold))
-                        .foregroundStyle(Theme.textPrimary)
-                    
-                    VStack(alignment: .leading, spacing: 2) {
-                        Text(Formatters.volumeString(ml: todayTotalML, unit: unitSystem))
-                            .font(.system(isRegular ? .title2 : .title3, design: .rounded).weight(.heavy))
-                            .foregroundStyle(Theme.lagoon)
-                        Text("of \(Formatters.volumeString(ml: goalTotalML, unit: unitSystem)) today")
-                            .font(.subheadline)
-                            .foregroundStyle(Theme.textSecondary)
-                    }
-                    .padding(.top, 4)
-                }
-                Spacer()
-            }
+        HStack(alignment: .center, spacing: isRegular ? 28 : 16) {
+            VStack(alignment: .leading, spacing: isRegular ? 8 : 6) {
+                Text(greeting)
+                    .font(.system(isRegular ? .title : .title2, design: .rounded).weight(.bold))
+                    .foregroundStyle(Theme.textPrimary)
 
-            // Big Centered Layout
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(Formatters.volumeString(ml: todayTotalML, unit: unitSystem))
+                        .font(.system(isRegular ? .title2 : .title3, design: .rounded).weight(.heavy))
+                        .foregroundStyle(Theme.lagoon)
+                    Text("of \(Formatters.volumeString(ml: goalTotalML, unit: unitSystem)) today")
+                        .font(.subheadline)
+                        .foregroundStyle(Theme.textSecondary)
+                }
+                .padding(.top, 4)
+
+                VStack(alignment: .leading, spacing: isRegular ? 10 : 8) {
+                    Text("Top liquids")
+                        .font(.system(isRegular ? .subheadline : .caption, design: .rounded).weight(.bold))
+                        .foregroundStyle(Theme.textSecondary)
+                        .padding(.top, isRegular ? 8 : 6)
+
+                    ForEach(topCompositions, id: \.type) { composition in
+                        LiquidBreakdownRow(
+                            fluidType: composition.type,
+                            percentage: composition.proportion
+                        )
+                    }
+                }
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+
             LiquidProgressView(
                 progress: progress,
                 compositions: compositions,
-                isRegular: isRegular
+                isRegular: isRegular,
+                bottleWidth: isRegular ? 230 : 165,
+                bottleHeight: isRegular ? 340 : 260
             )
         }
         .padding(isRegular ? 24 : 20)
-        .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(.thickMaterial)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .stroke(Color.white.opacity(0.5), lineWidth: 1)
-        )
+        .frame(minHeight: isRegular ? 430 : 350)
+        .background(cardBackground)
         .shadow(color: Theme.shadowColor.opacity(0.6), radius: 15, x: 0, y: 8)
+        .onPressingChanged { point in
+            if let point {
+                rippleOrigin = point
+                rippleCounter += 1
+            }
+        }
+        .modifier(RippleEffect(at: rippleOrigin, trigger: rippleCounter))
         .accessibilityElement(children: .combine)
+    }
+
+    private var cardBackground: some View {
+        let shape = RoundedRectangle(cornerRadius: 24, style: .continuous)
+        let glowOpacity = colorScheme == .dark ? 0.24 : 0.16
+
+        return shape
+            .fill(Theme.summaryCard)
+            .overlay(
+                shape
+                    .fill(
+                        LinearGradient(
+                            colors: [
+                                Color.white.opacity(colorScheme == .dark ? 0.12 : 0.42),
+                                Color.clear,
+                                Theme.lagoon.opacity(colorScheme == .dark ? 0.08 : 0.12)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        )
+                    )
+            )
+            .overlay(alignment: .topLeading) {
+                Circle()
+                    .fill(
+                        RadialGradient(
+                            colors: [Theme.lagoon.opacity(glowOpacity), .clear],
+                            center: .center,
+                            startRadius: 0,
+                            endRadius: isRegular ? 210 : 150
+                        )
+                    )
+                    .frame(width: isRegular ? 320 : 240, height: isRegular ? 240 : 180)
+                    .offset(x: -80, y: -70)
+            }
+            .overlay(alignment: .bottomTrailing) {
+                Circle()
+                    .fill(
+                        RadialGradient(
+                            colors: [Theme.mint.opacity(glowOpacity * 0.82), .clear],
+                            center: .center,
+                            startRadius: 0,
+                            endRadius: isRegular ? 190 : 140
+                        )
+                    )
+                    .frame(width: isRegular ? 300 : 220, height: isRegular ? 220 : 170)
+                    .offset(x: 70, y: 90)
+            }
+            .overlay(
+                shape
+                    .strokeBorder(
+                        LinearGradient(
+                            colors: [
+                                Color.white.opacity(colorScheme == .dark ? 0.2 : 0.5),
+                                Theme.lagoon.opacity(colorScheme == .dark ? 0.22 : 0.34),
+                                Color.white.opacity(colorScheme == .dark ? 0.08 : 0.2)
+                            ],
+                            startPoint: .topLeading,
+                            endPoint: .bottomTrailing
+                        ),
+                        lineWidth: 1.1
+                    )
+            )
+    }
+}
+
+private struct LiquidBreakdownRow: View {
+    let fluidType: FluidType
+    let percentage: Double
+
+    var body: some View {
+        let clamped = min(max(percentage, 0), 1)
+
+        VStack(alignment: .leading, spacing: 4) {
+            HStack(spacing: 8) {
+                Circle()
+                    .fill(fluidType.color)
+                    .frame(width: 8, height: 8)
+
+                Text(fluidType.displayName)
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(Theme.textPrimary)
+                    .lineLimit(1)
+
+                Spacer(minLength: 6)
+
+                Text("\(Int((clamped * 100).rounded()))%")
+                    .font(.caption.weight(.bold))
+                    .foregroundStyle(Theme.textSecondary)
+                    .monospacedDigit()
+            }
+
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    Capsule()
+                        .fill(Theme.glassBorder.opacity(0.35))
+
+                    Capsule()
+                        .fill(
+                            LinearGradient(
+                                colors: [
+                                    fluidType.color.opacity(0.9),
+                                    fluidType.color.opacity(0.55)
+                                ],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .frame(width: max(4, geo.size.width * clamped))
+                }
+            }
+            .frame(height: 6)
+        }
     }
 }
 
@@ -915,11 +1067,7 @@ struct DetailedLogRow: View {
         .padding(.vertical, 12)
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(.thickMaterial)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .stroke(Color.white.opacity(0.4), lineWidth: 1)
+                .fill(Theme.card)
         )
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(Formatters.volumeString(ml: entry.volumeML, unit: unitSystem)) \(entry.fluidType.displayName) at \(Self.formatter.string(from: entry.date))")

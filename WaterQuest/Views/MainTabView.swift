@@ -32,11 +32,7 @@ struct MainTabView: View {
 
     var body: some View {
         ZStack(alignment: .bottomTrailing) {
-            ZStack {
-                AppWaterBackground().ignoresSafeArea()
-
-                tabContent
-            }
+            tabContent
 
             // Floating log button
             logButton

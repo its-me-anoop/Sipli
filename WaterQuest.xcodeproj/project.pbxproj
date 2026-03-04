@@ -28,6 +28,7 @@
 		524BE8DF8217231DA89BF9FE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CBD2C7DC27199FF61EB613 /* Theme.swift */; };
 		5315257190E860C18C6545B0 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6862392928A13FBD5E45D6E3 /* LocationManager.swift */; };
 		5D5BF32CEAF21645C51E5442 /* GoalCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38731A03D043511C9AAD4C2 /* GoalCalculator.swift */; };
+		6B3494CD2F5249E200D313C3 /* QuickAddWaterIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3494CC2F5249E200D313C3 /* QuickAddWaterIntent.swift */; };
 		6BBC3B922F4F6AC100F5525A /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 6BBC3B912F4F6AC100F5525A /* AppIcon.icon */; };
 		7077C5CF3469D64E94804983 /* FluidType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A139EF313607077443D4FCFE /* FluidType.swift */; };
 		747A7C4F8A906C71164AB9DE /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */; };
@@ -42,18 +43,9 @@
 		B67E99532D94983258FFDC94 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 39EF82B8B03A482B4BC8CBF9 /* LaunchScreen.storyboard */; };
 		BBBF0A2E700E876678D8DA69 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD0B42119D7BD312FCDAF766 /* SettingsView.swift */; };
 		C0AC658494F0FF61381C286D /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB90E806138FFE1C09E7187A /* InsightsView.swift */; };
+		C3D4E5F6A7B8C9D0E1F2A3B4 /* Ripple.metal in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E1F2 /* Ripple.metal */; };
 		C4B819181FF00CD089496479 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D58355784786E63DFFB9EC4 /* Haptics.swift */; };
 		CAA880E64AF96B5C0988D2A3 /* WorkoutSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE15D5810B84C7C96E0EA4C /* WorkoutSummary.swift */; };
-		CCD4444444444444444444D4 /* PersistedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8888888888888888888888 /* PersistedState.swift */; };
-		D1A2B3C4E5F60718293A4B5C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E2B3C4D5F6071829A3B4C5D6 /* PrivacyInfo.xcprivacy */; };
-		D1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift */; };
-		D6E8A4F1B37C920E5D1A8F63 /* PreviewEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F3E9B2C4D61805FA93B1E2 /* PreviewEnvironment.swift */; };
-		E054558C7B7CF349F6CDD709 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE848C59D9014D3ABE6E04BE /* SplashScreenView.swift */; };
-		E27FB3C46FDAA80AD7E43C6F /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F021A59BB7CB33328B5ABBC4 /* Formatters.swift */; };
-		E367CAB1741850BAFCE4F3F9 /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B9CF2D397867B06457E11FA /* PrimaryButton.swift */; };
-		E5EDB875107A7CBE67F2F031 /* LiquidProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C07CD814951765EE1A1499 /* LiquidProgressView.swift */; };
-		EB9033481146A1C9561176DB /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2126EAEDD87BD49B24C7BE2 /* MainTabView.swift */; };
-		F9760161C65BFA2368DB8094 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7043107E62B2C04F4C58EB /* DashboardView.swift */; };
 		CC1111111111111111111111 /* SipliWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1111111111111111111111 /* SipliWidget.swift */; };
 		CC2222222222222222222222 /* WidgetDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3333333333333333333333 /* WidgetDataProvider.swift */; };
 		CC3333333333333333333333 /* SipliTimelineProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA4444444444444444444444 /* SipliTimelineProvider.swift */; };
@@ -66,14 +58,25 @@
 		CCAAAAAAAAAAAAAAAAAAAAAA /* HydrationEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */; };
 		CCBBBBBBBBBBBBBBBBBBBBBB /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50CF0F6325F9C80BFB71AA0D /* UserProfile.swift */; };
 		CCCCCCCCCCCCCCCCCCCCCCCC /* FluidType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A139EF313607077443D4FCFE /* FluidType.swift */; };
-		CCDDDDDDDDDDDDDDDDDDDD /* GoalBreakdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */; };
-		CCEEEEEEEEEEEEEEEEEEEEEE /* UnitSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032684376DE05B0CC4838664 /* UnitSystem.swift */; };
-		CCFFFFFFFFFFFFFFFFFFFFFF /* WeatherSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */; };
 		CCD1111111111111111111D1 /* WorkoutSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE15D5810B84C7C96E0EA4C /* WorkoutSummary.swift */; };
 		CCD2222222222222222222D2 /* PersistedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8888888888888888888888 /* PersistedState.swift */; };
 		CCD3333333333333333333D3 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CBD2C7DC27199FF61EB613 /* Theme.swift */; };
+		CCD4444444444444444444D4 /* PersistedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8888888888888888888888 /* PersistedState.swift */; };
+		CCDDDDDDDDDDDDDDDDDDDD /* GoalBreakdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */; };
+		CCEEEEEEEEEEEEEEEEEEEEEE /* UnitSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032684376DE05B0CC4838664 /* UnitSystem.swift */; };
+		CCFFFFFFFFFFFFFFFFFFFFFF /* WeatherSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */; };
+		D1A2B3C4E5F60718293A4B5C /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = E2B3C4D5F6071829A3B4C5D6 /* PrivacyInfo.xcprivacy */; };
+		D1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift */; };
+		D4E5F6A7B8C9D0E1F2A3B4C5 /* RippleEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7B8C9D0E1F2A3 /* RippleEffect.swift */; };
+		D6E8A4F1B37C920E5D1A8F63 /* PreviewEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F3E9B2C4D61805FA93B1E2 /* PreviewEnvironment.swift */; };
+		E054558C7B7CF349F6CDD709 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE848C59D9014D3ABE6E04BE /* SplashScreenView.swift */; };
+		E27FB3C46FDAA80AD7E43C6F /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F021A59BB7CB33328B5ABBC4 /* Formatters.swift */; };
+		E367CAB1741850BAFCE4F3F9 /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B9CF2D397867B06457E11FA /* PrimaryButton.swift */; };
+		E5EDB875107A7CBE67F2F031 /* LiquidProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C07CD814951765EE1A1499 /* LiquidProgressView.swift */; };
+		EB9033481146A1C9561176DB /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2126EAEDD87BD49B24C7BE2 /* MainTabView.swift */; };
 		EE3333333333333333333333 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE1111111111111111111111 /* WidgetKit.framework */; };
 		EE4444444444444444444444 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE2222222222222222222222 /* SwiftUI.framework */; };
+		F9760161C65BFA2368DB8094 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7043107E62B2C04F4C58EB /* DashboardView.swift */; };
 		FF8888888888888888888888 /* SipliWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA9999999999999999999999 /* SipliWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -119,6 +122,7 @@
 		63F661B4016F8BE1E8DDA5B5 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
 		6862392928A13FBD5E45D6E3 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		69F362557BEECECFAA26285A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6B3494CC2F5249E200D313C3 /* QuickAddWaterIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddWaterIntent.swift; sourceTree = "<group>"; };
 		6BBC3B912F4F6AC100F5525A /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		732CBE184502476DC56921F8 /* icon.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = icon.json; sourceTree = "<group>"; };
 		7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSnapshot.swift; sourceTree = "<group>"; };
@@ -133,6 +137,7 @@
 		9FC934C6863AFC8E01D302CE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A139EF313607077443D4FCFE /* FluidType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FluidType.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryView.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F6A7B8C9D0E1F2 /* Ripple.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Ripple.metal; sourceTree = "<group>"; };
 		A37EBA9FC9F1233C2BC105DD /* PersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceService.swift; sourceTree = "<group>"; };
 		A7F3E9B2C4D61805FA93B1E2 /* PreviewEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewEnvironment.swift; sourceTree = "<group>"; };
 		AA1111111111111111111111 /* SipliWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SipliWidget.swift; sourceTree = "<group>"; };
@@ -148,6 +153,7 @@
 		ACD53555ACD00A8A78268A7F /* MascotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MascotView.swift; sourceTree = "<group>"; };
 		B2126EAEDD87BD49B24C7BE2 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		B26785D44340E5C0A267B325 /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
+		B2C3D4E5F6A7B8C9D0E1F2A3 /* RippleEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RippleEffect.swift; sourceTree = "<group>"; };
 		B4AE7C21F7B60BC9212AFC46 /* WaterQuestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterQuestApp.swift; sourceTree = "<group>"; };
 		B9CBD2C7DC27199FF61EB613 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
@@ -198,6 +204,7 @@
 				8314F97AB0A474B5CB47AF27 /* Components */,
 				44EAA4E4ABDD288F8271E4DF /* Models */,
 				FFB2F05A9B4A3597CB9CEBB3 /* Services */,
+				E5F6A7B8C9D0E1F2A3B4C5D6 /* Shaders */,
 				9933CCDBB5AD1B9F1574F3ED /* Supporting */,
 				D5CFBAA6834C033BD13BB3DF /* Views */,
 			);
@@ -239,6 +246,7 @@
 				A7F3E9B2C4D61805FA93B1E2 /* PreviewEnvironment.swift */,
 				8B9CF2D397867B06457E11FA /* PrimaryButton.swift */,
 				7B8BDAA9F823F748DDAD26EB /* ProgressRing.swift */,
+				B2C3D4E5F6A7B8C9D0E1F2A3 /* RippleEffect.swift */,
 				3ABC282C313B061E1E34EDF7 /* StatPill.swift */,
 				B9CBD2C7DC27199FF61EB613 /* Theme.swift */,
 				9728B3EA3CEC0654348AC8A3 /* WaveView.swift */,
@@ -274,6 +282,7 @@
 				AA3333333333333333333333 /* WidgetDataProvider.swift */,
 				AA4444444444444444444444 /* SipliTimelineProvider.swift */,
 				BB2222222222222222222222 /* Views */,
+				6B3494CC2F5249E200D313C3 /* QuickAddWaterIntent.swift */,
 			);
 			path = SipliWidget;
 			sourceTree = "<group>";
@@ -319,6 +328,14 @@
 				AA9999999999999999999999 /* SipliWidget.appex */,
 			);
 			name = Products;
+			sourceTree = "<group>";
+		};
+		E5F6A7B8C9D0E1F2A3B4C5D6 /* Shaders */ = {
+			isa = PBXGroup;
+			children = (
+				A1B2C3D4E5F6A7B8C9D0E1F2 /* Ripple.metal */,
+			);
+			path = Shaders;
 			sourceTree = "<group>";
 		};
 		EE5555555555555555555555 /* Frameworks */ = {
@@ -459,6 +476,7 @@
 				CC4444444444444444444444 /* SmallWidgetView.swift in Sources */,
 				CC5555555555555555555555 /* MediumWidgetView.swift in Sources */,
 				CC6666666666666666666666 /* LargeWidgetView.swift in Sources */,
+				6B3494CD2F5249E200D313C3 /* QuickAddWaterIntent.swift in Sources */,
 				CC7777777777777777777777 /* PersistenceService.swift in Sources */,
 				CC8888888888888888888888 /* GoalCalculator.swift in Sources */,
 				CC9999999999999999999999 /* Formatters.swift in Sources */,
@@ -506,6 +524,8 @@
 				D6E8A4F1B37C920E5D1A8F63 /* PreviewEnvironment.swift in Sources */,
 				E367CAB1741850BAFCE4F3F9 /* PrimaryButton.swift in Sources */,
 				449C15C42674C41122CC02B6 /* ProgressRing.swift in Sources */,
+				C3D4E5F6A7B8C9D0E1F2A3B4 /* Ripple.metal in Sources */,
+				D4E5F6A7B8C9D0E1F2A3B4C5 /* RippleEffect.swift in Sources */,
 				4E93E1598D092FFCC6C6381F /* RootView.swift in Sources */,
 				BBBF0A2E700E876678D8DA69 /* SettingsView.swift in Sources */,
 				E054558C7B7CF349F6CDD709 /* SplashScreenView.swift in Sources */,
@@ -546,7 +566,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration;
 				PRODUCT_NAME = Sipli;
 				SDKROOT = iphoneos;
@@ -628,7 +648,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration;
 				PRODUCT_NAME = Sipli;
 				SDKROOT = iphoneos;
@@ -721,7 +741,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -749,7 +769,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;

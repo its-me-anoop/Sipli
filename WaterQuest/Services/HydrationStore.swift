@@ -20,6 +20,17 @@ final class HydrationStore: ObservableObject {
         self.profile = state.profile
         self.lastWeather = state.lastWeather
         self.lastWorkout = state.lastWorkout
+
+        persistence.setRemoteDataChangeHandler { [weak self] data in
+            guard let self else { return }
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            guard let remoteState = try? decoder.decode(PersistedState.self, from: data) else { return }
+
+            Task { @MainActor in
+                self.applyRemoteState(remoteState)
+            }
+        }
     }
 
     var dailyGoal: GoalBreakdown {
@@ -129,5 +140,12 @@ final class HydrationStore: ObservableObject {
         persistence.save(state)
         WidgetCenter.shared.reloadAllTimelines()
     }
-}
 
+    private func applyRemoteState(_ state: PersistedState) {
+        entries = state.entries
+        profile = state.profile
+        lastWeather = state.lastWeather
+        lastWorkout = state.lastWorkout
+        WidgetCenter.shared.reloadAllTimelines()
+    }
+}

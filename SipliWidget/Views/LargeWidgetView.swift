@@ -33,6 +33,10 @@ struct LargeWidgetView: View {
                     Text(Formatters.percentString(progress))
                         .font(.system(.title3, design: .rounded).weight(.bold))
                         .monospacedDigit()
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                        .allowsTightening(true)
+                        .frame(width: 40)
                 }
                 .frame(width: 56, height: 56)
 
@@ -105,14 +109,21 @@ struct LargeWidgetView: View {
 
             Spacer(minLength: 0)
 
-            Link(destination: URL(string: "sipli://add-intake")!) {
-                HStack {
-                    Spacer()
-                    Label("Log Water", systemImage: "plus.circle.fill")
+            HStack(spacing: 10) {
+                Button(intent: QuickAddWaterIntent(amountML: 250)) {
+                    Label("Add 250 ml", systemImage: "plus.circle.fill")
                         .font(.subheadline.weight(.semibold))
-                        .foregroundStyle(.blue)
-                    Spacer()
+                        .frame(maxWidth: .infinity)
                 }
+                .buttonStyle(.borderedProminent)
+                .tint(.blue)
+
+                Button(intent: QuickAddWaterIntent(amountML: 500)) {
+                    Label("Add 500 ml", systemImage: "plus.circle.fill")
+                        .font(.subheadline.weight(.semibold))
+                        .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(.bordered)
             }
         }
         .containerBackground(.fill.tertiary, for: .widget)

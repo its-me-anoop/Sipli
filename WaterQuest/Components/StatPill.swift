@@ -31,11 +31,7 @@ struct StatPill: View {
         .padding(.vertical, 10)
         .background(
             RoundedRectangle(cornerRadius: 16)
-                .fill(Theme.glassLight)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .strokeBorder(Theme.glassBorder.opacity(0.75), lineWidth: 0.8)
-                )
+                .fill(Theme.card)
         )
         .shadow(color: Theme.shadowColor.opacity(0.58), radius: 7, x: 0, y: 3)
         .onAppear {

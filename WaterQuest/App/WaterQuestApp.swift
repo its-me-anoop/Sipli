@@ -14,6 +14,10 @@ struct WaterQuestApp: App {
     @StateObject private var weatherClient: WeatherClient
     @StateObject private var subscriptionManager = SubscriptionManager()
 
+    private var isSetupComplete: Bool {
+        hasOnboarded || FileManager.default.ubiquityIdentityToken != nil
+    }
+
     init() {
         let location = LocationManager()
         _locationManager = StateObject(wrappedValue: location)
@@ -22,10 +26,7 @@ struct WaterQuestApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ZStack {
-                AppWaterBackground().ignoresSafeArea()
-                RootView()
-            }
+            RootView()
             .tint(Theme.lagoon)
             .environmentObject(store)
             .environmentObject(healthKit)
@@ -38,13 +39,13 @@ struct WaterQuestApp: App {
                 store.notificationScheduler = notifier
                 await subscriptionManager.initialise()
                 _ = subscriptionManager.startTransactionListener()
-                guard hasOnboarded else { return }
+                guard isSetupComplete else { return }
                 await notifier.refreshAuthorizationStatus()
                 await healthKit.refreshAuthorizationStatus()
                 notifier.scheduleReminders(profile: store.profile, entries: store.entries, goalML: store.dailyGoal.totalML)
             }
             .task(id: store.profile.prefersHealthKit) {
-                guard hasOnboarded else { return }
+                guard isSetupComplete else { return }
                 if store.profile.prefersHealthKit {
                     await startHealthKitAutoSync()
                 } else {

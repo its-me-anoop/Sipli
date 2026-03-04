@@ -69,11 +69,53 @@ enum Theme {
 
     static let card = LinearGradient(
         colors: [
-            cardSurface,
-            cardElevated
+            Color(uiColor: UIColor { traits in
+                traits.userInterfaceStyle == .dark
+                    ? UIColor(red: 0.14, green: 0.18, blue: 0.26, alpha: 1)
+                    : UIColor(red: 0.96, green: 0.97, blue: 1.0, alpha: 1)
+            }),
+            Color(uiColor: UIColor { traits in
+                traits.userInterfaceStyle == .dark
+                    ? UIColor(red: 0.10, green: 0.14, blue: 0.22, alpha: 1)
+                    : UIColor(red: 0.90, green: 0.93, blue: 0.98, alpha: 1)
+            })
         ],
         startPoint: .topLeading,
         endPoint: .bottomTrailing
+    )
+
+    static let coachCard = LinearGradient(
+        colors: [
+            Color(uiColor: UIColor { traits in
+                traits.userInterfaceStyle == .dark
+                    ? UIColor(red: 0.14, green: 0.16, blue: 0.34, alpha: 1)
+                    : UIColor(red: 0.88, green: 0.90, blue: 1.0, alpha: 1)
+            }),
+            Color(uiColor: UIColor { traits in
+                traits.userInterfaceStyle == .dark
+                    ? UIColor(red: 0.20, green: 0.14, blue: 0.32, alpha: 1)
+                    : UIColor(red: 0.94, green: 0.88, blue: 1.0, alpha: 1)
+            })
+        ],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+
+    static let summaryCard = LinearGradient(
+        colors: [
+            Color(uiColor: UIColor { traits in
+                traits.userInterfaceStyle == .dark
+                    ? UIColor(red: 0.08, green: 0.18, blue: 0.30, alpha: 1)
+                    : UIColor(red: 0.86, green: 0.93, blue: 1.0, alpha: 1)
+            }),
+            Color(uiColor: UIColor { traits in
+                traits.userInterfaceStyle == .dark
+                    ? UIColor(red: 0.10, green: 0.24, blue: 0.34, alpha: 1)
+                    : UIColor(red: 0.82, green: 0.92, blue: 0.96, alpha: 1)
+            })
+        ],
+        startPoint: .top,
+        endPoint: .bottom
     )
 
     static let glowGradient = LinearGradient(
@@ -128,11 +170,7 @@ enum Theme {
 
     static func glassCard(cornerRadius: CGFloat = 20) -> some View {
         RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-            .fill(cardSurface)
-            .overlay(
-                RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
-                    .stroke(glassBorder, lineWidth: 1)
-            )
+            .fill(card)
             .shadow(color: shadowColor, radius: 10, x: 0, y: 4)
     }
 }
@@ -347,21 +385,21 @@ struct AppWaterBackground: View {
 
         init(isLight: Bool) {
             if isLight {
-                topColor = Color(red: 1.0, green: 1.0, blue: 1.0)
-                bottomColor = Color(red: 0.90, green: 0.95, blue: 1.0)
-                blobA = Theme.lagoon.opacity(0.12)
-                blobB = Theme.mint.opacity(0.08)
-                blobC = Theme.lavender.opacity(0.06)
-                sheenTop = Color.white.opacity(0.3)
-                sheenBottom = Theme.lagoon.opacity(0.02)
+                topColor = Color(red: 0.93, green: 0.96, blue: 1.0)
+                bottomColor = Color(red: 0.82, green: 0.90, blue: 1.0)
+                blobA = Theme.lagoon.opacity(0.18)
+                blobB = Theme.mint.opacity(0.14)
+                blobC = Theme.lavender.opacity(0.10)
+                sheenTop = Color.white.opacity(0.4)
+                sheenBottom = Theme.lagoon.opacity(0.06)
             } else {
-                topColor = Color(red: 0.05, green: 0.14, blue: 0.24)
-                bottomColor = Color(red: 0.01, green: 0.06, blue: 0.13)
-                blobA = Theme.lagoon.opacity(0.34)
-                blobB = Theme.mint.opacity(0.24)
-                blobC = Theme.lavender.opacity(0.18)
-                sheenTop = Color.white.opacity(0.06)
-                sheenBottom = Theme.lagoon.opacity(0.12)
+                topColor = Color(red: 0.06, green: 0.16, blue: 0.28)
+                bottomColor = Color(red: 0.02, green: 0.08, blue: 0.18)
+                blobA = Theme.lagoon.opacity(0.38)
+                blobB = Theme.mint.opacity(0.28)
+                blobC = Theme.lavender.opacity(0.22)
+                sheenTop = Color.white.opacity(0.08)
+                sheenBottom = Theme.lagoon.opacity(0.14)
             }
         }
     }

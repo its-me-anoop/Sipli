@@ -32,11 +32,7 @@ struct SecondaryButtonStyle: ButtonStyle {
             .padding(.horizontal, 24)
             .background(
                 Capsule()
-                    .fill(Theme.glassLight)
-                    .overlay(
-                        Capsule()
-                            .stroke(Theme.glassBorder.opacity(0.75), lineWidth: 1)
-                    )
+                    .fill(Theme.card)
             )
             .foregroundStyle(Theme.textPrimary)
             .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
@@ -80,11 +76,15 @@ struct GlowingIconButton: View {
             .padding(14)
             .background(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(Theme.glassLight.opacity(isActive ? 1 : 0.75))
-                    .overlay(
+                    .fill(Theme.card)
+            )
+            .overlay(
+                Group {
+                    if isActive {
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .stroke(isActive ? color.opacity(0.32) : Theme.glassBorder.opacity(0.55), lineWidth: 1)
-                    )
+                            .stroke(color.opacity(0.32), lineWidth: 1)
+                    }
+                }
             )
             .shadow(color: Theme.shadowColor.opacity(0.60), radius: 8, x: 0, y: 4)
             .animation(Theme.quickSpring, value: isActive)

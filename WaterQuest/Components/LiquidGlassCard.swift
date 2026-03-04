@@ -26,12 +26,8 @@ struct LiquidGlassCard<Content: View>: View {
         content
             .background(
                 shape
-                    .fill(Theme.glassLight)
+                    .fill(Theme.card)
                     .overlay(shape.fill((tintColor ?? Theme.glassAccent).opacity(0.10)))
-                    .overlay(
-                        shape
-                            .strokeBorder(Theme.glassBorder.opacity(0.92), lineWidth: 0.8)
-                    )
             )
             .opacity(isInteractive ? 1 : 0.98)
         .clipShape(shape)
@@ -71,7 +67,7 @@ struct LiquidGlassButton: View {
         var borderColor: Color {
             switch self {
             case .primary: return Theme.lagoon.opacity(0.45)
-            case .secondary: return Theme.glassBorder.opacity(0.75)
+            case .secondary: return Color.clear
             case .accent: return Theme.mint.opacity(0.45)
             }
         }
@@ -253,14 +249,10 @@ struct QuickAddPill: View {
                     .padding(.horizontal, 16)
                     .background(
                         Capsule()
-                            .fill(Theme.glassLight)
+                            .fill(Theme.card)
                             .overlay(
                                 Capsule()
                                     .fill(Theme.lagoon.opacity(0.26))
-                            )
-                            .overlay(
-                                Capsule()
-                                    .strokeBorder(Theme.glassBorder, lineWidth: 1)
                             )
                     )
                     .shadow(color: Theme.shadowColor.opacity(0.60), radius: 8, x: 0, y: 4)

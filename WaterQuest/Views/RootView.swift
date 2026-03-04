@@ -8,9 +8,13 @@ struct RootView: View {
 
     @State private var showSplash = true
 
+    private var shouldSkipOnboardingForICloud: Bool {
+        FileManager.default.ubiquityIdentityToken != nil
+    }
+
     var body: some View {
         ZStack {
-            if hasOnboarded {
+            if hasOnboarded || shouldSkipOnboardingForICloud {
                 if subscriptionManager.isSubscribed {
                     MainTabView()
                 } else if subscriptionManager.isInitialized {
@@ -38,6 +42,10 @@ struct RootView: View {
 
     private func bootstrapAppFlow() async {
         guard showSplash else { return }
+
+        if !hasOnboarded && shouldSkipOnboardingForICloud {
+            hasOnboarded = true
+        }
 
         try? await Task.sleep(for: .seconds(1.0))
 
@@ -113,11 +121,7 @@ struct SubscriptionRequiredView: View {
                     .padding(20)
                     .background(
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .fill(.ultraThinMaterial)
-                    )
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .stroke(Theme.glassBorder, lineWidth: 1)
+                            .fill(Theme.card)
                     )
 
                     // Monthly plan display

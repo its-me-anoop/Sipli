@@ -61,6 +61,7 @@ final class NotificationScheduler: ObservableObject {
     /// Tears down previous notifications and schedules fresh ones.
     func scheduleReminders(profile: UserProfile, entries: [HydrationEntry] = [], goalML: Double = 2000) {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
+        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
 
         currentProfile = profile
         currentGoalML = goalML

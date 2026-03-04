@@ -42,10 +42,20 @@ struct MediumWidgetView: View {
 
             Spacer()
 
-            Link(destination: URL(string: "sipli://add-intake")!) {
-                Image(systemName: "plus.circle.fill")
-                    .font(.system(size: 36))
-                    .foregroundStyle(.blue)
+            VStack(spacing: 8) {
+                Button(intent: QuickAddWaterIntent(amountML: 250)) {
+                    Label("250", systemImage: "plus.circle.fill")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.blue)
+                }
+                .buttonStyle(.plain)
+
+                Button(intent: QuickAddWaterIntent(amountML: 500)) {
+                    Label("500", systemImage: "plus.circle.fill")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.blue)
+                }
+                .buttonStyle(.plain)
             }
         }
         .containerBackground(.fill.tertiary, for: .widget)

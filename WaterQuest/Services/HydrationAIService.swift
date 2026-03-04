@@ -1,5 +1,8 @@
 import Foundation
 import SwiftUI
+#if canImport(FoundationModels)
+import FoundationModels
+#endif
 
 // MARK: - Hydration Tip Model
 struct HydrationTip: Identifiable, Equatable {
@@ -8,7 +11,7 @@ struct HydrationTip: Identifiable, Equatable {
     let category: Category
     let generatedAt: Date
 
-    enum Category {
+    enum Category: String {
         case tip, reminder, encouragement, celebration
 
         var icon: String {
@@ -59,7 +62,6 @@ enum TimeOfDay: String {
 }
 
 // MARK: - Hydration AI Service
-/// Provides AI-powered hydration tips and insights using Apple's on-device Foundation Models
 @MainActor
 final class HydrationAIService: ObservableObject {
     @Published private(set) var currentTip: HydrationTip?
@@ -69,7 +71,6 @@ final class HydrationAIService: ObservableObject {
 
     init() {
         checkAvailability()
-        // Generate initial tip
         Task {
             await generateTip(
                 currentIntake: 0,
@@ -83,10 +84,35 @@ final class HydrationAIService: ObservableObject {
 
     // MARK: - Availability Check
     func checkAvailability() {
-        // FoundationModels requires iOS 26+
-        // For now, we'll use static tips and the AI features will be available when iOS 26 ships
+        #if canImport(FoundationModels)
+        if #available(iOS 26.0, *) {
+            let model = SystemLanguageModel.default
+            switch model.availability {
+            case .available:
+                isAvailable = true
+                errorMessage = nil
+            case .unavailable(let reason):
+                isAvailable = false
+                switch reason {
+                case .appleIntelligenceNotEnabled:
+                    errorMessage = "Enable Apple Intelligence in Settings to get AI-powered tips."
+                case .modelNotReady:
+                    errorMessage = "On-device model is downloading. Tips will improve soon."
+                default:
+                    errorMessage = nil
+                }
+            @unknown default:
+                isAvailable = false
+                errorMessage = nil
+            }
+        } else {
+            isAvailable = false
+            errorMessage = nil
+        }
+        #else
         isAvailable = false
         errorMessage = nil
+        #endif
     }
 
     // MARK: - Generate Hydration Tip
@@ -98,10 +124,31 @@ final class HydrationAIService: ObservableObject {
         timeOfDay: TimeOfDay
     ) async {
         isGenerating = true
+        defer { isGenerating = false }
 
-        // Use contextual static tips (AI integration ready for iOS 26)
         let progress = goalML > 0 ? Int((currentIntake / goalML) * 100) : 0
+        let category = categorize(progress: progress, timeOfDay: timeOfDay)
 
+        #if canImport(FoundationModels)
+        if #available(iOS 26.0, *), isAvailable {
+            if let aiTip = await generateWithFoundationModels(
+                progress: progress,
+                currentIntake: currentIntake,
+                goalML: goalML,
+                weatherTemp: weatherTemp,
+                exerciseMinutes: exerciseMinutes,
+                timeOfDay: timeOfDay,
+                category: category
+            ) {
+                withAnimation(Theme.fluidSpring) {
+                    currentTip = aiTip
+                }
+                return
+            }
+        }
+        #endif
+
+        // Fallback to static tips
         withAnimation(Theme.fluidSpring) {
             currentTip = getContextualTip(
                 progress: progress,
@@ -110,17 +157,114 @@ final class HydrationAIService: ObservableObject {
                 timeOfDay: timeOfDay
             )
         }
+    }
 
-        isGenerating = false
+    // MARK: - Foundation Models Integration
+
+    #if canImport(FoundationModels)
+    @available(iOS 26.0, *)
+    private func generateWithFoundationModels(
+        progress: Int,
+        currentIntake: Double,
+        goalML: Double,
+        weatherTemp: Double?,
+        exerciseMinutes: Int,
+        timeOfDay: TimeOfDay,
+        category: HydrationTip.Category
+    ) async -> HydrationTip? {
+        let prompt = buildPrompt(
+            progress: progress,
+            currentIntake: currentIntake,
+            goalML: goalML,
+            weatherTemp: weatherTemp,
+            exerciseMinutes: exerciseMinutes,
+            timeOfDay: timeOfDay,
+            category: category
+        )
+
+        do {
+            let session = LanguageModelSession {
+                """
+                You are a friendly hydration coach inside a water tracking app called Sipli. \
+                Generate a single short motivational message (1-2 sentences, max 120 characters) \
+                about drinking water. Be warm, specific to the user's context, and varied. \
+                Never use hashtags, emojis, or markdown. Just plain text.
+                """
+            }
+
+            let response = try await session.respond(to: prompt)
+            let message = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
+
+            guard !message.isEmpty else { return nil }
+
+            return HydrationTip(
+                message: message,
+                category: category,
+                generatedAt: Date()
+            )
+        } catch {
+            return nil
+        }
+    }
+    #endif
+
+    private func buildPrompt(
+        progress: Int,
+        currentIntake: Double,
+        goalML: Double,
+        weatherTemp: Double?,
+        exerciseMinutes: Int,
+        timeOfDay: TimeOfDay,
+        category: HydrationTip.Category
+    ) -> String {
+        var context = "Time: \(timeOfDay.rawValue). Progress: \(progress)% (\(Int(currentIntake))ml of \(Int(goalML))ml goal)."
+
+        if let temp = weatherTemp {
+            context += " Temperature: \(Int(temp))°C."
+        }
+
+        if exerciseMinutes > 0 {
+            context += " Exercised \(exerciseMinutes) minutes today."
+        }
+
+        switch category {
+        case .celebration:
+            context += " The user hit their daily goal! Celebrate them."
+        case .encouragement:
+            context += " The user is close to their goal. Encourage them to finish strong."
+        case .reminder:
+            context += " The user is behind on their intake. Gently remind them."
+        case .tip:
+            context += " Give a practical hydration tip relevant to their situation."
+        }
+
+        return context
     }
 
     // MARK: - Generate Motivational Message
     func generateMotivation(for achievement: String) async -> String? {
-        // Returns nil until iOS 26 Foundation Models are available
+        #if canImport(FoundationModels)
+        if #available(iOS 26.0, *), isAvailable {
+            do {
+                let session = LanguageModelSession {
+                    """
+                    You are a friendly hydration coach. Generate a very short celebration message \
+                    (1 sentence, max 80 characters) for a hydration achievement. \
+                    Be warm and encouraging. No emojis, hashtags, or markdown.
+                    """
+                }
+                let response = try await session.respond(to: "Achievement: \(achievement)")
+                let message = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
+                return message.isEmpty ? nil : message
+            } catch {
+                return nil
+            }
+        }
+        #endif
         return nil
     }
 
-    // MARK: - Private Helpers
+    // MARK: - Static Tip Fallback
     private func getContextualTip(
         progress: Int,
         weatherTemp: Double?,

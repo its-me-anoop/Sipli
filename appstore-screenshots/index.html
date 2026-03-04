@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sipli — App Store Screenshots</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --frame-w: 1290px;
+    --frame-h: 2796px;
+    --phone-w: 740px;
+    --blue: #1C78F4;
+    --mint: #30C9A0;
+    --lavender: #7C70F0;
+    --coral: #F05447;
+    --sun: #FAA92B;
+  }
+
+  body {
+    font-family: 'Inter', -apple-system, 'SF Pro Display', sans-serif;
+    background: #0C0C14;
+    color: #fff;
+  }
+
+  /* ── Toolbar ── */
+  .toolbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    display: flex; align-items: center; gap: 12px; padding: 12px 20px;
+    background: rgba(12,12,20,0.92); backdrop-filter: blur(24px) saturate(1.6);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .toolbar-title { font-size: 15px; font-weight: 700; letter-spacing: -0.3px; opacity: 0.9; margin-right: auto; }
+  .toolbar .sep { width: 1px; height: 24px; background: rgba(255,255,255,0.08); }
+
+  .tab-bar {
+    display: flex; gap: 4px; padding: 3px; border-radius: 10px;
+    background: rgba(255,255,255,0.06);
+  }
+  .tab {
+    padding: 6px 14px; border: none; border-radius: 8px; font-size: 12px; font-weight: 600;
+    color: rgba(255,255,255,0.5); background: transparent; cursor: pointer; transition: all 0.2s;
+    font-family: inherit; white-space: nowrap;
+  }
+  .tab:hover { color: rgba(255,255,255,0.8); }
+  .tab.active { background: var(--blue); color: #fff; }
+
+  .toolbar-btn {
+    padding: 7px 16px; border: none; border-radius: 8px; font-size: 12px; font-weight: 700;
+    cursor: pointer; font-family: inherit; transition: all 0.15s;
+  }
+  .btn-export-one { background: #fff; color: #000; }
+  .btn-export-one:hover { background: #e5e5e5; }
+  .btn-export-all { background: var(--blue); color: #fff; }
+  .btn-export-all:hover { opacity: 0.85; }
+
+  .zoom-group { display: flex; align-items: center; gap: 6px; }
+  .zoom-group input[type=range] { width: 80px; accent-color: var(--blue); }
+  .zoom-label { font-size: 11px; color: rgba(255,255,255,0.35); font-weight: 500; min-width: 32px; }
+
+  /* ── Canvas ── */
+  .canvas { display: flex; justify-content: center; padding: 72px 0 40px; }
+  .canvas-scaler { transform-origin: top center; }
+
+  /* ── Frame ── */
+  .frame {
+    width: var(--frame-w); height: var(--frame-h);
+    position: relative; overflow: hidden; display: none;
+  }
+  .frame.active { display: block; }
+
+  /* ── Noise overlay ── */
+  .frame::after {
+    content: ''; position: absolute; inset: 0; z-index: 50; pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 180px; opacity: 0.025; mix-blend-mode: overlay;
+  }
+
+  /* ── Backgrounds ── */
+  .bg-1 { background: linear-gradient(168deg, #E8F1FF 0%, #C2D9FF 35%, #9DC1FF 70%, #7AADFF 100%); }
+  .bg-2 { background: linear-gradient(168deg, #F0F5FF 0%, #DDE8FF 40%, #C8DAFF 100%); }
+  .bg-3 { background: linear-gradient(168deg, #EDE8FF 0%, #D8D0FF 35%, #C4BDFF 70%, #B0AAFF 100%); }
+  .bg-4 { background: linear-gradient(168deg, #E8F5F0 0%, #C8E6DA 35%, #A8D5C4 70%, #8CC6B0 100%); }
+  .bg-5 { background: linear-gradient(168deg, #F0EBFF 0%, #E0D6FF 35%, #CFC4FF 70%, #BDB0FF 100%); }
+  .bg-6 { background: linear-gradient(168deg, #EEF3FF 0%, #DCE6FF 40%, #CADAFF 100%); }
+  .bg-7 { background: linear-gradient(168deg, #0D1117 0%, #161B26 40%, #1A2030 100%); }
+  .bg-8 { background: linear-gradient(168deg, #FFF3E6 0%, #FFE4C8 35%, #FFD5AA 70%, #C8DAFF 100%); }
+  .bg-9 { background: linear-gradient(168deg, #FFF0E0 0%, #FFE0C0 25%, #D0E0FF 60%, #A8C8FF 100%); }
+  .bg-10 { background: linear-gradient(168deg, #E0ECFF 0%, #C0D8FF 35%, #A0C8FF 70%, #80B8FF 100%); }
+
+  /* ── Mesh blobs ── */
+  .blob {
+    position: absolute; border-radius: 50%; filter: blur(120px); pointer-events: none;
+  }
+
+  /* ── Text Content ── */
+  .content {
+    position: absolute; top: 0; left: 0; right: 0; z-index: 10;
+    display: flex; flex-direction: column; align-items: center;
+    padding-top: 140px;
+  }
+
+  .pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 28px; border-radius: 100px;
+    background: rgba(255,255,255,0.18); backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.2);
+    font-size: 26px; font-weight: 600; color: rgba(0,0,0,0.7);
+    margin-bottom: 36px;
+  }
+  .pill-dark {
+    background: rgba(255,255,255,0.08); border-color: rgba(255,255,255,0.1);
+    color: rgba(255,255,255,0.7);
+  }
+
+  .pill-icon {
+    width: 28px; height: 28px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
+
+  h2.title {
+    font-size: 108px; font-weight: 800; letter-spacing: -4px; line-height: 1.0;
+    text-align: center; color: #111; margin-bottom: 28px;
+  }
+  h2.title-light { color: #fff; }
+
+  .title-gradient {
+    background: linear-gradient(135deg, var(--blue) 0%, var(--lavender) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .title-gradient-warm {
+    background: linear-gradient(135deg, var(--coral) 0%, var(--sun) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .title-gradient-mint {
+    background: linear-gradient(135deg, var(--mint) 0%, var(--blue) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  p.subtitle {
+    font-size: 38px; font-weight: 500; color: rgba(0,0,0,0.45);
+    text-align: center; line-height: 1.4; letter-spacing: -0.5px;
+    max-width: 900px;
+  }
+  p.subtitle-light { color: rgba(255,255,255,0.45); }
+
+  /* ── iPhone 16 Pro Mockup ── */
+  .device {
+    position: absolute; left: 50%; transform: translateX(-50%);
+    width: var(--phone-w); z-index: 20;
+  }
+  .device.pos-bottom { bottom: -60px; }
+  .device.pos-center { top: 50%; transform: translate(-50%, -38%); }
+
+  .device-frame {
+    position: relative;
+    background: linear-gradient(160deg, #8A8A8E 0%, #A0A0A5 15%, #C8C8CC 40%, #9E9EA2 60%, #B0B0B5 80%, #A0A0A5 100%);
+    border-radius: 76px; padding: 14px;
+    box-shadow:
+      0 2px 0 0 rgba(255,255,255,0.25) inset,
+      0 -1px 0 0 rgba(0,0,0,0.15) inset,
+      0 50px 100px -20px rgba(0,0,0,0.35),
+      0 30px 60px -15px rgba(0,0,0,0.2);
+  }
+
+  /* Titanium edge highlight */
+  .device-frame::before {
+    content: ''; position: absolute; inset: -1px; border-radius: 77px;
+    background: linear-gradient(160deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.05) 30%, rgba(255,255,255,0.15) 60%, rgba(255,255,255,0.05) 100%);
+    z-index: -1;
+  }
+
+  /* Inner bezel */
+  .device-bezel {
+    background: #000; border-radius: 62px; padding: 0; position: relative;
+    overflow: hidden;
+  }
+
+  .device-screen {
+    border-radius: 62px; overflow: hidden; position: relative;
+  }
+  .device-screen img {
+    width: 100%; display: block;
+  }
+
+  /* Dynamic Island */
+  .dynamic-island {
+    position: absolute; top: 18px; left: 50%; transform: translateX(-50%);
+    width: 162px; height: 48px; background: #000; border-radius: 24px; z-index: 30;
+  }
+
+  /* Camera lens in Dynamic Island */
+  .dynamic-island::after {
+    content: ''; position: absolute;
+    right: 18px; top: 50%; transform: translateY(-50%);
+    width: 14px; height: 14px; border-radius: 50%;
+    background: radial-gradient(circle at 40% 40%, #1a1a2e 0%, #0a0a15 60%, #000 100%);
+    box-shadow: 0 0 0 2px rgba(50,50,60,0.5), inset 0 0 3px rgba(100,100,255,0.1);
+  }
+
+  /* Side buttons */
+  .side-btn {
+    position: absolute; background: linear-gradient(180deg, #B0B0B5, #909095);
+    z-index: -1;
+  }
+  .side-btn.right { right: -3px; width: 3px; border-radius: 0 2px 2px 0; }
+  .side-btn.left { left: -3px; width: 3px; border-radius: 2px 0 0 2px; }
+  .power-btn { top: 340px; height: 108px; }
+  .silent-btn { top: 260px; height: 42px; }
+  .vol-up-btn { top: 360px; height: 76px; }
+  .vol-down-btn { top: 454px; height: 76px; }
+
+  /* ── Widget Showcase ── */
+  .widget-grid {
+    position: absolute; z-index: 20;
+    top: 50%; left: 50%; transform: translate(-50%, -40%);
+    display: flex; flex-direction: column; align-items: center; gap: 60px;
+  }
+
+  .widget-row { display: flex; gap: 36px; align-items: flex-end; }
+
+  .widget-card {
+    border-radius: 36px; overflow: hidden; position: relative;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.08), 0 8px 24px rgba(0,0,0,0.04);
+    border: 1px solid rgba(255,255,255,0.5);
+  }
+  .widget-card img { display: block; width: 100%; }
+
+  .widget-card-dark {
+    border-color: rgba(255,255,255,0.06);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5), 0 0 80px rgba(28,120,244,0.05);
+  }
+
+  .widget-tag {
+    text-align: center; margin-top: 18px;
+    font-size: 24px; font-weight: 600; color: rgba(0,0,0,0.25); letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+  .widget-tag-light { color: rgba(255,255,255,0.2); }
+
+  /* ── Multi-Device Fan ── */
+  .fan-layout {
+    position: absolute; bottom: -120px; left: 50%; transform: translateX(-50%);
+    display: flex; align-items: flex-end; z-index: 20;
+  }
+
+  .fan-device { width: 440px; }
+  .fan-device .device-frame {
+    border-radius: 52px; padding: 10px;
+    box-shadow: 0 40px 80px -10px rgba(0,0,0,0.3), 0 20px 40px -10px rgba(0,0,0,0.15);
+  }
+  .fan-device .device-frame::before { border-radius: 53px; }
+  .fan-device .device-bezel { border-radius: 42px; }
+  .fan-device .device-screen { border-radius: 42px; }
+  .fan-device .dynamic-island { width: 110px; height: 34px; border-radius: 17px; top: 14px; }
+  .fan-device .dynamic-island::after { width: 10px; height: 10px; right: 14px; }
+
+  /* ── Feature Chips ── */
+  .chip-row {
+    display: flex; gap: 14px; justify-content: center; margin-top: 32px;
+  }
+  .chip {
+    padding: 10px 24px; border-radius: 100px;
+    font-size: 24px; font-weight: 600;
+    background: rgba(255,255,255,0.2); backdrop-filter: blur(8px);
+    border: 1px solid rgba(255,255,255,0.15);
+    color: rgba(0,0,0,0.55);
+  }
+  .chip-dark {
+    background: rgba(255,255,255,0.06); border-color: rgba(255,255,255,0.08);
+    color: rgba(255,255,255,0.5);
+  }
+
+  /* ── Status ── */
+  .toast {
+    position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); z-index: 1000;
+    background: rgba(0,0,0,0.85); backdrop-filter: blur(16px);
+    padding: 8px 20px; border-radius: 100px; font-size: 12px; font-weight: 500;
+    color: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.06);
+  }
+</style>
+</head>
+<body>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <div class="toolbar-title">Sipli App Store</div>
+  <div class="sep"></div>
+  <div class="tab-bar">
+    <button class="tab active" onclick="go(0,this)">Hero</button>
+    <button class="tab" onclick="go(1,this)">Log</button>
+    <button class="tab" onclick="go(2,this)">Insights</button>
+    <button class="tab" onclick="go(3,this)">Diary</button>
+    <button class="tab" onclick="go(4,this)">Coach</button>
+    <button class="tab" onclick="go(5,this)">Widgets</button>
+    <button class="tab" onclick="go(6,this)">Dark</button>
+    <button class="tab" onclick="go(7,this)">Beverages</button>
+    <button class="tab" onclick="go(8,this)">Weather</button>
+    <button class="tab" onclick="go(9,this)">Overview</button>
+  </div>
+  <div class="sep"></div>
+  <div class="zoom-group">
+    <span class="zoom-label" id="zv">25%</span>
+    <input type="range" id="zs" min="10" max="50" value="25">
+  </div>
+  <div class="sep"></div>
+  <button class="toolbar-btn btn-export-one" onclick="exp()">Export PNG</button>
+  <button class="toolbar-btn btn-export-all" onclick="expAll()">Export All</button>
+</div>
+
+<div class="canvas">
+<div class="canvas-scaler" id="scaler">
+
+<!-- ━━━ 1. HERO ━━━ -->
+<div class="frame bg-1 active" id="f0">
+  <div class="blob" style="width:700px;height:700px;top:-100px;right:-200px;background:rgba(28,120,244,0.12);"></div>
+  <div class="blob" style="width:600px;height:600px;bottom:400px;left:-200px;background:rgba(48,201,160,0.10);"></div>
+  <div class="blob" style="width:500px;height:500px;top:800px;right:100px;background:rgba(124,112,240,0.08);"></div>
+
+  <div class="content">
+    <div class="pill">
+      <span>&#128167;</span> Hydration Tracking
+    </div>
+    <h2 class="title">Your Hydration,<br><span class="title-gradient">Simplified.</span></h2>
+    <p class="subtitle">Smart goals. Beautiful tracking. Daily momentum.</p>
+  </div>
+
+  <div class="device pos-bottom">
+    <div class="device-frame">
+      <div class="side-btn right power-btn"></div>
+      <div class="side-btn left silent-btn"></div>
+      <div class="side-btn left vol-up-btn"></div>
+      <div class="side-btn left vol-down-btn"></div>
+      <div class="device-bezel">
+        <div class="dynamic-island"></div>
+        <div class="device-screen">
+          <img src="/Users/anoopjose/Downloads/IMG_0262.png" alt="Dashboard">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━ 2. LOG INTAKE ━━━ -->
+<div class="frame bg-2" id="f1">
+  <div class="blob" style="width:600px;height:600px;top:100px;left:-150px;background:rgba(28,120,244,0.10);"></div>
+  <div class="blob" style="width:500px;height:500px;bottom:300px;right:-100px;background:rgba(48,201,160,0.08);"></div>
+
+  <div class="content">
+    <div class="pill">
+      <span>&#9889;</span> Quick Logging
+    </div>
+    <h2 class="title">Log in<br><span class="title-gradient">Seconds.</span></h2>
+    <p class="subtitle">Slide to set amount. Tap to save.<br>That's it.</p>
+  </div>
+
+  <div class="device pos-bottom">
+    <div class="device-frame">
+      <div class="side-btn right power-btn"></div>
+      <div class="side-btn left silent-btn"></div>
+      <div class="side-btn left vol-up-btn"></div>
+      <div class="side-btn left vol-down-btn"></div>
+      <div class="device-bezel">
+        <div class="dynamic-island"></div>
+        <div class="device-screen">
+          <img src="/Users/anoopjose/Downloads/IMG_0263.png" alt="Log Intake">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━ 3. INSIGHTS ━━━ -->
+<div class="frame bg-3" id="f2">
+  <div class="blob" style="width:700px;height:700px;top:0;left:-200px;background:rgba(124,112,240,0.10);"></div>
+  <div class="blob" style="width:500px;height:500px;bottom:500px;right:-100px;background:rgba(28,120,244,0.08);"></div>
+
+  <div class="content">
+    <div class="pill">
+      <span>&#128200;</span> Analytics
+    </div>
+    <h2 class="title">Know Your<br><span class="title-gradient">Patterns.</span></h2>
+    <p class="subtitle">Weekly trends. Goal streaks. Real insights.</p>
+    <div class="chip-row">
+      <div class="chip">7-Day Charts</div>
+      <div class="chip">Goal Tracking</div>
+      <div class="chip">Trends</div>
+    </div>
+  </div>
+
+  <div class="device pos-bottom">
+    <div class="device-frame">
+      <div class="side-btn right power-btn"></div>
+      <div class="side-btn left silent-btn"></div>
+      <div class="side-btn left vol-up-btn"></div>
+      <div class="side-btn left vol-down-btn"></div>
+      <div class="device-bezel">
+        <div class="dynamic-island"></div>
+        <div class="device-screen">
+          <img src="/Users/anoopjose/Downloads/IMG_0264.png" alt="Insights">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━ 4. DIARY ━━━ -->
+<div class="frame bg-4" id="f3">
+  <div class="blob" style="width:600px;height:600px;top:-50px;right:-100px;background:rgba(48,201,160,0.10);"></div>
+  <div class="blob" style="width:500px;height:500px;bottom:300px;left:-150px;background:rgba(28,120,244,0.08);"></div>
+
+  <div class="content">
+    <div class="pill">
+      <span>&#128214;</span> Daily Log
+    </div>
+    <h2 class="title">Every Sip,<br><span class="title-gradient-mint">Remembered.</span></h2>
+    <p class="subtitle">Browse your full hydration history,<br>day by day.</p>
+  </div>
+
+  <div class="device pos-bottom">
+    <div class="device-frame">
+      <div class="side-btn right power-btn"></div>
+      <div class="side-btn left silent-btn"></div>
+      <div class="side-btn left vol-up-btn"></div>
+      <div class="side-btn left vol-down-btn"></div>
+      <div class="device-bezel">
+        <div class="dynamic-island"></div>
+        <div class="device-screen">
+          <img src="/Users/anoopjose/Downloads/IMG_0269.png" alt="Diary">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━ 5. AI COACH ━━━ -->
+<div class="frame bg-5" id="f4">
+  <div class="blob" style="width:700px;height:700px;top:-100px;left:-200px;background:rgba(124,112,240,0.12);"></div>
+  <div class="blob" style="width:500px;height:500px;bottom:400px;right:-150px;background:rgba(28,120,244,0.06);"></div>
+  <div class="blob" style="width:400px;height:400px;top:600px;left:300px;background:rgba(48,201,160,0.06);"></div>
+
+  <div class="content">
+    <div class="pill">
+      <span>&#10024;</span> AI-Powered
+    </div>
+    <h2 class="title">Your Personal<br><span class="title-gradient">Coach.</span></h2>
+    <p class="subtitle">Smart tips that adapt to your weather,<br>activity, and time of day.</p>
+  </div>
+
+  <div class="device pos-bottom">
+    <div class="device-frame">
+      <div class="side-btn right power-btn"></div>
+      <div class="side-btn left silent-btn"></div>
+      <div class="side-btn left vol-up-btn"></div>
+      <div class="side-btn left vol-down-btn"></div>
+      <div class="device-bezel">
+        <div class="dynamic-island"></div>
+        <div class="device-screen">
+          <img src="/Users/anoopjose/Downloads/IMG_0262.png" alt="Coach">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━ 6. WIDGETS LIGHT ━━━ -->
+<div class="frame bg-6" id="f5">
+  <div class="blob" style="width:600px;height:600px;top:200px;right:-100px;background:rgba(28,120,244,0.08);"></div>
+  <div class="blob" style="width:500px;height:500px;bottom:400px;left:-100px;background:rgba(48,201,160,0.06);"></div>
+
+  <div class="content" style="padding-top:120px;">
+    <div class="pill">
+      <span>&#128242;</span> Home Screen Widgets
+    </div>
+    <h2 class="title">Always<br><span class="title-gradient">Glanceable.</span></h2>
+    <p class="subtitle">Three sizes. Quick-add buttons. Zero friction.</p>
+  </div>
+
+  <div class="widget-grid">
+    <div class="widget-row">
+      <div>
+        <div class="widget-card" style="width:310px;"><img src="/Users/anoopjose/Downloads/IMG_0266.png"></div>
+        <div class="widget-tag">Small</div>
+      </div>
+      <div>
+        <div class="widget-card" style="width:620px;"><img src="/Users/anoopjose/Downloads/IMG_0267.png"></div>
+        <div class="widget-tag">Medium</div>
+      </div>
+    </div>
+    <div>
+      <div class="widget-card" style="width:620px;"><img src="/Users/anoopjose/Downloads/IMG_0268.png"></div>
+      <div class="widget-tag">Large</div>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━ 7. WIDGETS DARK ━━━ -->
+<div class="frame bg-7" id="f6">
+  <div class="blob" style="width:800px;height:800px;top:300px;left:50%;margin-left:-400px;background:rgba(28,120,244,0.04);"></div>
+
+  <div class="content" style="padding-top:120px;">
+    <div class="pill pill-dark">
+      <span>&#127769;</span> Dark Mode
+    </div>
+    <h2 class="title title-light">Beautiful<br>in the <span class="title-gradient">Dark.</span></h2>
+    <p class="subtitle subtitle-light">Gorgeous dark widgets. Easy on the eyes,<br>day or night.</p>
+  </div>
+
+  <div class="widget-grid">
+    <div class="widget-row">
+      <div>
+        <div class="widget-card widget-card-dark" style="width:310px;"><img src="/Users/anoopjose/Downloads/IMG_0260.png"></div>
+        <div class="widget-tag widget-tag-light">Small</div>
+      </div>
+      <div>
+        <div class="widget-card widget-card-dark" style="width:620px;"><img src="/Users/anoopjose/Downloads/IMG_0261.png"></div>
+        <div class="widget-tag widget-tag-light">Large</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━ 8. BEVERAGES ━━━ -->
+<div class="frame bg-8" id="f7">
+  <div class="blob" style="width:600px;height:600px;top:100px;right:-150px;background:rgba(250,169,43,0.10);"></div>
+  <div class="blob" style="width:500px;height:500px;bottom:400px;left:-100px;background:rgba(28,120,244,0.08);"></div>
+
+  <div class="content">
+    <div class="pill">
+      <span>&#9749;</span> 18+ Beverages
+    </div>
+    <h2 class="title">Not Just<br><span class="title-gradient-warm">Water.</span></h2>
+    <p class="subtitle">Track tea, coffee, juice, smoothies,<br>and 15+ more drink types.</p>
+    <div class="chip-row">
+      <div class="chip">Water</div>
+      <div class="chip">Coffee</div>
+      <div class="chip">Tea</div>
+      <div class="chip">Juice</div>
+    </div>
+  </div>
+
+  <div class="device pos-bottom">
+    <div class="device-frame">
+      <div class="side-btn right power-btn"></div>
+      <div class="side-btn left silent-btn"></div>
+      <div class="side-btn left vol-up-btn"></div>
+      <div class="side-btn left vol-down-btn"></div>
+      <div class="device-bezel">
+        <div class="dynamic-island"></div>
+        <div class="device-screen">
+          <img src="/Users/anoopjose/Downloads/IMG_0263.png" alt="Beverages">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━ 9. WEATHER GOALS ━━━ -->
+<div class="frame bg-9" id="f8">
+  <div class="blob" style="width:600px;height:600px;top:0;left:-100px;background:rgba(250,169,43,0.12);"></div>
+  <div class="blob" style="width:700px;height:700px;bottom:200px;right:-200px;background:rgba(28,120,244,0.10);"></div>
+
+  <div class="content">
+    <div class="pill">
+      <span>&#127780;&#65039;</span> Smart Goals
+    </div>
+    <h2 class="title">Goals That<br><span class="title-gradient-warm">Think.</span></h2>
+    <p class="subtitle">Auto-adjusts for weather, workouts,<br>and your body weight.</p>
+    <div class="chip-row">
+      <div class="chip">Weather Sync</div>
+      <div class="chip">HealthKit</div>
+      <div class="chip">Dynamic</div>
+    </div>
+  </div>
+
+  <div class="device pos-bottom">
+    <div class="device-frame">
+      <div class="side-btn right power-btn"></div>
+      <div class="side-btn left silent-btn"></div>
+      <div class="side-btn left vol-up-btn"></div>
+      <div class="side-btn left vol-down-btn"></div>
+      <div class="device-bezel">
+        <div class="dynamic-island"></div>
+        <div class="device-screen">
+          <img src="/Users/anoopjose/Downloads/IMG_0262.png" alt="Weather Goals">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━ 10. OVERVIEW ━━━ -->
+<div class="frame bg-10" id="f9">
+  <div class="blob" style="width:800px;height:800px;top:200px;left:-200px;background:rgba(28,120,244,0.10);"></div>
+  <div class="blob" style="width:600px;height:600px;bottom:100px;right:-100px;background:rgba(48,201,160,0.08);"></div>
+
+  <div class="content" style="padding-top:100px;">
+    <div class="pill">
+      <span>&#128166;</span> Sipli
+    </div>
+    <h2 class="title">Hydration,<br><span class="title-gradient">Reimagined.</span></h2>
+    <p class="subtitle">Track &middot; Analyze &middot; Build Habits &middot; Stay Healthy</p>
+  </div>
+
+  <div class="fan-layout">
+    <div class="fan-device" style="transform:rotate(-8deg) translateY(80px);z-index:1;">
+      <div class="device-frame">
+        <div class="device-bezel">
+          <div class="dynamic-island"></div>
+          <div class="device-screen"><img src="/Users/anoopjose/Downloads/IMG_0263.png"></div>
+        </div>
+      </div>
+    </div>
+    <div class="fan-device" style="transform:rotate(-3deg) translateY(30px);margin-left:-60px;z-index:2;">
+      <div class="device-frame">
+        <div class="device-bezel">
+          <div class="dynamic-island"></div>
+          <div class="device-screen"><img src="/Users/anoopjose/Downloads/IMG_0264.png"></div>
+        </div>
+      </div>
+    </div>
+    <div class="fan-device" style="transform:rotate(0deg) translateY(0);margin-left:-60px;z-index:5;">
+      <div class="device-frame">
+        <div class="device-bezel">
+          <div class="dynamic-island"></div>
+          <div class="device-screen"><img src="/Users/anoopjose/Downloads/IMG_0262.png"></div>
+        </div>
+      </div>
+    </div>
+    <div class="fan-device" style="transform:rotate(3deg) translateY(30px);margin-left:-60px;z-index:2;">
+      <div class="device-frame">
+        <div class="device-bezel">
+          <div class="dynamic-island"></div>
+          <div class="device-screen"><img src="/Users/anoopjose/Downloads/IMG_0269.png"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<div class="toast" id="toast">1290 &times; 2796 &middot; iPhone 6.7&quot;</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script>
+let cur = 0;
+const F = document.querySelectorAll('.frame');
+const labels = ['hero','log-intake','insights','diary','coach','widgets-light','widgets-dark','beverages','weather','overview'];
+const names = ['Hero','Log Intake','Insights','Diary','Coach','Widgets Light','Widgets Dark','Beverages','Weather','Overview'];
+
+function go(i, btn) {
+  F.forEach(f => f.classList.remove('active'));
+  F[i].classList.add('active');
+  cur = i;
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  toast(`${names[i]} — 1290 × 2796`);
+}
+
+// Zoom
+const zs = document.getElementById('zs'), zv = document.getElementById('zv'), sc = document.getElementById('scaler');
+function setZoom() { sc.style.transform = `scale(${zs.value/100})`; zv.textContent = zs.value+'%'; }
+zs.addEventListener('input', setZoom); setZoom();
+
+// Toast
+function toast(msg) { document.getElementById('toast').textContent = msg; }
+
+// Export
+async function exp() {
+  toast('Exporting…');
+  try {
+    const c = await html2canvas(F[cur], { width:1290, height:2796, scale:1, useCORS:true, allowTaint:true, backgroundColor:null });
+    const a = document.createElement('a');
+    a.download = `sipli-${labels[cur]}.png`;
+    a.href = c.toDataURL('image/png');
+    a.click();
+    toast(`Saved sipli-${labels[cur]}.png`);
+  } catch(e) { toast('Error: '+e.message); console.error(e); }
+}
+
+async function expAll() {
+  for (let i = 0; i < F.length; i++) {
+    F.forEach(f => f.classList.remove('active'));
+    F[i].classList.add('active');
+    toast(`Exporting ${i+1}/${F.length}…`);
+    await new Promise(r => setTimeout(r, 400));
+    try {
+      const c = await html2canvas(F[i], { width:1290, height:2796, scale:1, useCORS:true, allowTaint:true, backgroundColor:null });
+      const a = document.createElement('a');
+      a.download = `sipli-${labels[i]}.png`;
+      a.href = c.toDataURL('image/png');
+      a.click();
+    } catch(e) { console.error(e); }
+    await new Promise(r => setTimeout(r, 600));
+  }
+  go(0, document.querySelector('.tab'));
+  toast('All 10 screenshots exported!');
+}
+
+// Keyboard nav
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' && cur < F.length-1) go(cur+1, document.querySelectorAll('.tab')[cur+1]);
+  if (e.key === 'ArrowLeft' && cur > 0) go(cur-1, document.querySelectorAll('.tab')[cur-1]);
+});
+</script>
+</body>
+</html>

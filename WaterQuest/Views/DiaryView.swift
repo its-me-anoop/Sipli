@@ -35,20 +35,6 @@ struct DiaryView: View {
             }
         }
         .navigationTitle("Diary")
-        .confirmationDialog("Delete this entry?", isPresented: Binding(
-            get: { entryToDelete != nil },
-            set: { if !$0 { entryToDelete = nil } }
-        ), titleVisibility: .visible) {
-            Button("Delete", role: .destructive) {
-                if let entry = entryToDelete {
-                    deleteEntry(entry)
-                    entryToDelete = nil
-                }
-            }
-            Button("Cancel", role: .cancel) {
-                entryToDelete = nil
-            }
-        }
         .sheet(item: $entryToEdit) { entry in
             EntryEditorSheet(entry: entry, unitSystem: store.profile.unitSystem) { updatedAmount, updatedFluidType, updatedNote in
                 store.updateEntry(
@@ -78,7 +64,7 @@ struct DiaryView: View {
             .padding(.bottom, 24)
         }
         .scrollIndicators(.automatic)
-        .background(Color.clear)
+        .background { AppWaterBackground().ignoresSafeArea() }
     }
 
     // MARK: - iPad Layout
@@ -105,7 +91,7 @@ struct DiaryView: View {
         }
         .padding(.horizontal, 24)
         .padding(.top, 16)
-        .background(Color.clear)
+        .background { AppWaterBackground().ignoresSafeArea() }
     }
 
     // MARK: - Components
@@ -122,11 +108,7 @@ struct DiaryView: View {
         .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(.thickMaterial)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .stroke(Color.white.opacity(0.4), lineWidth: 1)
+                .fill(Theme.card)
         )
     }
 
@@ -164,11 +146,7 @@ struct DiaryView: View {
         .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(.thickMaterial)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .stroke(Color.white.opacity(0.4), lineWidth: 1)
+                .fill(Theme.card)
         )
     }
 
@@ -210,9 +188,31 @@ struct DiaryView: View {
                             Label("Delete", systemImage: "trash")
                         }
                     }
+                    .confirmationDialog("Delete this entry?", isPresented: deleteDialogBinding(for: entry), titleVisibility: .visible) {
+                        Button("Delete", role: .destructive) {
+                            deleteEntry(entry)
+                            entryToDelete = nil
+                        }
+                        Button("Cancel", role: .cancel) {
+                            entryToDelete = nil
+                        }
+                    }
                 }
             }
         }
+    }
+
+    private func deleteDialogBinding(for entry: HydrationEntry) -> Binding<Bool> {
+        Binding(
+            get: { entryToDelete?.id == entry.id },
+            set: { isPresented in
+                if isPresented {
+                    entryToDelete = entry
+                } else if entryToDelete?.id == entry.id {
+                    entryToDelete = nil
+                }
+            }
+        )
     }
 
     private func deleteEntry(_ entry: HydrationEntry) {
