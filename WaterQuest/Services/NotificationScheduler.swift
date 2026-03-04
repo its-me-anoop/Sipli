@@ -28,6 +28,7 @@ final class NotificationScheduler: ObservableObject {
 
     /// How many seconds of silence before we consider the user "quiet".
     private let quietThresholdMultiplier: Double = 2.0
+    private let smartIdentifierPrefix = "sipli.smart."
 
     // MARK: - Internal state
     /// Snapshot of entries used for the current scheduling pass.
@@ -38,6 +39,8 @@ final class NotificationScheduler: ObservableObject {
     private var currentProfile: UserProfile?
     /// Stored goal for rescheduling from `onIntakeLogged`.
     private var currentGoalML: Double = 2000
+    /// Monotonic batch identifier so smart request IDs are never reused.
+    private var smartBatchID: Int = 0
 
     // MARK: - Authorization
 
@@ -84,10 +87,9 @@ final class NotificationScheduler: ObservableObject {
         didFireEscalation = false
 
         guard let profile = currentProfile, profile.remindersEnabled, profile.smartRemindersEnabled else { return }
-        // Cancel pending smart notifications and reschedule based on new state.
-        let smartIds = (0..<20).map { "sipli.smart.\($0)" }
-        UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: smartIds)
-        scheduleSmartReminders(profile: profile, goalML: currentGoalML)
+        clearPendingSmartReminders {
+            self.scheduleSmartReminders(profile: profile, goalML: self.currentGoalML)
+        }
     }
 
     // MARK: - Smart reminders (pre-scheduled via UNNotification triggers)
@@ -99,6 +101,8 @@ final class NotificationScheduler: ObservableObject {
         let now = Date()
         let intervalSeconds = computeInterval(profile: profile)
         let calendar = Calendar.current
+        smartBatchID += 1
+        let batchID = smartBatchID
 
         let currentMinutes = calendar.component(.hour, from: now) * 60
             + calendar.component(.minute, from: now)
@@ -158,7 +162,7 @@ final class NotificationScheduler: ObservableObject {
             content.sound = .default
 
             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: delay, repeats: false)
-            let request = UNNotificationRequest(identifier: "sipli.smart.\(index)", content: content, trigger: trigger)
+            let request = UNNotificationRequest(identifier: "\(smartIdentifierPrefix)\(batchID).\(index)", content: content, trigger: trigger)
             UNUserNotificationCenter.current().add(request)
 
             fireDate = fireDate.addingTimeInterval(intervalSeconds)
@@ -300,6 +304,22 @@ final class NotificationScheduler: ObservableObject {
         let span = max(1, sleepMinutes - wakeMinutes)
         let gap = span / adjustedCount
         return (0..<adjustedCount).map { wakeMinutes + $0 * gap }
+    }
+
+    private func clearPendingSmartReminders(completion: @escaping @MainActor () -> Void) {
+        UNUserNotificationCenter.current().getPendingNotificationRequests { [smartIdentifierPrefix] requests in
+            let smartIds = requests
+                .map(\.identifier)
+                .filter { $0.hasPrefix(smartIdentifierPrefix) }
+
+            if !smartIds.isEmpty {
+                UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: smartIds)
+            }
+
+            Task { @MainActor in
+                completion()
+            }
+        }
     }
 }
 
