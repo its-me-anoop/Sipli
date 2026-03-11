@@ -20,6 +20,7 @@ enum Timeframe: String, CaseIterable, Identifiable {
 
 struct InsightsView: View {
     @EnvironmentObject private var store: HydrationStore
+    @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var selectedDate: Date?
     @State private var timeframe: Timeframe = .weekly
@@ -321,6 +322,29 @@ struct InsightsView: View {
                     .foregroundStyle(Theme.lagoon.opacity(0.8))
                 }
             }
+
+            Divider()
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Sources")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+
+                Link("National Academies: Dietary Reference Intakes for Water (2005)", destination: Legal.hydrationBaseCitationURL)
+                    .font(.caption)
+                Link("CDC: Water and Healthier Drinks", destination: Legal.hydrationHeatCitationURL)
+                    .font(.caption)
+                Link("ACSM: Facts About Hydration & Electrolytes", destination: Legal.hydrationExerciseCitationURL)
+                    .font(.caption)
+
+                HStack(spacing: 4) {
+                    Image(systemName: "info.circle")
+                    Text("This app does not provide medical advice. Hydration goals are general wellness estimates based on the sources above. Consult a healthcare professional for guidance specific to your health needs.")
+                }
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.vertical, 6)
     }
@@ -329,6 +353,12 @@ struct InsightsView: View {
 
     private var beverageBreakdownSection: some View {
         Group {
+            if !subscriptionManager.hasAccess(to: .fluidTypes) {
+                lockedPremiumSection(
+                    feature: .fluidTypes,
+                    message: "Premium unlocks beverage tracking, hydration factors, and drink-type breakdown charts."
+                )
+            } else {
             let calendar = Calendar.current
             let today = calendar.startOfDay(for: Date())
             let limit = timeframe.daysCount
@@ -404,6 +434,7 @@ struct InsightsView: View {
                     }
                 }
                 .padding(.vertical, 6)
+            }
             }
         }
     }
@@ -592,42 +623,49 @@ struct InsightsView: View {
 
     private var aiInsightsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            if isGeneratingInsight {
-                HStack(spacing: 8) {
-                    ProgressView()
-                    Text("Generating insight...")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
+            if !subscriptionManager.hasAccess(to: .aiInsights) {
+                lockedPremiumSection(
+                    feature: .aiInsights,
+                    message: "Premium unlocks AI insight summaries and hydration coaching based on your recent patterns."
+                )
+            } else {
+                if isGeneratingInsight {
+                    HStack(spacing: 8) {
+                        ProgressView()
+                        Text("Generating insight...")
+                            .font(.subheadline)
+                            .foregroundStyle(.secondary)
+                    }
+                } else if let insight = aiInsight {
+                    HStack(alignment: .top, spacing: 10) {
+                        Image(systemName: "sparkles")
+                            .foregroundStyle(Theme.lavender)
+                            .font(.body)
+                        Text(insight)
+                            .font(.subheadline)
+                    }
                 }
-            } else if let insight = aiInsight {
-                HStack(alignment: .top, spacing: 10) {
-                    Image(systemName: "sparkles")
-                        .foregroundStyle(Theme.lavender)
-                        .font(.body)
-                    Text(insight)
-                        .font(.subheadline)
-                }
-            }
 
-            Button {
-                Task { await generateAIInsight() }
-            } label: {
-                Label("Refresh insight", systemImage: "arrow.clockwise")
-                    .font(.subheadline.weight(.medium))
+                Button {
+                    Task { await generateAIInsight() }
+                } label: {
+                    Label("Refresh insight", systemImage: "arrow.clockwise")
+                        .font(.subheadline.weight(.medium))
+                }
+                .disabled(isGeneratingInsight)
             }
-            .disabled(isGeneratingInsight)
         }
         .padding(.vertical, 6)
         .task {
-            if aiInsight == nil {
-                await generateAIInsight()
-            }
+            guard subscriptionManager.hasAccess(to: .aiInsights), aiInsight == nil else { return }
+            await generateAIInsight()
         }
     }
 
     // MARK: - AI Insight Generation
 
     private func generateAIInsight() async {
+        guard subscriptionManager.hasAccess(to: .aiInsights) else { return }
         isGeneratingInsight = true
         defer { isGeneratingInsight = false }
 
@@ -698,6 +736,50 @@ struct InsightsView: View {
         }
 
         return "Stay consistent with your hydration goals. Every glass counts toward better health and energy throughout the day."
+    }
+
+    private func lockedPremiumSection(feature: PremiumFeature, message: String) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 8) {
+                Image(systemName: feature.icon)
+                    .foregroundStyle(Theme.sun)
+                Text(feature.title)
+                    .font(.subheadline.weight(.semibold))
+                Spacer()
+                Text("Premium")
+                    .font(.caption2.weight(.bold))
+                    .foregroundStyle(Theme.sun)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .background(
+                        Capsule()
+                            .fill(Theme.sun.opacity(0.12))
+                    )
+            }
+
+            Text(message)
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+
+            Button {
+                Haptics.selection()
+                subscriptionManager.presentPaywall(for: feature)
+            } label: {
+                HStack {
+                    Image(systemName: "sparkles")
+                    Text("Unlock Premium")
+                        .fontWeight(.semibold)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 12)
+                .foregroundStyle(.white)
+                .background(
+                    Capsule()
+                        .fill(Theme.lagoon)
+                )
+            }
+            .buttonStyle(.plain)
+        }
     }
 }
 

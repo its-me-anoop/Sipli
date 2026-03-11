@@ -7,6 +7,7 @@ final class HydrationStore: ObservableObject {
     @Published var profile: UserProfile
     @Published var lastWeather: WeatherSnapshot?
     @Published var lastWorkout: WorkoutSummary
+    @Published private(set) var hasPremiumAccess = false
 
     private let persistence = PersistenceService.shared
 
@@ -34,11 +35,17 @@ final class HydrationStore: ObservableObject {
     }
 
     var dailyGoal: GoalBreakdown {
-        GoalCalculator.dailyGoal(profile: profile, weather: activeWeather, workout: lastWorkout)
+        let profile = effectiveProfile
+        let workout = profile.prefersHealthKit ? lastWorkout : nil
+        return GoalCalculator.dailyGoal(profile: profile, weather: activeWeather, workout: workout)
     }
 
     var activeWeather: WeatherSnapshot? {
-        profile.prefersWeatherGoal ? lastWeather : nil
+        effectiveProfile.prefersWeatherGoal ? lastWeather : nil
+    }
+
+    var effectiveProfile: UserProfile {
+        profile.applyingPremiumAccess(hasPremiumAccess)
     }
 
     var todayEntries: [HydrationEntry] {
@@ -107,6 +114,11 @@ final class HydrationStore: ObservableObject {
     func updateWorkout(_ summary: WorkoutSummary) {
         lastWorkout = summary
         persist()
+    }
+
+    func updatePremiumAccess(_ hasPremiumAccess: Bool) {
+        guard self.hasPremiumAccess != hasPremiumAccess else { return }
+        self.hasPremiumAccess = hasPremiumAccess
     }
 
     func syncHealthKitEntries(_ healthKitEntries: [HydrationEntry], for date: Date = Date()) {

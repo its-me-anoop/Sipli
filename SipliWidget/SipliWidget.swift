@@ -109,7 +109,7 @@ struct SipliWidgetBundle: WidgetBundle {
     }
 }
 
-#if DEBUG
+#if DEBUG && WIDGET_PREVIEWS
 private extension WidgetData {
     static let previewMid = WidgetData(
         todayEntries: [

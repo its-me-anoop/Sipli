@@ -7,6 +7,7 @@ struct SettingsView: View {
     @EnvironmentObject private var notifier: NotificationScheduler
     @EnvironmentObject private var healthKit: HealthKitManager
     @EnvironmentObject private var locationManager: LocationManager
+    @EnvironmentObject private var subscriptionManager: SubscriptionManager
 
     @AppStorage("appTheme") private var appTheme: AppTheme = .system
 
@@ -21,6 +22,7 @@ struct SettingsView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
+                subscriptionCard
                 profileCard
                 appearanceCard
                 goalCard
@@ -41,6 +43,95 @@ struct SettingsView: View {
         }
         .onAppear {
             hydrateLocalStateFromProfile()
+        }
+    }
+
+    private var subscriptionCard: some View {
+        DashboardCard(
+            title: subscriptionManager.isSubscribed ? "Sipli Premium" : "Sipli Free",
+            icon: subscriptionManager.isSubscribed ? "sparkles" : "drop.fill"
+        ) {
+            VStack(alignment: .leading, spacing: 16) {
+                HStack(alignment: .top) {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(subscriptionManager.isSubscribed ? "\(subscriptionManager.currentPlanName) plan active" : "Basic water logging is free")
+                            .font(.headline)
+
+                        Text(
+                            subscriptionManager.isSubscribed
+                            ? "Premium unlocks beverage types, AI insights, HealthKit sync, adaptive goals, and smart reminders."
+                            : "Upgrade to unlock beverage types, AI insights, HealthKit sync, weather and activity-based goals, and smart reminders."
+                        )
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    }
+
+                    Spacer(minLength: 12)
+
+                    Text(subscriptionManager.isSubscribed ? "Active" : "Free")
+                        .font(.caption.weight(.bold))
+                        .foregroundStyle(subscriptionManager.isSubscribed ? Theme.mint : Theme.lagoon)
+                        .padding(.horizontal, 10)
+                        .padding(.vertical, 6)
+                        .background(
+                            Capsule()
+                                .fill((subscriptionManager.isSubscribed ? Theme.mint : Theme.lagoon).opacity(0.12))
+                        )
+                }
+
+                if !subscriptionManager.isSubscribed,
+                   let featuredProduct = subscriptionManager.featuredProduct,
+                   let productID = ProductID(rawValue: featuredProduct.id) {
+                    HStack(spacing: 10) {
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("\(productID.displayName) Premium")
+                                .font(.subheadline.weight(.semibold))
+                            Text(productID.shortDescription)
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+
+                        Spacer()
+
+                        HStack(alignment: .firstTextBaseline, spacing: 2) {
+                            Text(featuredProduct.displayPrice)
+                                .font(.title3.weight(.bold))
+                                .foregroundStyle(Theme.lagoon)
+                            Text(productID.billingSuffix)
+                                .font(.caption.weight(.medium))
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+                    .padding(14)
+                    .background(
+                        RoundedRectangle(cornerRadius: 14, style: .continuous)
+                            .fill(.ultraThinMaterial)
+                    )
+                }
+
+                Button {
+                    Haptics.selection()
+                    if subscriptionManager.isSubscribed {
+                        UIApplication.shared.open(Legal.manageSubscriptionsURL)
+                    } else {
+                        subscriptionManager.presentPaywall()
+                    }
+                } label: {
+                    HStack {
+                        Image(systemName: subscriptionManager.isSubscribed ? "creditcard.fill" : "sparkles")
+                        Text(subscriptionManager.isSubscribed ? "Manage Subscription" : "See Premium Plans")
+                            .fontWeight(.semibold)
+                    }
+                    .frame(maxWidth: .infinity)
+                    .padding(.vertical, 12)
+                    .foregroundStyle(subscriptionManager.isSubscribed ? Theme.lagoon : .white)
+                    .background(
+                        Capsule()
+                            .fill(subscriptionManager.isSubscribed ? Theme.cardSurface : Theme.lagoon)
+                    )
+                }
+                .buttonStyle(.plain)
+            }
         }
     }
 
@@ -200,30 +291,71 @@ struct SettingsView: View {
 
                 Divider().opacity(0.3)
 
-                settingsToggle(
-                    "Weather adjustment",
-                    icon: "cloud.sun.fill",
-                    isOn: Binding(
-                        get: { store.profile.prefersWeatherGoal },
-                        set: { value in
-                            store.updateProfile { $0.prefersWeatherGoal = value }
-                            if value {
-                                locationManager.requestPermission()
+                if subscriptionManager.hasAccess(to: .weatherGoals) {
+                    settingsToggle(
+                        "Weather adjustment",
+                        icon: "cloud.sun.fill",
+                        isOn: Binding(
+                            get: { store.profile.prefersWeatherGoal },
+                            set: { value in
+                                store.updateProfile { $0.prefersWeatherGoal = value }
+                                if value {
+                                    locationManager.requestPermission()
+                                }
                             }
-                        }
+                        )
                     )
-                )
+                } else {
+                    premiumLockedRow(
+                        title: "Weather adjustment",
+                        subtitle: "Premium adapts your goal to local temperature and humidity.",
+                        systemImage: "cloud.sun.fill",
+                        feature: .weatherGoals
+                    )
+                }
 
-                settingsToggle(
-                    "Workout adjustment",
-                    icon: "figure.run",
-                    isOn: Binding(
-                        get: { store.profile.prefersHealthKit },
-                        set: { value in
-                            store.updateProfile { $0.prefersHealthKit = value }
-                        }
+                if subscriptionManager.hasAccess(to: .activityGoals) {
+                    settingsToggle(
+                        "Workout adjustment",
+                        icon: "figure.run",
+                        isOn: Binding(
+                            get: { store.profile.prefersHealthKit },
+                            set: { value in
+                                store.updateProfile { $0.prefersHealthKit = value }
+                            }
+                        )
                     )
-                )
+                } else {
+                    premiumLockedRow(
+                        title: "Workout adjustment",
+                        subtitle: "Premium increases your goal using Apple Health workout data.",
+                        systemImage: "figure.run",
+                        feature: .activityGoals
+                    )
+                }
+
+                Divider().opacity(0.3)
+
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Goal methodology sources")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(.secondary)
+
+                    Link("National Academies: Dietary Reference Intakes for Water (2005)", destination: Legal.hydrationBaseCitationURL)
+                        .font(.caption)
+                    Link("CDC: Water and Healthier Drinks", destination: Legal.hydrationHeatCitationURL)
+                        .font(.caption)
+                    Link("ACSM: Facts About Hydration & Electrolytes", destination: Legal.hydrationExerciseCitationURL)
+                        .font(.caption)
+
+                    HStack(alignment: .top, spacing: 4) {
+                        Image(systemName: "info.circle")
+                        Text("This app does not provide medical advice. Hydration goals are general wellness estimates based on the sources above. Consult a healthcare professional for guidance specific to your health needs.")
+                    }
+                    .font(.caption2)
+                    .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
             .animation(Theme.fluidSpring, value: customGoalEnabled)
         }
@@ -290,17 +422,26 @@ struct SettingsView: View {
                     )
                 )
 
-                settingsToggle(
-                    "Smart reminders",
-                    icon: "brain.head.profile.fill",
-                    isOn: Binding(
-                        get: { store.profile.smartRemindersEnabled },
-                        set: { value in
-                            store.updateProfile { $0.smartRemindersEnabled = value }
-                            rescheduleReminders()
-                        }
+                if subscriptionManager.hasAccess(to: .smartReminders) {
+                    settingsToggle(
+                        "Smart reminders",
+                        icon: "brain.head.profile.fill",
+                        isOn: Binding(
+                            get: { store.profile.smartRemindersEnabled },
+                            set: { value in
+                                store.updateProfile { $0.smartRemindersEnabled = value }
+                                rescheduleReminders()
+                            }
+                        )
                     )
-                )
+                } else {
+                    premiumLockedRow(
+                        title: "Smart reminders",
+                        subtitle: "Premium unlocks adaptive reminders based on your schedule and progress.",
+                        systemImage: "brain.head.profile.fill",
+                        feature: .smartReminders
+                    )
+                }
             }
         }
     }
@@ -310,53 +451,71 @@ struct SettingsView: View {
     private var permissionsCard: some View {
         DashboardCard(title: "Permissions", icon: "shield.fill") {
             VStack(spacing: 14) {
-                permissionRow(
-                    title: "HealthKit",
-                    subtitle: healthStatusText,
-                    systemImage: "heart.fill",
-                    tint: healthKit.isAuthorized ? Theme.mint : Theme.sun,
-                    isDetermined: healthKit.isAuthorized
-                ) {
-                    Task { await healthKit.requestAuthorization() }
-                }
+                if subscriptionManager.hasAccess(to: .healthKitSync) {
+                    permissionRow(
+                        title: "HealthKit",
+                        subtitle: healthStatusText,
+                        systemImage: "heart.fill",
+                        tint: healthKit.isAuthorized ? Theme.mint : Theme.sun,
+                        isDetermined: healthKit.isAuthorized
+                    ) {
+                        Task { await healthKit.requestAuthorization() }
+                    }
 
-                Button {
-                    Haptics.impact(.light)
-                    Task {
-                        guard let entries = await healthKit.fetchRecentWaterEntries(days: 7) else { return }
-                        await MainActor.run {
-                            store.syncHealthKitEntriesRange(entries, days: 7)
+                    Button {
+                        Haptics.impact(.light)
+                        Task {
+                            guard let entries = await healthKit.fetchRecentWaterEntries(days: 7) else { return }
+                            await MainActor.run {
+                                store.syncHealthKitEntriesRange(entries, days: 7)
+                            }
                         }
+                    } label: {
+                        HStack(spacing: 8) {
+                            Image(systemName: "arrow.triangle.2.circlepath")
+                                .foregroundStyle(Theme.lagoon)
+                                .frame(width: 22)
+                            Text("Sync HealthKit Now")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Spacer()
+                            Image(systemName: "chevron.right")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding(12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .fill(Theme.card)
+                        )
                     }
-                } label: {
-                    HStack(spacing: 8) {
-                        Image(systemName: "arrow.triangle.2.circlepath")
-                            .foregroundStyle(Theme.lagoon)
-                            .frame(width: 22)
-                        Text("Sync HealthKit Now")
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(.primary)
-                        Spacer()
-                        Image(systemName: "chevron.right")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.tertiary)
-                    }
-                    .padding(12)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(Theme.card)
+                    .buttonStyle(.plain)
+                } else {
+                    premiumLockedRow(
+                        title: "HealthKit sync",
+                        subtitle: "Premium syncs your water intake and workout data with Apple Health.",
+                        systemImage: "heart.fill",
+                        feature: .healthKitSync
                     )
                 }
-                .buttonStyle(.plain)
 
-                permissionRow(
-                    title: "Location",
-                    subtitle: locationStatusText,
-                    systemImage: "location.fill",
-                    tint: locationEnabled ? Theme.mint : Theme.sun,
-                    isDetermined: locationManager.authorizationStatus != .notDetermined
-                ) {
-                    locationManager.requestPermission()
+                if subscriptionManager.hasAccess(to: .weatherGoals) {
+                    permissionRow(
+                        title: "Location",
+                        subtitle: locationStatusText,
+                        systemImage: "location.fill",
+                        tint: locationEnabled ? Theme.mint : Theme.sun,
+                        isDetermined: locationManager.authorizationStatus != .notDetermined
+                    ) {
+                        locationManager.requestPermission()
+                    }
+                } else {
+                    premiumLockedRow(
+                        title: "Weather permissions",
+                        subtitle: "Premium uses location permission to power weather-based hydration goals.",
+                        systemImage: "location.fill",
+                        feature: .weatherGoals
+                    )
                 }
 
                 permissionRow(
@@ -434,23 +593,32 @@ struct SettingsView: View {
                         .fill(Theme.card)
                 )
 
-                Link(destination: Legal.manageSubscriptionsURL) {
-                    HStack(spacing: 8) {
-                        Image(systemName: "creditcard.fill")
-                            .foregroundStyle(.secondary)
-                            .frame(width: 22)
-                        Text("Manage Subscription")
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                        Image(systemName: "arrow.up.right")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(.tertiary)
+                if subscriptionManager.isSubscribed {
+                    Link(destination: Legal.manageSubscriptionsURL) {
+                        HStack(spacing: 8) {
+                            Image(systemName: "creditcard.fill")
+                                .foregroundStyle(.secondary)
+                                .frame(width: 22)
+                            Text("Manage Subscription")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.secondary)
+                            Spacer()
+                            Image(systemName: "arrow.up.right")
+                                .font(.caption.weight(.semibold))
+                                .foregroundStyle(.tertiary)
+                        }
+                        .padding(12)
+                        .background(
+                            RoundedRectangle(cornerRadius: 12, style: .continuous)
+                                .fill(Theme.card)
+                        )
                     }
-                    .padding(12)
-                    .background(
-                        RoundedRectangle(cornerRadius: 12, style: .continuous)
-                            .fill(Theme.card)
+                } else {
+                    premiumLockedRow(
+                        title: "Explore premium plans",
+                        subtitle: "See monthly and annual options with free trials.",
+                        systemImage: "sparkles",
+                        feature: nil
                     )
                 }
             }
@@ -509,6 +677,50 @@ struct SettingsView: View {
                 Image(systemName: "chevron.right")
                     .font(.caption.weight(.semibold))
                     .foregroundStyle(.tertiary)
+            }
+            .padding(12)
+            .background(
+                RoundedRectangle(cornerRadius: 12, style: .continuous)
+                    .fill(Theme.card)
+            )
+        }
+        .buttonStyle(.plain)
+    }
+
+    private func premiumLockedRow(
+        title: String,
+        subtitle: String,
+        systemImage: String,
+        feature: PremiumFeature?
+    ) -> some View {
+        Button {
+            Haptics.selection()
+            subscriptionManager.presentPaywall(for: feature)
+        } label: {
+            HStack(spacing: 10) {
+                Image(systemName: systemImage)
+                    .foregroundStyle(Theme.sun)
+                    .frame(width: 22)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(title)
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(.primary)
+                    Text(subtitle)
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                VStack(spacing: 2) {
+                    Image(systemName: "lock.fill")
+                        .font(.caption.weight(.semibold))
+                        .foregroundStyle(Theme.sun)
+                    Text("Premium")
+                        .font(.caption2.weight(.bold))
+                        .foregroundStyle(.secondary)
+                }
             }
             .padding(12)
             .background(
@@ -596,7 +808,7 @@ struct SettingsView: View {
     }
 
     private func rescheduleReminders() {
-        notifier.scheduleReminders(profile: store.profile, entries: store.entries, goalML: store.dailyGoal.totalML)
+        notifier.scheduleReminders(profile: store.effectiveProfile, entries: store.entries, goalML: store.dailyGoal.totalML)
     }
 
     private func minutes(from date: Date) -> Int {

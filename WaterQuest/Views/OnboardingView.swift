@@ -5,6 +5,7 @@ struct OnboardingView: View {
     @EnvironmentObject private var healthKit: HealthKitManager
     @EnvironmentObject private var notifier: NotificationScheduler
     @EnvironmentObject private var locationManager: LocationManager
+    @EnvironmentObject private var subscriptionManager: SubscriptionManager
 
     var onComplete: () -> Void
 
@@ -389,11 +390,11 @@ struct OnboardingView: View {
     private func requestPermissionForCurrentStep() async {
         switch step {
         case 3: // Activity → HealthKit (only if opted in)
-            if prefersHealthKit {
+            if prefersHealthKit && subscriptionManager.hasAccess(to: .healthKitSync) {
                 await healthKit.requestAuthorization()
             }
         case 4: // Goal → Location (only if weather opted in)
-            if prefersWeatherGoal {
+            if prefersWeatherGoal && subscriptionManager.hasAccess(to: .weatherGoals) {
                 await requestLocationPermission()
             }
         case 6: // Reminders → Notifications
@@ -430,7 +431,7 @@ struct OnboardingView: View {
             profile.prefersHealthKit = prefersHealthKit
         }
 
-        notifier.scheduleReminders(profile: store.profile)
+        notifier.scheduleReminders(profile: store.effectiveProfile)
         onComplete()
     }
 

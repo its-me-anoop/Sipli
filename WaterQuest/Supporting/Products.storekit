@@ -7,13 +7,40 @@
       "id" : "A1B2C3D4",
       "localizations" : [
         {
-          "description" : "Sipli Subscription",
+          "description" : "Sipli Premium",
           "displayName" : "Sipli",
           "locale" : "en_US"
         }
       ],
       "name" : "Sipli",
       "subscriptions" : [
+        {
+          "adHocOffers" : [],
+          "codeOffers" : [],
+          "displayPrice" : "29.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "B1C2D3E4",
+          "introductoryOffer" : {
+            "displayPrice" : "0",
+            "internalID" : "F5G6H7I8",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1M"
+          },
+          "localizations" : [
+            {
+              "description" : "Annual Sipli Premium subscription",
+              "displayName" : "Annual",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.sipli.annual",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Annual",
+          "subscriptionGroupID" : "A1B2C3D4",
+          "type" : "RecurringSubscription"
+        },
         {
           "adHocOffers" : [],
           "codeOffers" : [],
@@ -30,7 +57,7 @@
           },
           "localizations" : [
             {
-              "description" : "Monthly subscription to use Sipli",
+              "description" : "Monthly Sipli Premium subscription",
               "displayName" : "Monthly",
               "locale" : "en_US"
             }
