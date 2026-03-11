@@ -15,9 +15,24 @@ struct SettingsView: View {
     @State private var customGoalValue: Double = 2200
     @State private var wakeTime: Date = Date()
     @State private var sleepTime: Date = Date()
+    @State private var isPremiumPromptDismissed = false
 
     @Environment(\.horizontalSizeClass) private var sizeClass
     private var isRegular: Bool { sizeClass == .regular }
+    private var loggedDayCount: Int {
+        Set(store.entries.map { $0.date.startOfDay }).count
+    }
+    private var shouldShowPremiumPrompt: Bool {
+        guard !subscriptionManager.hasPremiumAccess else { return false }
+        guard !isPremiumPromptDismissed else { return false }
+        guard loggedDayCount >= 3 else { return false }
+
+        if let nextEligibleAt = store.premiumUpsellState.nextEligibleAt {
+            return nextEligibleAt <= Date()
+        }
+
+        return true
+    }
 
     var body: some View {
         ScrollView {
@@ -25,6 +40,7 @@ struct SettingsView: View {
                 subscriptionCard
                 profileCard
                 appearanceCard
+                premiumGoalCard
                 goalCard
                 scheduleCard
                 reminderCard
@@ -43,96 +59,96 @@ struct SettingsView: View {
         }
         .onAppear {
             hydrateLocalStateFromProfile()
+            isPremiumPromptDismissed = false
         }
     }
 
     private var subscriptionCard: some View {
-        DashboardCard(
-            title: subscriptionManager.isSubscribed ? "Sipli Premium" : "Sipli Free",
-            icon: subscriptionManager.isSubscribed ? "sparkles" : "drop.fill"
-        ) {
-            VStack(alignment: .leading, spacing: 16) {
-                HStack(alignment: .top) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(subscriptionManager.isSubscribed ? "\(subscriptionManager.currentPlanName) plan active" : "Basic water logging is free")
-                            .font(.headline)
+        Group {
+            if subscriptionManager.isSubscribed {
+                DashboardCard(
+                    title: "Sipli Premium",
+                    icon: "sparkles"
+                ) {
+                    VStack(alignment: .leading, spacing: 16) {
+                        HStack(alignment: .top) {
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("\(subscriptionManager.currentPlanName) plan active")
+                                    .font(.headline)
 
-                        Text(
-                            subscriptionManager.isSubscribed
-                            ? "Premium unlocks beverage types, AI insights, HealthKit sync, adaptive goals, and smart reminders."
-                            : "Upgrade to unlock beverage types, AI insights, HealthKit sync, weather and activity-based goals, and smart reminders."
-                        )
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                    }
+                                Text("Premium unlocks beverage types, AI insights, HealthKit sync, adaptive goals, and smart reminders.")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
 
-                    Spacer(minLength: 12)
+                            Spacer(minLength: 12)
 
-                    Text(subscriptionManager.isSubscribed ? "Active" : "Free")
-                        .font(.caption.weight(.bold))
-                        .foregroundStyle(subscriptionManager.isSubscribed ? Theme.mint : Theme.lagoon)
-                        .padding(.horizontal, 10)
-                        .padding(.vertical, 6)
-                        .background(
-                            Capsule()
-                                .fill((subscriptionManager.isSubscribed ? Theme.mint : Theme.lagoon).opacity(0.12))
-                        )
-                }
-
-                if !subscriptionManager.isSubscribed,
-                   let featuredProduct = subscriptionManager.featuredProduct,
-                   let productID = ProductID(rawValue: featuredProduct.id) {
-                    HStack(spacing: 10) {
-                        VStack(alignment: .leading, spacing: 2) {
-                            Text("\(productID.displayName) Premium")
-                                .font(.subheadline.weight(.semibold))
-                            Text(productID.shortDescription)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                            Text("Active")
+                                .font(.caption.weight(.bold))
+                                .foregroundStyle(Theme.mint)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(
+                                    Capsule()
+                                        .fill(Theme.mint.opacity(0.12))
+                                )
                         }
 
-                        Spacer()
-
-                        HStack(alignment: .firstTextBaseline, spacing: 2) {
-                            Text(featuredProduct.displayPrice)
-                                .font(.title3.weight(.bold))
-                                .foregroundStyle(Theme.lagoon)
-                            Text(productID.billingSuffix)
-                                .font(.caption.weight(.medium))
-                                .foregroundStyle(.secondary)
+                        Button {
+                            Haptics.selection()
+                            UIApplication.shared.open(Legal.manageSubscriptionsURL)
+                        } label: {
+                            HStack {
+                                Image(systemName: "creditcard.fill")
+                                Text("Manage Subscription")
+                                    .fontWeight(.semibold)
+                            }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 12)
+                            .foregroundStyle(Theme.lagoon)
+                            .background(
+                                Capsule()
+                                    .fill(Theme.cardSurface)
+                            )
                         }
+                        .buttonStyle(.plain)
                     }
-                    .padding(14)
-                    .background(
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .fill(.ultraThinMaterial)
-                    )
                 }
-
-                Button {
-                    Haptics.selection()
-                    if subscriptionManager.isSubscribed {
-                        UIApplication.shared.open(Legal.manageSubscriptionsURL)
-                    } else {
-                        subscriptionManager.presentPaywall()
-                    }
-                } label: {
-                    HStack {
-                        Image(systemName: subscriptionManager.isSubscribed ? "creditcard.fill" : "sparkles")
-                        Text(subscriptionManager.isSubscribed ? "Manage Subscription" : "See Premium Plans")
-                            .fontWeight(.semibold)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                    .foregroundStyle(subscriptionManager.isSubscribed ? Theme.lagoon : .white)
-                    .background(
-                        Capsule()
-                            .fill(subscriptionManager.isSubscribed ? Theme.cardSurface : Theme.lagoon)
-                    )
-                }
-                .buttonStyle(.plain)
             }
         }
+    }
+
+    private var premiumGoalCard: some View {
+        Group {
+            if !subscriptionManager.isSubscribed, shouldShowPremiumPrompt {
+                PremiumSoftSellBanner(
+                    title: "Upgrade your hydration goals",
+                    message: "Unlock weather and workout adjustments, AI insights, HealthKit sync, and smarter reminders when you are ready.",
+                    featurePills: [
+                        (icon: "cloud.sun.fill", text: "Weather Goals"),
+                        (icon: "figure.run", text: "Workout Goals"),
+                        (icon: "brain.head.profile.fill", text: "AI Insights"),
+                        (icon: "heart.fill", text: "HealthKit Sync")
+                    ],
+                    ctaTitle: "See Premium",
+                    onDismiss: dismissPremiumPrompt,
+                    onShowPremium: {
+                        Haptics.selection()
+                        subscriptionManager.presentPaywall()
+                    },
+                    onBackgroundTap: {
+                        Haptics.selection()
+                        subscriptionManager.presentPaywall()
+                    }
+                )
+            }
+        }
+    }
+
+    private func dismissPremiumPrompt() {
+        Haptics.selection()
+        isPremiumPromptDismissed = true
+        store.dismissPremiumUpsell()
     }
 
     // MARK: - Profile
@@ -616,7 +632,7 @@ struct SettingsView: View {
                 } else {
                     premiumLockedRow(
                         title: "Explore premium plans",
-                        subtitle: "See monthly and annual options with free trials.",
+                        subtitle: "Annual includes a 30-day free trial; monthly has no free trial.",
                         systemImage: "sparkles",
                         feature: nil
                     )

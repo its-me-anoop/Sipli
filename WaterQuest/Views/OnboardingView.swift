@@ -30,6 +30,9 @@ struct OnboardingView: View {
 
     @Environment(\.horizontalSizeClass) private var sizeClass
     private var isRegular: Bool { sizeClass == .regular }
+    private var canUseWeatherGoals: Bool { subscriptionManager.hasAccess(to: .weatherGoals) }
+    private var canUseWorkoutGoals: Bool { subscriptionManager.hasAccess(to: .activityGoals) }
+    private var canUseHealthKitFeatures: Bool { subscriptionManager.hasAccess(to: .healthKitSync) }
 
     private let totalSteps = 7
 

@@ -12,9 +12,24 @@ struct DashboardView: View {
     @State private var entryToEdit: HydrationEntry?
     @State private var entryToDelete: HydrationEntry?
     @State private var isRefreshing = false
+    @State private var isPremiumPromptDismissed = false
 
     private var goal: GoalBreakdown { store.dailyGoal }
     private var progress: Double { min(1, store.todayTotalML / max(1, goal.totalML)) }
+    private var loggedDayCount: Int {
+        Set(store.entries.map { $0.date.startOfDay }).count
+    }
+    private var shouldShowPremiumPrompt: Bool {
+        guard !subscriptionManager.hasPremiumAccess else { return false }
+        guard !isPremiumPromptDismissed else { return false }
+        guard loggedDayCount >= 3 else { return false }
+
+        if let nextEligibleAt = store.premiumUpsellState.nextEligibleAt {
+            return nextEligibleAt <= Date()
+        }
+
+        return true
+    }
 
     var body: some View {
         Group {
@@ -33,6 +48,9 @@ struct DashboardView: View {
             if subscriptionManager.hasAccess(to: .aiInsights) {
                 await generateAITip()
             }
+        }
+        .onAppear {
+            isPremiumPromptDismissed = false
         }
         .task(id: locationManager.lastLocation?.timestamp) {
             guard store.effectiveProfile.prefersWeatherGoal else { return }
@@ -66,6 +84,10 @@ struct DashboardView: View {
                     }
                 }
 
+                if shouldShowPremiumPrompt {
+                    premiumSoftSell
+                }
+
                 if subscriptionManager.hasPremiumAccess {
                     if store.effectiveProfile.prefersWeatherGoal {
                         DashboardCard(title: "Weather", icon: activeWeather.map { weatherIcon($0) } ?? "cloud.sun.fill") {
@@ -76,8 +98,6 @@ struct DashboardView: View {
                     DashboardCard(title: "Today's Activity", icon: "figure.run") {
                         activitySection
                     }
-                } else {
-                    premiumHighlightsCard
                 }
 
                 DashboardCard(title: "Today's Log", icon: "drop.fill") {
@@ -151,6 +171,10 @@ struct DashboardView: View {
                     showsFluidBreakdown: subscriptionManager.hasAccess(to: .fluidTypes)
                 )
 
+                if shouldShowPremiumPrompt {
+                    premiumSoftSell
+                }
+
                 // Two columns: Coach (left), Weather + Activity (right)
                 HStack(alignment: .top, spacing: 20) {
                     // Left column: Hydration Coach (larger)
@@ -159,8 +183,6 @@ struct DashboardView: View {
                             DashboardCard(title: "Hydration Coach", icon: "sparkles", backgroundGradient: Theme.coachCard) {
                                 iPadTipSection(tip)
                             }
-                        } else if !subscriptionManager.hasPremiumAccess {
-                            premiumHighlightsCard
                         }
                     }
                     .frame(minWidth: 0, maxWidth: .infinity)
@@ -262,40 +284,24 @@ struct DashboardView: View {
         )
     }
 
-    private var premiumHighlightsCard: some View {
-        DashboardCard(title: "Premium Features", icon: "sparkles") {
-            VStack(alignment: .leading, spacing: 14) {
-                Text("Basic water logging is free. Upgrade for beverage types, AI coaching, HealthKit sync, and goals that adapt to weather and activity.")
-                    .font(.subheadline)
-                    .foregroundStyle(.secondary)
-
-                VStack(alignment: .leading, spacing: 10) {
-                    SubscriptionFeatureLine(icon: "cup.and.saucer.fill", text: "Track coffee, tea, juice, smoothies, and more")
-                    SubscriptionFeatureLine(icon: "brain.head.profile.fill", text: "Unlock AI hydration coach tips")
-                    SubscriptionFeatureLine(icon: "heart.fill", text: "Sync water and workouts with Apple Health")
-                    SubscriptionFeatureLine(icon: "cloud.sun.fill", text: "Adjust goals for weather and activity")
-                }
-
-                Button {
-                    Haptics.selection()
-                    subscriptionManager.presentPaywall()
-                } label: {
-                    HStack {
-                        Image(systemName: "sparkles")
-                        Text("Unlock Premium")
-                            .fontWeight(.semibold)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 12)
-                    .foregroundStyle(.white)
-                    .background(
-                        Capsule()
-                            .fill(Theme.lagoon)
-                    )
-                }
-                .buttonStyle(.plain)
+    private var premiumSoftSell: some View {
+        PremiumSoftSellBanner(
+            title: "Premium, when you want more",
+            message: "Unlock beverage types, AI coaching, HealthKit sync, and goals that react to weather and activity.",
+            featurePills: [
+                (icon: "cup.and.saucer.fill", text: "Beverage Types"),
+                (icon: "brain.head.profile.fill", text: "AI Coach"),
+                (icon: "heart.fill", text: "HealthKit Sync"),
+                (icon: "cloud.sun.fill", text: "Adaptive Goals")
+            ],
+            ctaTitle: "See Premium",
+            onDismiss: dismissPremiumPrompt,
+            onShowPremium: {
+                Haptics.selection()
+                subscriptionManager.presentPaywall()
             }
-        }
+        )
+        .transition(.move(edge: .bottom).combined(with: .opacity))
     }
 
     @Environment(\.horizontalSizeClass) private var sizeClass
@@ -636,6 +642,12 @@ struct DashboardView: View {
             exerciseMinutes: Int(store.lastWorkout.exerciseMinutes),
             timeOfDay: TimeOfDay.current
         )
+    }
+
+    private func dismissPremiumPrompt() {
+        Haptics.selection()
+        isPremiumPromptDismissed = true
+        store.dismissPremiumUpsell()
     }
 
 }
@@ -1178,6 +1190,36 @@ struct DetailedLogRow: View {
 #if DEBUG
 #Preview("Dashboard") {
     PreviewEnvironment {
+        DashboardView()
+    }
+}
+
+#Preview("Dashboard Premium Upsell") {
+    PreviewEnvironment(setup: { store, _ in
+        let calendar = Calendar.current
+        let now = Date()
+
+        store.entries = [
+            HydrationEntry(
+                date: now,
+                volumeML: 420,
+                source: .manual,
+                fluidType: .water
+            ),
+            HydrationEntry(
+                date: calendar.date(byAdding: .day, value: -1, to: now) ?? now,
+                volumeML: 360,
+                source: .manual,
+                fluidType: .tea
+            ),
+            HydrationEntry(
+                date: calendar.date(byAdding: .day, value: -2, to: now) ?? now,
+                volumeML: 500,
+                source: .manual,
+                fluidType: .coffee
+            )
+        ]
+    }) {
         DashboardView()
     }
 }

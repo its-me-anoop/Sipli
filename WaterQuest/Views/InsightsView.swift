@@ -200,7 +200,7 @@ struct InsightsView: View {
                         // Right Column
                         VStack(spacing: 20) {
                             DashboardCard(title: "Goal Breakdown", icon: "target") { breakdownSection }
-                            if !store.entries.isEmpty {
+                            if subscriptionManager.hasAccess(to: .fluidTypes), !store.entries.isEmpty {
                                 DashboardCard(title: "Beverage Breakdown (Past \(timeframe.rawValue))", icon: "cup.and.saucer.fill") { beverageBreakdownSection }
                             }
                             DashboardCard(title: "Trends & Streaks", icon: "chart.line.uptrend.xyaxis") { trendsSection }
@@ -208,18 +208,22 @@ struct InsightsView: View {
                     }
 
                     // Full-width AI Insights below columns
-                    DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
+                    if subscriptionManager.hasAccess(to: .aiInsights) {
+                        DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
+                    }
                 } else {
                     // iPhone Stacked layout
                     VStack(spacing: 20) {
                         DashboardCard(title: "Weekly Intake", icon: "chart.bar.fill") { chartSection }
                         DashboardCard(title: "Goal Breakdown", icon: "target") { breakdownSection }
-                        if !store.entries.isEmpty {
+                        if subscriptionManager.hasAccess(to: .fluidTypes), !store.entries.isEmpty {
                             DashboardCard(title: "Beverage Breakdown (Past \(timeframe.rawValue))", icon: "cup.and.saucer.fill") { beverageBreakdownSection }
                         }
                         DashboardCard(title: "Hydration Heatmap", icon: "square.grid.3x3.fill") { heatmapSection }
                         DashboardCard(title: "Trends & Streaks", icon: "chart.line.uptrend.xyaxis") { trendsSection }
-                        DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
+                        if subscriptionManager.hasAccess(to: .aiInsights) {
+                            DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
+                        }
                     }
                 }
             }
@@ -294,11 +298,16 @@ struct InsightsView: View {
 
     private var breakdownSection: some View {
         let goal = store.dailyGoal
+        let hasPremiumAccess = subscriptionManager.hasPremiumAccess
+        let displayedTarget = hasPremiumAccess ? goal.totalML : goal.baseML
 
         return VStack(spacing: 10) {
             BreakdownRow(title: "Base goal", value: goal.baseML, unitSystem: store.profile.unitSystem, icon: "figure.stand", tint: Theme.lagoon)
-            BreakdownRow(title: "Weather adjustment", value: goal.weatherAdjustmentML, unitSystem: store.profile.unitSystem, icon: "cloud.sun", tint: Theme.sun)
-            BreakdownRow(title: "Workout adjustment", value: goal.workoutAdjustmentML, unitSystem: store.profile.unitSystem, icon: "figure.run", tint: Theme.coral)
+
+            if hasPremiumAccess {
+                BreakdownRow(title: "Weather adjustment", value: goal.weatherAdjustmentML, unitSystem: store.profile.unitSystem, icon: "cloud.sun", tint: Theme.sun)
+                BreakdownRow(title: "Workout adjustment", value: goal.workoutAdjustmentML, unitSystem: store.profile.unitSystem, icon: "figure.run", tint: Theme.coral)
+            }
 
             Divider()
 
@@ -306,11 +315,11 @@ struct InsightsView: View {
                 Label("Daily target", systemImage: "target")
                     .font(.subheadline.weight(.semibold))
                 Spacer()
-                Text(Formatters.volumeString(ml: goal.totalML, unit: store.profile.unitSystem))
+                Text(Formatters.volumeString(ml: displayedTarget, unit: store.profile.unitSystem))
                     .font(.headline)
             }
 
-            if goal.weatherAdjustmentML != 0 {
+            if hasPremiumAccess, goal.weatherAdjustmentML != 0 {
                 Link(destination: Legal.weatherAttributionURL) {
                     HStack(spacing: 4) {
                         Text("Weather data provided by")
@@ -353,12 +362,6 @@ struct InsightsView: View {
 
     private var beverageBreakdownSection: some View {
         Group {
-            if !subscriptionManager.hasAccess(to: .fluidTypes) {
-                lockedPremiumSection(
-                    feature: .fluidTypes,
-                    message: "Premium unlocks beverage tracking, hydration factors, and drink-type breakdown charts."
-                )
-            } else {
             let calendar = Calendar.current
             let today = calendar.startOfDay(for: Date())
             let limit = timeframe.daysCount
@@ -434,7 +437,6 @@ struct InsightsView: View {
                     }
                 }
                 .padding(.vertical, 6)
-            }
             }
         }
     }
@@ -623,37 +625,30 @@ struct InsightsView: View {
 
     private var aiInsightsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
-            if !subscriptionManager.hasAccess(to: .aiInsights) {
-                lockedPremiumSection(
-                    feature: .aiInsights,
-                    message: "Premium unlocks AI insight summaries and hydration coaching based on your recent patterns."
-                )
-            } else {
-                if isGeneratingInsight {
-                    HStack(spacing: 8) {
-                        ProgressView()
-                        Text("Generating insight...")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                } else if let insight = aiInsight {
-                    HStack(alignment: .top, spacing: 10) {
-                        Image(systemName: "sparkles")
-                            .foregroundStyle(Theme.lavender)
-                            .font(.body)
-                        Text(insight)
-                            .font(.subheadline)
-                    }
+            if isGeneratingInsight {
+                HStack(spacing: 8) {
+                    ProgressView()
+                    Text("Generating insight...")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
                 }
-
-                Button {
-                    Task { await generateAIInsight() }
-                } label: {
-                    Label("Refresh insight", systemImage: "arrow.clockwise")
-                        .font(.subheadline.weight(.medium))
+            } else if let insight = aiInsight {
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: "sparkles")
+                        .foregroundStyle(Theme.lavender)
+                        .font(.body)
+                    Text(insight)
+                        .font(.subheadline)
                 }
-                .disabled(isGeneratingInsight)
             }
+
+            Button {
+                Task { await generateAIInsight() }
+            } label: {
+                Label("Refresh insight", systemImage: "arrow.clockwise")
+                    .font(.subheadline.weight(.medium))
+            }
+            .disabled(isGeneratingInsight)
         }
         .padding(.vertical, 6)
         .task {
@@ -738,49 +733,6 @@ struct InsightsView: View {
         return "Stay consistent with your hydration goals. Every glass counts toward better health and energy throughout the day."
     }
 
-    private func lockedPremiumSection(feature: PremiumFeature, message: String) -> some View {
-        VStack(alignment: .leading, spacing: 12) {
-            HStack(spacing: 8) {
-                Image(systemName: feature.icon)
-                    .foregroundStyle(Theme.sun)
-                Text(feature.title)
-                    .font(.subheadline.weight(.semibold))
-                Spacer()
-                Text("Premium")
-                    .font(.caption2.weight(.bold))
-                    .foregroundStyle(Theme.sun)
-                    .padding(.horizontal, 8)
-                    .padding(.vertical, 4)
-                    .background(
-                        Capsule()
-                            .fill(Theme.sun.opacity(0.12))
-                    )
-            }
-
-            Text(message)
-                .font(.subheadline)
-                .foregroundStyle(.secondary)
-
-            Button {
-                Haptics.selection()
-                subscriptionManager.presentPaywall(for: feature)
-            } label: {
-                HStack {
-                    Image(systemName: "sparkles")
-                    Text("Unlock Premium")
-                        .fontWeight(.semibold)
-                }
-                .frame(maxWidth: .infinity)
-                .padding(.vertical, 12)
-                .foregroundStyle(.white)
-                .background(
-                    Capsule()
-                        .fill(Theme.lagoon)
-                )
-            }
-            .buttonStyle(.plain)
-        }
-    }
 }
 
 // MARK: - Supporting Types

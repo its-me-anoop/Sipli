@@ -27,7 +27,7 @@ Sipli is a wellness and lifestyle tool. It is **not a medical device** and does 
 Sipli includes a free tier for basic water logging and core progress tracking. Premium is optional and unlocks advanced features such as beverage types, AI insights, HealthKit sync, weather-based goals, activity-based goals, and smart reminders.
 
 - **Free tier** — Basic manual water logging, custom daily goals, diary history, and standard reminders are available without a subscription.
-- **Monthly premium subscription** — New monthly subscribers receive a 1-week free trial. After the trial, the subscription automatically renews at the listed price unless canceled at least 24 hours before the end of the current billing period.
+- **Monthly premium subscription** — The monthly plan has no free trial and begins billing immediately at the listed price. It automatically renews unless canceled at least 24 hours before the end of the current billing period.
 - **Annual premium subscription** — New annual subscribers receive a 30-day free trial. After the trial, the subscription automatically renews at the listed price unless canceled at least 24 hours before the end of the current billing period.
 - **Payment** — Payment is charged to your Apple ID account at confirmation of purchase.
 - **Cancellation** — You can manage or cancel your subscription at any time in iOS Settings > Apple ID > Subscriptions.

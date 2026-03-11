@@ -11,6 +11,7 @@ struct AddIntakeView: View {
     @State private var selectedPreset: Int?
     @State private var selectedFluidType: FluidType = .water
     @State private var showSavedBanner = false
+    @State private var rippleTrigger = 0
 
     private var isRegular: Bool { sizeClass == .regular }
 
@@ -143,7 +144,14 @@ struct AddIntakeView: View {
         }
         .navigationTitle("Log Intake")
         .scrollContentBackground(.hidden)
-        .background(AppWaterBackground().ignoresSafeArea())
+        .background {
+            AppWaterBackground()
+                .ignoresSafeArea()
+                .modifier(RippleEffect(
+                    at: CGPoint(x: UIScreen.main.bounds.width / 2, y: 200),
+                    trigger: rippleTrigger
+                ))
+        }
         .overlay(alignment: .top) {
             if showSavedBanner {
                 SavedBanner(amount: Int(amount), unit: store.profile.unitSystem.volumeUnit, fluidType: selectedFluidType)
@@ -158,6 +166,9 @@ struct AddIntakeView: View {
             }
             if amount < amountRange.lowerBound || amount > amountRange.upperBound {
                 amount = min(max(amount, amountRange.lowerBound), amountRange.upperBound)
+            }
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
+                rippleTrigger += 1
             }
         }
     }

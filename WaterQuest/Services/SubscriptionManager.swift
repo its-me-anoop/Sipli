@@ -19,9 +19,9 @@ enum ProductID: String, CaseIterable, Identifiable {
     var shortDescription: String {
         switch self {
         case .monthly:
-            return "1-week free trial"
+            return "Monthly billing"
         case .annual:
-            return "30-day free trial"
+            return "Annual billing"
         }
     }
 
@@ -52,12 +52,12 @@ enum ProductID: String, CaseIterable, Identifiable {
         }
     }
 
-    var trialCallToAction: String {
+    var callToAction: String {
         switch self {
         case .monthly:
-            return "Try Free for 1 Week"
+            return "Start Monthly Plan"
         case .annual:
-            return "Try Free for 30 Days"
+            return "Start Annual Plan"
         }
     }
 }
@@ -157,7 +157,7 @@ struct PaywallContext: Identifiable, Equatable {
         if let feature {
             return feature.shortDescription
         }
-        return "Basic water logging stays free. Premium adds beverage types, AI insights, HealthKit sync, adaptive goals, and smart reminders."
+        return "Premium adds beverage types, AI insights, HealthKit sync, adaptive goals, and smart reminders."
     }
 }
 

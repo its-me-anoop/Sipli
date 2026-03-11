@@ -8,6 +8,7 @@ final class HydrationStore: ObservableObject {
     @Published var lastWeather: WeatherSnapshot?
     @Published var lastWorkout: WorkoutSummary
     @Published private(set) var hasPremiumAccess = false
+    @Published private(set) var premiumUpsellState: PremiumUpsellState
 
     private let persistence = PersistenceService.shared
 
@@ -21,6 +22,8 @@ final class HydrationStore: ObservableObject {
         self.profile = state.profile
         self.lastWeather = state.lastWeather
         self.lastWorkout = state.lastWorkout
+        self.hasPremiumAccess = state.hasPremiumAccess
+        self.premiumUpsellState = state.premiumUpsellState
 
         persistence.setRemoteDataChangeHandler { [weak self] data in
             guard let self else { return }
@@ -119,6 +122,22 @@ final class HydrationStore: ObservableObject {
     func updatePremiumAccess(_ hasPremiumAccess: Bool) {
         guard self.hasPremiumAccess != hasPremiumAccess else { return }
         self.hasPremiumAccess = hasPremiumAccess
+        if hasPremiumAccess {
+            premiumUpsellState = .default
+        }
+        persist()
+    }
+
+    func dismissPremiumUpsell(now: Date = Date()) {
+        var nextState = premiumUpsellState
+        nextState.dismissCount += 1
+        nextState.nextEligibleAt = Calendar.current.date(
+            byAdding: .day,
+            value: Int.random(in: 30...60),
+            to: now.startOfDay
+        )
+        premiumUpsellState = nextState
+        persist()
     }
 
     func syncHealthKitEntries(_ healthKitEntries: [HydrationEntry], for date: Date = Date()) {
@@ -147,7 +166,9 @@ final class HydrationStore: ObservableObject {
             entries: entries,
             profile: profile,
             lastWeather: lastWeather,
-            lastWorkout: lastWorkout
+            lastWorkout: lastWorkout,
+            hasPremiumAccess: hasPremiumAccess,
+            premiumUpsellState: premiumUpsellState
         )
         persistence.save(state)
         WidgetCenter.shared.reloadAllTimelines()
@@ -158,6 +179,8 @@ final class HydrationStore: ObservableObject {
         profile = state.profile
         lastWeather = state.lastWeather
         lastWorkout = state.lastWorkout
+        hasPremiumAccess = state.hasPremiumAccess
+        premiumUpsellState = state.premiumUpsellState
         WidgetCenter.shared.reloadAllTimelines()
     }
 }

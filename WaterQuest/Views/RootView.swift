@@ -64,28 +64,30 @@ struct PremiumPaywallView: View {
 
     @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
-    @Environment(\.horizontalSizeClass) private var sizeClass
 
     @State private var selectedProductID: ProductID = .annual
     @State private var isPurchasing = false
     @State private var purchaseError: String?
 
-    private var isRegular: Bool { sizeClass == .regular }
-
     private var selectedProduct: Product? {
-        subscriptionManager.product(for: selectedProductID) ?? subscriptionManager.featuredProduct
+        subscriptionManager.product(for: selectedProductID)
     }
 
-    private var freeTierFeatures: [(icon: String, text: String)] {
-        [
-            ("drop.fill", "Manual water logging"),
-            ("target", "Custom daily goal"),
-            ("book.fill", "Diary and history"),
-            ("bell.fill", "Standard reminders")
-        ]
+    private var productOptions: [(id: ProductID, product: Product?)] {
+        ProductID.allCases
+            .sorted { $0.sortOrder < $1.sortOrder }
+            .map { ($0, subscriptionManager.product(for: $0)) }
     }
 
-    private var premiumTierFeatures: [PremiumFeature] {
+    private var isLoadingProducts: Bool {
+        subscriptionManager.availableProducts.isEmpty && !subscriptionManager.isInitialized
+    }
+
+    private var annualPlanUnavailable: Bool {
+        subscriptionManager.isInitialized && subscriptionManager.annualProduct == nil
+    }
+
+    private var premiumFeatures: [PremiumFeature] {
         [
             .fluidTypes,
             .aiInsights,
@@ -96,15 +98,56 @@ struct PremiumPaywallView: View {
         ]
     }
 
+    private var annualSavingsText: String? {
+        guard
+            let annualProduct = subscriptionManager.annualProduct,
+            let monthlyProduct = subscriptionManager.monthlyProduct
+        else {
+            return nil
+        }
+
+        let monthlyYearlyCost = NSDecimalNumber(decimal: monthlyProduct.price)
+            .multiplying(by: 12)
+        let annualCost = NSDecimalNumber(decimal: annualProduct.price)
+        let savings = monthlyYearlyCost.subtracting(annualCost)
+
+        guard savings.compare(NSDecimalNumber.zero) == .orderedDescending else {
+            return nil
+        }
+
+        let formattedSavings = savings.decimalValue.formatted(annualProduct.priceFormatStyle)
+        return "Save \(formattedSavings) per year"
+    }
+
+    private func productDescription(for productID: ProductID) -> String {
+        switch productID {
+        case .monthly:
+            return productID.shortDescription
+        case .annual:
+            return annualSavingsText ?? productID.shortDescription
+        }
+    }
+
     private var disclosureText: String {
         let fallbackPrice = "the listed price"
         let price = selectedProduct?.displayPrice ?? fallbackPrice
 
         switch selectedProductID {
         case .monthly:
-            return "Start a 1-week free trial. After the trial, your monthly subscription automatically renews at \(price)/mo unless canceled at least 24 hours before the end of the current period. Payment is charged to your Apple ID. Manage or cancel anytime in Settings > Apple ID > Subscriptions."
+            return "Your monthly subscription starts immediately at \(price)/mo and automatically renews unless canceled at least 24 hours before the end of the current period. Payment is charged to your Apple ID. Manage or cancel anytime in Settings > Apple ID > Subscriptions."
         case .annual:
-            return "Start a 30-day free trial. After the trial, your annual subscription automatically renews at \(price)/yr unless canceled at least 24 hours before the end of the current period. Payment is charged to your Apple ID. Manage or cancel anytime in Settings > Apple ID > Subscriptions."
+            return "Your annual subscription renews at \(price)/yr unless canceled at least 24 hours before the end of the current period. Payment is charged to your Apple ID. Manage or cancel anytime in Settings > Apple ID > Subscriptions."
+        }
+    }
+
+    private var purchaseButtonText: String {
+        guard let product = selectedProduct else { return selectedProductID.callToAction }
+
+        switch selectedProductID {
+        case .monthly:
+            return "\(selectedProductID.callToAction) — \(product.displayPrice)\(selectedProductID.billingSuffix)"
+        case .annual:
+            return "\(selectedProductID.callToAction) — \(product.displayPrice)\(selectedProductID.billingSuffix)"
         }
     }
 
@@ -161,26 +204,34 @@ struct PremiumPaywallView: View {
                             .padding(.horizontal, 20)
                     }
 
-                    tierComparison
+                    PremiumFeaturesCard(features: premiumFeatures)
 
-                    if subscriptionManager.availableProducts.isEmpty {
+                    if isLoadingProducts {
                         ProgressView()
                             .frame(maxWidth: .infinity, minHeight: 120)
                     } else {
                         VStack(spacing: 12) {
-                            ForEach(subscriptionManager.availableProducts, id: \.id) { product in
-                                if let productID = ProductID(rawValue: product.id) {
-                                    PlanOptionCard(
-                                        productID: productID,
-                                        price: product.displayPrice,
-                                        isSelected: selectedProductID == productID
-                                    ) {
-                                        Haptics.selection()
-                                        selectedProductID = productID
-                                    }
+                            ForEach(productOptions, id: \.id) { option in
+                                PlanOptionCard(
+                                    productID: option.id,
+                                    price: option.product?.displayPrice,
+                                    description: productDescription(for: option.id),
+                                    isSelected: selectedProductID == option.id,
+                                    isAvailable: option.product != nil
+                                ) {
+                                    Haptics.selection()
+                                    selectedProductID = option.id
                                 }
                             }
                         }
+                    }
+
+                    if annualPlanUnavailable {
+                        Text("Annual plan is temporarily unavailable on this device. Check your StoreKit configuration or App Store product setup.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 8)
                     }
 
                     Text(disclosureText)
@@ -200,7 +251,7 @@ struct PremiumPaywallView: View {
                                         Text("Processing...")
                                     }
                                 } else {
-                                    Text("\(selectedProductID.trialCallToAction) — then \(product.displayPrice)\(selectedProductID.billingSuffix)")
+                                    Text(purchaseButtonText)
                                 }
                             }
                             .font(.headline)
@@ -241,7 +292,6 @@ struct PremiumPaywallView: View {
                 }
                 .padding(.horizontal, 24)
                 .padding(.top, 16)
-                .frame(maxWidth: isRegular ? 680 : .infinity)
                 .frame(maxWidth: .infinity)
             }
         }
@@ -253,52 +303,10 @@ struct PremiumPaywallView: View {
         }
     }
 
-    private var tierComparison: some View {
-        Group {
-            if isRegular {
-                HStack(alignment: .top, spacing: 16) {
-                    TierSummaryCard(
-                        title: "Sipli Free",
-                        icon: "drop.fill",
-                        tint: Theme.lagoon,
-                        rows: freeTierFeatures.map { ($0.icon, $0.text) }
-                    )
-
-                    TierSummaryCard(
-                        title: "Sipli Premium",
-                        icon: "sparkles",
-                        tint: Theme.sun,
-                        rows: premiumTierFeatures.map { ($0.icon, $0.title) }
-                    )
-                }
-            } else {
-                VStack(spacing: 14) {
-                    TierSummaryCard(
-                        title: "Sipli Free",
-                        icon: "drop.fill",
-                        tint: Theme.lagoon,
-                        rows: freeTierFeatures.map { ($0.icon, $0.text) }
-                    )
-
-                    TierSummaryCard(
-                        title: "Sipli Premium",
-                        icon: "sparkles",
-                        tint: Theme.sun,
-                        rows: premiumTierFeatures.map { ($0.icon, $0.title) }
-                    )
-                }
-            }
-        }
-    }
-
     private func syncSelectedPlan() {
-        if subscriptionManager.product(for: selectedProductID) != nil {
-            return
-        }
-
         if subscriptionManager.annualProduct != nil {
             selectedProductID = .annual
-        } else {
+        } else if subscriptionManager.monthlyProduct != nil, selectedProductID != .annual {
             selectedProductID = .monthly
         }
     }
@@ -350,38 +358,56 @@ struct PremiumPaywallView: View {
     }
 }
 
-private struct TierSummaryCard: View {
-    let title: String
-    let icon: String
-    let tint: Color
-    let rows: [(icon: String, text: String)]
+private struct PremiumFeaturesCard: View {
+    let features: [PremiumFeature]
+
+    private let columns = [
+        GridItem(.flexible(), spacing: 12, alignment: .leading),
+        GridItem(.flexible(), spacing: 12, alignment: .leading)
+    ]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 14) {
-            HStack(spacing: 8) {
-                Image(systemName: icon)
-                    .foregroundStyle(tint)
-                Text(title)
-                    .font(.headline)
-            }
+            Label("Sipli Premium", systemImage: "sparkles")
+                .font(.headline)
+                .foregroundStyle(.primary)
 
-            ForEach(Array(rows.enumerated()), id: \.offset) { item in
-                SubscriptionFeatureRow(icon: item.element.icon, text: item.element.text)
+            LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
+                ForEach(features) { feature in
+                    HStack(spacing: 8) {
+                        Image(systemName: feature.icon)
+                            .foregroundStyle(Theme.lagoon)
+                            .frame(width: 18)
+
+                        Text(feature.title)
+                            .font(.subheadline)
+                            .foregroundStyle(.primary)
+                            .lineLimit(2)
+
+                        Spacer(minLength: 0)
+                    }
+                }
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
-        .padding(18)
+        .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(Theme.card)
+                .fill(.ultraThinMaterial)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(Theme.glassBorder.opacity(0.35), lineWidth: 1)
         )
     }
 }
 
 private struct PlanOptionCard: View {
     let productID: ProductID
-    let price: String
+    let price: String?
+    let description: String
     let isSelected: Bool
+    let isAvailable: Bool
     let action: () -> Void
 
     var body: some View {
@@ -403,7 +429,7 @@ private struct PlanOptionCard: View {
                         }
                     }
 
-                    Text(productID.shortDescription)
+                    Text(description)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
@@ -411,12 +437,18 @@ private struct PlanOptionCard: View {
                 Spacer()
 
                 HStack(alignment: .firstTextBaseline, spacing: 2) {
-                    Text(price)
-                        .font(.title3.weight(.bold))
-                        .foregroundStyle(Theme.lagoon)
-                    Text(productID.billingSuffix)
-                        .font(.caption.weight(.medium))
-                        .foregroundStyle(.secondary)
+                    if let price {
+                        Text(price)
+                            .font(.title3.weight(.bold))
+                            .foregroundStyle(Theme.lagoon)
+                        Text(productID.billingSuffix)
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text("Unavailable")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                    }
                 }
             }
             .padding(16)
@@ -428,24 +460,16 @@ private struct PlanOptionCard: View {
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
                     .stroke(isSelected ? Theme.lagoon : Theme.glassBorder.opacity(0.4), lineWidth: isSelected ? 1.8 : 1)
             )
+            .opacity(isAvailable ? 1 : 0.7)
         }
         .buttonStyle(.plain)
     }
 }
 
-private struct SubscriptionFeatureRow: View {
-    let icon: String
-    let text: String
-
-    var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon)
-                .foregroundStyle(Theme.lagoon)
-                .frame(width: 20)
-            Text(text)
-                .font(.subheadline)
-                .foregroundStyle(.primary)
-            Spacer()
-        }
+#if DEBUG
+#Preview("Premium Paywall") {
+    PreviewEnvironment {
+        PremiumPaywallView(context: PaywallContext(feature: .aiInsights))
     }
 }
+#endif
