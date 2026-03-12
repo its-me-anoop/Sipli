@@ -15,6 +15,8 @@ const SIZES = [
   { label: '6.1"', w: 1125, h: 2436 },
 ] as const;
 
+type Size = (typeof SIZES)[number];
+
 /* ─── Phone mockup measurements ─── */
 const MK_W = 1022;
 const MK_H = 2082;
@@ -37,6 +39,54 @@ const BRAND = {
   darkBg2: "#051224",
   deepNavy: "#0A1929",
 };
+
+/* ═══════════════════════════════════════════════════════
+   SHARED EXPORT HELPER
+   ═══════════════════════════════════════════════════════ */
+
+async function captureAndDownload(
+  el: HTMLElement,
+  filename: string,
+  size: Size,
+): Promise<void> {
+  el.style.left = "0px";
+  el.style.opacity = "1";
+  el.style.zIndex = "-1";
+
+  const opts = { width: W, height: H, pixelRatio: 1, cacheBust: true };
+
+  try {
+    // Double-call trick: first warms fonts/images, second produces clean output
+    await toPng(el, opts);
+    const dataUrl = await toPng(el, opts);
+
+    const img = new Image();
+    await new Promise<void>((resolve, reject) => {
+      img.onload = () => resolve();
+      img.onerror = () => reject(new Error(`Failed to load captured image for ${filename}`));
+      img.src = dataUrl;
+    });
+
+    const canvas = document.createElement("canvas");
+    canvas.width = size.w;
+    canvas.height = size.h;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Failed to get canvas 2d context");
+    ctx.imageSmoothingEnabled = true;
+    ctx.imageSmoothingQuality = "high";
+    ctx.drawImage(img, 0, 0, size.w, size.h);
+
+    const resizedUrl = canvas.toDataURL("image/png");
+    const link = document.createElement("a");
+    link.download = `${filename}-${size.w}x${size.h}.png`;
+    link.href = resizedUrl;
+    link.click();
+  } finally {
+    el.style.left = "-9999px";
+    el.style.opacity = "";
+    el.style.zIndex = "";
+  }
+}
 
 /* ═══════════════════════════════════════════════════════
    COMPONENTS
@@ -219,7 +269,6 @@ function Slide1() {
       }
     >
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", height: "100%", paddingTop: H * 0.06 }}>
-        {/* App icon */}
         <div
           style={{
             width: W * 0.22,
@@ -570,13 +619,14 @@ function Slide8() {
         <div
           style={{
             width: W * 0.24,
-            height: W * 0.24,
+            aspectRatio: "1 / 1",
             borderRadius: W * 0.055,
             overflow: "hidden",
             boxShadow: "0 20px 80px rgba(28,120,245,0.25)",
+            flexShrink: 0,
           }}
         >
-          <img src="/app-icon.png" alt="Sipli" style={{ width: "100%", height: "100%", display: "block", objectFit: "cover" }} />
+          <img src="/app-icon.png" alt="Sipli" style={{ width: "100%", height: "100%", display: "block", objectFit: "contain" }} />
         </div>
 
         <Caption
@@ -685,12 +735,13 @@ const SCREENSHOTS: { name: string; component: React.FC }[] = [
 function ScreenshotPreview({
   entry,
   index,
+  exportRef,
 }: {
   entry: (typeof SCREENSHOTS)[number];
   index: number;
+  exportRef: React.RefObject<HTMLDivElement | null>;
 }) {
   const wrapRef = useRef<HTMLDivElement>(null);
-  const exportRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(0.2);
   const [exporting, setExporting] = useState(false);
   const Component = entry.component;
@@ -711,48 +762,22 @@ function ScreenshotPreview({
     if (!el || exporting) return;
     setExporting(true);
 
+    const prefix = String(index + 1).padStart(2, "0");
     try {
       for (const size of SIZES) {
-        el.style.left = "0px";
-        el.style.opacity = "1";
-        el.style.zIndex = "-1";
-
-        const opts = { width: W, height: H, pixelRatio: 1, cacheBust: true };
-        await toPng(el, opts);
-        const dataUrl = await toPng(el, opts);
-
-        el.style.left = "-9999px";
-        el.style.opacity = "";
-        el.style.zIndex = "";
-
-        const img = new Image();
-        await new Promise<void>((resolve) => {
-          img.onload = () => resolve();
-          img.src = dataUrl;
-        });
-
-        const canvas = document.createElement("canvas");
-        canvas.width = size.w;
-        canvas.height = size.h;
-        const ctx = canvas.getContext("2d")!;
-        ctx.drawImage(img, 0, 0, size.w, size.h);
-
-        const resizedUrl = canvas.toDataURL("image/png");
-        const link = document.createElement("a");
-        const prefix = String(index + 1).padStart(2, "0");
-        link.download = `${prefix}-${entry.name}-${size.w}x${size.h}.png`;
-        link.href = resizedUrl;
-        link.click();
-
+        await captureAndDownload(el, `${prefix}-${entry.name}`, size);
         await new Promise((r) => setTimeout(r, 300));
       }
+    } catch (err) {
+      console.error(`Export failed for ${entry.name}:`, err);
+      alert(`Export failed for "${entry.name}". Check console for details.`);
     } finally {
       setExporting(false);
     }
-  }, [entry.name, exporting, index]);
+  }, [entry.name, exporting, index, exportRef]);
 
   return (
-    <div style={{ position: "relative" }}>
+    <div>
       <div
         ref={wrapRef}
         onClick={handleExport}
@@ -790,20 +815,6 @@ function ScreenshotPreview({
         {String(index + 1).padStart(2, "0")} — {entry.name}
         {exporting && " (exporting...)"}
       </div>
-
-      <div
-        ref={exportRef}
-        style={{
-          position: "absolute",
-          left: -9999,
-          top: 0,
-          width: W,
-          height: H,
-          fontFamily: "Inter, sans-serif",
-        }}
-      >
-        <Component />
-      </div>
     </div>
   );
 }
@@ -827,39 +838,13 @@ export default function ScreenshotsPage() {
         const el = exportRefs.current[i];
         if (!el) continue;
 
-        el.style.left = "0px";
-        el.style.opacity = "1";
-        el.style.zIndex = "-1";
-
-        const opts = { width: W, height: H, pixelRatio: 1, cacheBust: true };
-        await toPng(el, opts);
-        const dataUrl = await toPng(el, opts);
-
-        el.style.left = "-9999px";
-        el.style.opacity = "";
-        el.style.zIndex = "";
-
-        const img = new Image();
-        await new Promise<void>((resolve) => {
-          img.onload = () => resolve();
-          img.src = dataUrl;
-        });
-
-        const canvas = document.createElement("canvas");
-        canvas.width = size.w;
-        canvas.height = size.h;
-        const ctx = canvas.getContext("2d")!;
-        ctx.drawImage(img, 0, 0, size.w, size.h);
-
-        const resizedUrl = canvas.toDataURL("image/png");
-        const link = document.createElement("a");
         const prefix = String(i + 1).padStart(2, "0");
-        link.download = `${prefix}-${SCREENSHOTS[i].name}-${size.w}x${size.h}.png`;
-        link.href = resizedUrl;
-        link.click();
-
+        await captureAndDownload(el, `${prefix}-${SCREENSHOTS[i].name}`, size);
         await new Promise((r) => setTimeout(r, 300));
       }
+    } catch (err) {
+      console.error("Export all failed:", err);
+      alert("Export failed. Check console for details.");
     } finally {
       setExportingAll(false);
     }
@@ -926,10 +911,16 @@ export default function ScreenshotsPage() {
         }}
       >
         {SCREENSHOTS.map((entry, i) => (
-          <ScreenshotPreview key={entry.name} entry={entry} index={i} />
+          <ScreenshotPreview
+            key={entry.name}
+            entry={entry}
+            index={i}
+            exportRef={{ current: exportRefs.current[i] ?? null }}
+          />
         ))}
       </div>
 
+      {/* Single set of off-screen export containers (shared by per-slide and export-all) */}
       {SCREENSHOTS.map((entry, i) => {
         const Component = entry.component;
         return (
@@ -938,7 +929,7 @@ export default function ScreenshotsPage() {
             ref={(el) => { exportRefs.current[i] = el; }}
             style={{
               position: "absolute",
-              left: -9999,
+              left: "-9999px",
               top: 0,
               width: W,
               height: H,
