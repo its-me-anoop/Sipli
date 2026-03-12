@@ -218,31 +218,34 @@ function Slide1() {
         </>
       }
     >
-      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", height: "100%", paddingTop: H * 0.08 }}>
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", height: "100%", paddingTop: H * 0.06 }}>
         {/* App icon */}
         <div
           style={{
             width: W * 0.22,
-            height: W * 0.22,
+            aspectRatio: "1 / 1",
             borderRadius: W * 0.05,
             overflow: "hidden",
             boxShadow: "0 20px 60px rgba(28,120,245,0.3)",
-            marginBottom: W * 0.04,
+            marginBottom: W * 0.035,
+            flexShrink: 0,
           }}
         >
-          <img src="/app-icon.png" alt="Sipli" style={{ width: "100%", height: "100%", display: "block", objectFit: "cover" }} />
+          <img src="/app-icon.png" alt="Sipli" style={{ width: "100%", height: "100%", display: "block", objectFit: "contain" }} />
         </div>
 
-        <Caption
-          label="Smart Hydration"
-          headline={
-            <>
-              Stay Hydrated,
-              <br />
-              Effortlessly
-            </>
-          }
-        />
+        <div style={{ marginTop: W * 0.01 }}>
+          <Caption
+            label="Smart Hydration"
+            headline={
+              <>
+                Stay Hydrated,
+                <br />
+                Effortlessly
+              </>
+            }
+          />
+        </div>
 
         <div style={{ flex: 1, display: "flex", alignItems: "flex-end", justifyContent: "center", width: "100%" }}>
           <Phone
