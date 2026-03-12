@@ -222,15 +222,15 @@ function Slide1() {
         {/* App icon */}
         <div
           style={{
-            width: W * 0.14,
-            height: W * 0.14,
-            borderRadius: W * 0.032,
+            width: W * 0.22,
+            height: W * 0.22,
+            borderRadius: W * 0.05,
             overflow: "hidden",
             boxShadow: "0 20px 60px rgba(28,120,245,0.3)",
-            marginBottom: W * 0.05,
+            marginBottom: W * 0.04,
           }}
         >
-          <img src="/app-icon.png" alt="Sipli" style={{ width: "100%", height: "100%", display: "block" }} />
+          <img src="/app-icon.png" alt="Sipli" style={{ width: "100%", height: "100%", display: "block", objectFit: "cover" }} />
         </div>
 
         <Caption
@@ -566,14 +566,14 @@ function Slide8() {
       >
         <div
           style={{
-            width: W * 0.16,
-            height: W * 0.16,
-            borderRadius: W * 0.038,
+            width: W * 0.24,
+            height: W * 0.24,
+            borderRadius: W * 0.055,
             overflow: "hidden",
             boxShadow: "0 20px 80px rgba(28,120,245,0.25)",
           }}
         >
-          <img src="/app-icon.png" alt="Sipli" style={{ width: "100%", height: "100%", display: "block" }} />
+          <img src="/app-icon.png" alt="Sipli" style={{ width: "100%", height: "100%", display: "block", objectFit: "cover" }} />
         </div>
 
         <Caption
