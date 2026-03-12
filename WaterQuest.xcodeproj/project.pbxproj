@@ -30,6 +30,7 @@
 		5D5BF32CEAF21645C51E5442 /* GoalCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38731A03D043511C9AAD4C2 /* GoalCalculator.swift */; };
 		6B3494CD2F5249E200D313C3 /* QuickAddWaterIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3494CC2F5249E200D313C3 /* QuickAddWaterIntent.swift */; };
 		6BBC3B922F4F6AC100F5525A /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 6BBC3B912F4F6AC100F5525A /* AppIcon.icon */; };
+		6BDAF0F22F6375DE009ADC09 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 6BDAF0F12F6375DE009ADC09 /* Products.storekit */; };
 		7077C5CF3469D64E94804983 /* FluidType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A139EF313607077443D4FCFE /* FluidType.swift */; };
 		747A7C4F8A906C71164AB9DE /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */; };
 		75107A8584630E7E2B030165 /* MascotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD53555ACD00A8A78268A7F /* MascotView.swift */; };
@@ -124,6 +125,7 @@
 		69F362557BEECECFAA26285A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6B3494CC2F5249E200D313C3 /* QuickAddWaterIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddWaterIntent.swift; sourceTree = "<group>"; };
 		6BBC3B912F4F6AC100F5525A /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		6BDAF0F12F6375DE009ADC09 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		732CBE184502476DC56921F8 /* icon.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = icon.json; sourceTree = "<group>"; };
 		7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSnapshot.swift; sourceTree = "<group>"; };
 		7B8BDAA9F823F748DDAD26EB /* ProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRing.swift; sourceTree = "<group>"; };
@@ -149,7 +151,6 @@
 		AA7777777777777777777777 /* LargeWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeWidgetView.swift; sourceTree = "<group>"; };
 		AA8888888888888888888888 /* PersistedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistedState.swift; sourceTree = "<group>"; };
 		AA9999999999999999999999 /* SipliWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SipliWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		AABB1122CCDDEEFF /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		ACD53555ACD00A8A78268A7F /* MascotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MascotView.swift; sourceTree = "<group>"; };
 		B2126EAEDD87BD49B24C7BE2 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		B26785D44340E5C0A267B325 /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
@@ -187,6 +188,7 @@
 		0EBBC986DBD277FF7074538D = {
 			isa = PBXGroup;
 			children = (
+				6BDAF0F12F6375DE009ADC09 /* Products.storekit */,
 				120E9D2B9013FCD931926A20 /* WaterQuest */,
 				BB1111111111111111111111 /* SipliWidget */,
 				DA0C73A8FD8A545CB27D2691 /* Products */,
@@ -261,7 +263,6 @@
 				39EF82B8B03A482B4BC8CBF9 /* LaunchScreen.storyboard */,
 				E2B3C4D5F6071829A3B4C5D6 /* PrivacyInfo.xcprivacy */,
 				4B013DED6E9276AA1DBE33BC /* WaterQuest.entitlements */,
-				AABB1122CCDDEEFF /* Products.storekit */,
 			);
 			path = Supporting;
 			sourceTree = "<group>";
@@ -452,6 +453,7 @@
 				D1A2B3C4E5F60718293A4B5C /* PrivacyInfo.xcprivacy in Resources */,
 				6BBC3B922F4F6AC100F5525A /* AppIcon.icon in Resources */,
 				2935FCF5A46AC8630A581FE4 /* Gemini_Generated_Image_15xog715xog715xo.png in Resources */,
+				6BDAF0F22F6375DE009ADC09 /* Products.storekit in Resources */,
 				A1B2326FF853A75236509F2C /* icon.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

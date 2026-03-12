@@ -139,16 +139,7 @@ struct PremiumPaywallView: View {
         guard let product = selectedProduct,
               let offer = product.subscription?.introductoryOffer else { return nil }
 
-        let periodUnit = offer.period.unit
-        let periodValue = offer.period.value
-        let unitLabel: String
-        switch periodUnit {
-        case .day: unitLabel = periodValue == 1 ? "day" : "\(periodValue) days"
-        case .week: unitLabel = periodValue == 1 ? "week" : "\(periodValue) weeks"
-        case .month: unitLabel = periodValue == 1 ? "month" : "\(periodValue) months"
-        case .year: unitLabel = periodValue == 1 ? "year" : "\(periodValue) years"
-        @unknown default: unitLabel = "\(periodValue) period(s)"
-        }
+        let unitLabel = trialDurationLabel(for: offer.period)
 
         switch offer.paymentMode {
         case .freeTrial:
@@ -178,11 +169,29 @@ struct PremiumPaywallView: View {
     private var purchaseButtonText: String {
         guard let product = selectedProduct else { return selectedProductID.callToAction }
 
-        let hasFreeTrial = product.subscription?.introductoryOffer?.paymentMode == .freeTrial
-        if hasFreeTrial {
-            return "Start Free Trial"
+        if let offer = product.subscription?.introductoryOffer,
+           offer.paymentMode == .freeTrial {
+            let trialDuration = trialDurationLabel(for: offer.period)
+            return "Try free for \(trialDuration), then \(product.displayPrice)\(selectedProductID.billingSuffix)"
         }
         return "\(selectedProductID.callToAction) — \(product.displayPrice)\(selectedProductID.billingSuffix)"
+    }
+
+    private func trialDurationLabel(for period: Product.SubscriptionPeriod) -> String {
+        let periodValue = period.value
+
+        switch period.unit {
+        case .day:
+            return periodValue == 1 ? "1 day" : "\(periodValue) days"
+        case .week:
+            return periodValue == 1 ? "1 week" : "\(periodValue) weeks"
+        case .month:
+            return periodValue == 1 ? "1 month" : "\(periodValue) months"
+        case .year:
+            return periodValue == 1 ? "1 year" : "\(periodValue) years"
+        @unknown default:
+            return "\(periodValue) period(s)"
+        }
     }
 
     var body: some View {
@@ -299,6 +308,7 @@ struct PremiumPaywallView: View {
                                     }
                                 } else {
                                     Text(purchaseButtonText)
+                                        .multilineTextAlignment(.center)
                                 }
                             }
                             .font(.headline)
@@ -353,7 +363,7 @@ struct PremiumPaywallView: View {
     private func syncSelectedPlan() {
         if subscriptionManager.annualProduct != nil {
             selectedProductID = .annual
-        } else if subscriptionManager.monthlyProduct != nil, selectedProductID != .annual {
+        } else if subscriptionManager.monthlyProduct != nil {
             selectedProductID = .monthly
         }
     }
