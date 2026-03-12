@@ -1,4 +1,5 @@
 import SwiftUI
+import StoreKit
 import CoreLocation
 import UserNotifications
 
@@ -37,7 +38,6 @@ struct SettingsView: View {
     var body: some View {
         ScrollView {
             VStack(spacing: 16) {
-                subscriptionCard
                 profileCard
                 appearanceCard
                 premiumGoalCard
@@ -60,61 +60,6 @@ struct SettingsView: View {
         .onAppear {
             hydrateLocalStateFromProfile()
             isPremiumPromptDismissed = false
-        }
-    }
-
-    private var subscriptionCard: some View {
-        Group {
-            if subscriptionManager.isSubscribed {
-                DashboardCard(
-                    title: "Sipli Premium",
-                    icon: "sparkles"
-                ) {
-                    VStack(alignment: .leading, spacing: 16) {
-                        HStack(alignment: .top) {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("\(subscriptionManager.currentPlanName) plan active")
-                                    .font(.headline)
-
-                                Text("Premium unlocks beverage types, AI insights, HealthKit sync, adaptive goals, and smart reminders.")
-                                    .font(.subheadline)
-                                    .foregroundStyle(.secondary)
-                            }
-
-                            Spacer(minLength: 12)
-
-                            Text("Active")
-                                .font(.caption.weight(.bold))
-                                .foregroundStyle(Theme.mint)
-                                .padding(.horizontal, 10)
-                                .padding(.vertical, 6)
-                                .background(
-                                    Capsule()
-                                        .fill(Theme.mint.opacity(0.12))
-                                )
-                        }
-
-                        Button {
-                            Haptics.selection()
-                            UIApplication.shared.open(Legal.manageSubscriptionsURL)
-                        } label: {
-                            HStack {
-                                Image(systemName: "creditcard.fill")
-                                Text("Manage Subscription")
-                                    .fontWeight(.semibold)
-                            }
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 12)
-                            .foregroundStyle(Theme.lagoon)
-                            .background(
-                                Capsule()
-                                    .fill(Theme.cardSurface)
-                            )
-                        }
-                        .buttonStyle(.plain)
-                    }
-                }
-            }
         }
     }
 
@@ -610,33 +555,56 @@ struct SettingsView: View {
                 )
 
                 if subscriptionManager.isSubscribed {
-                    Link(destination: Legal.manageSubscriptionsURL) {
-                        HStack(spacing: 8) {
-                            Image(systemName: "creditcard.fill")
-                                .foregroundStyle(.secondary)
-                                .frame(width: 22)
-                            Text("Manage Subscription")
-                                .font(.subheadline.weight(.medium))
-                                .foregroundStyle(.secondary)
-                            Spacer()
-                            Image(systemName: "arrow.up.right")
-                                .font(.caption.weight(.semibold))
-                                .foregroundStyle(.tertiary)
-                        }
-                        .padding(12)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .fill(Theme.card)
-                        )
-                    }
+                    manageSubscriptionSection
                 } else {
                     premiumLockedRow(
                         title: "Explore premium plans",
-                        subtitle: "Annual includes a 30-day free trial; monthly has no free trial.",
+                        subtitle: "Unlock beverage types, AI insights, HealthKit sync, adaptive goals, and smart reminders.",
                         systemImage: "sparkles",
                         feature: nil
                     )
                 }
+            }
+        }
+    }
+
+    // MARK: - Manage Subscription
+
+    @State private var showManageSubscription = false
+
+    private var manageSubscriptionSection: some View {
+        VStack(spacing: 10) {
+            Button {
+                Haptics.selection()
+                showManageSubscription = true
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "creditcard.fill")
+                        .foregroundStyle(Theme.lagoon)
+                        .frame(width: 22)
+                    Text("Manage Subscription")
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(.primary)
+                    Spacer()
+                    HStack(spacing: 4) {
+                        Text(subscriptionManager.currentPlanName)
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Theme.mint)
+                        Image(systemName: "chevron.right")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.tertiary)
+                    }
+                }
+                .padding(12)
+                .background(
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
+                        .fill(Theme.card)
+                )
+            }
+            .buttonStyle(.plain)
+            .sheet(isPresented: $showManageSubscription) {
+                ManageSubscriptionSheet()
+                    .environmentObject(subscriptionManager)
             }
         }
     }
@@ -836,6 +804,205 @@ struct SettingsView: View {
         let hour = minutes / 60
         let minute = minutes % 60
         return Calendar.current.date(bySettingHour: hour, minute: minute, second: 0, of: Date()) ?? Date()
+    }
+}
+
+// MARK: - Manage Subscription Sheet
+
+private struct ManageSubscriptionSheet: View {
+    @EnvironmentObject private var subscriptionManager: SubscriptionManager
+    @Environment(\.dismiss) private var dismiss
+
+    @State private var isPurchasing = false
+    @State private var errorMessage: String?
+
+    private var currentPlanID: ProductID? {
+        subscriptionManager.activeProductID
+    }
+
+    private var alternatePlan: (id: ProductID, product: Product?)? {
+        guard let current = currentPlanID else { return nil }
+        let alternate: ProductID = current == .annual ? .monthly : .annual
+        return (alternate, subscriptionManager.product(for: alternate))
+    }
+
+    var body: some View {
+        NavigationStack {
+            ZStack {
+                AppWaterBackground().ignoresSafeArea()
+
+                ScrollView {
+                    VStack(spacing: 24) {
+                        // Current plan
+                        VStack(spacing: 8) {
+                            Image(systemName: "sparkles")
+                                .font(.largeTitle)
+                                .foregroundStyle(Theme.lagoon)
+
+                            Text("Sipli Premium")
+                                .font(.title2.bold())
+
+                            HStack(spacing: 6) {
+                                Text("\(subscriptionManager.currentPlanName) Plan")
+                                    .font(.subheadline.weight(.medium))
+                                Text("Active")
+                                    .font(.caption.weight(.bold))
+                                    .foregroundStyle(Theme.mint)
+                                    .padding(.horizontal, 8)
+                                    .padding(.vertical, 3)
+                                    .background(
+                                        Capsule()
+                                            .fill(Theme.mint.opacity(0.12))
+                                    )
+                            }
+                        }
+                        .padding(.top, 8)
+
+                        // Switch plan
+                        if let alternate = alternatePlan, let product = alternate.product {
+                            VStack(alignment: .leading, spacing: 12) {
+                                Text("Switch Plan")
+                                    .font(.headline)
+
+                                Button {
+                                    switchPlan(to: product)
+                                } label: {
+                                    HStack(spacing: 14) {
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            HStack(spacing: 8) {
+                                                Text(alternate.id.displayName)
+                                                    .font(.headline)
+
+                                                if let badge = alternate.id.badgeText {
+                                                    Text(badge)
+                                                        .font(.caption2.weight(.bold))
+                                                        .foregroundStyle(.white)
+                                                        .padding(.horizontal, 8)
+                                                        .padding(.vertical, 4)
+                                                        .background(Theme.sun)
+                                                        .clipShape(Capsule())
+                                                }
+                                            }
+
+                                            Text(alternate.id.shortDescription)
+                                                .font(.subheadline)
+                                                .foregroundStyle(.secondary)
+                                        }
+
+                                        Spacer()
+
+                                        HStack(alignment: .firstTextBaseline, spacing: 2) {
+                                            Text(product.displayPrice)
+                                                .font(.title3.weight(.bold))
+                                                .foregroundStyle(Theme.lagoon)
+                                            Text(alternate.id.billingSuffix)
+                                                .font(.caption.weight(.medium))
+                                                .foregroundStyle(.secondary)
+                                        }
+                                    }
+                                    .padding(16)
+                                    .background(
+                                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                            .fill(.ultraThinMaterial)
+                                    )
+                                    .overlay(
+                                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                                            .stroke(Theme.glassBorder.opacity(0.4), lineWidth: 1)
+                                    )
+                                }
+                                .buttonStyle(.plain)
+                                .disabled(isPurchasing)
+
+                                Text("Plan changes take effect at the end of your current billing period.")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                        }
+
+                        if isPurchasing {
+                            HStack(spacing: 8) {
+                                ProgressView().tint(Theme.lagoon)
+                                Text("Processing...")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                            }
+                        }
+
+                        if let error = errorMessage {
+                            Text(error)
+                                .font(.footnote)
+                                .foregroundStyle(.red)
+                                .multilineTextAlignment(.center)
+                        }
+
+                        Divider().opacity(0.3)
+
+                        // Cancel subscription
+                        VStack(spacing: 12) {
+                            Button {
+                                Haptics.selection()
+                                UIApplication.shared.open(Legal.manageSubscriptionsURL)
+                            } label: {
+                                HStack(spacing: 8) {
+                                    Image(systemName: "xmark.circle")
+                                        .foregroundStyle(.red.opacity(0.8))
+                                    Text("Cancel Subscription")
+                                        .font(.subheadline.weight(.medium))
+                                        .foregroundStyle(.red.opacity(0.8))
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 12)
+                                .background(
+                                    Capsule()
+                                        .fill(.red.opacity(0.08))
+                                )
+                            }
+                            .buttonStyle(.plain)
+
+                            Text("Opens iOS Settings where you can cancel or modify your subscription.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                        }
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 24)
+                }
+            }
+            .navigationTitle("Manage Subscription")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button("Done") { dismiss() }
+                        .fontWeight(.semibold)
+                        .foregroundStyle(Theme.lagoon)
+                }
+            }
+        }
+    }
+
+    private func switchPlan(to product: Product) {
+        isPurchasing = true
+        errorMessage = nil
+
+        Task {
+            let result = await subscriptionManager.purchase(product)
+            isPurchasing = false
+
+            switch result {
+            case .success:
+                Haptics.success()
+                dismiss()
+            case .cancelled:
+                break
+            case .pending:
+                errorMessage = "Plan change is pending approval."
+            case .failed(let message):
+                Haptics.error()
+                errorMessage = message
+            }
+        }
     }
 }
 
