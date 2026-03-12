@@ -9,7 +9,7 @@ Sipli helps you build a healthy hydration habit with free water logging, beautif
 - **Premium Beverage Types** — Track water, coffee, tea, juice, smoothies, and more with realistic hydration factors.
 - **Premium Apple Health Integration** — Sync workouts, calories, and water intake with Apple Health.
 - **Premium Smart Reminders & AI** — Get adaptive reminders, AI hydration tips, and personalized insight summaries.
-- **Privacy First** — All data stays on your device. No accounts, no cloud, no tracking.
+- **Privacy First** — No ads, no analytics, no tracking, and no developer-run backend. Apple-managed sync may keep your data available across your own devices.
 
 ## Support
 
