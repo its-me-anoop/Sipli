@@ -294,16 +294,22 @@ final class SubscriptionManager: ObservableObject {
 
     // MARK: - Restore
     /// Restores previous purchases.  Returns `true` if an active entitlement was found.
-    func restore() async -> Bool {
+    enum RestoreResult {
+        case success
+        case noPurchaseFound
+        case failed(String)
+    }
+
+    func restore() async -> RestoreResult {
         do {
             try await AppStore.sync()
             await refreshSubscriptionStatus()
-            return isSubscribed
+            return isSubscribed ? .success : .noPurchaseFound
         } catch {
             #if DEBUG
             print("SubscriptionManager: restore failed – \(error)")
             #endif
-            return false
+            return .failed(error.localizedDescription)
         }
     }
 

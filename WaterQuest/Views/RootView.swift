@@ -83,6 +83,10 @@ struct PremiumPaywallView: View {
         subscriptionManager.availableProducts.isEmpty && !subscriptionManager.isInitialized
     }
 
+    private var productsFailedToLoad: Bool {
+        subscriptionManager.isInitialized && subscriptionManager.availableProducts.isEmpty
+    }
+
     private var annualPlanUnavailable: Bool {
         subscriptionManager.isInitialized && subscriptionManager.annualProduct == nil
     }
@@ -128,27 +132,54 @@ struct PremiumPaywallView: View {
         }
     }
 
+    private var introOfferText: String? {
+        guard let product = selectedProduct,
+              let offer = product.subscription?.introductoryOffer else { return nil }
+
+        let periodUnit = offer.period.unit
+        let periodValue = offer.period.value
+        let unitLabel: String
+        switch periodUnit {
+        case .day: unitLabel = periodValue == 1 ? "day" : "\(periodValue) days"
+        case .week: unitLabel = periodValue == 1 ? "week" : "\(periodValue) weeks"
+        case .month: unitLabel = periodValue == 1 ? "month" : "\(periodValue) months"
+        case .year: unitLabel = periodValue == 1 ? "year" : "\(periodValue) years"
+        @unknown default: unitLabel = "\(periodValue) period(s)"
+        }
+
+        switch offer.paymentMode {
+        case .freeTrial:
+            return "Includes a free \(unitLabel) trial"
+        case .payUpFront:
+            return "Introductory price for \(unitLabel)"
+        case .payAsYouGo:
+            return "Special introductory pricing for \(unitLabel)"
+        default:
+            return nil
+        }
+    }
+
     private var disclosureText: String {
         let fallbackPrice = "the listed price"
         let price = selectedProduct?.displayPrice ?? fallbackPrice
+        let trialPrefix = introOfferText.map { "\($0). " } ?? ""
 
         switch selectedProductID {
         case .monthly:
-            return "Your monthly subscription starts immediately at \(price)/mo and automatically renews unless canceled at least 24 hours before the end of the current period. Payment is charged to your Apple ID. Manage or cancel anytime in Settings > Apple ID > Subscriptions."
+            return "\(trialPrefix)Your monthly subscription starts at \(price)/mo and automatically renews unless canceled at least 24 hours before the end of the current period. Payment is charged to your Apple ID. Manage or cancel anytime in Settings > Apple ID > Subscriptions."
         case .annual:
-            return "Your annual subscription renews at \(price)/yr unless canceled at least 24 hours before the end of the current period. Payment is charged to your Apple ID. Manage or cancel anytime in Settings > Apple ID > Subscriptions."
+            return "\(trialPrefix)Your annual subscription renews at \(price)/yr unless canceled at least 24 hours before the end of the current period. Payment is charged to your Apple ID. Manage or cancel anytime in Settings > Apple ID > Subscriptions."
         }
     }
 
     private var purchaseButtonText: String {
         guard let product = selectedProduct else { return selectedProductID.callToAction }
 
-        switch selectedProductID {
-        case .monthly:
-            return "\(selectedProductID.callToAction) — \(product.displayPrice)\(selectedProductID.billingSuffix)"
-        case .annual:
-            return "\(selectedProductID.callToAction) — \(product.displayPrice)\(selectedProductID.billingSuffix)"
+        let hasFreeTrial = product.subscription?.introductoryOffer?.paymentMode == .freeTrial
+        if hasFreeTrial {
+            return "Start Free Trial"
         }
+        return "\(selectedProductID.callToAction) — \(product.displayPrice)\(selectedProductID.billingSuffix)"
     }
 
     var body: some View {
@@ -209,6 +240,19 @@ struct PremiumPaywallView: View {
                     if isLoadingProducts {
                         ProgressView()
                             .frame(maxWidth: .infinity, minHeight: 120)
+                    } else if productsFailedToLoad {
+                        VStack(spacing: 12) {
+                            Text("Unable to load plans. Please check your connection and try again.")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                            Button("Retry") {
+                                Task { await subscriptionManager.initialise() }
+                            }
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Theme.lagoon)
+                        }
+                        .frame(maxWidth: .infinity, minHeight: 120)
                     } else {
                         VStack(spacing: 12) {
                             ForEach(productOptions, id: \.id) { option in
@@ -227,7 +271,7 @@ struct PremiumPaywallView: View {
                     }
 
                     if annualPlanUnavailable {
-                        Text("Annual plan is temporarily unavailable on this device. Check your StoreKit configuration or App Store product setup.")
+                        Text("Annual plan is temporarily unavailable. Please try again later.")
                             .font(.footnote)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
@@ -339,15 +383,19 @@ struct PremiumPaywallView: View {
         purchaseError = nil
 
         Task {
-            let success = await subscriptionManager.restore()
+            let result = await subscriptionManager.restore()
             isPurchasing = false
 
-            if success {
+            switch result {
+            case .success:
                 Haptics.success()
                 closePaywall()
-            } else {
+            case .noPurchaseFound:
                 Haptics.warning()
                 purchaseError = "No previous premium purchase found."
+            case .failed(let message):
+                Haptics.error()
+                purchaseError = "Restore failed: \(message)"
             }
         }
     }
