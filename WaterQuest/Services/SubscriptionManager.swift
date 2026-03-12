@@ -203,20 +203,38 @@ final class SubscriptionManager: ObservableObject {
 
     // MARK: - Products
     private func fetchProducts() async {
-        do {
-            let ids = Set(ProductID.allCases.map { $0.rawValue })
-            products = try await Product.products(for: ids).sorted {
-                let lhsOrder = ProductID(rawValue: $0.id)?.sortOrder ?? .max
-                let rhsOrder = ProductID(rawValue: $1.id)?.sortOrder ?? .max
-                if lhsOrder == rhsOrder {
-                    return $0.id < $1.id
+        let ids = Set(ProductID.allCases.map { $0.rawValue })
+        let maxAttempts = 3
+
+        for attempt in 1...maxAttempts {
+            do {
+                let fetched = try await Product.products(for: ids)
+                products = fetched.sorted {
+                    let lhsOrder = ProductID(rawValue: $0.id)?.sortOrder ?? .max
+                    let rhsOrder = ProductID(rawValue: $1.id)?.sortOrder ?? .max
+                    if lhsOrder == rhsOrder {
+                        return $0.id < $1.id
+                    }
+                    return lhsOrder < rhsOrder
                 }
-                return lhsOrder < rhsOrder
+
+                // All expected products loaded — done.
+                if products.count == ids.count { return }
+
+                #if DEBUG
+                let missing = ids.subtracting(fetched.map(\.id))
+                print("SubscriptionManager: attempt \(attempt) – missing products: \(missing)")
+                #endif
+            } catch {
+                #if DEBUG
+                print("SubscriptionManager: attempt \(attempt) failed – \(error)")
+                #endif
             }
-        } catch {
-            #if DEBUG
-            print("SubscriptionManager: failed to fetch products – \(error)")
-            #endif
+
+            // Wait before retrying (StoreKit env may not be ready yet).
+            if attempt < maxAttempts {
+                try? await Task.sleep(for: .seconds(1))
+            }
         }
     }
 

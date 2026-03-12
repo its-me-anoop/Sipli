@@ -194,36 +194,43 @@ final class NotificationScheduler: ObservableObject {
     private func generateAIMessage(progress: Double, todayTotalML: Double, goalML: Double, isEscalation: Bool) async -> String? {
         #if canImport(FoundationModels)
         if #available(iOS 26.0, *) {
-            guard SystemLanguageModel.default.isAvailable else { return nil }
-
-            let percentText = String(format: "%.0f", progress * 100)
-            let escalationHint = isEscalation
-                ? " The user has been inactive for a while, so gently encourage them to drink."
-                : ""
-
-            let prompt = """
-                Generate a single short (max 12 words), friendly, motivational hydration reminder.
-                The user has completed \(percentText)% of their daily water goal (\(Int(todayTotalML)) of \(Int(goalML)) ml).\(escalationHint)
-                Reply with ONLY the reminder text. No quotes, no punctuation beyond one exclamation mark.
-                """
-
-            let session = LanguageModelSession(instructions: """
-                You are a cheerful hydration coach inside a mobile app called Sipli.
-                You write short, warm, motivational nudges to help people drink more water.
-                Keep every response under 12 words. Be encouraging, never guilt-tripping.
-                """)
-
-            do {
-                let response = try await session.respond(to: prompt)
-                let text = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
-                return text.isEmpty ? nil : text
-            } catch {
-                return nil
-            }
+            return await _generateAIMessageWithFoundationModels(progress: progress, todayTotalML: todayTotalML, goalML: goalML, isEscalation: isEscalation)
         }
         #endif
         return nil
     }
+
+    #if canImport(FoundationModels)
+    @available(iOS 26.0, *)
+    private func _generateAIMessageWithFoundationModels(progress: Double, todayTotalML: Double, goalML: Double, isEscalation: Bool) async -> String? {
+        guard SystemLanguageModel.default.isAvailable else { return nil }
+
+        let percentText = String(format: "%.0f", progress * 100)
+        let escalationHint = isEscalation
+            ? " The user has been inactive for a while, so gently encourage them to drink."
+            : ""
+
+        let prompt = """
+            Generate a single short (max 12 words), friendly, motivational hydration reminder.
+            The user has completed \(percentText)% of their daily water goal (\(Int(todayTotalML)) of \(Int(goalML)) ml).\(escalationHint)
+            Reply with ONLY the reminder text. No quotes, no punctuation beyond one exclamation mark.
+            """
+
+        let session = LanguageModelSession(instructions: """
+            You are a cheerful hydration coach inside a mobile app called Sipli.
+            You write short, warm, motivational nudges to help people drink more water.
+            Keep every response under 12 words. Be encouraging, never guilt-tripping.
+            """)
+
+        do {
+            let response = try await session.respond(to: prompt)
+            let text = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
+            return text.isEmpty ? nil : text
+        } catch {
+            return nil
+        }
+    }
+    #endif
 
     // MARK: - Curated fallback messages
 

@@ -679,9 +679,11 @@ struct InsightsView: View {
             """
 
         #if canImport(FoundationModels)
-        if let result = await generateWithFoundationModels(prompt: prompt) {
-            aiInsight = result
-            return
+        if #available(iOS 26.0, *) {
+            if let result = await _generateInsightWithFoundationModels(prompt: prompt) {
+                aiInsight = result
+                return
+            }
         }
         #endif
 
@@ -689,25 +691,23 @@ struct InsightsView: View {
     }
 
     #if canImport(FoundationModels)
-    private func generateWithFoundationModels(prompt: String) async -> String? {
-        if #available(iOS 26.0, *) {
-            guard SystemLanguageModel.default.isAvailable else { return nil }
+    @available(iOS 26.0, *)
+    private func _generateInsightWithFoundationModels(prompt: String) async -> String? {
+        guard SystemLanguageModel.default.isAvailable else { return nil }
 
-            let session = LanguageModelSession(instructions: """
-                You are a hydration coach inside Sipli, a mobile hydration tracking app.
-                Provide brief, personalized, encouraging insights about the user's hydration habits.
-                Keep responses to 2-3 sentences. Be specific about their data. No emojis.
-                """)
+        let session = LanguageModelSession(instructions: """
+            You are a hydration coach inside Sipli, a mobile hydration tracking app.
+            Provide brief, personalized, encouraging insights about the user's hydration habits.
+            Keep responses to 2-3 sentences. Be specific about their data. No emojis.
+            """)
 
-            do {
-                let response = try await session.respond(to: prompt)
-                let text = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
-                return text.isEmpty ? nil : text
-            } catch {
-                return nil
-            }
+        do {
+            let response = try await session.respond(to: prompt)
+            let text = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
+            return text.isEmpty ? nil : text
+        } catch {
+            return nil
         }
-        return nil
     }
     #endif
 

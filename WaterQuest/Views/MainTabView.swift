@@ -169,17 +169,9 @@ private struct FloatingAddButtonModifier: ViewModifier {
 
 private struct GlassFABStyle: ViewModifier {
     func body(content: Content) -> some View {
-        if #available(iOS 26.0, *) {
-            content
-                .glassEffect(
-                    .regular.tint(Theme.lagoon).interactive(),
-                    in: .circle
-                )
-        } else {
-            content
-                .background(Theme.lagoon, in: Circle())
-                .shadow(color: Theme.lagoon.opacity(0.4), radius: 12, x: 0, y: 6)
-        }
+        content
+            .background(Theme.lagoon, in: Circle())
+            .shadow(color: Theme.lagoon.opacity(0.4), radius: 12, x: 0, y: 6)
     }
 }
 

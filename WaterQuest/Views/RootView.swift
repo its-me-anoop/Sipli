@@ -25,6 +25,9 @@ struct RootView: View {
             } else {
                 OnboardingView {
                     hasOnboarded = true
+                    if !subscriptionManager.isSubscribed {
+                        subscriptionManager.presentPaywall()
+                    }
                 }
             }
 

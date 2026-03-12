@@ -15,35 +15,12 @@
       "name" : "Sipli",
       "subscriptions" : [
         {
-          "adHocOffers" : [],
-          "codeOffers" : [],
-          "displayPrice" : "29.99",
-          "familyShareable" : false,
-          "groupNumber" : 1,
-          "internalID" : "B1C2D3E4",
-          "introductoryOffer" : {
-            "displayPrice" : "0",
-            "internalID" : "F5G6H7I8",
-            "numberOfPeriods" : 1,
-            "paymentMode" : "free",
-            "subscriptionPeriod" : "P1M"
-          },
-          "localizations" : [
-            {
-              "description" : "Annual Sipli Premium subscription with a 30-day free trial",
-              "displayName" : "Annual",
-              "locale" : "en_US"
-            }
+          "adHocOffers" : [
+
           ],
-          "productID" : "com.sipli.annual",
-          "recurringSubscriptionPeriod" : "P1Y",
-          "referenceName" : "Annual",
-          "subscriptionGroupID" : "A1B2C3D4",
-          "type" : "RecurringSubscription"
-        },
-        {
-          "adHocOffers" : [],
-          "codeOffers" : [],
+          "codeOffers" : [
+
+          ],
           "displayPrice" : "2.99",
           "familyShareable" : false,
           "groupNumber" : 1,
@@ -58,6 +35,37 @@
           "productID" : "com.sipli.monthly",
           "recurringSubscriptionPeriod" : "P1M",
           "referenceName" : "Monthly",
+          "subscriptionGroupID" : "A1B2C3D4",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "19.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "C3D4E5F6",
+          "introductoryOffer" : {
+            "displayPrice" : "0",
+            "internalID" : "D4E5F6A7",
+            "numberOfPeriods" : 1,
+            "paymentMode" : "free",
+            "subscriptionPeriod" : "P1M"
+          },
+          "localizations" : [
+            {
+              "description" : "Annual Sipli Premium subscription with a 30-day free trial",
+              "displayName" : "Annual",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.sipli.annual",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Annual",
           "subscriptionGroupID" : "A1B2C3D4",
           "type" : "RecurringSubscription"
         }
