@@ -52,6 +52,8 @@ struct AddIntakeView: View {
                                     Haptics.selection()
                                     withAnimation(Theme.quickSpring) {
                                         selectedFluidType = type
+                                        amount = store.profile.unitSystem.amount(fromML: type.defaultServingML)
+                                        selectedPreset = nil
                                     }
                                 } label: {
                                     VStack(spacing: 4) {
@@ -164,9 +166,8 @@ struct AddIntakeView: View {
             if !subscriptionManager.hasAccess(to: .fluidTypes) {
                 selectedFluidType = .water
             }
-            if amount < amountRange.lowerBound || amount > amountRange.upperBound {
-                amount = min(max(amount, amountRange.lowerBound), amountRange.upperBound)
-            }
+            amount = store.profile.unitSystem.amount(fromML: selectedFluidType.defaultServingML)
+            amount = min(max(amount, amountRange.lowerBound), amountRange.upperBound)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
                 rippleTrigger += 1
             }
@@ -174,11 +175,11 @@ struct AddIntakeView: View {
     }
 
     private var amountRange: ClosedRange<Double> {
-        store.profile.unitSystem == .metric ? 100...1200 : 4...40
+        store.profile.unitSystem == .metric ? 10...1200 : 1...40
     }
 
     private var amountStep: Double {
-        store.profile.unitSystem == .metric ? 25 : 1
+        store.profile.unitSystem == .metric ? 10 : 1
     }
 
     private func addIntake() {
