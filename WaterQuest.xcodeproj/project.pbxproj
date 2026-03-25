@@ -108,7 +108,7 @@
 /* Begin PBXFileReference section */
 		032684376DE05B0CC4838664 /* UnitSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitSystem.swift; sourceTree = "<group>"; };
 		161A82CD61225A1F302ECA9D /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensions.swift; sourceTree = "<group>"; };
-		1BD898210B2BA8EE347F72F4 /* WaterQuest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = WaterQuest.app; path = Sipli.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1BD898210B2BA8EE347F72F4 /* Sipli.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sipli.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22C158CF127D3436999E3C2B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationEntry.swift; sourceTree = "<group>"; };
 		32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationStore.swift; sourceTree = "<group>"; };
@@ -325,7 +325,7 @@
 		DA0C73A8FD8A545CB27D2691 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1BD898210B2BA8EE347F72F4 /* WaterQuest.app */,
+				1BD898210B2BA8EE347F72F4 /* Sipli.app */,
 				AA9999999999999999999999 /* SipliWidget.appex */,
 			);
 			name = Products;
@@ -387,7 +387,7 @@
 			packageProductDependencies = (
 			);
 			productName = WaterQuest;
-			productReference = 1BD898210B2BA8EE347F72F4 /* WaterQuest.app */;
+			productReference = 1BD898210B2BA8EE347F72F4 /* Sipli.app */;
 			productType = "com.apple.product-type.application";
 		};
 		FF1111111111111111111111 /* SipliWidget */ = {
@@ -568,7 +568,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1;
+				MARKETING_VERSION = 2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration;
 				PRODUCT_NAME = Sipli;
 				SDKROOT = iphoneos;
@@ -650,7 +650,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.1;
+				MARKETING_VERSION = 2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration;
 				PRODUCT_NAME = Sipli;
 				SDKROOT = iphoneos;
@@ -743,7 +743,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.1;
+				MARKETING_VERSION = 2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -771,7 +771,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.1;
+				MARKETING_VERSION = 2.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
