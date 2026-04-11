@@ -11,7 +11,8 @@ const W = 1290, H = 2796;
 
 const labels = [
   'hero', 'log-intake', 'insights', 'diary', 'coach',
-  'widgets-light', 'widgets-dark', 'beverages', 'weather', 'overview'
+  'widgets-light', 'widgets-dark', 'beverages', 'weather', 'overview',
+  'earth-day', 'refill', 'planet'
 ];
 
 (async () => {
@@ -66,5 +67,5 @@ const labels = [
   }
 
   await browser.close();
-  console.log(`\nDone! All 10 screenshots at ${W}x${H} saved to:\n${outDir}`);
+  console.log(`\nDone! All ${labels.length} screenshots at ${W}x${H} saved to:\n${outDir}`);
 })();

@@ -91,6 +91,11 @@
   .bg-9 { background: linear-gradient(168deg, #FFF0E0 0%, #FFE0C0 25%, #D0E0FF 60%, #A8C8FF 100%); }
   .bg-10 { background: linear-gradient(168deg, #E0ECFF 0%, #C0D8FF 35%, #A0C8FF 70%, #80B8FF 100%); }
 
+  /* ── Earth Day Campaign backgrounds ── */
+  .bg-earth-1 { background: linear-gradient(168deg, #E8F7EC 0%, #B9E8C4 30%, #7FD4A1 60%, #3FB389 100%); }
+  .bg-earth-2 { background: linear-gradient(168deg, #F0FAE4 0%, #C8EBB0 35%, #8CD8A2 70%, #36B399 100%); }
+  .bg-earth-3 { background: linear-gradient(168deg, #E4F3EC 0%, #BFE3D1 35%, #E8D9B8 75%, #E4BE86 100%); }
+
   /* ── Mesh blobs ── */
   .blob {
     position: absolute; border-radius: 50%; filter: blur(120px); pointer-events: none;
@@ -142,6 +147,12 @@
 
   .title-gradient-mint {
     background: linear-gradient(135deg, var(--mint) 0%, var(--blue) 100%);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .title-gradient-earth {
+    background: linear-gradient(135deg, #0B6B4F 0%, #34A853 100%);
     -webkit-background-clip: text; -webkit-text-fill-color: transparent;
     background-clip: text;
   }
@@ -306,6 +317,9 @@
     <button class="tab" onclick="go(7,this)">Beverages</button>
     <button class="tab" onclick="go(8,this)">Weather</button>
     <button class="tab" onclick="go(9,this)">Overview</button>
+    <button class="tab" onclick="go(10,this)">Earth Day</button>
+    <button class="tab" onclick="go(11,this)">Refill</button>
+    <button class="tab" onclick="go(12,this)">Planet</button>
   </div>
   <div class="sep"></div>
   <div class="zoom-group">
@@ -647,6 +661,104 @@
   </div>
 </div>
 
+<!-- ━━━ 11. EARTH DAY HERO ━━━ -->
+<div class="frame bg-earth-1" id="f10">
+  <div class="blob" style="width:700px;height:700px;top:-100px;right:-200px;background:rgba(52,168,83,0.18);"></div>
+  <div class="blob" style="width:600px;height:600px;bottom:400px;left:-200px;background:rgba(11,107,79,0.14);"></div>
+  <div class="blob" style="width:500px;height:500px;top:800px;right:100px;background:rgba(48,201,160,0.12);"></div>
+
+  <div class="content">
+    <div class="pill">
+      <span>&#127757;</span> Earth Day 2026
+    </div>
+    <h2 class="title">Every Sip,<br><span class="title-gradient-earth">Less Plastic.</span></h2>
+    <p class="subtitle">Track your refills. Skip the single-use bottles.<br>Hydrate kinder to the planet.</p>
+  </div>
+
+  <div class="device pos-bottom">
+    <div class="device-frame">
+      <div class="side-btn right power-btn"></div>
+      <div class="side-btn left silent-btn"></div>
+      <div class="side-btn left vol-up-btn"></div>
+      <div class="side-btn left vol-down-btn"></div>
+      <div class="device-bezel">
+        <div class="dynamic-island"></div>
+        <div class="device-screen">
+          <img src="/Users/anoopjose/Downloads/IMG_0262.png" alt="Earth Day">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━ 12. REFILL DON'T REBUY ━━━ -->
+<div class="frame bg-earth-2" id="f11">
+  <div class="blob" style="width:600px;height:600px;top:100px;right:-150px;background:rgba(54,179,153,0.14);"></div>
+  <div class="blob" style="width:500px;height:500px;bottom:300px;left:-100px;background:rgba(140,216,162,0.14);"></div>
+
+  <div class="content">
+    <div class="pill">
+      <span>&#127811;</span> Reusable-First
+    </div>
+    <h2 class="title">Refill,<br><span class="title-gradient-earth">Don't Rebuy.</span></h2>
+    <p class="subtitle">Built for reusable bottles —<br>log each refill in a tap.</p>
+    <div class="chip-row">
+      <div class="chip">Reusable Bottles</div>
+      <div class="chip">18+ Beverages</div>
+      <div class="chip">Habit Builder</div>
+    </div>
+  </div>
+
+  <div class="device pos-bottom">
+    <div class="device-frame">
+      <div class="side-btn right power-btn"></div>
+      <div class="side-btn left silent-btn"></div>
+      <div class="side-btn left vol-up-btn"></div>
+      <div class="side-btn left vol-down-btn"></div>
+      <div class="device-bezel">
+        <div class="dynamic-island"></div>
+        <div class="device-screen">
+          <img src="/Users/anoopjose/Downloads/IMG_0263.png" alt="Refill">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ━━━ 13. YOUR DATA YOUR PLANET ━━━ -->
+<div class="frame bg-earth-3" id="f12">
+  <div class="blob" style="width:700px;height:700px;top:-100px;left:-150px;background:rgba(11,107,79,0.12);"></div>
+  <div class="blob" style="width:600px;height:600px;bottom:200px;right:-150px;background:rgba(228,190,134,0.14);"></div>
+
+  <div class="content">
+    <div class="pill">
+      <span>&#127793;</span> Private &amp; Planet-Friendly
+    </div>
+    <h2 class="title">Your Data,<br>Your <span class="title-gradient-earth">Planet.</span></h2>
+    <p class="subtitle">On-device. No cloud tracking.<br>Light on servers, light on the earth.</p>
+    <div class="chip-row">
+      <div class="chip">No Cloud</div>
+      <div class="chip">On-Device</div>
+      <div class="chip">Low Footprint</div>
+    </div>
+  </div>
+
+  <div class="device pos-bottom">
+    <div class="device-frame">
+      <div class="side-btn right power-btn"></div>
+      <div class="side-btn left silent-btn"></div>
+      <div class="side-btn left vol-up-btn"></div>
+      <div class="side-btn left vol-down-btn"></div>
+      <div class="device-bezel">
+        <div class="dynamic-island"></div>
+        <div class="device-screen">
+          <img src="/Users/anoopjose/Downloads/IMG_0269.png" alt="Planet">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 </div>
 </div>
 
@@ -656,8 +768,8 @@
 <script>
 let cur = 0;
 const F = document.querySelectorAll('.frame');
-const labels = ['hero','log-intake','insights','diary','coach','widgets-light','widgets-dark','beverages','weather','overview'];
-const names = ['Hero','Log Intake','Insights','Diary','Coach','Widgets Light','Widgets Dark','Beverages','Weather','Overview'];
+const labels = ['hero','log-intake','insights','diary','coach','widgets-light','widgets-dark','beverages','weather','overview','earth-day','refill','planet'];
+const names = ['Hero','Log Intake','Insights','Diary','Coach','Widgets Light','Widgets Dark','Beverages','Weather','Overview','Earth Day','Refill','Planet'];
 
 function go(i, btn) {
   F.forEach(f => f.classList.remove('active'));
@@ -705,7 +817,7 @@ async function expAll() {
     await new Promise(r => setTimeout(r, 600));
   }
   go(0, document.querySelector('.tab'));
-  toast('All 10 screenshots exported!');
+  toast(`All ${F.length} screenshots exported!`);
 }
 
 // Keyboard nav
