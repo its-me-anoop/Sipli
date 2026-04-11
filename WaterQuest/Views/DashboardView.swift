@@ -11,6 +11,7 @@ struct DashboardView: View {
     @State private var entryToEdit: HydrationEntry?
     @State private var entryToDelete: HydrationEntry?
     @State private var isRefreshing = false
+    @State private var showEarthDayPledge = false
 
     private var goal: GoalBreakdown { store.dailyGoal }
     private var progress: Double { min(1, store.todayTotalML / max(1, goal.totalML)) }
@@ -47,6 +48,24 @@ struct DashboardView: View {
                 deleteEntry(entry)
             }
         }
+        .sheet(isPresented: $showEarthDayPledge) {
+            EarthDayPledgeView()
+        }
+    }
+
+    private var earthDayBannerVisible: Bool {
+        EarthDayEvent.isActive() && !store.earthDayBannerDismissed
+    }
+
+    @ViewBuilder
+    private var earthDayBanner: some View {
+        if earthDayBannerVisible {
+            EarthDayBannerCard(
+                onLearnMore: { showEarthDayPledge = true },
+                onDismiss: { store.dismissEarthDayBanner() }
+            )
+            .transition(.move(edge: .top).combined(with: .opacity))
+        }
     }
 
     // MARK: - Layouts
@@ -54,8 +73,11 @@ struct DashboardView: View {
     private var iPhoneLayout: some View {
         ScrollView {
             VStack(spacing: 16) {
-                summarySection
+                earthDayBanner
                     .padding(.top, 8)
+
+                summarySection
+                    .padding(.top, earthDayBannerVisible ? 0 : 8)
 
                 if let tip = aiService.currentTip {
                     DashboardCard(title: "Hydration Coach", icon: "sparkles", backgroundGradient: Theme.coachCard) {
@@ -133,6 +155,8 @@ struct DashboardView: View {
     private var iPadLayout: some View {
         ScrollView {
             VStack(spacing: 20) {
+                earthDayBanner
+
                 // Summary card spans full width
                 HydrationSummaryCard(
                     greeting: greeting,

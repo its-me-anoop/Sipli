@@ -14,6 +14,7 @@ struct SettingsView: View {
     @State private var customGoalValue: Double = 2200
     @State private var wakeTime: Date = Date()
     @State private var sleepTime: Date = Date()
+    @State private var earthDayIconEnabled: Bool = UIApplication.shared.alternateIconName == EarthDayEvent.alternateIconName
 
     @Environment(\.horizontalSizeClass) private var sizeClass
     private var isRegular: Bool { sizeClass == .regular }
@@ -124,32 +125,65 @@ struct SettingsView: View {
 
     private var appearanceCard: some View {
         DashboardCard(title: "Appearance", icon: "paintbrush.fill") {
-            HStack(spacing: 10) {
-                ForEach(AppTheme.allCases) { theme in
-                    Button {
-                        Haptics.selection()
-                        withAnimation(Theme.quickSpring) {
-                            appTheme = theme
+            VStack(spacing: 18) {
+                HStack(spacing: 10) {
+                    ForEach(AppTheme.allCases) { theme in
+                        Button {
+                            Haptics.selection()
+                            withAnimation(Theme.quickSpring) {
+                                appTheme = theme
+                            }
+                        } label: {
+                            VStack(spacing: 8) {
+                                Image(systemName: theme.icon)
+                                    .font(.title3)
+                                    .foregroundStyle(appTheme == theme ? .white : Theme.lagoon)
+                                    .frame(width: 44, height: 44)
+                                    .background(
+                                        Circle()
+                                            .fill(appTheme == theme ? Theme.lagoon : Theme.lagoon.opacity(0.12))
+                                    )
+                                Text(theme.label)
+                                    .font(.caption.weight(.medium))
+                                    .foregroundStyle(appTheme == theme ? .primary : .secondary)
+                            }
+                            .frame(maxWidth: .infinity)
                         }
-                    } label: {
-                        VStack(spacing: 8) {
-                            Image(systemName: theme.icon)
-                                .font(.title3)
-                                .foregroundStyle(appTheme == theme ? .white : Theme.lagoon)
-                                .frame(width: 44, height: 44)
-                                .background(
-                                    Circle()
-                                        .fill(appTheme == theme ? Theme.lagoon : Theme.lagoon.opacity(0.12))
-                                )
-                            Text(theme.label)
-                                .font(.caption.weight(.medium))
-                                .foregroundStyle(appTheme == theme ? .primary : .secondary)
-                        }
-                        .frame(maxWidth: .infinity)
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("\(theme.label) theme")
+                        .accessibilityAddTraits(appTheme == theme ? .isSelected : [])
                     }
-                    .buttonStyle(.plain)
-                    .accessibilityLabel("\(theme.label) theme")
-                    .accessibilityAddTraits(appTheme == theme ? .isSelected : [])
+                }
+
+                if EarthDayEvent.isActive()
+                    && EarthDayEvent.alternateIconAvailable
+                    && UIApplication.shared.supportsAlternateIcons {
+                    Divider().opacity(0.3)
+                    settingsToggle(
+                        "Earth Day icon",
+                        icon: "leaf.fill",
+                        isOn: Binding(
+                            get: { earthDayIconEnabled },
+                            set: { value in
+                                earthDayIconEnabled = value
+                                setEarthDayIcon(enabled: value)
+                            }
+                        )
+                    )
+                }
+            }
+        }
+    }
+
+    private func setEarthDayIcon(enabled: Bool) {
+        let targetName: String? = enabled ? EarthDayEvent.alternateIconName : nil
+        guard UIApplication.shared.alternateIconName != targetName else { return }
+        UIApplication.shared.setAlternateIconName(targetName) { error in
+            if error != nil {
+                Task { @MainActor in
+                    // Revert UI state if the OS refused the change (e.g. icon
+                    // asset missing or not yet registered in the build).
+                    earthDayIconEnabled = UIApplication.shared.alternateIconName == EarthDayEvent.alternateIconName
                 }
             }
         }
@@ -377,6 +411,29 @@ struct SettingsView: View {
     private var aboutCard: some View {
         DashboardCard(title: "About", icon: "info.circle.fill") {
             VStack(spacing: 14) {
+                NavigationLink {
+                    EarthInfoView()
+                } label: {
+                    HStack(spacing: 8) {
+                        Image(systemName: "leaf.fill")
+                            .foregroundStyle(Color(red: 0.22, green: 0.62, blue: 0.42))
+                            .frame(width: 22)
+                        Text("Why reusable bottles matter")
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(.primary)
+                        Spacer()
+                        Image(systemName: "chevron.right")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.tertiary)
+                    }
+                    .padding(12)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(Theme.card)
+                    )
+                }
+                .buttonStyle(.plain)
+
                 Link(destination: Legal.privacyURL) {
                     HStack(spacing: 8) {
                         Image(systemName: "hand.raised.fill")

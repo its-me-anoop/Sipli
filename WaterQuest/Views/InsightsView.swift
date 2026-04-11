@@ -187,6 +187,10 @@ struct InsightsView: View {
 
                 headerSummary
 
+                if EarthDayEvent.isActive() {
+                    DashboardCard(title: "Earth Week", icon: "leaf.fill") { earthWeekSection }
+                }
+
                 if isRegular {
                     // iPad Multi-column layout
                     HStack(alignment: .top, spacing: 20) {
@@ -234,8 +238,14 @@ struct InsightsView: View {
 
     private var headerSummary: some View {
         VStack(alignment: .leading, spacing: isRegular ? 16 : 12) {
-            Text("Your hydration trend")
-                .font(isRegular ? .title2.weight(.semibold) : .title3.weight(.semibold))
+            HStack(alignment: .center, spacing: 8) {
+                Text("Your hydration trend")
+                    .font(isRegular ? .title2.weight(.semibold) : .title3.weight(.semibold))
+                Spacer(minLength: 0)
+                if store.earthDay2026Earned {
+                    earthDayBadgePill
+                }
+            }
 
             HStack(spacing: isRegular ? 16 : 14) {
                 MetricTile(title: "Today", value: Formatters.percentString(min(1, store.todayTotalML / max(1, store.dailyGoal.totalML))), icon: "drop.fill", color: Theme.lagoon, isRegular: isRegular)
@@ -244,6 +254,76 @@ struct InsightsView: View {
             }
         }
         .padding(.vertical, isRegular ? 12 : 8)
+    }
+
+    private var earthDayBadgePill: some View {
+        HStack(spacing: 6) {
+            Image(systemName: "leaf.fill")
+                .font(.caption.weight(.bold))
+            Text("Earth Day 2026")
+                .font(.caption.weight(.semibold))
+        }
+        .foregroundStyle(.white)
+        .padding(.horizontal, 10)
+        .padding(.vertical, 6)
+        .background(
+            Capsule().fill(
+                LinearGradient(
+                    colors: [
+                        Color(red: 0.22, green: 0.62, blue: 0.42),
+                        Color(red: 0.05, green: 0.45, blue: 0.30)
+                    ],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+        )
+        .accessibilityLabel("Earth Day 2026 badge")
+    }
+
+    // MARK: - Earth Week Section
+
+    private var earthWeekSection: some View {
+        let weekEntries = EarthDayEvent.entriesInEarthWeek(store.entries)
+        let count = weekEntries.count
+        let totalML = weekEntries.reduce(0) { $0 + $1.effectiveML }
+
+        return VStack(alignment: .leading, spacing: 12) {
+            HStack(spacing: 10) {
+                ZStack {
+                    Circle()
+                        .fill(Color(red: 0.22, green: 0.62, blue: 0.42).opacity(0.18))
+                        .frame(width: 40, height: 40)
+                    Image(systemName: "leaf.fill")
+                        .foregroundStyle(Color(red: 0.22, green: 0.62, blue: 0.42))
+                }
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(count == 0
+                         ? "Log your first sip this Earth Week."
+                         : "You've sipped \(count) \(count == 1 ? "time" : "times") this Earth Week.")
+                        .font(.subheadline.weight(.semibold))
+                    Text("Every refill is one less plastic bottle.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer(minLength: 0)
+            }
+
+            if count > 0 {
+                HStack(spacing: 8) {
+                    Image(systemName: "drop.fill")
+                        .foregroundStyle(Theme.lagoon)
+                        .font(.caption)
+                    Text("Total: \(Formatters.volumeString(ml: totalML, unit: store.profile.unitSystem))")
+                        .font(.caption.weight(.medium))
+                        .foregroundStyle(.secondary)
+                }
+                .padding(.leading, 50)
+            }
+        }
+        .padding(.vertical, 4)
     }
 
     // MARK: - Chart Section
