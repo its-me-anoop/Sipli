@@ -91,7 +91,7 @@ struct EarthProgressView: View {
                 .animation(.spring(response: 0.8, dampingFraction: 0.7), value: clampedProgress)
                 .animation(.spring(response: 0.8, dampingFraction: 0.7), value: layers)
             }
-            .frame(width: diameter * 0.92, height: diameter * 0.92)
+            .frame(width: diameter, height: diameter)
             .clipShape(Circle())
 
             // The transparent earth on top
