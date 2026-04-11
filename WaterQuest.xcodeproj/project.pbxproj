@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		00E5359EB56D89B045DDBDF1 /* AddIntakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBC0C7A2F89C0FD52822D48 /* AddIntakeView.swift */; };
 		ED01000000000000000001 /* EarthDayBannerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED01000000000000000002 /* EarthDayBannerCard.swift */; };
+		ED05000000000000000001 /* EarthProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED05000000000000000002 /* EarthProgressView.swift */; };
 		ED02000000000000000001 /* EarthDayEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED02000000000000000002 /* EarthDayEvent.swift */; };
 		ED03000000000000000001 /* EarthDayPledgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED03000000000000000002 /* EarthDayPledgeView.swift */; };
 		ED04000000000000000001 /* EarthInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED04000000000000000002 /* EarthInfoView.swift */; };
@@ -117,6 +118,7 @@
 		31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationEntry.swift; sourceTree = "<group>"; };
 		32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationStore.swift; sourceTree = "<group>"; };
 		ED01000000000000000002 /* EarthDayBannerCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthDayBannerCard.swift; sourceTree = "<group>"; };
+		ED05000000000000000002 /* EarthProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthProgressView.swift; sourceTree = "<group>"; };
 		ED02000000000000000002 /* EarthDayEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthDayEvent.swift; sourceTree = "<group>"; };
 		ED03000000000000000002 /* EarthDayPledgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthDayPledgeView.swift; sourceTree = "<group>"; };
 		ED04000000000000000002 /* EarthInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthInfoView.swift; sourceTree = "<group>"; };
@@ -250,6 +252,7 @@
 			children = (
 				97414883E4C0F357148B7EC7 /* DashboardCard.swift */,
 				ED01000000000000000002 /* EarthDayBannerCard.swift */,
+				ED05000000000000000002 /* EarthProgressView.swift */,
 				3D58355784786E63DFFB9EC4 /* Haptics.swift */,
 				42E0244F70DCB30BB868A196 /* LiquidGlassCard.swift */,
 				85C07CD814951765EE1A1499 /* LiquidProgressView.swift */,
@@ -513,6 +516,7 @@
 				00E5359EB56D89B045DDBDF1 /* AddIntakeView.swift in Sources */,
 				1DCE9DE6A19E823BA1E5079B /* DashboardCard.swift in Sources */,
 				ED01000000000000000001 /* EarthDayBannerCard.swift in Sources */,
+				ED05000000000000000001 /* EarthProgressView.swift in Sources */,
 				ED02000000000000000001 /* EarthDayEvent.swift in Sources */,
 				ED03000000000000000001 /* EarthDayPledgeView.swift in Sources */,
 				ED04000000000000000001 /* EarthInfoView.swift in Sources */,
