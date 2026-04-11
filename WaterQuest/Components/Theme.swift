@@ -9,6 +9,7 @@ enum Legal {
     static let hydrationHeatCitationURL = URL(string: "https://www.cdc.gov/healthy-weight-growth/water-healthy-drinks/index.html")!
     static let hydrationExerciseCitationURL = URL(string: "https://acsm.org/9-facts-about-hydration-electrolytes/")!
     static let manageSubscriptionsURL = URL(string: "https://apps.apple.com/account/subscriptions")!
+    static let appStoreURL = URL(string: "https://apps.apple.com/us/app/sipli/id6758851574")!
     // swiftlint:enable force_unwrapping
 }
 

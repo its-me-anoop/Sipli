@@ -3,10 +3,26 @@ import SwiftUI
 /// Earth Day Refill Pledge sheet. Presents a shareable pledge card the user
 /// can export via iOS share sheet. Purely local — no network, no analytics.
 struct EarthDayPledgeView: View {
+    @EnvironmentObject private var store: HydrationStore
     @Environment(\.dismiss) private var dismiss
     @Environment(\.displayScale) private var displayScale
 
     @State private var shareImage: Image?
+    @State private var shareUIImage: UIImage?
+    @State private var isPresentingShareSheet = false
+
+    private var trimmedName: String {
+        store.profile.name.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    private var hasName: Bool { !trimmedName.isEmpty }
+
+    private var shareMessage: String {
+        let intro = hasName
+            ? "\(trimmedName) is taking the Sipli Refill Pledge for Earth Week 2026."
+            : "I'm taking the Sipli Refill Pledge for Earth Week 2026."
+        return "\(intro) Every refill is one less plastic bottle. \(Legal.appStoreURL.absoluteString)"
+    }
 
     var body: some View {
         NavigationStack {
@@ -27,11 +43,11 @@ struct EarthDayPledgeView: View {
                         .padding(.horizontal, 12)
 
                     VStack(spacing: 12) {
-                        if let shareImage {
-                            ShareLink(
-                                item: shareImage,
-                                preview: SharePreview("Sipli Refill Pledge", image: shareImage)
-                            ) {
+                        if shareUIImage != nil {
+                            Button {
+                                Haptics.selection()
+                                isPresentingShareSheet = true
+                            } label: {
                                 HStack(spacing: 8) {
                                     Image(systemName: "square.and.arrow.up")
                                     Text("Share My Pledge")
@@ -53,6 +69,7 @@ struct EarthDayPledgeView: View {
                                     )
                                 )
                             }
+                            .buttonStyle(.plain)
                         } else {
                             ProgressView()
                                 .frame(maxWidth: .infinity, minHeight: 52)
@@ -77,6 +94,15 @@ struct EarthDayPledgeView: View {
                 }
             }
             .task { renderShareImage() }
+            .onChange(of: trimmedName) { _, _ in renderShareImage() }
+            .sheet(isPresented: $isPresentingShareSheet) {
+                if let shareUIImage {
+                    PledgeShareSheet(
+                        items: [shareUIImage, shareMessage, Legal.appStoreURL]
+                    )
+                    .ignoresSafeArea()
+                }
+            }
         }
     }
 
@@ -101,6 +127,12 @@ struct EarthDayPledgeView: View {
                 .foregroundStyle(.white)
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
+
+            if hasName {
+                Text("— \(trimmedName)")
+                    .font(.system(.subheadline, design: .rounded).weight(.semibold))
+                    .foregroundStyle(.white.opacity(0.92))
+            }
 
             VStack(spacing: 2) {
                 Text("Every sip tracked")
@@ -163,9 +195,20 @@ struct EarthDayPledgeView: View {
         renderer.scale = displayScale
 
         if let uiImage = renderer.uiImage {
+            shareUIImage = uiImage
             shareImage = Image(uiImage: uiImage)
         }
     }
+}
+
+private struct PledgeShareSheet: UIViewControllerRepresentable {
+    let items: [Any]
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 #if DEBUG
