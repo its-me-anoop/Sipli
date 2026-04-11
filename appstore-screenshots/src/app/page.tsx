@@ -1405,6 +1405,255 @@ const EARTH_SCREENSHOTS: ScreenshotEntry[] = [
 ];
 
 /* ═══════════════════════════════════════════════════════
+   APP STORE IN-APP EVENT ASSETS
+   ═══════════════════════════════════════════════════════ */
+
+/* Event Card — 1:1 square, min 1080x1080, used on the App Store Today/event cards */
+const EVENT_CARD_W = 1080;
+const EVENT_CARD_H = 1080;
+
+const EVENT_CARD_SIZES = [
+  { label: "Card (1080×1080)", w: 1080, h: 1080 },
+] as const;
+
+/* Event Details Page hero — 16:9 landscape, min 1920x1080 */
+const EVENT_DETAIL_W = 1920;
+const EVENT_DETAIL_H = 1080;
+
+const EVENT_DETAIL_SIZES = [
+  { label: "Details (1920×1080)", w: 1920, h: 1080 },
+] as const;
+
+/**
+ * Event Card (1080×1080). Square, minimal, readable at small sizes.
+ * Must work when cropped / scaled on the App Store Today tab.
+ */
+function EventCardSlide() {
+  return (
+    <EarthDarkBg w={EVENT_CARD_W} h={EVENT_CARD_H}>
+      {/* Soft radial glow */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: `radial-gradient(circle at 50% 40%, rgba(56,160,107,0.55) 0%, rgba(10,77,56,0) 55%)`,
+          pointerEvents: "none",
+        }}
+      />
+
+      {/* Subtle leaf accent behind the type */}
+      <div
+        style={{
+          position: "absolute",
+          top: 60,
+          right: 60,
+          width: 120,
+          height: 120,
+          borderRadius: "50%",
+          background: "rgba(255,255,255,0.10)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 64,
+        }}
+      >
+        🌿
+      </div>
+
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "flex-start",
+          padding: "96px 88px",
+          zIndex: 2,
+        }}
+      >
+        <div
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            padding: "10px 22px",
+            borderRadius: 999,
+            background: "rgba(255,255,255,0.18)",
+            border: "1.5px solid rgba(255,255,255,0.3)",
+            color: "#FFFFFF",
+            fontSize: 22,
+            fontWeight: 700,
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            marginBottom: 34,
+          }}
+        >
+          Earth Week · Apr 20–26
+        </div>
+
+        <div
+          style={{
+            fontSize: 124,
+            fontWeight: 800,
+            color: "#FFFFFF",
+            lineHeight: 0.95,
+            letterSpacing: "-0.035em",
+            marginBottom: 28,
+          }}
+        >
+          The Refill<br />Pledge
+        </div>
+
+        <div
+          style={{
+            fontSize: 34,
+            fontWeight: 500,
+            color: "rgba(255,255,255,0.88)",
+            lineHeight: 1.25,
+            maxWidth: 820,
+          }}
+        >
+          Refill, not rebuy. One small habit for Earth Week.
+        </div>
+
+        {/* Sipli mark bottom-left */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 72,
+            left: 88,
+            display: "flex",
+            alignItems: "center",
+            gap: 14,
+          }}
+        >
+          <img
+            src="/app-icon.png"
+            alt="Sipli"
+            style={{ width: 56, height: 56, borderRadius: 14, display: "block" }}
+          />
+          <span style={{ fontSize: 32, fontWeight: 800, color: "#FFFFFF", letterSpacing: "-0.01em" }}>
+            Sipli
+          </span>
+        </div>
+      </div>
+    </EarthDarkBg>
+  );
+}
+
+/**
+ * Event Details Page Hero (1920×1080). Landscape — headline on the left,
+ * pledge card mocked on the right. Sets expectations for what users will
+ * do when they tap through to the app.
+ */
+function EventDetailsHeroSlide() {
+  return (
+    <EarthDarkBg w={EVENT_DETAIL_W} h={EVENT_DETAIL_H}>
+      {/* Warm radial glow behind the pledge card */}
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          background: `radial-gradient(circle at 72% 50%, rgba(56,160,107,0.45) 0%, rgba(10,77,56,0) 45%)`,
+          pointerEvents: "none",
+        }}
+      />
+
+      <div
+        style={{
+          position: "absolute",
+          inset: 0,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "90px 120px",
+          zIndex: 2,
+        }}
+      >
+        {/* Left — headline */}
+        <div style={{ maxWidth: 780, display: "flex", flexDirection: "column", gap: 28 }}>
+          <div
+            style={{
+              display: "inline-flex",
+              alignSelf: "flex-start",
+              alignItems: "center",
+              padding: "10px 22px",
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.18)",
+              border: "1.5px solid rgba(255,255,255,0.3)",
+              color: "#FFFFFF",
+              fontSize: 22,
+              fontWeight: 700,
+              letterSpacing: "0.16em",
+              textTransform: "uppercase",
+            }}
+          >
+            🌿 Earth Week 2026
+          </div>
+
+          <div
+            style={{
+              fontSize: 108,
+              fontWeight: 800,
+              color: "#FFFFFF",
+              lineHeight: 0.95,
+              letterSpacing: "-0.035em",
+            }}
+          >
+            Take the<br />Refill Pledge.
+          </div>
+
+          <div
+            style={{
+              fontSize: 30,
+              fontWeight: 500,
+              color: "rgba(255,255,255,0.88)",
+              lineHeight: 1.35,
+              maxWidth: 720,
+            }}
+          >
+            Refill, not rebuy. Every refill is one less plastic bottle — and a
+            habit that quietly sticks long after Earth Week ends.
+          </div>
+
+          <div style={{ display: "flex", alignItems: "center", gap: 14, marginTop: 16 }}>
+            <img
+              src="/app-icon.png"
+              alt="Sipli"
+              style={{ width: 52, height: 52, borderRadius: 13, display: "block" }}
+            />
+            <span style={{ fontSize: 28, fontWeight: 800, color: "#FFFFFF", letterSpacing: "-0.01em" }}>
+              Sipli
+            </span>
+            <span style={{ fontSize: 20, fontWeight: 600, color: "rgba(255,255,255,0.6)", marginLeft: 8, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+              Available on the App Store
+            </span>
+          </div>
+        </div>
+
+        {/* Right — tilted pledge card mock */}
+        <div
+          style={{
+            transform: "rotate(-3deg)",
+            filter: "drop-shadow(0 40px 80px rgba(0,20,12,0.5))",
+          }}
+        >
+          <RefillPledgeCard scale={0.95} name="Anoop" />
+        </div>
+      </div>
+    </EarthDarkBg>
+  );
+}
+
+const EVENT_CARD_SCREENSHOTS: ScreenshotEntry[] = [
+  { name: "event-card-earth-week", component: EventCardSlide },
+];
+
+const EVENT_DETAIL_SCREENSHOTS: ScreenshotEntry[] = [
+  { name: "event-detail-earth-week", component: EventDetailsHeroSlide },
+];
+
+/* ═══════════════════════════════════════════════════════
    PREVIEW COMPONENT
    ═══════════════════════════════════════════════════════ */
 
@@ -1597,6 +1846,24 @@ export default function ScreenshotsPage() {
         canvasW={W}
         canvasH={H}
         filenamePrefix="iphone-earth"
+      />
+
+      <DeviceSection
+        title="In-App Event — Card (1080×1080)"
+        screenshots={EVENT_CARD_SCREENSHOTS}
+        sizes={EVENT_CARD_SIZES}
+        canvasW={EVENT_CARD_W}
+        canvasH={EVENT_CARD_H}
+        filenamePrefix="event"
+      />
+
+      <DeviceSection
+        title="In-App Event — Details Hero (1920×1080)"
+        screenshots={EVENT_DETAIL_SCREENSHOTS}
+        sizes={EVENT_DETAIL_SIZES}
+        canvasW={EVENT_DETAIL_W}
+        canvasH={EVENT_DETAIL_H}
+        filenamePrefix="event"
       />
 
       <DeviceSection
