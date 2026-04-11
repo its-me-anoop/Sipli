@@ -734,17 +734,7 @@ private struct HydrationSummaryCard: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            if EarthDayEvent.isActive() {
-                Image("earth")
-                    .resizable()
-                    .scaledToFit()
-                    .frame(
-                        width: isRegular ? 230 : 165,
-                        height: isRegular ? 340 : 260
-                    )
-                    .shadow(color: Color.green.opacity(0.35), radius: 24, x: 0, y: 8)
-                    .accessibilityLabel("Earth Day 2026")
-            } else {
+            ZStack {
                 LiquidProgressView(
                     progress: progress,
                     compositions: compositions,
@@ -752,6 +742,18 @@ private struct HydrationSummaryCard: View {
                     bottleWidth: isRegular ? 230 : 165,
                     bottleHeight: isRegular ? 340 : 260
                 )
+
+                if EarthDayEvent.isActive() {
+                    Image("earth")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(
+                            width: isRegular ? 230 : 165,
+                            height: isRegular ? 340 : 260
+                        )
+                        .shadow(color: Color.green.opacity(0.35), radius: 24, x: 0, y: 8)
+                        .accessibilityLabel("Earth Day 2026")
+                }
             }
         }
         .padding(isRegular ? 24 : 20)
