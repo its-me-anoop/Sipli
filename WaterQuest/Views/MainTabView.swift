@@ -31,6 +31,7 @@ struct MainTabView: View {
     @State private var selectedTab: AppTab = .dashboard
     @State private var showAddIntake = false
     @Environment(\.deepLinkAddIntake) private var deepLinkAddIntake
+    @Environment(\.deepLinkEarthWeek) private var deepLinkEarthWeek
 
     var body: some View {
         tabContent
@@ -41,6 +42,11 @@ struct MainTabView: View {
             .onChange(of: deepLinkAddIntake) {
                 if deepLinkAddIntake {
                     showAddIntake = true
+                }
+            }
+            .onChange(of: deepLinkEarthWeek) {
+                if deepLinkEarthWeek {
+                    selectedTab = .dashboard
                 }
             }
             .sheet(isPresented: $showAddIntake) {

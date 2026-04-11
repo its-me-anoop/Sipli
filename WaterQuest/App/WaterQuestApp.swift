@@ -6,6 +6,7 @@ struct WaterQuestApp: App {
     @AppStorage("hasOnboarded") private var hasOnboarded: Bool = false
     @Environment(\.scenePhase) private var scenePhase
     @State private var deepLinkAddIntake = false
+    @State private var deepLinkEarthWeek = false
 
     @StateObject private var store = HydrationStore()
     @StateObject private var healthKit = HealthKitManager()
@@ -70,15 +71,29 @@ struct WaterQuestApp: App {
                 }
             }
             .onOpenURL { url in
-                if url.scheme == "sipli" && url.host == "add-intake" {
+                guard url.scheme == "sipli" else { return }
+                switch url.host {
+                case "add-intake":
                     deepLinkAddIntake = true
+                case "earth-week", "pledge":
+                    deepLinkEarthWeek = true
+                default:
+                    break
                 }
             }
             .environment(\.deepLinkAddIntake, deepLinkAddIntake)
+            .environment(\.deepLinkEarthWeek, deepLinkEarthWeek)
             .onChange(of: deepLinkAddIntake) {
                 if deepLinkAddIntake {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         deepLinkAddIntake = false
+                    }
+                }
+            }
+            .onChange(of: deepLinkEarthWeek) {
+                if deepLinkEarthWeek {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        deepLinkEarthWeek = false
                     }
                 }
             }
@@ -101,8 +116,12 @@ struct WaterQuestApp: App {
     }
 }
 
-// MARK: - Deep Link Environment Key
+// MARK: - Deep Link Environment Keys
 private struct DeepLinkAddIntakeKey: EnvironmentKey {
+    static let defaultValue = false
+}
+
+private struct DeepLinkEarthWeekKey: EnvironmentKey {
     static let defaultValue = false
 }
 
@@ -110,5 +129,10 @@ extension EnvironmentValues {
     var deepLinkAddIntake: Bool {
         get { self[DeepLinkAddIntakeKey.self] }
         set { self[DeepLinkAddIntakeKey.self] = newValue }
+    }
+
+    var deepLinkEarthWeek: Bool {
+        get { self[DeepLinkEarthWeekKey.self] }
+        set { self[DeepLinkEarthWeekKey.self] = newValue }
     }
 }

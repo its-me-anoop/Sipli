@@ -6,6 +6,7 @@ struct DashboardView: View {
     @EnvironmentObject private var healthKit: HealthKitManager
     @EnvironmentObject private var locationManager: LocationManager
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
+    @Environment(\.deepLinkEarthWeek) private var deepLinkEarthWeek
 
     @StateObject private var aiService = HydrationAIService()
 
@@ -71,6 +72,11 @@ struct DashboardView: View {
         }
         .sheet(isPresented: $showEarthDayPledge) {
             EarthDayPledgeView()
+        }
+        .onChange(of: deepLinkEarthWeek) {
+            if deepLinkEarthWeek {
+                showEarthDayPledge = true
+            }
         }
     }
 
