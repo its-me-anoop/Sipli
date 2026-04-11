@@ -99,6 +99,7 @@ struct EarthProgressView: View {
                 .resizable()
                 .scaledToFit()
                 .frame(width: diameter, height: diameter)
+                .opacity(0.7)
                 .shadow(color: Color.green.opacity(0.35), radius: 24, x: 0, y: 8)
 
             // Percentage label, mirrors LiquidProgressView's badge
