@@ -33,7 +33,7 @@ struct EarthDayBannerCard: View {
                         )
                 }
 
-                Text("Every sip you track is one less plastic bottle.")
+                Text("Every refill is one less plastic bottle.")
                     .font(.subheadline)
                     .foregroundStyle(.white.opacity(0.92))
                     .fixedSize(horizontal: false, vertical: true)
@@ -97,7 +97,7 @@ struct EarthDayBannerCard: View {
         )
         .shadow(color: Color.black.opacity(0.18), radius: 10, x: 0, y: 5)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("Earth Week. Every sip you track is one less plastic bottle. Take the refill pledge.")
+        .accessibilityLabel("Earth Week. Every refill is one less plastic bottle. Take the refill pledge.")
     }
 }
 
