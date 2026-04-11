@@ -8,21 +8,12 @@ struct EarthDayPledgeView: View {
     @Environment(\.displayScale) private var displayScale
 
     @State private var shareImage: Image?
-    @State private var shareUIImage: UIImage?
-    @State private var isPresentingShareSheet = false
 
     private var trimmedName: String {
         store.profile.name.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 
     private var hasName: Bool { !trimmedName.isEmpty }
-
-    private var shareMessage: String {
-        let intro = hasName
-            ? "\(trimmedName) is taking the Sipli Refill Pledge for Earth Week 2026."
-            : "I'm taking the Sipli Refill Pledge for Earth Week 2026."
-        return "\(intro) Every refill is one less plastic bottle. \(Legal.appStoreURL.absoluteString)"
-    }
 
     var body: some View {
         NavigationStack {
@@ -43,11 +34,12 @@ struct EarthDayPledgeView: View {
                         .padding(.horizontal, 12)
 
                     VStack(spacing: 12) {
-                        if shareUIImage != nil {
-                            Button {
-                                Haptics.selection()
-                                isPresentingShareSheet = true
-                            } label: {
+                        if let shareImage {
+                            ShareLink(
+                                item: shareImage,
+                                subject: Text("Sipli Refill Pledge"),
+                                preview: SharePreview("Sipli Refill Pledge", image: shareImage)
+                            ) {
                                 HStack(spacing: 8) {
                                     Image(systemName: "square.and.arrow.up")
                                     Text("Share My Pledge")
@@ -69,7 +61,6 @@ struct EarthDayPledgeView: View {
                                     )
                                 )
                             }
-                            .buttonStyle(.plain)
                         } else {
                             ProgressView()
                                 .frame(maxWidth: .infinity, minHeight: 52)
@@ -95,14 +86,6 @@ struct EarthDayPledgeView: View {
             }
             .task { renderShareImage() }
             .onChange(of: trimmedName) { _, _ in renderShareImage() }
-            .sheet(isPresented: $isPresentingShareSheet) {
-                if let shareUIImage {
-                    PledgeShareSheet(
-                        items: [shareUIImage, shareMessage, Legal.appStoreURL]
-                    )
-                    .ignoresSafeArea()
-                }
-            }
         }
     }
 
@@ -143,13 +126,23 @@ struct EarthDayPledgeView: View {
                     .foregroundStyle(.white.opacity(0.85))
             }
 
-            HStack(spacing: 6) {
-                Image(systemName: "drop.fill")
-                    .font(.caption)
-                Text("Sipli")
-                    .font(.system(.subheadline, design: .rounded).weight(.bold))
+            VStack(spacing: 8) {
+                HStack(spacing: 8) {
+                    Image("sipliIcon")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 28, height: 28)
+                        .clipShape(RoundedRectangle(cornerRadius: 6, style: .continuous))
+                    Text("Sipli")
+                        .font(.system(.subheadline, design: .rounded).weight(.bold))
+                        .foregroundStyle(.white)
+                }
+
+                Text("Available on the App Store")
+                    .font(.caption2.weight(.semibold))
+                    .foregroundStyle(.white.opacity(0.85))
+                    .tracking(0.4)
             }
-            .foregroundStyle(.white)
             .padding(.top, 4)
         }
         .padding(28)
@@ -195,20 +188,9 @@ struct EarthDayPledgeView: View {
         renderer.scale = displayScale
 
         if let uiImage = renderer.uiImage {
-            shareUIImage = uiImage
             shareImage = Image(uiImage: uiImage)
         }
     }
-}
-
-private struct PledgeShareSheet: UIViewControllerRepresentable {
-    let items: [Any]
-
-    func makeUIViewController(context: Context) -> UIActivityViewController {
-        UIActivityViewController(activityItems: items, applicationActivities: nil)
-    }
-
-    func updateUIViewController(_ uiViewController: UIActivityViewController, context: Context) {}
 }
 
 #if DEBUG
