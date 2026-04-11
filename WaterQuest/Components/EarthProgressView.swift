@@ -20,8 +20,9 @@ struct EarthProgressView: View {
     var body: some View {
         let width = bottleWidth ?? (isRegular ? 280 : 220)
         let height = bottleHeight ?? (isRegular ? 380 : 300)
-        // Earth is square; fit a circle inside the smaller of the two dims so
-        // the waves stay nicely centred behind the globe.
+        // The earth artwork is square; fit it into the smaller dimension and
+        // use the image itself as the mask so the water fill picks up the
+        // exact silhouette (globe + glass dish), not an idealised circle.
         let diameter = min(width, height) * 0.95
         let clampedProgress = max(0, progress)
         let visibleProgress = min(clampedProgress, 1.0)
@@ -90,7 +91,12 @@ struct EarthProgressView: View {
                 .animation(.spring(response: 0.8, dampingFraction: 0.7), value: layers)
             }
             .frame(width: diameter, height: diameter)
-            .clipShape(Circle())
+            .mask(
+                Image("earth")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: diameter, height: diameter)
+            )
 
             // The transparent earth on top
             Image("earth")
