@@ -15,6 +15,14 @@ struct EarthDayPledgeView: View {
 
     private var hasName: Bool { !trimmedName.isEmpty }
 
+    private var pledgeText: String {
+        var text = "I pledge to refill, not rebuy, this Earth Week. 🌍💧"
+        if hasName { text += "\n— \(trimmedName)" }
+        text += "\n\nEvery sip tracked is one less plastic bottle."
+        text += "\n\nTrack your hydration with Sipli\n\(Legal.appStoreURL.absoluteString)"
+        return text
+    }
+
     var body: some View {
         NavigationStack {
             ScrollView {
@@ -36,7 +44,7 @@ struct EarthDayPledgeView: View {
                     VStack(spacing: 12) {
                         if let shareImage {
                             ShareLink(
-                                item: shareImage,
+                                item: pledgeText,
                                 subject: Text("Sipli Refill Pledge"),
                                 preview: SharePreview("Sipli Refill Pledge", image: shareImage)
                             ) {
