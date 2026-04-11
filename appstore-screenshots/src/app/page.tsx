@@ -48,6 +48,14 @@ const BRAND = {
   darkBg1: "#0F2947",
   darkBg2: "#051224",
   deepNavy: "#0A1929",
+  // Earth Day greens (mirrors EarthDayBannerCard.swift)
+  leafBright: "#38A06B",   // rgb(0.22, 0.62, 0.42)
+  leafDeep: "#0D734C",     // rgb(0.05, 0.45, 0.30)
+  leafDarker: "#0A4D38",   // rgb(0.04, 0.30, 0.22)
+  leafButtonText: "#0D5438", // rgb(0.05, 0.33, 0.22)
+  mintBgLight: "#E0F5E6",   // rgb(0.88, 0.96, 0.90)
+  mintBgDeep: "#B8E6CC",    // rgb(0.72, 0.90, 0.80)
+  forestNight: "#05261B",
 };
 
 /* ═══════════════════════════════════════════════════════
@@ -343,6 +351,746 @@ function LightBg({
       {blobs}
       <div style={{ position: "relative", zIndex: 1, width: "100%", height: "100%" }}>
         {children}
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
+   EARTH DAY BACKGROUNDS & UI ELEMENTS
+   ═══════════════════════════════════════════════════════ */
+
+function EarthDarkBg({
+  children,
+  blobs,
+  w = W,
+  h = H,
+}: {
+  children: React.ReactNode;
+  blobs?: React.ReactNode;
+  w?: number;
+  h?: number;
+}) {
+  return (
+    <div
+      style={{
+        width: w,
+        height: h,
+        position: "relative",
+        overflow: "hidden",
+        background: `linear-gradient(170deg, ${BRAND.leafDeep} 0%, ${BRAND.leafDarker} 45%, ${BRAND.forestNight} 100%)`,
+      }}
+    >
+      {blobs}
+      <div style={{ position: "relative", zIndex: 1, width: "100%", height: "100%" }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function EarthLightBg({
+  children,
+  blobs,
+  w = W,
+  h = H,
+}: {
+  children: React.ReactNode;
+  blobs?: React.ReactNode;
+  w?: number;
+  h?: number;
+}) {
+  return (
+    <div
+      style={{
+        width: w,
+        height: h,
+        position: "relative",
+        overflow: "hidden",
+        background: `linear-gradient(170deg, #F2FBF4 0%, ${BRAND.mintBgLight} 45%, ${BRAND.mintBgDeep} 100%)`,
+      }}
+    >
+      {blobs}
+      <div style={{ position: "relative", zIndex: 1, width: "100%", height: "100%" }}>
+        {children}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Recreated Earth Week banner — mirrors EarthDayBannerCard.swift.
+ * `scale` multiplies sizes so the banner can be used both in-app and as an
+ * oversized floating callout.
+ */
+function EarthWeekBanner({ scale = 1 }: { scale?: number }) {
+  const pad = 36 * scale;
+  const radius = 48 * scale;
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "flex-start",
+        gap: 28 * scale,
+        padding: pad,
+        borderRadius: radius,
+        background: `linear-gradient(135deg, ${BRAND.leafBright} 0%, ${BRAND.leafDeep} 100%)`,
+        border: `${2 * scale}px solid rgba(255,255,255,0.18)`,
+        boxShadow: `0 ${20 * scale}px ${60 * scale}px rgba(5,45,30,0.45)`,
+        width: "100%",
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          flexShrink: 0,
+          width: 88 * scale,
+          height: 88 * scale,
+          borderRadius: "50%",
+          background: "rgba(255,255,255,0.22)",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          fontSize: 44 * scale,
+          color: "#FFFFFF",
+        }}
+      >
+        🌿
+      </div>
+      <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: 14 * scale }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 * scale }}>
+          <span
+            style={{
+              fontSize: 36 * scale,
+              fontWeight: 800,
+              color: "#FFFFFF",
+              letterSpacing: "-0.01em",
+            }}
+          >
+            Earth Week
+          </span>
+          <span
+            style={{
+              fontSize: 20 * scale,
+              fontWeight: 600,
+              color: "rgba(255,255,255,0.88)",
+              padding: `${6 * scale}px ${16 * scale}px`,
+              borderRadius: 999,
+              background: "rgba(255,255,255,0.18)",
+            }}
+          >
+            Apr 20-26
+          </span>
+        </div>
+        <div
+          style={{
+            fontSize: 26 * scale,
+            fontWeight: 500,
+            color: "rgba(255,255,255,0.95)",
+            lineHeight: 1.28,
+          }}
+        >
+          Every refill is one less plastic bottle.
+        </div>
+        <div
+          style={{
+            display: "inline-flex",
+            alignSelf: "flex-start",
+            alignItems: "center",
+            gap: 10 * scale,
+            marginTop: 6 * scale,
+            padding: `${14 * scale}px ${28 * scale}px`,
+            borderRadius: 999,
+            background: "rgba(255,255,255,0.96)",
+            color: BRAND.leafButtonText,
+            fontSize: 24 * scale,
+            fontWeight: 700,
+          }}
+        >
+          Take the Refill Pledge <span>→</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Recreated Refill Pledge card — mirrors EarthDayPledgeView.swift's pledgeCard. */
+function RefillPledgeCard({ scale = 1, name = "Anoop" }: { scale?: number; name?: string }) {
+  return (
+    <div
+      style={{
+        width: 760 * scale,
+        padding: 56 * scale,
+        borderRadius: 56 * scale,
+        background: `linear-gradient(135deg, ${BRAND.leafBright} 0%, ${BRAND.leafDeep} 55%, ${BRAND.leafDarker} 100%)`,
+        border: `${2 * scale}px solid rgba(255,255,255,0.18)`,
+        boxShadow: `0 ${32 * scale}px ${80 * scale}px rgba(0,30,20,0.45)`,
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        gap: 32 * scale,
+        boxSizing: "border-box",
+      }}
+    >
+      <div
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 12 * scale,
+          padding: `${12 * scale}px ${24 * scale}px`,
+          borderRadius: 999,
+          background: "rgba(255,255,255,0.18)",
+          color: "#FFFFFF",
+          fontSize: 22 * scale,
+          fontWeight: 800,
+          letterSpacing: "0.18em",
+        }}
+      >
+        🌿 EARTH WEEK 2026
+      </div>
+
+      <div
+        style={{
+          fontSize: 62 * scale,
+          fontWeight: 800,
+          color: "#FFFFFF",
+          lineHeight: 1.05,
+          textAlign: "center",
+          letterSpacing: "-0.02em",
+        }}
+      >
+        I pledge to refill,<br />not rebuy,<br />this Earth Week.
+      </div>
+
+      <div
+        style={{
+          fontSize: 30 * scale,
+          fontWeight: 600,
+          color: "rgba(255,255,255,0.92)",
+        }}
+      >
+        — {name}
+      </div>
+
+      <div
+        style={{
+          textAlign: "center",
+          color: "rgba(255,255,255,0.88)",
+          fontSize: 24 * scale,
+          fontWeight: 500,
+          lineHeight: 1.3,
+        }}
+      >
+        Every sip tracked<br />is one less plastic bottle.
+      </div>
+
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10 * scale, marginTop: 8 * scale }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 14 * scale }}>
+          <img
+            src="/app-icon.png"
+            alt="Sipli"
+            style={{
+              width: 56 * scale,
+              height: 56 * scale,
+              borderRadius: 12 * scale,
+              display: "block",
+            }}
+          />
+          <span style={{ fontSize: 28 * scale, fontWeight: 800, color: "#FFFFFF" }}>Sipli</span>
+        </div>
+        <div
+          style={{
+            fontSize: 20 * scale,
+            fontWeight: 600,
+            color: "rgba(255,255,255,0.78)",
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+          }}
+        >
+          Available on the App Store
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/** Recreated Earth Week insights tile — mirrors InsightsView.swift's earthWeekSection. */
+function EarthWeekInsightCard({ scale = 1 }: { scale?: number }) {
+  return (
+    <div
+      style={{
+        width: 720 * scale,
+        padding: 40 * scale,
+        borderRadius: 40 * scale,
+        background: "#FFFFFF",
+        boxShadow: `0 ${24 * scale}px ${60 * scale}px rgba(5,45,30,0.3)`,
+        display: "flex",
+        flexDirection: "column",
+        gap: 24 * scale,
+        boxSizing: "border-box",
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 14 * scale }}>
+        <div
+          style={{
+            width: 52 * scale,
+            height: 52 * scale,
+            borderRadius: "50%",
+            background: "rgba(56,160,107,0.18)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: 28 * scale,
+          }}
+        >
+          🌿
+        </div>
+        <div style={{ fontSize: 28 * scale, fontWeight: 800, color: "#0A1929" }}>
+          Earth Week
+        </div>
+      </div>
+
+      <div style={{ display: "flex", alignItems: "flex-start", gap: 20 * scale }}>
+        <div
+          style={{
+            fontSize: 30 * scale,
+            fontWeight: 700,
+            color: "#0A1929",
+            lineHeight: 1.25,
+          }}
+        >
+          You&apos;ve sipped <span style={{ color: BRAND.leafDeep }}>37 times</span> this Earth Week.
+        </div>
+      </div>
+
+      <div style={{ fontSize: 22 * scale, fontWeight: 500, color: "rgba(10,25,41,0.55)", lineHeight: 1.35 }}>
+        Every refill is one less plastic bottle.
+      </div>
+
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          gap: 10 * scale,
+          marginTop: 4 * scale,
+          padding: `${16 * scale}px ${22 * scale}px`,
+          background: "rgba(28,120,245,0.08)",
+          borderRadius: 18 * scale,
+        }}
+      >
+        <span style={{ color: BRAND.lagoon, fontSize: 24 * scale }}>💧</span>
+        <span style={{ fontSize: 22 * scale, fontWeight: 600, color: "rgba(10,25,41,0.75)" }}>
+          Total: 9.2 L
+        </span>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
+   EARTH DAY SLIDES
+   ═══════════════════════════════════════════════════════ */
+
+function EarthSlide1() {
+  // Hero — app icon + "Every Sip, Less Plastic." + phone home
+  return (
+    <EarthDarkBg
+      blobs={<>
+        <Blob color={BRAND.leafBright} size={700} x={-220} y={300} blur={180} opacity={0.35} />
+        <Blob color={BRAND.mint} size={560} x={780} y={1500} blur={160} opacity={0.25} />
+        <Blob color={BRAND.leafBright} size={420} x={920} y={380} blur={140} opacity={0.2} />
+      </>}
+    >
+      <div
+        style={{
+          position: "absolute",
+          top: W * 0.05,
+          left: W * 0.06,
+          fontSize: W * 0.1,
+          opacity: 0.16,
+          pointerEvents: "none",
+        }}
+      >
+        🌿
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          top: H * 0.22,
+          right: W * 0.04,
+          fontSize: W * 0.08,
+          opacity: 0.14,
+          pointerEvents: "none",
+          transform: "rotate(18deg)",
+        }}
+      >
+        🍃
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          height: "100%",
+          paddingTop: H * 0.06,
+        }}
+      >
+        <div
+          style={{
+            width: W * 0.22,
+            aspectRatio: "1 / 1",
+            borderRadius: W * 0.05,
+            overflow: "hidden",
+            boxShadow: "0 20px 60px rgba(5,45,30,0.4)",
+            marginBottom: W * 0.035,
+            flexShrink: 0,
+          }}
+        >
+          <img
+            src="/app-icon.png"
+            alt="Sipli"
+            style={{ width: "100%", height: "100%", display: "block", objectFit: "contain" }}
+          />
+        </div>
+        <div style={{ marginTop: W * 0.01 }}>
+          <div style={{ textAlign: "center" }}>
+            <div
+              style={{
+                fontSize: W * 0.028,
+                fontWeight: 600,
+                color: "rgba(184,230,204,0.95)",
+                letterSpacing: "0.1em",
+                textTransform: "uppercase",
+                marginBottom: W * 0.015,
+              }}
+            >
+              🌿 Earth Week 2026
+            </div>
+            <div
+              style={{
+                fontSize: W * 0.1,
+                fontWeight: 700,
+                lineHeight: 0.95,
+                color: "#FFFFFF",
+                letterSpacing: "-0.02em",
+              }}
+            >
+              Every Sip,<br />Less Plastic.
+            </div>
+          </div>
+        </div>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "center",
+            width: "100%",
+          }}
+        >
+          <Phone
+            src="/screenshots/home-dark.png"
+            alt="Sipli home screen"
+            style={{ width: "82%", transform: "translateY(12%)" }}
+          />
+        </div>
+      </div>
+    </EarthDarkBg>
+  );
+}
+
+function EarthSlide2() {
+  // Earth Week banner — phone home + oversized floating banner + headline
+  return (
+    <EarthDarkBg
+      blobs={<>
+        <Blob color={BRAND.leafBright} size={620} x={-160} y={500} blur={170} opacity={0.35} />
+        <Blob color={BRAND.mint} size={480} x={700} y={1800} blur={150} opacity={0.28} />
+      </>}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          paddingTop: H * 0.08,
+          paddingLeft: W * 0.08,
+          paddingRight: W * 0.08,
+        }}
+      >
+        <CaptionBlock
+          canvasW={W}
+          label="Earth Week is Here"
+          headline={<>Refill.<br />Don&apos;t Rebuy.</>}
+          align="left"
+        />
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+            position: "relative",
+          }}
+        >
+          <Phone
+            src="/screenshots/home-dark.png"
+            alt="Sipli home"
+            style={{
+              width: "70%",
+              position: "absolute",
+              right: "-6%",
+              bottom: "-10%",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              left: "-2%",
+              top: "12%",
+              width: "78%",
+              transform: "rotate(-3deg)",
+            }}
+          >
+            <EarthWeekBanner scale={1.4} />
+          </div>
+        </div>
+      </div>
+    </EarthDarkBg>
+  );
+}
+
+function EarthSlide3() {
+  // Refill Pledge — big floating pledge card as the hero element
+  return (
+    <EarthLightBg
+      blobs={<>
+        <Blob color={BRAND.leafBright} size={620} x={-140} y={400} blur={180} opacity={0.22} />
+        <Blob color={BRAND.mint} size={520} x={820} y={1500} blur={160} opacity={0.2} />
+        <Blob color={BRAND.leafDeep} size={380} x={380} y={2100} blur={140} opacity={0.15} />
+      </>}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          paddingTop: H * 0.08,
+          alignItems: "center",
+        }}
+      >
+        <CaptionBlock
+          canvasW={W}
+          label="Refill Pledge"
+          headline={<>Make It<br />Official.</>}
+          light
+        />
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+            marginTop: H * 0.02,
+          }}
+        >
+          <div style={{ transform: "rotate(-2deg)" }}>
+            <RefillPledgeCard scale={1.55} name="Anoop" />
+          </div>
+        </div>
+      </div>
+    </EarthLightBg>
+  );
+}
+
+function EarthSlide4() {
+  // Insights — phone + floating Earth Week insight tile
+  return (
+    <EarthDarkBg
+      blobs={<>
+        <Blob color={BRAND.leafBright} size={660} x={700} y={400} blur={180} opacity={0.3} />
+        <Blob color={BRAND.mint} size={520} x={-180} y={1700} blur={160} opacity={0.25} />
+      </>}
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          paddingTop: H * 0.08,
+          paddingLeft: W * 0.08,
+          paddingRight: W * 0.08,
+        }}
+      >
+        <CaptionBlock
+          canvasW={W}
+          label="Weekly Insights"
+          headline={<>Every Refill,<br />Counted.</>}
+          align="right"
+        />
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "100%",
+            position: "relative",
+          }}
+        >
+          <Phone
+            src="/screenshots/insights-dark.png"
+            alt="Weekly insights"
+            style={{
+              width: "72%",
+              position: "absolute",
+              left: "-8%",
+              bottom: "-10%",
+            }}
+          />
+          <div
+            style={{
+              position: "absolute",
+              right: "-4%",
+              top: "20%",
+              width: "72%",
+              transform: "rotate(3deg)",
+            }}
+          >
+            <EarthWeekInsightCard scale={1.5} />
+          </div>
+        </div>
+      </div>
+    </EarthDarkBg>
+  );
+}
+
+function EarthSlide5() {
+  // Facts — dark green bg with fact pills (Why Reusable Bottles)
+  const facts = [
+    "Tap water works",
+    "A habit beats a one-off",
+    "Single-use plastic lingers",
+    "Small, honest wins",
+    "Hydration is personal",
+  ];
+  return (
+    <div
+      style={{
+        width: W,
+        height: H,
+        position: "relative",
+        overflow: "hidden",
+        background: `linear-gradient(175deg, ${BRAND.leafDarker} 0%, ${BRAND.forestNight} 55%, #021A12 100%)`,
+      }}
+    >
+      <Blob color={BRAND.leafBright} size={720} x={W / 2 - 360} y={H / 2 - 360} blur={220} opacity={0.14} />
+      <Blob color={BRAND.mint} size={460} x={-140} y={240} blur={160} opacity={0.12} />
+      <Blob color={BRAND.leafBright} size={400} x={960} y={2200} blur={150} opacity={0.13} />
+
+      <div
+        style={{
+          position: "absolute",
+          top: H * 0.05,
+          left: W * 0.06,
+          fontSize: W * 0.09,
+          opacity: 0.1,
+          pointerEvents: "none",
+        }}
+      >
+        🌿
+      </div>
+      <div
+        style={{
+          position: "absolute",
+          top: H * 0.6,
+          right: W * 0.05,
+          fontSize: W * 0.08,
+          opacity: 0.1,
+          pointerEvents: "none",
+          transform: "rotate(22deg)",
+        }}
+      >
+        🍃
+      </div>
+
+      <div
+        style={{
+          position: "relative",
+          zIndex: 1,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: "100%",
+          padding: `0 ${W * 0.1}px`,
+          gap: W * 0.06,
+        }}
+      >
+        <div
+          style={{
+            width: W * 0.22,
+            aspectRatio: "1 / 1",
+            borderRadius: W * 0.05,
+            overflow: "hidden",
+            boxShadow: "0 20px 80px rgba(5,45,30,0.5)",
+            flexShrink: 0,
+          }}
+        >
+          <img
+            src="/app-icon.png"
+            alt="Sipli"
+            style={{ width: "100%", height: "100%", display: "block", objectFit: "contain" }}
+          />
+        </div>
+        <CaptionBlock
+          canvasW={W}
+          label="Why Reusable Bottles"
+          headline={<>Small Wins,<br />Big Impact.</>}
+        />
+        <div
+          style={{
+            display: "flex",
+            flexWrap: "wrap",
+            justifyContent: "center",
+            gap: W * 0.022,
+            maxWidth: W * 0.85,
+          }}
+        >
+          {facts.map((f) => (
+            <div
+              key={f}
+              style={{
+                padding: `${W * 0.02}px ${W * 0.038}px`,
+                borderRadius: W * 0.06,
+                background: "rgba(56,160,107,0.18)",
+                border: "1px solid rgba(184,230,204,0.28)",
+                color: "rgba(255,255,255,0.92)",
+                fontSize: W * 0.032,
+                fontWeight: 600,
+                whiteSpace: "nowrap",
+              }}
+            >
+              🌿 {f}
+            </div>
+          ))}
+        </div>
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: W * 0.02,
+            fontSize: W * 0.028,
+            fontWeight: 500,
+            color: "rgba(184,230,204,0.78)",
+            maxWidth: W * 0.75,
+            lineHeight: 1.4,
+          }}
+        >
+          Sipli just helps you notice each sip —<br />
+          and noticing is what makes a habit stick.
+        </div>
       </div>
     </div>
   );
@@ -648,6 +1396,14 @@ const IPAD_SCREENSHOTS: ScreenshotEntry[] = [
   { name: "ipad-widgets", component: IPadSlide5 },
 ];
 
+const EARTH_SCREENSHOTS: ScreenshotEntry[] = [
+  { name: "earth-hero", component: EarthSlide1 },
+  { name: "earth-banner", component: EarthSlide2 },
+  { name: "earth-pledge", component: EarthSlide3 },
+  { name: "earth-insights", component: EarthSlide4 },
+  { name: "earth-facts", component: EarthSlide5 },
+];
+
 /* ═══════════════════════════════════════════════════════
    PREVIEW COMPONENT
    ═══════════════════════════════════════════════════════ */
@@ -832,6 +1588,15 @@ export default function ScreenshotsPage() {
         canvasW={W}
         canvasH={H}
         filenamePrefix="iphone"
+      />
+
+      <DeviceSection
+        title="iPhone — Earth Day 🌿"
+        screenshots={EARTH_SCREENSHOTS}
+        sizes={IPHONE_SIZES}
+        canvasW={W}
+        canvasH={H}
+        filenamePrefix="iphone-earth"
       />
 
       <DeviceSection
