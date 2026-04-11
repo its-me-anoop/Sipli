@@ -11,6 +11,11 @@ settings:
     INFOPLIST_FILE: WaterQuest/Supporting/Info.plist
     CODE_SIGN_STYLE: Automatic
     ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+    # Earth Day 2026 alternate app icon. Once WaterQuest/EarthDayIcon.icon/
+    # exists with artwork, uncomment the line below and flip
+    # EarthDayEvent.alternateIconAvailable to true to expose the Settings
+    # toggle for the green Earth Day icon variant.
+    # ASSETCATALOG_COMPILER_ALTERNATE_APP_ICON_NAMES: EarthDayIcon
 
 targets:
   WaterQuest:

@@ -306,6 +306,14 @@ final class HydrationAIService: ObservableObject {
         exerciseMinutes: Int,
         timeOfDay: TimeOfDay
     ) -> String {
+        // Earth Week (Apr 20-26, 2026): occasionally surface an Earth Day
+        // message instead of the usual contextual tip. The 50% probability
+        // keeps hot-weather / workout context useful while still celebrating
+        // the week.
+        if EarthDayEvent.isActive(), Bool.random() {
+            return earthDayMessages.randomElement() ?? "Happy Earth Day from Sipli!"
+        }
+
         switch category {
         case .celebration:
             return celebrationMessages.randomElement() ?? "Amazing! You've hit your goal!"
@@ -340,6 +348,20 @@ final class HydrationAIService: ObservableObject {
     }
 
     // MARK: - Message Collections
+
+    /// Earth Week (Apr 20-26, 2026) coach messages. Intentionally framed
+    /// around the refill habit — no fabricated "bottles saved" counts.
+    private let earthDayMessages = [
+        "Happy Earth Week! Every refill you track is one less plastic bottle.",
+        "Sip sustainably — your reusable bottle is the quiet hero of Earth Day.",
+        "Earth Day tip: tap water hydrates just as well as the bottled stuff.",
+        "Each sip you log this week is a small love note to the planet.",
+        "Refill, don't rebuy. Your bottle is built for a thousand more sips.",
+        "Room-temperature water absorbs faster and skips the plastic aisle.",
+        "It's Earth Week. A good day to pick the bottle, not the bin.",
+        "Small habits, big planet. Thanks for sipping sustainably."
+    ]
+
     private let celebrationMessages = [
         "Goal crushed! You're a hydration champion!",
         "100% complete! Your body thanks you!",

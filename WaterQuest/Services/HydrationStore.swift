@@ -7,6 +7,8 @@ final class HydrationStore: ObservableObject {
     @Published var profile: UserProfile
     @Published var lastWeather: WeatherSnapshot?
     @Published var lastWorkout: WorkoutSummary
+    @Published var earthDayBannerDismissed: Bool
+    @Published var earthDay2026Earned: Bool
 
     private let persistence = PersistenceService.shared
 
@@ -20,6 +22,8 @@ final class HydrationStore: ObservableObject {
         self.profile = state.profile
         self.lastWeather = state.lastWeather
         self.lastWorkout = state.lastWorkout
+        self.earthDayBannerDismissed = state.earthDay2026BannerDismissed
+        self.earthDay2026Earned = state.earthDay2026Earned
 
         persistence.setRemoteDataChangeHandler { [weak self] data in
             guard let self else { return }
@@ -75,8 +79,17 @@ final class HydrationStore: ObservableObject {
         let entry = HydrationEntry(date: Date(), volumeML: ml, source: source, fluidType: fluidType, note: note)
         entries.append(entry)
         notificationScheduler?.onIntakeLogged(entry: entry)
+        if !earthDay2026Earned, EarthDayEvent.isEarthDay(entry.date) {
+            earthDay2026Earned = true
+        }
         persist()
         return entry
+    }
+
+    func dismissEarthDayBanner() {
+        guard !earthDayBannerDismissed else { return }
+        earthDayBannerDismissed = true
+        persist()
     }
 
     func deleteEntry(_ entry: HydrationEntry) {
@@ -135,7 +148,9 @@ final class HydrationStore: ObservableObject {
             entries: entries,
             profile: profile,
             lastWeather: lastWeather,
-            lastWorkout: lastWorkout
+            lastWorkout: lastWorkout,
+            earthDay2026BannerDismissed: earthDayBannerDismissed,
+            earthDay2026Earned: earthDay2026Earned
         )
         persistence.save(state)
         WidgetCenter.shared.reloadAllTimelines()
@@ -146,6 +161,8 @@ final class HydrationStore: ObservableObject {
         profile = state.profile
         lastWeather = state.lastWeather
         lastWorkout = state.lastWorkout
+        earthDayBannerDismissed = state.earthDay2026BannerDismissed
+        earthDay2026Earned = state.earthDay2026Earned
         WidgetCenter.shared.reloadAllTimelines()
     }
 }
