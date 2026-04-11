@@ -71,40 +71,13 @@ final class HydrationAIService: ObservableObject {
 
     init() {
         checkAvailability()
-        Task {
-            await generateTip(
-                currentIntake: 0,
-                goalML: 2000,
-                weatherTemp: nil,
-                exerciseMinutes: 0,
-                timeOfDay: TimeOfDay.current
-            )
-        }
     }
 
     // MARK: - Availability Check
     func checkAvailability() {
         #if canImport(FoundationModels)
         if #available(iOS 26.0, *) {
-            let model = SystemLanguageModel.default
-            switch model.availability {
-            case .available:
-                isAvailable = true
-                errorMessage = nil
-            case .unavailable(let reason):
-                isAvailable = false
-                switch reason {
-                case .appleIntelligenceNotEnabled:
-                    errorMessage = "Enable Apple Intelligence in Settings to get AI-powered tips."
-                case .modelNotReady:
-                    errorMessage = "On-device model is downloading. Tips will improve soon."
-                default:
-                    errorMessage = nil
-                }
-            @unknown default:
-                isAvailable = false
-                errorMessage = nil
-            }
+            _checkFoundationModelsAvailability()
         } else {
             isAvailable = false
             errorMessage = nil
@@ -114,6 +87,31 @@ final class HydrationAIService: ObservableObject {
         errorMessage = nil
         #endif
     }
+
+    #if canImport(FoundationModels)
+    @available(iOS 26.0, *)
+    private func _checkFoundationModelsAvailability() {
+        let model = SystemLanguageModel.default
+        switch model.availability {
+        case .available:
+            isAvailable = true
+            errorMessage = nil
+        case .unavailable(let reason):
+            isAvailable = false
+            switch reason {
+            case .appleIntelligenceNotEnabled:
+                errorMessage = "Enable Apple Intelligence in Settings to get AI-powered tips."
+            case .modelNotReady:
+                errorMessage = "On-device model is downloading. Tips will improve soon."
+            default:
+                errorMessage = nil
+            }
+        @unknown default:
+            isAvailable = false
+            errorMessage = nil
+        }
+    }
+    #endif
 
     // MARK: - Generate Hydration Tip
     func generateTip(
@@ -131,7 +129,7 @@ final class HydrationAIService: ObservableObject {
 
         #if canImport(FoundationModels)
         if #available(iOS 26.0, *), isAvailable {
-            if let aiTip = await generateWithFoundationModels(
+            if let aiTip = await _generateTipWithFoundationModels(
                 progress: progress,
                 currentIntake: currentIntake,
                 goalML: goalML,
@@ -163,6 +161,27 @@ final class HydrationAIService: ObservableObject {
 
     #if canImport(FoundationModels)
     @available(iOS 26.0, *)
+    private func _generateTipWithFoundationModels(
+        progress: Int,
+        currentIntake: Double,
+        goalML: Double,
+        weatherTemp: Double?,
+        exerciseMinutes: Int,
+        timeOfDay: TimeOfDay,
+        category: HydrationTip.Category
+    ) async -> HydrationTip? {
+        await generateWithFoundationModels(
+            progress: progress,
+            currentIntake: currentIntake,
+            goalML: goalML,
+            weatherTemp: weatherTemp,
+            exerciseMinutes: exerciseMinutes,
+            timeOfDay: timeOfDay,
+            category: category
+        )
+    }
+
+    @available(iOS 26.0, *)
     private func generateWithFoundationModels(
         progress: Int,
         currentIntake: Double,
@@ -172,6 +191,12 @@ final class HydrationAIService: ObservableObject {
         timeOfDay: TimeOfDay,
         category: HydrationTip.Category
     ) async -> HydrationTip? {
+        // Re-verify model availability right before use to avoid EXC_BAD_ACCESS
+        // on simulators where the model reports available but isn't actually loaded
+        guard SystemLanguageModel.default.availability == .available else {
+            return nil
+        }
+
         let prompt = buildPrompt(
             progress: progress,
             currentIntake: currentIntake,
@@ -245,24 +270,35 @@ final class HydrationAIService: ObservableObject {
     func generateMotivation(for achievement: String) async -> String? {
         #if canImport(FoundationModels)
         if #available(iOS 26.0, *), isAvailable {
-            do {
-                let session = LanguageModelSession {
-                    """
-                    You are a friendly hydration coach. Generate a very short celebration message \
-                    (1 sentence, max 80 characters) for a hydration achievement. \
-                    Be warm and encouraging. No emojis, hashtags, or markdown.
-                    """
-                }
-                let response = try await session.respond(to: "Achievement: \(achievement)")
-                let message = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
-                return message.isEmpty ? nil : message
-            } catch {
-                return nil
-            }
+            return await _generateMotivationWithFoundationModels(for: achievement)
         }
         #endif
         return nil
     }
+
+    #if canImport(FoundationModels)
+    @available(iOS 26.0, *)
+    private func _generateMotivationWithFoundationModels(for achievement: String) async -> String? {
+        guard SystemLanguageModel.default.availability == .available else {
+            return nil
+        }
+
+        do {
+            let session = LanguageModelSession {
+                """
+                You are a friendly hydration coach. Generate a very short celebration message \
+                (1 sentence, max 80 characters) for a hydration achievement. \
+                Be warm and encouraging. No emojis, hashtags, or markdown.
+                """
+            }
+            let response = try await session.respond(to: "Achievement: \(achievement)")
+            let message = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
+            return message.isEmpty ? nil : message
+        } catch {
+            return nil
+        }
+    }
+    #endif
 
     // MARK: - Static Tip Fallback
     private func getContextualTip(

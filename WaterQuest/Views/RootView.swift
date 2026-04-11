@@ -3,7 +3,6 @@ import StoreKit
 
 struct RootView: View {
     @AppStorage("hasOnboarded") private var hasOnboarded: Bool = false
-    @EnvironmentObject private var store: HydrationStore
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
 
     @State private var showSplash = true
@@ -12,20 +11,23 @@ struct RootView: View {
         FileManager.default.ubiquityIdentityToken != nil
     }
 
+    private var paywallBinding: Binding<PaywallContext?> {
+        Binding(
+            get: { subscriptionManager.presentedPaywall },
+            set: { subscriptionManager.presentedPaywall = $0 }
+        )
+    }
+
     var body: some View {
         ZStack {
             if hasOnboarded || shouldSkipOnboardingForICloud {
-                if subscriptionManager.isSubscribed {
-                    MainTabView()
-                } else if subscriptionManager.isInitialized {
-                    SubscriptionRequiredView()
-                } else {
-                    // Still loading subscription status — show nothing behind splash
-                    Color.clear
-                }
+                MainTabView()
             } else {
                 OnboardingView {
                     hasOnboarded = true
+                    if !subscriptionManager.isSubscribed {
+                        subscriptionManager.presentPaywall()
+                    }
                 }
             }
 
@@ -37,6 +39,9 @@ struct RootView: View {
         }
         .task {
             await bootstrapAppFlow()
+        }
+        .fullScreenCover(item: paywallBinding) { context in
+            PremiumPaywallView(context: context)
         }
     }
 
@@ -57,17 +62,137 @@ struct RootView: View {
     }
 }
 
-// MARK: - Subscription Required View
-/// Shown when a returning user's subscription has lapsed.
-/// The user must subscribe to access the app — there is no dismiss button.
-struct SubscriptionRequiredView: View {
+struct PremiumPaywallView: View {
+    let context: PaywallContext
+
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
 
+    @State private var selectedProductID: ProductID = .annual
     @State private var isPurchasing = false
     @State private var purchaseError: String?
 
-    @Environment(\.horizontalSizeClass) private var sizeClass
-    private var isRegular: Bool { sizeClass == .regular }
+    private var selectedProduct: Product? {
+        subscriptionManager.product(for: selectedProductID)
+    }
+
+    private var productOptions: [(id: ProductID, product: Product?)] {
+        ProductID.allCases
+            .sorted { $0.sortOrder < $1.sortOrder }
+            .map { ($0, subscriptionManager.product(for: $0)) }
+    }
+
+    private var isLoadingProducts: Bool {
+        subscriptionManager.availableProducts.isEmpty && !subscriptionManager.isInitialized
+    }
+
+    private var productsFailedToLoad: Bool {
+        subscriptionManager.isInitialized && subscriptionManager.availableProducts.isEmpty
+    }
+
+    private var annualPlanUnavailable: Bool {
+        subscriptionManager.isInitialized && subscriptionManager.annualProduct == nil
+    }
+
+    private var premiumFeatures: [PremiumFeature] {
+        [
+            .fluidTypes,
+            .aiInsights,
+            .healthKitSync,
+            .weatherGoals,
+            .activityGoals,
+            .smartReminders
+        ]
+    }
+
+    private var annualSavingsText: String? {
+        guard
+            let annualProduct = subscriptionManager.annualProduct,
+            let monthlyProduct = subscriptionManager.monthlyProduct
+        else {
+            return nil
+        }
+
+        let monthlyYearlyCost = NSDecimalNumber(decimal: monthlyProduct.price)
+            .multiplying(by: 12)
+        let annualCost = NSDecimalNumber(decimal: annualProduct.price)
+        let savings = monthlyYearlyCost.subtracting(annualCost)
+
+        guard savings.compare(NSDecimalNumber.zero) == .orderedDescending else {
+            return nil
+        }
+
+        let formattedSavings = savings.decimalValue.formatted(annualProduct.priceFormatStyle)
+        return "Save \(formattedSavings) per year"
+    }
+
+    private func productDescription(for productID: ProductID) -> String {
+        switch productID {
+        case .monthly:
+            return productID.shortDescription
+        case .annual:
+            return annualSavingsText ?? productID.shortDescription
+        }
+    }
+
+    private var introOfferText: String? {
+        guard let product = selectedProduct,
+              let offer = product.subscription?.introductoryOffer else { return nil }
+
+        let unitLabel = trialDurationLabel(for: offer.period)
+
+        switch offer.paymentMode {
+        case .freeTrial:
+            return "Includes a free \(unitLabel) trial"
+        case .payUpFront:
+            return "Introductory price for \(unitLabel)"
+        case .payAsYouGo:
+            return "Special introductory pricing for \(unitLabel)"
+        default:
+            return nil
+        }
+    }
+
+    private var disclosureText: String {
+        let fallbackPrice = "the listed price"
+        let price = selectedProduct?.displayPrice ?? fallbackPrice
+        let trialPrefix = introOfferText.map { "\($0). " } ?? ""
+
+        switch selectedProductID {
+        case .monthly:
+            return "\(trialPrefix)Your monthly subscription starts at \(price)/mo and automatically renews unless canceled at least 24 hours before the end of the current period. Payment is charged to your Apple ID. Manage or cancel anytime in Settings > Apple ID > Subscriptions."
+        case .annual:
+            return "\(trialPrefix)Your annual subscription renews at \(price)/yr unless canceled at least 24 hours before the end of the current period. Payment is charged to your Apple ID. Manage or cancel anytime in Settings > Apple ID > Subscriptions."
+        }
+    }
+
+    private var purchaseButtonText: String {
+        guard let product = selectedProduct else { return selectedProductID.callToAction }
+
+        if let offer = product.subscription?.introductoryOffer,
+           offer.paymentMode == .freeTrial {
+            let trialDuration = trialDurationLabel(for: offer.period)
+            return "Try free for \(trialDuration), then \(product.displayPrice)\(selectedProductID.billingSuffix)"
+        }
+        return "\(selectedProductID.callToAction) — \(product.displayPrice)\(selectedProductID.billingSuffix)"
+    }
+
+    private func trialDurationLabel(for period: Product.SubscriptionPeriod) -> String {
+        let periodValue = period.value
+
+        switch period.unit {
+        case .day:
+            return periodValue == 1 ? "1 day" : "\(periodValue) days"
+        case .week:
+            return periodValue == 1 ? "1 week" : "\(periodValue) weeks"
+        case .month:
+            return periodValue == 1 ? "1 month" : "\(periodValue) months"
+        case .year:
+            return periodValue == 1 ? "1 year" : "\(periodValue) years"
+        @unknown default:
+            return "\(periodValue) period(s)"
+        }
+    }
 
     var body: some View {
         ZStack {
@@ -75,12 +200,23 @@ struct SubscriptionRequiredView: View {
 
             ScrollView {
                 VStack(spacing: 24) {
-                    Spacer(minLength: 40)
+                    HStack {
+                        Spacer()
+                        Button {
+                            closePaywall()
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.title2)
+                                .foregroundStyle(.secondary)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Close premium plans")
+                    }
 
                     Image("Mascot")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 100, height: 100)
+                        .frame(width: 104, height: 104)
                         .accessibilityHidden(true)
                         .background(
                             Circle()
@@ -100,70 +236,69 @@ struct SubscriptionRequiredView: View {
                         )
 
                     VStack(spacing: 12) {
-                        Text("Subscription Required")
+                        Text(context.title)
                             .font(.title.bold())
                             .multilineTextAlignment(.center)
 
-                        Text("Start your 1-week free trial to continue using Sipli with personalized goals, smart reminders, and detailed insights.")
+                        Text(context.message)
                             .font(.subheadline)
                             .foregroundStyle(.secondary)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 20)
                     }
 
-                    VStack(alignment: .leading, spacing: 12) {
-                        SubscriptionFeatureRow(icon: "target", text: "Personalized daily hydration goal")
-                        SubscriptionFeatureRow(icon: "sun.max.fill", text: "Weather-based goal adjustment")
-                        SubscriptionFeatureRow(icon: "figure.run", text: "Workout-based goal adjustment")
-                        SubscriptionFeatureRow(icon: "drop.fill", text: "Quick water logging & progress tracking")
-                        SubscriptionFeatureRow(icon: "chart.line.uptrend.xyaxis", text: "Insights and streak tracking")
-                    }
-                    .padding(20)
-                    .background(
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .fill(Theme.card)
-                    )
+                    PremiumFeaturesCard(features: premiumFeatures)
 
-                    // Monthly plan display
-                    if subscriptionManager.products.isEmpty {
+                    if isLoadingProducts {
                         ProgressView()
-                            .frame(maxWidth: .infinity, minHeight: 60)
-                    } else if let monthly = subscriptionManager.monthlyProduct {
-                        HStack(alignment: .center, spacing: 10) {
-                            Text("Monthly")
-                                .font(.subheadline.weight(.semibold))
-                            Spacer()
-                            HStack(alignment: .firstTextBaseline, spacing: 1) {
-                                Text(monthly.displayPrice)
-                                    .font(.title3.weight(.bold))
-                                    .foregroundStyle(Theme.lagoon)
-                                Text("/mo")
-                                    .font(.caption.weight(.medium))
-                                    .foregroundStyle(.secondary)
+                            .frame(maxWidth: .infinity, minHeight: 120)
+                    } else if productsFailedToLoad {
+                        VStack(spacing: 12) {
+                            Text("Unable to load plans. Please check your connection and try again.")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                                .multilineTextAlignment(.center)
+                            Button("Retry") {
+                                Task { await subscriptionManager.initialise() }
+                            }
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(Theme.lagoon)
+                        }
+                        .frame(maxWidth: .infinity, minHeight: 120)
+                    } else {
+                        VStack(spacing: 12) {
+                            ForEach(productOptions, id: \.id) { option in
+                                PlanOptionCard(
+                                    productID: option.id,
+                                    price: option.product?.displayPrice,
+                                    description: productDescription(for: option.id),
+                                    isSelected: selectedProductID == option.id,
+                                    isAvailable: option.product != nil
+                                ) {
+                                    Haptics.selection()
+                                    selectedProductID = option.id
+                                }
                             }
                         }
-                        .padding(14)
-                        .background(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .fill(.ultraThinMaterial)
-                        )
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 12, style: .continuous)
-                                .stroke(Theme.lagoon, lineWidth: 1.5)
-                        )
                     }
 
-                    // Auto-renewal disclosure (must appear BEFORE purchase button per App Store Review Guidelines 3.1.1)
-                    Text("Enjoy a 1-week free trial. After the trial, your subscription automatically renews at the price shown above unless canceled at least 24 hours before the end of the current period. Payment is charged to your Apple ID. Manage or cancel anytime in Settings \u{203A} Apple ID \u{203A} Subscriptions.")
+                    if annualPlanUnavailable {
+                        Text("Annual plan is temporarily unavailable. Please try again later.")
+                            .font(.footnote)
+                            .foregroundStyle(.secondary)
+                            .multilineTextAlignment(.center)
+                            .padding(.horizontal, 8)
+                    }
+
+                    Text(disclosureText)
                         .font(.caption2)
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
-                        .padding(.horizontal, 20)
+                        .padding(.horizontal, 8)
 
-                    // Subscribe button
-                    if let monthly = subscriptionManager.monthlyProduct {
+                    if let product = selectedProduct {
                         Button {
-                            doPurchase(monthly)
+                            doPurchase(product)
                         } label: {
                             Group {
                                 if isPurchasing {
@@ -172,7 +307,8 @@ struct SubscriptionRequiredView: View {
                                         Text("Processing...")
                                     }
                                 } else {
-                                    Text("Try Free for 1 Week — then \(monthly.displayPrice)/mo")
+                                    Text(purchaseButtonText)
+                                        .multilineTextAlignment(.center)
                                 }
                             }
                             .font(.headline)
@@ -190,6 +326,7 @@ struct SubscriptionRequiredView: View {
                         Text(error)
                             .font(.footnote)
                             .foregroundStyle(.red)
+                            .multilineTextAlignment(.center)
                     }
 
                     Button("Restore Purchase") {
@@ -211,20 +348,38 @@ struct SubscriptionRequiredView: View {
                     Spacer(minLength: 40)
                 }
                 .padding(.horizontal, 24)
-                .frame(maxWidth: isRegular ? 600 : .infinity)
+                .padding(.top, 16)
+                .frame(maxWidth: .infinity)
             }
+        }
+        .onAppear {
+            syncSelectedPlan()
+        }
+        .onChange(of: subscriptionManager.products.count) { _, _ in
+            syncSelectedPlan()
+        }
+    }
+
+    private func syncSelectedPlan() {
+        if subscriptionManager.annualProduct != nil {
+            selectedProductID = .annual
+        } else if subscriptionManager.monthlyProduct != nil {
+            selectedProductID = .monthly
         }
     }
 
     private func doPurchase(_ product: Product) {
         isPurchasing = true
         purchaseError = nil
+
         Task {
             let result = await subscriptionManager.purchase(product)
             isPurchasing = false
+
             switch result {
             case .success:
                 Haptics.success()
+                closePaywall()
             case .cancelled:
                 break
             case .pending:
@@ -239,32 +394,143 @@ struct SubscriptionRequiredView: View {
     private func doRestore() {
         isPurchasing = true
         purchaseError = nil
+
         Task {
-            let success = await subscriptionManager.restore()
+            let result = await subscriptionManager.restore()
             isPurchasing = false
-            if success {
+
+            switch result {
+            case .success:
                 Haptics.success()
-            } else {
+                closePaywall()
+            case .noPurchaseFound:
                 Haptics.warning()
-                purchaseError = "No previous purchase found."
+                purchaseError = "No previous premium purchase found."
+            case .failed(let message):
+                Haptics.error()
+                purchaseError = "Restore failed: \(message)"
             }
         }
     }
-}
 
-private struct SubscriptionFeatureRow: View {
-    let icon: String
-    let text: String
-
-    var body: some View {
-        HStack(spacing: 12) {
-            Image(systemName: icon)
-                .foregroundStyle(Theme.lagoon)
-                .frame(width: 20)
-            Text(text)
-                .font(.subheadline)
-                .foregroundStyle(.primary)
-            Spacer()
-        }
+    private func closePaywall() {
+        subscriptionManager.dismissPaywall()
+        dismiss()
     }
 }
+
+private struct PremiumFeaturesCard: View {
+    let features: [PremiumFeature]
+
+    private let columns = [
+        GridItem(.flexible(), spacing: 12, alignment: .leading),
+        GridItem(.flexible(), spacing: 12, alignment: .leading)
+    ]
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+            Label("Sipli Premium", systemImage: "sparkles")
+                .font(.headline)
+                .foregroundStyle(.primary)
+
+            LazyVGrid(columns: columns, alignment: .leading, spacing: 12) {
+                ForEach(features) { feature in
+                    HStack(spacing: 8) {
+                        Image(systemName: feature.icon)
+                            .foregroundStyle(Theme.lagoon)
+                            .frame(width: 18)
+
+                        Text(feature.title)
+                            .font(.subheadline)
+                            .foregroundStyle(.primary)
+                            .lineLimit(2)
+
+                        Spacer(minLength: 0)
+                    }
+                }
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(16)
+        .background(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(.ultraThinMaterial)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(Theme.glassBorder.opacity(0.35), lineWidth: 1)
+        )
+    }
+}
+
+private struct PlanOptionCard: View {
+    let productID: ProductID
+    let price: String?
+    let description: String
+    let isSelected: Bool
+    let isAvailable: Bool
+    let action: () -> Void
+
+    var body: some View {
+        Button(action: action) {
+            HStack(spacing: 14) {
+                VStack(alignment: .leading, spacing: 6) {
+                    HStack(spacing: 8) {
+                        Text(productID.displayName)
+                            .font(.headline)
+
+                        if let badge = productID.badgeText {
+                            Text(badge)
+                                .font(.caption2.weight(.bold))
+                                .foregroundStyle(.white)
+                                .padding(.horizontal, 8)
+                                .padding(.vertical, 4)
+                                .background(Theme.sun)
+                                .clipShape(Capsule())
+                        }
+                    }
+
+                    Text(description)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
+
+                HStack(alignment: .firstTextBaseline, spacing: 2) {
+                    if let price {
+                        Text(price)
+                            .font(.title3.weight(.bold))
+                            .foregroundStyle(Theme.lagoon)
+                        Text(productID.billingSuffix)
+                            .font(.caption.weight(.medium))
+                            .foregroundStyle(.secondary)
+                    } else {
+                        Text("Unavailable")
+                            .font(.subheadline.weight(.semibold))
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+            .padding(16)
+            .background(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .fill(.ultraThinMaterial)
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .stroke(isSelected ? Theme.lagoon : Theme.glassBorder.opacity(0.4), lineWidth: isSelected ? 1.8 : 1)
+            )
+            .opacity(isAvailable ? 1 : 0.7)
+        }
+        .buttonStyle(.plain)
+    }
+}
+
+#if DEBUG
+#Preview("Premium Paywall") {
+    PreviewEnvironment {
+        PremiumPaywallView(context: PaywallContext(feature: .aiInsights))
+    }
+}
+#endif

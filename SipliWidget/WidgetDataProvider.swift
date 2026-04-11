@@ -12,6 +12,7 @@ enum WidgetDataProvider {
     static func load() -> WidgetData {
         let persistence = PersistenceService()
         let state = persistence.load(PersistedState.self, fallback: .default)
+        let effectiveProfile = state.profile.applyingPremiumAccess(state.hasPremiumAccess)
 
         let calendar = Calendar.current
         let startOfToday = calendar.startOfDay(for: Date())
@@ -23,9 +24,9 @@ enum WidgetDataProvider {
         let todayTotalML = todayEntries.reduce(0) { $0 + $1.effectiveML }
 
         let goal = GoalCalculator.dailyGoal(
-            profile: state.profile,
-            weather: state.lastWeather,
-            workout: state.lastWorkout
+            profile: effectiveProfile,
+            weather: effectiveProfile.prefersWeatherGoal ? state.lastWeather : nil,
+            workout: effectiveProfile.prefersHealthKit ? state.lastWorkout : nil
         )
 
         let streak = calculateStreak(entries: state.entries, goalML: goal.totalML)
@@ -35,7 +36,7 @@ enum WidgetDataProvider {
             todayTotalML: todayTotalML,
             goal: goal,
             streak: streak,
-            unitSystem: state.profile.unitSystem
+            unitSystem: effectiveProfile.unitSystem
         )
     }
 

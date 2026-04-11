@@ -20,6 +20,7 @@ enum Timeframe: String, CaseIterable, Identifiable {
 
 struct InsightsView: View {
     @EnvironmentObject private var store: HydrationStore
+    @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @Environment(\.horizontalSizeClass) private var sizeClass
     @State private var selectedDate: Date?
     @State private var timeframe: Timeframe = .weekly
@@ -203,7 +204,7 @@ struct InsightsView: View {
                         // Right Column
                         VStack(spacing: 20) {
                             DashboardCard(title: "Goal Breakdown", icon: "target") { breakdownSection }
-                            if !store.entries.isEmpty {
+                            if subscriptionManager.hasAccess(to: .fluidTypes), !store.entries.isEmpty {
                                 DashboardCard(title: "Beverage Breakdown (Past \(timeframe.rawValue))", icon: "cup.and.saucer.fill") { beverageBreakdownSection }
                             }
                             DashboardCard(title: "Trends & Streaks", icon: "chart.line.uptrend.xyaxis") { trendsSection }
@@ -211,18 +212,22 @@ struct InsightsView: View {
                     }
 
                     // Full-width AI Insights below columns
-                    DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
+                    if subscriptionManager.hasAccess(to: .aiInsights) {
+                        DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
+                    }
                 } else {
                     // iPhone Stacked layout
                     VStack(spacing: 20) {
                         DashboardCard(title: "Weekly Intake", icon: "chart.bar.fill") { chartSection }
                         DashboardCard(title: "Goal Breakdown", icon: "target") { breakdownSection }
-                        if !store.entries.isEmpty {
+                        if subscriptionManager.hasAccess(to: .fluidTypes), !store.entries.isEmpty {
                             DashboardCard(title: "Beverage Breakdown (Past \(timeframe.rawValue))", icon: "cup.and.saucer.fill") { beverageBreakdownSection }
                         }
                         DashboardCard(title: "Hydration Heatmap", icon: "square.grid.3x3.fill") { heatmapSection }
                         DashboardCard(title: "Trends & Streaks", icon: "chart.line.uptrend.xyaxis") { trendsSection }
-                        DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
+                        if subscriptionManager.hasAccess(to: .aiInsights) {
+                            DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
+                        }
                     }
                 }
             }
@@ -373,11 +378,16 @@ struct InsightsView: View {
 
     private var breakdownSection: some View {
         let goal = store.dailyGoal
+        let hasPremiumAccess = subscriptionManager.hasPremiumAccess
+        let displayedTarget = hasPremiumAccess ? goal.totalML : goal.baseML
 
         return VStack(spacing: 10) {
             BreakdownRow(title: "Base goal", value: goal.baseML, unitSystem: store.profile.unitSystem, icon: "figure.stand", tint: Theme.lagoon)
-            BreakdownRow(title: "Weather adjustment", value: goal.weatherAdjustmentML, unitSystem: store.profile.unitSystem, icon: "cloud.sun", tint: Theme.sun)
-            BreakdownRow(title: "Workout adjustment", value: goal.workoutAdjustmentML, unitSystem: store.profile.unitSystem, icon: "figure.run", tint: Theme.coral)
+
+            if hasPremiumAccess {
+                BreakdownRow(title: "Weather adjustment", value: goal.weatherAdjustmentML, unitSystem: store.profile.unitSystem, icon: "cloud.sun", tint: Theme.sun)
+                BreakdownRow(title: "Workout adjustment", value: goal.workoutAdjustmentML, unitSystem: store.profile.unitSystem, icon: "figure.run", tint: Theme.coral)
+            }
 
             Divider()
 
@@ -385,11 +395,11 @@ struct InsightsView: View {
                 Label("Daily target", systemImage: "target")
                     .font(.subheadline.weight(.semibold))
                 Spacer()
-                Text(Formatters.volumeString(ml: goal.totalML, unit: store.profile.unitSystem))
+                Text(Formatters.volumeString(ml: displayedTarget, unit: store.profile.unitSystem))
                     .font(.headline)
             }
 
-            if goal.weatherAdjustmentML != 0 {
+            if hasPremiumAccess, goal.weatherAdjustmentML != 0 {
                 Link(destination: Legal.weatherAttributionURL) {
                     HStack(spacing: 4) {
                         Text("Weather data provided by")
@@ -401,6 +411,29 @@ struct InsightsView: View {
                     .foregroundStyle(Theme.lagoon.opacity(0.8))
                 }
             }
+
+            Divider()
+
+            VStack(alignment: .leading, spacing: 6) {
+                Text("Sources")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(.secondary)
+
+                Link("National Academies: Dietary Reference Intakes for Water (2005)", destination: Legal.hydrationBaseCitationURL)
+                    .font(.caption)
+                Link("CDC: Water and Healthier Drinks", destination: Legal.hydrationHeatCitationURL)
+                    .font(.caption)
+                Link("ACSM: Facts About Hydration & Electrolytes", destination: Legal.hydrationExerciseCitationURL)
+                    .font(.caption)
+
+                HStack(spacing: 4) {
+                    Image(systemName: "info.circle")
+                    Text("This app does not provide medical advice. Hydration goals are general wellness estimates based on the sources above. Consult a healthcare professional for guidance specific to your health needs.")
+                }
+                .font(.caption2)
+                .foregroundStyle(.secondary)
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(.vertical, 6)
     }
@@ -699,15 +732,15 @@ struct InsightsView: View {
         }
         .padding(.vertical, 6)
         .task {
-            if aiInsight == nil {
-                await generateAIInsight()
-            }
+            guard subscriptionManager.hasAccess(to: .aiInsights), aiInsight == nil else { return }
+            await generateAIInsight()
         }
     }
 
     // MARK: - AI Insight Generation
 
     private func generateAIInsight() async {
+        guard subscriptionManager.hasAccess(to: .aiInsights) else { return }
         isGeneratingInsight = true
         defer { isGeneratingInsight = false }
 
@@ -726,9 +759,11 @@ struct InsightsView: View {
             """
 
         #if canImport(FoundationModels)
-        if let result = await generateWithFoundationModels(prompt: prompt) {
-            aiInsight = result
-            return
+        if #available(iOS 26.0, *) {
+            if let result = await _generateInsightWithFoundationModels(prompt: prompt) {
+                aiInsight = result
+                return
+            }
         }
         #endif
 
@@ -736,25 +771,23 @@ struct InsightsView: View {
     }
 
     #if canImport(FoundationModels)
-    private func generateWithFoundationModels(prompt: String) async -> String? {
-        if #available(iOS 26.0, *) {
-            guard SystemLanguageModel.default.isAvailable else { return nil }
+    @available(iOS 26.0, *)
+    private func _generateInsightWithFoundationModels(prompt: String) async -> String? {
+        guard SystemLanguageModel.default.isAvailable else { return nil }
 
-            let session = LanguageModelSession(instructions: """
-                You are a hydration coach inside Sipli, a mobile hydration tracking app.
-                Provide brief, personalized, encouraging insights about the user's hydration habits.
-                Keep responses to 2-3 sentences. Be specific about their data. No emojis.
-                """)
+        let session = LanguageModelSession(instructions: """
+            You are a hydration coach inside Sipli, a mobile hydration tracking app.
+            Provide brief, personalized, encouraging insights about the user's hydration habits.
+            Keep responses to 2-3 sentences. Be specific about their data. No emojis.
+            """)
 
-            do {
-                let response = try await session.respond(to: prompt)
-                let text = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
-                return text.isEmpty ? nil : text
-            } catch {
-                return nil
-            }
+        do {
+            let response = try await session.respond(to: prompt)
+            let text = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
+            return text.isEmpty ? nil : text
+        } catch {
+            return nil
         }
-        return nil
     }
     #endif
 
@@ -779,6 +812,7 @@ struct InsightsView: View {
 
         return "Stay consistent with your hydration goals. Every glass counts toward better health and energy throughout the day."
     }
+
 }
 
 // MARK: - Supporting Types

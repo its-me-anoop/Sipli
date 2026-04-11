@@ -5,16 +5,32 @@ struct DashboardView: View {
     @EnvironmentObject private var weather: WeatherClient
     @EnvironmentObject private var healthKit: HealthKitManager
     @EnvironmentObject private var locationManager: LocationManager
+    @EnvironmentObject private var subscriptionManager: SubscriptionManager
 
     @StateObject private var aiService = HydrationAIService()
 
     @State private var entryToEdit: HydrationEntry?
     @State private var entryToDelete: HydrationEntry?
     @State private var isRefreshing = false
+    @State private var isPremiumPromptDismissed = false
     @State private var showEarthDayPledge = false
 
     private var goal: GoalBreakdown { store.dailyGoal }
     private var progress: Double { min(1, store.todayTotalML / max(1, goal.totalML)) }
+    private var loggedDayCount: Int {
+        Set(store.entries.map { $0.date.startOfDay }).count
+    }
+    private var shouldShowPremiumPrompt: Bool {
+        guard !subscriptionManager.hasPremiumAccess else { return false }
+        guard !isPremiumPromptDismissed else { return false }
+        guard loggedDayCount >= 3 else { return false }
+
+        if let nextEligibleAt = store.premiumUpsellState.nextEligibleAt {
+            return nextEligibleAt <= Date()
+        }
+
+        return true
+    }
 
     var body: some View {
         Group {
@@ -30,10 +46,15 @@ struct DashboardView: View {
         }
         .task {
             await refreshSignals()
-            await generateAITip()
+            if subscriptionManager.hasAccess(to: .aiInsights) {
+                await generateAITip()
+            }
+        }
+        .onAppear {
+            isPremiumPromptDismissed = false
         }
         .task(id: locationManager.lastLocation?.timestamp) {
-            guard store.profile.prefersWeatherGoal else { return }
+            guard store.effectiveProfile.prefersWeatherGoal else { return }
             await refreshWeather()
         }
         .sheet(item: $entryToEdit) { entry in
@@ -79,20 +100,26 @@ struct DashboardView: View {
                 summarySection
                     .padding(.top, earthDayBannerVisible ? 0 : 8)
 
-                if let tip = aiService.currentTip {
+                if subscriptionManager.hasAccess(to: .aiInsights), let tip = aiService.currentTip {
                     DashboardCard(title: "Hydration Coach", icon: "sparkles", backgroundGradient: Theme.coachCard) {
                         tipSection(tip)
                     }
                 }
 
-                if store.profile.prefersWeatherGoal {
-                    DashboardCard(title: "Weather", icon: activeWeather.map { weatherIcon($0) } ?? "cloud.sun.fill") {
-                        weatherSection
-                    }
+                if shouldShowPremiumPrompt {
+                    premiumSoftSell
                 }
 
-                DashboardCard(title: "Today's Activity", icon: "figure.run") {
-                    activitySection
+                if subscriptionManager.hasPremiumAccess {
+                    if store.effectiveProfile.prefersWeatherGoal {
+                        DashboardCard(title: "Weather", icon: activeWeather.map { weatherIcon($0) } ?? "cloud.sun.fill") {
+                            weatherSection
+                        }
+                    }
+
+                    DashboardCard(title: "Today's Activity", icon: "figure.run") {
+                        activitySection
+                    }
                 }
 
                 DashboardCard(title: "Today's Log", icon: "drop.fill") {
@@ -164,14 +191,19 @@ struct DashboardView: View {
                     todayTotalML: store.todayTotalML,
                     goalTotalML: goal.totalML,
                     compositions: store.todayCompositions,
-                    unitSystem: store.profile.unitSystem
+                    unitSystem: store.profile.unitSystem,
+                    showsFluidBreakdown: subscriptionManager.hasAccess(to: .fluidTypes)
                 )
+
+                if shouldShowPremiumPrompt {
+                    premiumSoftSell
+                }
 
                 // Two columns: Coach (left), Weather + Activity (right)
                 HStack(alignment: .top, spacing: 20) {
                     // Left column: Hydration Coach (larger)
                     VStack(spacing: 16) {
-                        if let tip = aiService.currentTip {
+                        if subscriptionManager.hasAccess(to: .aiInsights), let tip = aiService.currentTip {
                             DashboardCard(title: "Hydration Coach", icon: "sparkles", backgroundGradient: Theme.coachCard) {
                                 iPadTipSection(tip)
                             }
@@ -181,14 +213,16 @@ struct DashboardView: View {
 
                     // Right column: Weather + Activity
                     VStack(spacing: 16) {
-                        if store.profile.prefersWeatherGoal {
+                        if subscriptionManager.hasPremiumAccess && store.effectiveProfile.prefersWeatherGoal {
                             DashboardCard(title: "Weather", icon: "cloud.sun.fill") {
                                 weatherSection
                             }
                         }
 
-                        DashboardCard(title: "Today\'s Activity", icon: "figure.run") {
-                            activitySection
+                        if subscriptionManager.hasPremiumAccess {
+                            DashboardCard(title: "Today\'s Activity", icon: "figure.run") {
+                                activitySection
+                            }
                         }
                     }
                     .frame(minWidth: 0, maxWidth: .infinity)
@@ -269,8 +303,29 @@ struct DashboardView: View {
             todayTotalML: store.todayTotalML,
             goalTotalML: goal.totalML,
             compositions: store.todayCompositions,
-            unitSystem: store.profile.unitSystem
+            unitSystem: store.profile.unitSystem,
+            showsFluidBreakdown: subscriptionManager.hasAccess(to: .fluidTypes)
         )
+    }
+
+    private var premiumSoftSell: some View {
+        PremiumSoftSellBanner(
+            title: "Premium, when you want more",
+            message: "Unlock beverage types, AI coaching, HealthKit sync, and goals that react to weather and activity.",
+            featurePills: [
+                (icon: "cup.and.saucer.fill", text: "Beverage Types"),
+                (icon: "brain.head.profile.fill", text: "AI Coach"),
+                (icon: "heart.fill", text: "HealthKit Sync"),
+                (icon: "cloud.sun.fill", text: "Adaptive Goals")
+            ],
+            ctaTitle: "See Premium",
+            onDismiss: dismissPremiumPrompt,
+            onShowPremium: {
+                Haptics.selection()
+                subscriptionManager.presentPaywall()
+            }
+        )
+        .transition(.move(edge: .bottom).combined(with: .opacity))
     }
 
     @Environment(\.horizontalSizeClass) private var sizeClass
@@ -579,7 +634,7 @@ struct DashboardView: View {
         isRefreshing = true
         defer { isRefreshing = false }
 
-        if store.profile.prefersHealthKit {
+        if store.effectiveProfile.prefersHealthKit {
             await healthKit.refreshAuthorizationStatus()
             let summary = await healthKit.fetchTodayWorkoutSummary()
             store.updateWorkout(summary)
@@ -588,7 +643,7 @@ struct DashboardView: View {
             }
         }
 
-        if store.profile.prefersWeatherGoal {
+        if store.effectiveProfile.prefersWeatherGoal {
             await refreshWeather()
         }
     }
@@ -603,6 +658,7 @@ struct DashboardView: View {
     }
 
     private func generateAITip() async {
+        guard subscriptionManager.hasAccess(to: .aiInsights) else { return }
         await aiService.generateTip(
             currentIntake: store.todayTotalML,
             goalML: goal.totalML,
@@ -610,6 +666,12 @@ struct DashboardView: View {
             exerciseMinutes: Int(store.lastWorkout.exerciseMinutes),
             timeOfDay: TimeOfDay.current
         )
+    }
+
+    private func dismissPremiumPrompt() {
+        Haptics.selection()
+        isPremiumPromptDismissed = true
+        store.dismissPremiumUpsell()
     }
 
 }
@@ -621,6 +683,7 @@ private struct HydrationSummaryCard: View {
     let goalTotalML: Double
     let compositions: [FluidComposition]
     let unitSystem: UnitSystem
+    let showsFluidBreakdown: Bool
 
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.colorScheme) private var colorScheme
@@ -653,17 +716,19 @@ private struct HydrationSummaryCard: View {
                 }
                 .padding(.top, 4)
 
-                VStack(alignment: .leading, spacing: isRegular ? 10 : 8) {
-                    Text("Top liquids")
-                        .font(.system(isRegular ? .subheadline : .caption, design: .rounded).weight(.bold))
-                        .foregroundStyle(Theme.textSecondary)
-                        .padding(.top, isRegular ? 8 : 6)
+                if showsFluidBreakdown && !topCompositions.isEmpty {
+                    VStack(alignment: .leading, spacing: isRegular ? 10 : 8) {
+                        Text("Top liquids")
+                            .font(.system(isRegular ? .subheadline : .caption, design: .rounded).weight(.bold))
+                            .foregroundStyle(Theme.textSecondary)
+                            .padding(.top, isRegular ? 8 : 6)
 
-                    ForEach(topCompositions, id: \.type) { composition in
-                        LiquidBreakdownRow(
-                            fluidType: composition.type,
-                            percentage: composition.proportion
-                        )
+                        ForEach(topCompositions, id: \.type) { composition in
+                            LiquidBreakdownRow(
+                                fluidType: composition.type,
+                                percentage: composition.proportion
+                            )
+                        }
                     }
                 }
             }
@@ -805,6 +870,23 @@ private struct LiquidBreakdownRow: View {
     }
 }
 
+private struct SubscriptionFeatureLine: View {
+    let icon: String
+    let text: String
+
+    var body: some View {
+        HStack(spacing: 10) {
+            Image(systemName: icon)
+                .foregroundStyle(Theme.lagoon)
+                .frame(width: 18)
+            Text(text)
+                .font(.subheadline)
+                .foregroundStyle(.primary)
+            Spacer()
+        }
+    }
+}
+
 private struct LogRow: View {
     let entry: HydrationEntry
     let unitSystem: UnitSystem
@@ -866,6 +948,7 @@ struct EntryEditorSheet: View {
     let onDelete: () -> Void
 
     @Environment(\.dismiss) private var dismiss
+    @EnvironmentObject private var subscriptionManager: SubscriptionManager
 
     @State private var amount: Double
     @State private var selectedFluidType: FluidType
@@ -909,36 +992,64 @@ struct EntryEditorSheet: View {
                 }
 
                 Section("Beverage") {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: 8) {
-                            ForEach(FluidType.allCases) { type in
-                                Button {
-                                    Haptics.selection()
-                                    selectedFluidType = type
-                                } label: {
-                                    VStack(spacing: 4) {
-                                        Image(systemName: type.iconName)
-                                            .font(.title3)
-                                            .foregroundStyle(selectedFluidType == type ? .white : type.color)
-                                            .frame(width: 40, height: 40)
-                                            .background(
-                                                Circle()
-                                                    .fill(selectedFluidType == type ? type.color : type.color.opacity(0.12))
-                                            )
-                                        Text(type.displayName)
-                                            .font(.caption2)
-                                            .foregroundStyle(selectedFluidType == type ? .primary : .secondary)
-                                            .lineLimit(1)
-                                            .frame(width: 60)
+                    if subscriptionManager.hasAccess(to: .fluidTypes) {
+                        ScrollView(.horizontal, showsIndicators: false) {
+                            HStack(spacing: 8) {
+                                ForEach(FluidType.allCases) { type in
+                                    Button {
+                                        Haptics.selection()
+                                        selectedFluidType = type
+                                    } label: {
+                                        VStack(spacing: 4) {
+                                            Image(systemName: type.iconName)
+                                                .font(.title3)
+                                                .foregroundStyle(selectedFluidType == type ? .white : type.color)
+                                                .frame(width: 40, height: 40)
+                                                .background(
+                                                    Circle()
+                                                        .fill(selectedFluidType == type ? type.color : type.color.opacity(0.12))
+                                                )
+                                            Text(type.displayName)
+                                                .font(.caption2)
+                                                .foregroundStyle(selectedFluidType == type ? .primary : .secondary)
+                                                .lineLimit(1)
+                                                .frame(width: 60)
+                                        }
                                     }
+                                    .buttonStyle(.plain)
+                                    .accessibilityLabel(type.displayName)
+                                    .accessibilityHint("\(type.hydrationLabel). Double tap to select")
+                                    .accessibilityAddTraits(selectedFluidType == type ? .isSelected : [])
                                 }
-                                .buttonStyle(.plain)
-                                .accessibilityLabel(type.displayName)
-                                .accessibilityHint("\(type.hydrationLabel). Double tap to select")
-                                .accessibilityAddTraits(selectedFluidType == type ? .isSelected : [])
                             }
+                            .padding(.vertical, 4)
                         }
-                        .padding(.vertical, 4)
+                    } else {
+                        HStack(spacing: 12) {
+                            Image(systemName: selectedFluidType.iconName)
+                                .foregroundStyle(selectedFluidType.color)
+                                .frame(width: 32, height: 32)
+                                .background(
+                                    Circle()
+                                        .fill(selectedFluidType.color.opacity(0.12))
+                                )
+
+                            VStack(alignment: .leading, spacing: 3) {
+                                Text(selectedFluidType.displayName)
+                                    .font(.subheadline.weight(.semibold))
+                                Text("Premium unlocks beverage changes and hydration factors.")
+                                    .font(.caption)
+                                    .foregroundStyle(.secondary)
+                            }
+
+                            Spacer()
+
+                            Button("Unlock") {
+                                Haptics.selection()
+                                subscriptionManager.presentPaywall(for: .fluidTypes)
+                            }
+                            .font(.caption.weight(.semibold))
+                        }
                     }
 
                     if selectedFluidType != .water {
@@ -1103,6 +1214,36 @@ struct DetailedLogRow: View {
 #if DEBUG
 #Preview("Dashboard") {
     PreviewEnvironment {
+        DashboardView()
+    }
+}
+
+#Preview("Dashboard Premium Upsell") {
+    PreviewEnvironment(setup: { store, _ in
+        let calendar = Calendar.current
+        let now = Date()
+
+        store.entries = [
+            HydrationEntry(
+                date: now,
+                volumeML: 420,
+                source: .manual,
+                fluidType: .water
+            ),
+            HydrationEntry(
+                date: calendar.date(byAdding: .day, value: -1, to: now) ?? now,
+                volumeML: 360,
+                source: .manual,
+                fluidType: .tea
+            ),
+            HydrationEntry(
+                date: calendar.date(byAdding: .day, value: -2, to: now) ?? now,
+                volumeML: 500,
+                source: .manual,
+                fluidType: .coffee
+            )
+        ]
+    }) {
         DashboardView()
     }
 }

@@ -91,3 +91,15 @@ struct UserProfile: Codable {
         smartRemindersEnabled: true
     )
 }
+
+extension UserProfile {
+    func applyingPremiumAccess(_ hasPremiumAccess: Bool) -> UserProfile {
+        guard !hasPremiumAccess else { return self }
+
+        var copy = self
+        copy.prefersWeatherGoal = false
+        copy.prefersHealthKit = false
+        copy.smartRemindersEnabled = false
+        return copy
+    }
+}

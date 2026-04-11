@@ -38,27 +38,34 @@ struct WaterQuestApp: App {
             .task {
                 store.notificationScheduler = notifier
                 await subscriptionManager.initialise()
+                store.updatePremiumAccess(subscriptionManager.hasPremiumAccess)
                 _ = subscriptionManager.startTransactionListener()
                 guard isSetupComplete else { return }
                 await notifier.refreshAuthorizationStatus()
                 await healthKit.refreshAuthorizationStatus()
-                notifier.scheduleReminders(profile: store.profile, entries: store.entries, goalML: store.dailyGoal.totalML)
+                notifier.scheduleReminders(profile: store.effectiveProfile, entries: store.entries, goalML: store.dailyGoal.totalML)
             }
-            .task(id: store.profile.prefersHealthKit) {
+            .task(id: store.effectiveProfile.prefersHealthKit) {
                 guard isSetupComplete else { return }
-                if store.profile.prefersHealthKit {
+                if store.effectiveProfile.prefersHealthKit {
                     await startHealthKitAutoSync()
                 } else {
                     healthKit.stopWaterIntakeObserver()
                 }
             }
+            .onChange(of: subscriptionManager.isSubscribed) { _, _ in
+                store.updatePremiumAccess(subscriptionManager.hasPremiumAccess)
+                guard isSetupComplete else { return }
+                notifier.scheduleReminders(profile: store.effectiveProfile, entries: store.entries, goalML: store.dailyGoal.totalML)
+            }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active {
                     Task {
                         await subscriptionManager.refreshStatus()
+                        store.updatePremiumAccess(subscriptionManager.hasPremiumAccess)
                         await refreshHealthKitWaterEntries()
                         await notifier.refreshAuthorizationStatus()
-                        notifier.scheduleReminders(profile: store.profile, entries: store.entries, goalML: store.dailyGoal.totalML)
+                        notifier.scheduleReminders(profile: store.effectiveProfile, entries: store.entries, goalML: store.dailyGoal.totalML)
                     }
                 }
             }
@@ -87,7 +94,7 @@ struct WaterQuestApp: App {
 
     @MainActor
     private func refreshHealthKitWaterEntries() async {
-        guard store.profile.prefersHealthKit else { return }
+        guard store.effectiveProfile.prefersHealthKit else { return }
         if let entries = await healthKit.fetchRecentWaterEntries(days: 7) {
             store.syncHealthKitEntriesRange(entries, days: 7)
         }

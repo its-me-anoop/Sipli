@@ -1,9 +1,9 @@
 # Privacy Policy
 
 **Sipli**
-**Last updated: February 25, 2026**
+**Last updated: March 12, 2026**
 
-Sipli ("we", "our", or "the app") is a hydration tracking app developed by Anoop Jose. Your privacy is important to us. This policy explains what data Sipli collects, how it is used, and your choices regarding that data.
+Sipli ("we", "our", or "the app") is a hydration tracking app developed by Anoop Jose. This policy explains what information Sipli processes, where it is stored, and the choices you have when using the app.
 
 ## Data We Collect
 
@@ -19,6 +19,7 @@ During onboarding and in Settings, you may provide:
 ### Hydration Data
 
 - **Water intake entries** — Each entry includes the volume consumed, timestamp, beverage type, source (manual or HealthKit), and an optional note you provide.
+- **App preferences** — Settings such as theme, unit system, custom goal, reminder schedule, and premium upsell state are stored so the app can keep your experience consistent.
 
 ### Health Data (Apple HealthKit)
 
@@ -32,11 +33,11 @@ HealthKit data is stored securely by Apple and is never sent to external servers
 
 ### Location Data
 
-If you grant permission, Sipli accesses your approximate location (accuracy: ~1 kilometer) to retrieve local weather conditions via Apple WeatherKit. Your location is:
+If you grant permission, Sipli uses location to retrieve local weather conditions via Apple WeatherKit. Sipli requests nearby, city-level weather using approximately 1 kilometer accuracy. Depending on your iPhone settings, Apple may still provide approximate or precise location data to the app. Your location is:
 
 - Used only to fetch weather data (temperature and humidity).
 - Held temporarily in memory while the app is open.
-- **Never stored to disk, logged, or transmitted to any server other than Apple WeatherKit.**
+- **Not stored in Sipli's local app data, not logged, and not sent to any service other than Apple's location and weather services needed to return weather data.**
 
 ### Weather Data
 
@@ -46,27 +47,38 @@ Temperature, humidity, and weather conditions are fetched from Apple WeatherKit 
 
 Sipli uses your device's accelerometer and gyroscope to animate the liquid effect in the progress view. Motion data is used in real time for visual effects only and is **never stored or transmitted**.
 
-### Preferences and Settings
+### Widgets and Apple-Managed Sync
 
-Your app preferences (theme, notification settings, unit system, custom goal) are stored locally on your device using standard iOS storage.
+Sipli stores app state in a local container that can also be read by the Sipli widget extension so your widgets can show current progress.
+
+Sipli also uses Apple's iCloud key-value store to keep your app state in sync between your own devices when the same Apple Account is signed in and iCloud sync is available. This synced state may include:
+
+- profile and settings
+- hydration entries
+- recent weather and workout summaries
+- premium access state and premium upsell state
+
+We do **not** operate or access this infrastructure ourselves. Sync and backup availability are controlled by Apple and your device/account settings.
 
 ## Data We Do Not Collect
 
 - We do **not** collect analytics or usage telemetry.
 - We do **not** use third-party tracking, advertising, or analytics SDKs.
-- We do **not** collect device identifiers, IP addresses, or browsing data.
+- We do **not** operate advertising, profiling, or cross-app tracking systems.
 - We do **not** have user accounts, logins, or authentication.
 - We do **not** operate any backend servers.
 
 ## How Data Is Stored
 
-All app data is stored locally on your device in the app's sandboxed storage:
+Sipli stores data locally on your device and, when available, in Apple-managed sync services:
 
-- Profile and hydration entries are saved in a JSON file within the app's Application Support directory.
+- Profile, hydration entries, recent weather/workout summaries, and app settings are saved in a JSON file in the app's shared container.
 - HealthKit data is managed by Apple's encrypted Health database.
 - Subscription status is managed by Apple's StoreKit framework.
+- Widget content is read from the app's shared container by the Sipli widget extension.
+- If you use the same Apple Account across devices and Apple sync services are available, app state may also be stored in Apple's iCloud key-value store and may be included in Apple-managed device backups.
 
-**No data is synced to the cloud, backed up to external servers, or shared across devices.**
+Sipli does **not** send your app data to developer-operated servers.
 
 ## Data Sharing
 
@@ -74,13 +86,14 @@ Sipli does not sell, share, or transfer your personal data to third parties.
 
 The only external data flows are:
 
-- **Apple WeatherKit** — Your approximate location is sent to Apple's WeatherKit service to retrieve weather conditions. This is governed by [Apple's Privacy Policy](https://www.apple.com/legal/privacy/).
+- **Apple WeatherKit and Core Location** — Your device location is used with Apple's services to retrieve local weather conditions. This is governed by [Apple's Privacy Policy](https://www.apple.com/legal/privacy/).
 - **Apple StoreKit** — Subscription purchases and verification are handled entirely by Apple. Sipli does not process or store payment information.
 - **Apple HealthKit** — Health data is read from and written to Apple Health with your explicit permission.
+- **Apple iCloud key-value store / Apple backups** — If available on your devices, Apple may sync or back up Sipli state on your behalf.
 
 ## On-Device Intelligence
 
-Sipli may use Apple's on-device language models (Apple Intelligence) to generate personalized hydration tips and notification messages on supported devices. This processing happens entirely on your device. **No data is sent to external AI services.**
+On supported devices and operating system versions, Sipli may use Apple's on-device language models (Apple Intelligence / Foundation Models) to generate personalized hydration tips and reminder copy. This processing happens entirely on your device. If on-device AI is unavailable, Sipli falls back to built-in static messages. **Sipli does not send your data to external AI services.**
 
 ## Your Choices
 
@@ -89,8 +102,9 @@ You have full control over your data:
 - **HealthKit** — You can enable or disable HealthKit access at any time in the app's Settings or in iOS Settings > Privacy & Security > Health.
 - **Location** — You can enable or disable location access in iOS Settings > Privacy & Security > Location Services.
 - **Notifications** — You can enable or disable notifications in the app's Settings or in iOS Settings > Notifications.
+- **Widgets** — You can add or remove Sipli widgets from your Home Screen at any time.
 - **Delete entries** — You can delete individual hydration entries from the Diary or Dashboard.
-- **Delete all data** — Uninstalling the app removes all locally stored data.
+- **Delete all data** — Uninstalling the app removes Sipli's local app and widget data from that device. Copies retained by Apple in iCloud sync or Apple-managed backups are governed by your Apple Account settings.
 
 ## Children's Privacy
 

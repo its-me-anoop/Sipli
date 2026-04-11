@@ -8,6 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		00E5359EB56D89B045DDBDF1 /* AddIntakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBC0C7A2F89C0FD52822D48 /* AddIntakeView.swift */; };
+		ED01000000000000000001 /* EarthDayBannerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED01000000000000000002 /* EarthDayBannerCard.swift */; };
+		ED02000000000000000001 /* EarthDayEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED02000000000000000002 /* EarthDayEvent.swift */; };
+		ED03000000000000000001 /* EarthDayPledgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED03000000000000000002 /* EarthDayPledgeView.swift */; };
+		ED04000000000000000001 /* EarthInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED04000000000000000002 /* EarthInfoView.swift */; };
 		0252DDA30195EA614A439A3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9FC934C6863AFC8E01D302CE /* Assets.xcassets */; };
 		0A5C95DCB74AE59638E495D3 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98496F0A352BC5A580943E39 /* OnboardingView.swift */; };
 		0A6AF1AF6B3D3222F30C3E85 /* WeatherSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */; };
@@ -30,6 +34,7 @@
 		5D5BF32CEAF21645C51E5442 /* GoalCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38731A03D043511C9AAD4C2 /* GoalCalculator.swift */; };
 		6B3494CD2F5249E200D313C3 /* QuickAddWaterIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3494CC2F5249E200D313C3 /* QuickAddWaterIntent.swift */; };
 		6BBC3B922F4F6AC100F5525A /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 6BBC3B912F4F6AC100F5525A /* AppIcon.icon */; };
+		6BDAF0F22F6375DE009ADC09 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 6BDAF0F12F6375DE009ADC09 /* Products.storekit */; };
 		7077C5CF3469D64E94804983 /* FluidType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A139EF313607077443D4FCFE /* FluidType.swift */; };
 		747A7C4F8A906C71164AB9DE /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */; };
 		75107A8584630E7E2B030165 /* MascotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD53555ACD00A8A78268A7F /* MascotView.swift */; };
@@ -107,10 +112,14 @@
 /* Begin PBXFileReference section */
 		032684376DE05B0CC4838664 /* UnitSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitSystem.swift; sourceTree = "<group>"; };
 		161A82CD61225A1F302ECA9D /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensions.swift; sourceTree = "<group>"; };
-		1BD898210B2BA8EE347F72F4 /* WaterQuest.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; name = WaterQuest.app; path = Sipli.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1BD898210B2BA8EE347F72F4 /* Sipli.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sipli.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		22C158CF127D3436999E3C2B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationEntry.swift; sourceTree = "<group>"; };
 		32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationStore.swift; sourceTree = "<group>"; };
+		ED01000000000000000002 /* EarthDayBannerCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthDayBannerCard.swift; sourceTree = "<group>"; };
+		ED02000000000000000002 /* EarthDayEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthDayEvent.swift; sourceTree = "<group>"; };
+		ED03000000000000000002 /* EarthDayPledgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthDayPledgeView.swift; sourceTree = "<group>"; };
+		ED04000000000000000002 /* EarthInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthInfoView.swift; sourceTree = "<group>"; };
 		39EF82B8B03A482B4BC8CBF9 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3ABC282C313B061E1E34EDF7 /* StatPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatPill.swift; sourceTree = "<group>"; };
 		3BE15D5810B84C7C96E0EA4C /* WorkoutSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSummary.swift; sourceTree = "<group>"; };
@@ -124,6 +133,7 @@
 		69F362557BEECECFAA26285A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6B3494CC2F5249E200D313C3 /* QuickAddWaterIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddWaterIntent.swift; sourceTree = "<group>"; };
 		6BBC3B912F4F6AC100F5525A /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		6BDAF0F12F6375DE009ADC09 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		732CBE184502476DC56921F8 /* icon.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = icon.json; sourceTree = "<group>"; };
 		7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSnapshot.swift; sourceTree = "<group>"; };
 		7B8BDAA9F823F748DDAD26EB /* ProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRing.swift; sourceTree = "<group>"; };
@@ -149,7 +159,6 @@
 		AA7777777777777777777777 /* LargeWidgetView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeWidgetView.swift; sourceTree = "<group>"; };
 		AA8888888888888888888888 /* PersistedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistedState.swift; sourceTree = "<group>"; };
 		AA9999999999999999999999 /* SipliWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SipliWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
-		AABB1122CCDDEEFF /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		ACD53555ACD00A8A78268A7F /* MascotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MascotView.swift; sourceTree = "<group>"; };
 		B2126EAEDD87BD49B24C7BE2 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		B26785D44340E5C0A267B325 /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
@@ -187,6 +196,7 @@
 		0EBBC986DBD277FF7074538D = {
 			isa = PBXGroup;
 			children = (
+				6BDAF0F12F6375DE009ADC09 /* Products.storekit */,
 				120E9D2B9013FCD931926A20 /* WaterQuest */,
 				BB1111111111111111111111 /* SipliWidget */,
 				DA0C73A8FD8A545CB27D2691 /* Products */,
@@ -239,6 +249,7 @@
 			isa = PBXGroup;
 			children = (
 				97414883E4C0F357148B7EC7 /* DashboardCard.swift */,
+				ED01000000000000000002 /* EarthDayBannerCard.swift */,
 				3D58355784786E63DFFB9EC4 /* Haptics.swift */,
 				42E0244F70DCB30BB868A196 /* LiquidGlassCard.swift */,
 				85C07CD814951765EE1A1499 /* LiquidProgressView.swift */,
@@ -261,7 +272,6 @@
 				39EF82B8B03A482B4BC8CBF9 /* LaunchScreen.storyboard */,
 				E2B3C4D5F6071829A3B4C5D6 /* PrivacyInfo.xcprivacy */,
 				4B013DED6E9276AA1DBE33BC /* WaterQuest.entitlements */,
-				AABB1122CCDDEEFF /* Products.storekit */,
 			);
 			path = Supporting;
 			sourceTree = "<group>";
@@ -312,6 +322,8 @@
 				BD7043107E62B2C04F4C58EB /* DashboardView.swift */,
 				A1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift */,
 				EB90E806138FFE1C09E7187A /* InsightsView.swift */,
+				ED03000000000000000002 /* EarthDayPledgeView.swift */,
+				ED04000000000000000002 /* EarthInfoView.swift */,
 				B2126EAEDD87BD49B24C7BE2 /* MainTabView.swift */,
 				98496F0A352BC5A580943E39 /* OnboardingView.swift */,
 				22C158CF127D3436999E3C2B /* RootView.swift */,
@@ -324,7 +336,7 @@
 		DA0C73A8FD8A545CB27D2691 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				1BD898210B2BA8EE347F72F4 /* WaterQuest.app */,
+				1BD898210B2BA8EE347F72F4 /* Sipli.app */,
 				AA9999999999999999999999 /* SipliWidget.appex */,
 			);
 			name = Products;
@@ -356,6 +368,7 @@
 				63F661B4016F8BE1E8DDA5B5 /* HealthKitManager.swift */,
 				55B57443B7032DDCF70ACB8C /* HydrationAIService.swift */,
 				32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */,
+				ED02000000000000000002 /* EarthDayEvent.swift */,
 				6862392928A13FBD5E45D6E3 /* LocationManager.swift */,
 				E4A8068B4418852446BD78E6 /* MotionManager.swift */,
 				BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */,
@@ -386,7 +399,7 @@
 			packageProductDependencies = (
 			);
 			productName = WaterQuest;
-			productReference = 1BD898210B2BA8EE347F72F4 /* WaterQuest.app */;
+			productReference = 1BD898210B2BA8EE347F72F4 /* Sipli.app */;
 			productType = "com.apple.product-type.application";
 		};
 		FF1111111111111111111111 /* SipliWidget */ = {
@@ -452,6 +465,7 @@
 				D1A2B3C4E5F60718293A4B5C /* PrivacyInfo.xcprivacy in Resources */,
 				6BBC3B922F4F6AC100F5525A /* AppIcon.icon in Resources */,
 				2935FCF5A46AC8630A581FE4 /* Gemini_Generated_Image_15xog715xog715xo.png in Resources */,
+				6BDAF0F22F6375DE009ADC09 /* Products.storekit in Resources */,
 				A1B2326FF853A75236509F2C /* icon.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -498,6 +512,10 @@
 			files = (
 				00E5359EB56D89B045DDBDF1 /* AddIntakeView.swift in Sources */,
 				1DCE9DE6A19E823BA1E5079B /* DashboardCard.swift in Sources */,
+				ED01000000000000000001 /* EarthDayBannerCard.swift in Sources */,
+				ED02000000000000000001 /* EarthDayEvent.swift in Sources */,
+				ED03000000000000000001 /* EarthDayPledgeView.swift in Sources */,
+				ED04000000000000000001 /* EarthInfoView.swift in Sources */,
 				F9760161C65BFA2368DB8094 /* DashboardView.swift in Sources */,
 				A543E5598AAD6E7D7CD5164C /* DateExtensions.swift in Sources */,
 				7077C5CF3469D64E94804983 /* FluidType.swift in Sources */,
@@ -566,7 +584,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration;
 				PRODUCT_NAME = Sipli;
 				SDKROOT = iphoneos;
@@ -648,7 +666,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration;
 				PRODUCT_NAME = Sipli;
 				SDKROOT = iphoneos;
@@ -741,7 +759,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -769,7 +787,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.3;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;

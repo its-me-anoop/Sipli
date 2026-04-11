@@ -7,6 +7,8 @@ final class HydrationStore: ObservableObject {
     @Published var profile: UserProfile
     @Published var lastWeather: WeatherSnapshot?
     @Published var lastWorkout: WorkoutSummary
+    @Published private(set) var hasPremiumAccess = false
+    @Published private(set) var premiumUpsellState: PremiumUpsellState
     @Published var earthDayBannerDismissed: Bool
     @Published var earthDay2026Earned: Bool
 
@@ -22,6 +24,8 @@ final class HydrationStore: ObservableObject {
         self.profile = state.profile
         self.lastWeather = state.lastWeather
         self.lastWorkout = state.lastWorkout
+        self.hasPremiumAccess = state.hasPremiumAccess
+        self.premiumUpsellState = state.premiumUpsellState
         self.earthDayBannerDismissed = state.earthDay2026BannerDismissed
         self.earthDay2026Earned = state.earthDay2026Earned
 
@@ -38,11 +42,17 @@ final class HydrationStore: ObservableObject {
     }
 
     var dailyGoal: GoalBreakdown {
-        GoalCalculator.dailyGoal(profile: profile, weather: activeWeather, workout: lastWorkout)
+        let profile = effectiveProfile
+        let workout = profile.prefersHealthKit ? lastWorkout : nil
+        return GoalCalculator.dailyGoal(profile: profile, weather: activeWeather, workout: workout)
     }
 
     var activeWeather: WeatherSnapshot? {
-        profile.prefersWeatherGoal ? lastWeather : nil
+        effectiveProfile.prefersWeatherGoal ? lastWeather : nil
+    }
+
+    var effectiveProfile: UserProfile {
+        profile.applyingPremiumAccess(hasPremiumAccess)
     }
 
     var todayEntries: [HydrationEntry] {
@@ -122,6 +132,27 @@ final class HydrationStore: ObservableObject {
         persist()
     }
 
+    func updatePremiumAccess(_ hasPremiumAccess: Bool) {
+        guard self.hasPremiumAccess != hasPremiumAccess else { return }
+        self.hasPremiumAccess = hasPremiumAccess
+        if hasPremiumAccess {
+            premiumUpsellState = .default
+        }
+        persist()
+    }
+
+    func dismissPremiumUpsell(now: Date = Date()) {
+        var nextState = premiumUpsellState
+        nextState.dismissCount += 1
+        nextState.nextEligibleAt = Calendar.current.date(
+            byAdding: .day,
+            value: Int.random(in: 30...60),
+            to: now.startOfDay
+        )
+        premiumUpsellState = nextState
+        persist()
+    }
+
     func syncHealthKitEntries(_ healthKitEntries: [HydrationEntry], for date: Date = Date()) {
         entries.removeAll { $0.source == .healthKit && $0.date.isSameDay(as: date) }
         entries.append(contentsOf: healthKitEntries)
@@ -149,6 +180,8 @@ final class HydrationStore: ObservableObject {
             profile: profile,
             lastWeather: lastWeather,
             lastWorkout: lastWorkout,
+            hasPremiumAccess: hasPremiumAccess,
+            premiumUpsellState: premiumUpsellState,
             earthDay2026BannerDismissed: earthDayBannerDismissed,
             earthDay2026Earned: earthDay2026Earned
         )
@@ -161,6 +194,8 @@ final class HydrationStore: ObservableObject {
         profile = state.profile
         lastWeather = state.lastWeather
         lastWorkout = state.lastWorkout
+        hasPremiumAccess = state.hasPremiumAccess
+        premiumUpsellState = state.premiumUpsellState
         earthDayBannerDismissed = state.earthDay2026BannerDismissed
         earthDay2026Earned = state.earthDay2026Earned
         WidgetCenter.shared.reloadAllTimelines()

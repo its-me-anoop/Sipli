@@ -24,9 +24,11 @@
   <true/>
   <key>UILaunchStoryboardName</key>
   <string>LaunchScreen</string>
+  <key>NSMotionUsageDescription</key>
+  <string>Sipli uses device motion to animate the water level indicator.</string>
   <key>UIRequiredDeviceCapabilities</key>
   <array>
-    <string>armv7</string>
+    <string>arm64</string>
   </array>
   <key>UISupportedInterfaceOrientations</key>
   <array>

@@ -5,6 +5,9 @@ enum Legal {
     static let privacyURL = URL(string: "https://its-me-anoop.github.io/Sipli/privacy")!
     static let termsURL = URL(string: "https://its-me-anoop.github.io/Sipli/terms")!
     static let weatherAttributionURL = URL(string: "https://weatherkit.apple.com/legal-attribution.html")!
+    static let hydrationBaseCitationURL = URL(string: "https://nap.nationalacademies.org/catalog/10925/dietary-reference-intakes-for-water-potassium-sodium-chloride-and-sulfate")!
+    static let hydrationHeatCitationURL = URL(string: "https://www.cdc.gov/healthy-weight-growth/water-healthy-drinks/index.html")!
+    static let hydrationExerciseCitationURL = URL(string: "https://acsm.org/9-facts-about-hydration-electrolytes/")!
     static let manageSubscriptionsURL = URL(string: "https://apps.apple.com/account/subscriptions")!
     // swiftlint:enable force_unwrapping
 }
