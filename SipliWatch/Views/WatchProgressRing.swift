@@ -15,7 +15,7 @@ struct WatchProgressRing: View {
                 .trim(from: 0, to: min(progress, 1.0))
                 .stroke(
                     AngularGradient(
-                        colors: [Color(red: 0.11, green: 0.47, blue: 0.96), Color(red: 0.19, green: 0.76, blue: 0.64)],
+                        colors: [Theme.lagoon, Color(red: 0.19, green: 0.76, blue: 0.64)],
                         center: .center,
                         startAngle: .degrees(0),
                         endAngle: .degrees(360)

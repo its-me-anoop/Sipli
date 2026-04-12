@@ -16,9 +16,18 @@ struct WatchTodayLogView: View {
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, alignment: .leading)
 
-                ForEach(store.todayEntries.sorted(by: { $0.date > $1.date })) { entry in
-                    WatchEntryRow(entry: entry, unitSystem: store.profile.unitSystem)
+                List {
+                    ForEach(store.todayEntries.sorted(by: { $0.date > $1.date })) { entry in
+                        WatchEntryRow(entry: entry, unitSystem: store.profile.unitSystem)
+                    }
+                    .onDelete { offsets in
+                        let sorted = store.todayEntries.sorted(by: { $0.date > $1.date })
+                        for offset in offsets {
+                            store.deleteEntry(sorted[offset])
+                        }
+                    }
                 }
+                .listStyle(.plain)
             }
         }
     }

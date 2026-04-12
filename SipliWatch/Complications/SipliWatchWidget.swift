@@ -59,14 +59,14 @@ struct CircularComplicationView: View {
     var body: some View {
         Gauge(value: entry.progress) {
             Image(systemName: "drop.fill")
-                .foregroundStyle(Color(red: 0.11, green: 0.47, blue: 0.96))
+                .foregroundStyle(Theme.lagoon)
         } currentValueLabel: {
             Text("\(Int(entry.progress * 100))")
                 .font(.system(size: 14, weight: .bold))
         }
         .gaugeStyle(.accessoryCircular)
         .tint(Gradient(colors: [
-            Color(red: 0.11, green: 0.47, blue: 0.96),
+            Theme.lagoon,
             Color(red: 0.19, green: 0.76, blue: 0.64)
         ]))
     }
@@ -78,14 +78,14 @@ struct CornerComplicationView: View {
     var body: some View {
         Text("\(Int(entry.progress * 100))%")
             .font(.system(size: 14, weight: .bold))
-            .foregroundStyle(Color(red: 0.11, green: 0.47, blue: 0.96))
+            .foregroundStyle(Theme.lagoon)
             .widgetLabel {
                 Gauge(value: entry.progress) {
                     Text("Hydration")
                 } currentValueLabel: {
                     Text("\(Int(entry.progress * 100))%")
                 }
-                .tint(Color(red: 0.11, green: 0.47, blue: 0.96))
+                .tint(Theme.lagoon)
                 .gaugeStyle(.accessoryLinear)
             }
     }
@@ -142,7 +142,7 @@ struct QuickAddWidgetView: View {
             Button(intent: WatchQuickAddIntent()) {
                 Image(systemName: "plus.circle.fill")
                     .font(.system(size: 24))
-                    .foregroundStyle(Color(red: 0.11, green: 0.47, blue: 0.96))
+                    .foregroundStyle(Theme.lagoon)
             }
             .buttonStyle(.plain)
         }

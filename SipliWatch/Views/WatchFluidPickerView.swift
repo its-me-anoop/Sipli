@@ -22,7 +22,7 @@ struct WatchFluidPickerView: View {
                     if fluidType == selectedFluidType {
                         Image(systemName: "checkmark")
                             .font(.system(size: 12, weight: .bold))
-                            .foregroundStyle(Color(red: 0.11, green: 0.47, blue: 0.96))
+                            .foregroundStyle(Theme.lagoon)
                     }
                 }
             }

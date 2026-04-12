@@ -52,7 +52,7 @@ struct WatchQuickAddView: View {
                     .frame(maxWidth: .infinity)
             }
             .buttonStyle(.borderedProminent)
-            .tint(Color(red: 0.11, green: 0.47, blue: 0.96))
+            .tint(Theme.lagoon)
             .disabled(logged)
 
             Button {
@@ -60,7 +60,7 @@ struct WatchQuickAddView: View {
             } label: {
                 Text("More beverages")
                     .font(.system(size: 12))
-                    .foregroundStyle(Color(red: 0.11, green: 0.47, blue: 0.96))
+                    .foregroundStyle(Theme.lagoon)
             }
             .buttonStyle(.plain)
         }

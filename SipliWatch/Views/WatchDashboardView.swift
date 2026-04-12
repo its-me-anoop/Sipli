@@ -32,7 +32,7 @@ struct WatchDashboardView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(Color(red: 0.11, green: 0.47, blue: 0.96))
+                .tint(Theme.lagoon)
 
                 WatchTodayLogView()
             }
@@ -76,9 +76,9 @@ struct WatchStatPill: View {
             Text(text)
                 .font(.system(size: 11, weight: .medium))
         }
-        .foregroundStyle(Color(red: 0.11, green: 0.47, blue: 0.96).opacity(0.9))
+        .foregroundStyle(Theme.lagoon.opacity(0.9))
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
-        .background(Color(red: 0.11, green: 0.47, blue: 0.96).opacity(0.15), in: Capsule())
+        .background(Theme.lagoon.opacity(0.15), in: Capsule())
     }
 }

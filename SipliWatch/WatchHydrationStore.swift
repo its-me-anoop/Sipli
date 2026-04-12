@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+@preconcurrency import UserNotifications
 
 @MainActor
 final class WatchHydrationStore: ObservableObject {
@@ -72,6 +73,8 @@ final class WatchHydrationStore: ObservableObject {
         if wasBelow && todayTotalML >= goalBreakdown.totalML {
             justReachedGoal = true
             WatchHaptics.goalReached()
+            // Suppress remaining reminders for today
+            suppressRemainingReminders()
         }
 
         if let hk = healthKitManager, hk.isAuthorized {
@@ -105,5 +108,17 @@ final class WatchHydrationStore: ObservableObject {
         var state = persistence.load(PersistedState.self, fallback: .default)
         state.entries = entries
         persistence.save(state)
+    }
+
+    private func suppressRemainingReminders() {
+        let center = UNUserNotificationCenter.current()
+        center.getPendingNotificationRequests { requests in
+            let reminderIds = requests
+                .filter { $0.content.categoryIdentifier == "HYDRATION_REMINDER" }
+                .map(\.identifier)
+            if !reminderIds.isEmpty {
+                center.removePendingNotificationRequests(withIdentifiers: reminderIds)
+            }
+        }
     }
 }

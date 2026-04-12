@@ -1,5 +1,6 @@
 import AppIntents
 import WidgetKit
+import WatchKit
 
 struct WatchQuickAddIntent: AppIntent {
     static var title: LocalizedStringResource = "Log Water"
@@ -20,6 +21,8 @@ struct WatchQuickAddIntent: AppIntent {
         state.entries.append(entry)
         persistence.save(state)
         WidgetCenter.shared.reloadAllTimelines()
+
+        WKInterfaceDevice.current().play(.success)
 
         return .result()
     }
