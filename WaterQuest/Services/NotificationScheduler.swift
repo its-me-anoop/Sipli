@@ -160,6 +160,7 @@ final class NotificationScheduler: ObservableObject {
             content.title = "Sipli"
             content.body = body
             content.sound = .default
+            content.categoryIdentifier = "HYDRATION_REMINDER"
 
             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: delay, repeats: false)
             let request = UNNotificationRequest(identifier: "\(smartIdentifierPrefix)\(batchID).\(index)", content: content, trigger: trigger)
@@ -299,6 +300,7 @@ final class NotificationScheduler: ObservableObject {
             content.title = "Sipli"
             content.body = staticMessages[index % staticMessages.count]
             content.sound = .default
+            content.categoryIdentifier = "HYDRATION_REMINDER"
 
             let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
             let request = UNNotificationRequest(identifier: "sipli.classic.\(index)", content: content, trigger: trigger)

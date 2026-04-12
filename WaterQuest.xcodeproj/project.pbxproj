@@ -24,6 +24,8 @@
 		WA001C000000000000000001 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CBD2C7DC27199FF61EB613 /* Theme.swift */; };
 		WA001D000000000000000001 /* WatchHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA001D000000000000000002 /* WatchHaptics.swift */; };
 		WA001E000000000000000001 /* WatchHydrationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA001E000000000000000002 /* WatchHydrationStore.swift */; };
+		WA002A000000000000000001 /* WatchHealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA002A000000000000000002 /* WatchHealthKitManager.swift */; };
+		WA002B000000000000000001 /* WatchNotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA002B000000000000000002 /* WatchNotificationHandler.swift */; };
 		WA001F000000000000000001 /* WatchProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA001F000000000000000002 /* WatchProgressRing.swift */; };
 		WA0020000000000000000001 /* WatchDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA0020000000000000000002 /* WatchDashboardView.swift */; };
 		WA0021000000000000000001 /* WatchTodayLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA0021000000000000000002 /* WatchTodayLogView.swift */; };
@@ -236,6 +238,8 @@
 		WA0006000000000000000001 /* SipliWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SipliWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		WA001D000000000000000002 /* WatchHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHaptics.swift; sourceTree = "<group>"; };
 		WA001E000000000000000002 /* WatchHydrationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHydrationStore.swift; sourceTree = "<group>"; };
+		WA002A000000000000000002 /* WatchHealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHealthKitManager.swift; sourceTree = "<group>"; };
+		WA002B000000000000000002 /* WatchNotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchNotificationHandler.swift; sourceTree = "<group>"; };
 		WA001F000000000000000002 /* WatchProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchProgressRing.swift; sourceTree = "<group>"; };
 		WA0020000000000000000002 /* WatchDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDashboardView.swift; sourceTree = "<group>"; };
 		WA0021000000000000000002 /* WatchTodayLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTodayLogView.swift; sourceTree = "<group>"; };
@@ -285,6 +289,8 @@
 				WA0001000000000000000002 /* SipliWatchApp.swift */,
 				WA001D000000000000000002 /* WatchHaptics.swift */,
 				WA001E000000000000000002 /* WatchHydrationStore.swift */,
+				WA002A000000000000000002 /* WatchHealthKitManager.swift */,
+				WA002B000000000000000002 /* WatchNotificationHandler.swift */,
 				WA0024000000000000000001 /* Views */,
 				WA0002000000000000000002 /* Assets.xcassets */,
 				WA000E000000000000000001 /* SipliWatch.entitlements */,
@@ -727,6 +733,8 @@
 				WA001C000000000000000001 /* Theme.swift in Sources */,
 				WA001D000000000000000001 /* WatchHaptics.swift in Sources */,
 				WA001E000000000000000001 /* WatchHydrationStore.swift in Sources */,
+				WA002A000000000000000001 /* WatchHealthKitManager.swift in Sources */,
+				WA002B000000000000000001 /* WatchNotificationHandler.swift in Sources */,
 				WA001F000000000000000001 /* WatchProgressRing.swift in Sources */,
 				WA0020000000000000000001 /* WatchDashboardView.swift in Sources */,
 				WA0021000000000000000001 /* WatchTodayLogView.swift in Sources */,

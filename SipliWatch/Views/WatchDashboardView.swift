@@ -40,6 +40,28 @@ struct WatchDashboardView: View {
         .sheet(isPresented: $showQuickAdd) {
             WatchQuickAddView()
         }
+        .overlay {
+            if store.justReachedGoal {
+                VStack(spacing: 8) {
+                    Image(systemName: "trophy.fill")
+                        .font(.system(size: 32))
+                        .foregroundStyle(.yellow)
+                    Text("Goal Reached!")
+                        .font(.system(size: 16, weight: .bold))
+                }
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .background(.ultraThinMaterial)
+                .onAppear {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                        withAnimation {
+                            store.justReachedGoal = false
+                        }
+                    }
+                }
+                .transition(.opacity)
+            }
+        }
+        .animation(.easeInOut, value: store.justReachedGoal)
     }
 }
 

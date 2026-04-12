@@ -7,6 +7,9 @@ final class WatchHydrationStore: ObservableObject {
     @Published var profile: UserProfile = .default
     @Published var goalBreakdown: GoalBreakdown = GoalBreakdown(baseML: 2450, weatherAdjustmentML: 0, workoutAdjustmentML: 0, totalML: 2450)
     @Published var hasPremiumAccess: Bool = false
+    @Published var justReachedGoal: Bool = false
+
+    var healthKitManager: WatchHealthKitManager?
 
     private let persistence = PersistenceService()
 
@@ -55,6 +58,8 @@ final class WatchHydrationStore: ObservableObject {
     }
 
     func addIntake(volumeML: Double, fluidType: FluidType = .water) {
+        let wasBelow = todayTotalML < goalBreakdown.totalML
+
         let entry = HydrationEntry(
             date: Date(),
             volumeML: volumeML,
@@ -63,6 +68,17 @@ final class WatchHydrationStore: ObservableObject {
         )
         entries.append(entry)
         saveState()
+
+        if wasBelow && todayTotalML >= goalBreakdown.totalML {
+            justReachedGoal = true
+            WatchHaptics.goalReached()
+        }
+
+        if let hk = healthKitManager, hk.isAuthorized {
+            Task {
+                await hk.logWaterIntake(ml: volumeML)
+            }
+        }
     }
 
     func deleteEntry(_ entry: HydrationEntry) {
