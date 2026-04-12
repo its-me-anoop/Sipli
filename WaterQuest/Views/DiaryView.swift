@@ -219,7 +219,7 @@ struct DiaryView: View {
         Haptics.impact(.medium)
         Task {
             switch entry.source {
-            case .manual:
+            case .manual, .watchManual:
                 await healthKit.deleteWaterIntake(entryID: entry.id)
             case .healthKit:
                 await healthKit.deleteWaterSample(uuid: entry.id)

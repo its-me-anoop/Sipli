@@ -3,6 +3,7 @@ import Foundation
 enum HydrationSource: String, Codable {
     case manual
     case healthKit
+    case watchManual
 }
 
 struct HydrationEntry: Identifiable, Codable, Hashable {
