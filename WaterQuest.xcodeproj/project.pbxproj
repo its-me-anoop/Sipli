@@ -22,6 +22,13 @@
 		WA001A000000000000000001 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F021A59BB7CB33328B5ABBC4 /* Formatters.swift */; };
 		WA001B000000000000000001 /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 161A82CD61225A1F302ECA9D /* DateExtensions.swift */; };
 		WA001C000000000000000001 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CBD2C7DC27199FF61EB613 /* Theme.swift */; };
+		WA001D000000000000000001 /* WatchHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA001D000000000000000002 /* WatchHaptics.swift */; };
+		WA001E000000000000000001 /* WatchHydrationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA001E000000000000000002 /* WatchHydrationStore.swift */; };
+		WA001F000000000000000001 /* WatchProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA001F000000000000000002 /* WatchProgressRing.swift */; };
+		WA0020000000000000000001 /* WatchDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA0020000000000000000002 /* WatchDashboardView.swift */; };
+		WA0021000000000000000001 /* WatchTodayLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA0021000000000000000002 /* WatchTodayLogView.swift */; };
+		WA0022000000000000000001 /* WatchQuickAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA0022000000000000000002 /* WatchQuickAddView.swift */; };
+		WA0023000000000000000001 /* WatchFluidPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA0023000000000000000002 /* WatchFluidPickerView.swift */; };
 		WA0003000000000000000001 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = WA0003000000000000000002 /* HealthKit.framework */; };
 		WA0004000000000000000001 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = WA0004000000000000000002 /* WidgetKit.framework */; };
 		WA0005000000000000000001 /* SipliWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = WA0006000000000000000001 /* SipliWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -225,6 +232,13 @@
 		WA0003000000000000000002 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
 		WA0004000000000000000002 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		WA0006000000000000000001 /* SipliWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SipliWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		WA001D000000000000000002 /* WatchHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHaptics.swift; sourceTree = "<group>"; };
+		WA001E000000000000000002 /* WatchHydrationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHydrationStore.swift; sourceTree = "<group>"; };
+		WA001F000000000000000002 /* WatchProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchProgressRing.swift; sourceTree = "<group>"; };
+		WA0020000000000000000002 /* WatchDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDashboardView.swift; sourceTree = "<group>"; };
+		WA0021000000000000000002 /* WatchTodayLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTodayLogView.swift; sourceTree = "<group>"; };
+		WA0022000000000000000002 /* WatchQuickAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchQuickAddView.swift; sourceTree = "<group>"; };
+		WA0023000000000000000002 /* WatchFluidPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFluidPickerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -265,11 +279,26 @@
 			isa = PBXGroup;
 			children = (
 				WA0001000000000000000002 /* SipliWatchApp.swift */,
+				WA001D000000000000000002 /* WatchHaptics.swift */,
+				WA001E000000000000000002 /* WatchHydrationStore.swift */,
+				WA0024000000000000000001 /* Views */,
 				WA0002000000000000000002 /* Assets.xcassets */,
 				WA000E000000000000000001 /* SipliWatch.entitlements */,
 				WA000F000000000000000001 /* Info.plist */,
 			);
 			path = SipliWatch;
+			sourceTree = "<group>";
+		};
+		WA0024000000000000000001 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				WA001F000000000000000002 /* WatchProgressRing.swift */,
+				WA0020000000000000000002 /* WatchDashboardView.swift */,
+				WA0021000000000000000002 /* WatchTodayLogView.swift */,
+				WA0022000000000000000002 /* WatchQuickAddView.swift */,
+				WA0023000000000000000002 /* WatchFluidPickerView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		120E9D2B9013FCD931926A20 /* WaterQuest */ = {
@@ -682,6 +711,13 @@
 				WA001A000000000000000001 /* Formatters.swift in Sources */,
 				WA001B000000000000000001 /* DateExtensions.swift in Sources */,
 				WA001C000000000000000001 /* Theme.swift in Sources */,
+				WA001D000000000000000001 /* WatchHaptics.swift in Sources */,
+				WA001E000000000000000001 /* WatchHydrationStore.swift in Sources */,
+				WA001F000000000000000001 /* WatchProgressRing.swift in Sources */,
+				WA0020000000000000000001 /* WatchDashboardView.swift in Sources */,
+				WA0021000000000000000001 /* WatchTodayLogView.swift in Sources */,
+				WA0022000000000000000001 /* WatchQuickAddView.swift in Sources */,
+				WA0023000000000000000001 /* WatchFluidPickerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
