@@ -29,6 +29,8 @@
 		WA0021000000000000000001 /* WatchTodayLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA0021000000000000000002 /* WatchTodayLogView.swift */; };
 		WA0022000000000000000001 /* WatchQuickAddView.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA0022000000000000000002 /* WatchQuickAddView.swift */; };
 		WA0023000000000000000001 /* WatchFluidPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA0023000000000000000002 /* WatchFluidPickerView.swift */; };
+		WA0025000000000000000001 /* SipliWatchWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA0025000000000000000002 /* SipliWatchWidget.swift */; };
+		WA0026000000000000000001 /* WatchQuickAddIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA0026000000000000000002 /* WatchQuickAddIntent.swift */; };
 		WA0003000000000000000001 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = WA0003000000000000000002 /* HealthKit.framework */; };
 		WA0004000000000000000001 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = WA0004000000000000000002 /* WidgetKit.framework */; };
 		WA0005000000000000000001 /* SipliWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = WA0006000000000000000001 /* SipliWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
@@ -239,6 +241,8 @@
 		WA0021000000000000000002 /* WatchTodayLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTodayLogView.swift; sourceTree = "<group>"; };
 		WA0022000000000000000002 /* WatchQuickAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchQuickAddView.swift; sourceTree = "<group>"; };
 		WA0023000000000000000002 /* WatchFluidPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFluidPickerView.swift; sourceTree = "<group>"; };
+		WA0025000000000000000002 /* SipliWatchWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SipliWatchWidget.swift; sourceTree = "<group>"; };
+		WA0026000000000000000002 /* WatchQuickAddIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchQuickAddIntent.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -285,8 +289,18 @@
 				WA0002000000000000000002 /* Assets.xcassets */,
 				WA000E000000000000000001 /* SipliWatch.entitlements */,
 				WA000F000000000000000001 /* Info.plist */,
+				WA0027000000000000000001 /* Complications */,
 			);
 			path = SipliWatch;
+			sourceTree = "<group>";
+		};
+		WA0027000000000000000001 /* Complications */ = {
+			isa = PBXGroup;
+			children = (
+				WA0025000000000000000002 /* SipliWatchWidget.swift */,
+				WA0026000000000000000002 /* WatchQuickAddIntent.swift */,
+			);
+			path = Complications;
 			sourceTree = "<group>";
 		};
 		WA0024000000000000000001 /* Views */ = {
@@ -718,6 +732,8 @@
 				WA0021000000000000000001 /* WatchTodayLogView.swift in Sources */,
 				WA0022000000000000000001 /* WatchQuickAddView.swift in Sources */,
 				WA0023000000000000000001 /* WatchFluidPickerView.swift in Sources */,
+				WA0025000000000000000001 /* SipliWatchWidget.swift in Sources */,
+				WA0026000000000000000001 /* WatchQuickAddIntent.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
