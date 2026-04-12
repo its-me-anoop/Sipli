@@ -15,8 +15,13 @@ enum Legal {
 
 enum Theme {
     // MARK: Palette
+#if os(watchOS)
+    static let night = Color(white: 0.10)
+    static let deepSea = Color(white: 0.15)
+#else
     static let night = Color(uiColor: .systemGroupedBackground)
     static let deepSea = Color(uiColor: .secondarySystemGroupedBackground)
+#endif
     static let lagoon = Color(red: 0.11, green: 0.47, blue: 0.96)
     static let coral = Color(red: 0.94, green: 0.33, blue: 0.28)
     static let mint = Color(red: 0.19, green: 0.76, blue: 0.64)
@@ -28,10 +33,22 @@ enum Theme {
     static let textPrimary = Color.primary
     static let textSecondary = Color.secondary
     static let textTertiary = Color.secondary.opacity(0.7)
+#if os(watchOS)
+    static let mintText = Color.green
+    static let sunText = Color.orange
+#else
     static let mintText = Color(uiColor: .systemGreen)
     static let sunText = Color(uiColor: .systemOrange)
+#endif
 
     // MARK: Surfaces
+#if os(watchOS)
+    static let cardSurface = Color(white: 0.18)
+    static let cardElevated = Color(white: 0.22)
+    static let glassBorder = Color.white.opacity(0.12)
+    static let glassAccent = Color.white.opacity(0.08)
+    static let shadowColor = Color.black.opacity(0.22)
+#else
     static let cardSurface = Color(
         uiColor: UIColor { traits in
             traits.userInterfaceStyle == .dark ? .secondarySystemBackground : .systemBackground
@@ -42,7 +59,6 @@ enum Theme {
             traits.userInterfaceStyle == .dark ? .tertiarySystemBackground : .secondarySystemBackground
         }
     )
-    static let glassLight = cardSurface
     static let glassBorder = Color(
         uiColor: UIColor { traits in
             traits.userInterfaceStyle == .dark
@@ -50,7 +66,6 @@ enum Theme {
                 : UIColor.black.withAlphaComponent(0.14)
         }
     )
-    static let glassHighlight = Color.white.opacity(0.7)
     static let glassAccent = Color(uiColor: .tertiarySystemFill)
     static let shadowColor = Color(
         uiColor: UIColor { traits in
@@ -59,9 +74,34 @@ enum Theme {
                 : UIColor.black.withAlphaComponent(0.16)
         }
     )
+#endif
+    static let glassLight = cardSurface
+    static let glassHighlight = Color.white.opacity(0.7)
     static let tabBarOverlay = Color.clear
 
     // MARK: Gradients
+#if os(watchOS)
+    static let background = LinearGradient(
+        colors: [Color(white: 0.10), Color(white: 0.15)],
+        startPoint: .top,
+        endPoint: .bottom
+    )
+    static let card = LinearGradient(
+        colors: [Color(white: 0.18), Color(white: 0.14)],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+    static let coachCard = LinearGradient(
+        colors: [Color(white: 0.16), Color(white: 0.20)],
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
+    )
+    static let summaryCard = LinearGradient(
+        colors: [Color(white: 0.14), Color(white: 0.18)],
+        startPoint: .top,
+        endPoint: .bottom
+    )
+#else
     static let background = LinearGradient(
         colors: [
             Color(uiColor: .systemGroupedBackground),
@@ -121,6 +161,7 @@ enum Theme {
         startPoint: .top,
         endPoint: .bottom
     )
+#endif
 
     static let glowGradient = LinearGradient(
         colors: [lagoon.opacity(0.9), mint.opacity(0.8), lavender.opacity(0.8)],

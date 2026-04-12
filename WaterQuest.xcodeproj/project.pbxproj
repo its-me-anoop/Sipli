@@ -7,6 +7,24 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		WA0001000000000000000001 /* SipliWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA0001000000000000000002 /* SipliWatchApp.swift */; };
+		WA0002000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = WA0002000000000000000002 /* Assets.xcassets */; };
+		WA0010000000000000000001 /* HydrationEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */; };
+		WA0011000000000000000001 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50CF0F6325F9C80BFB71AA0D /* UserProfile.swift */; };
+		WA0012000000000000000001 /* FluidType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A139EF313607077443D4FCFE /* FluidType.swift */; };
+		WA0013000000000000000001 /* GoalBreakdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */; };
+		WA0014000000000000000001 /* PersistedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8888888888888888888888 /* PersistedState.swift */; };
+		WA0015000000000000000001 /* WeatherSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */; };
+		WA0016000000000000000001 /* WorkoutSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE15D5810B84C7C96E0EA4C /* WorkoutSummary.swift */; };
+		WA0017000000000000000001 /* UnitSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032684376DE05B0CC4838664 /* UnitSystem.swift */; };
+		WA0018000000000000000001 /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37EBA9FC9F1233C2BC105DD /* PersistenceService.swift */; };
+		WA0019000000000000000001 /* GoalCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38731A03D043511C9AAD4C2 /* GoalCalculator.swift */; };
+		WA001A000000000000000001 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F021A59BB7CB33328B5ABBC4 /* Formatters.swift */; };
+		WA001B000000000000000001 /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 161A82CD61225A1F302ECA9D /* DateExtensions.swift */; };
+		WA001C000000000000000001 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CBD2C7DC27199FF61EB613 /* Theme.swift */; };
+		WA0003000000000000000001 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = WA0003000000000000000002 /* HealthKit.framework */; };
+		WA0004000000000000000001 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = WA0004000000000000000002 /* WidgetKit.framework */; };
+		WA0005000000000000000001 /* SipliWatch.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = WA0006000000000000000001 /* SipliWatch.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		00E5359EB56D89B045DDBDF1 /* AddIntakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBC0C7A2F89C0FD52822D48 /* AddIntakeView.swift */; };
 		ED01000000000000000001 /* EarthDayBannerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED01000000000000000002 /* EarthDayBannerCard.swift */; };
 		ED05000000000000000001 /* EarthProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED05000000000000000002 /* EarthProgressView.swift */; };
@@ -96,6 +114,15 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXContainerItemProxy section (Watch) */
+		WA0007000000000000000001 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D67A7263546728AB364FF765 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = WA0008000000000000000001;
+			remoteInfo = SipliWatch;
+		};
+
 /* Begin PBXCopyFilesBuildPhase section */
 		FF7777777777777777777777 /* Embed App Extensions */ = {
 			isa = PBXCopyFilesBuildPhase;
@@ -106,6 +133,17 @@
 				FF8888888888888888888888 /* SipliWidget.appex in Embed App Extensions */,
 			);
 			name = "Embed App Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		WA0009000000000000000001 /* Embed Watch Content */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
+			dstSubfolderSpec = 16;
+			files = (
+				WA0005000000000000000001 /* SipliWatch.app in Embed Watch Content */,
+			);
+			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXCopyFilesBuildPhase section */
@@ -180,6 +218,13 @@
 		FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalBreakdown.swift; sourceTree = "<group>"; };
 		FD0B42119D7BD312FCDAF766 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		FE848C59D9014D3ABE6E04BE /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
+		WA0001000000000000000002 /* SipliWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SipliWatchApp.swift; sourceTree = "<group>"; };
+		WA0002000000000000000002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		WA000E000000000000000001 /* SipliWatch.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SipliWatch.entitlements; sourceTree = "<group>"; };
+		WA000F000000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		WA0003000000000000000002 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
+		WA0004000000000000000002 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
+		WA0006000000000000000001 /* SipliWatch.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SipliWatch.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -192,6 +237,15 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		WA000A000000000000000001 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				WA0003000000000000000001 /* HealthKit.framework in Frameworks */,
+				WA0004000000000000000001 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -201,9 +255,21 @@
 				6BDAF0F12F6375DE009ADC09 /* Products.storekit */,
 				120E9D2B9013FCD931926A20 /* WaterQuest */,
 				BB1111111111111111111111 /* SipliWidget */,
+				WA000B000000000000000001 /* SipliWatch */,
 				DA0C73A8FD8A545CB27D2691 /* Products */,
 				EE5555555555555555555555 /* Frameworks */,
 			);
+			sourceTree = "<group>";
+		};
+		WA000B000000000000000001 /* SipliWatch */ = {
+			isa = PBXGroup;
+			children = (
+				WA0001000000000000000002 /* SipliWatchApp.swift */,
+				WA0002000000000000000002 /* Assets.xcassets */,
+				WA000E000000000000000001 /* SipliWatch.entitlements */,
+				WA000F000000000000000001 /* Info.plist */,
+			);
+			path = SipliWatch;
 			sourceTree = "<group>";
 		};
 		120E9D2B9013FCD931926A20 /* WaterQuest */ = {
@@ -341,6 +407,7 @@
 			children = (
 				1BD898210B2BA8EE347F72F4 /* Sipli.app */,
 				AA9999999999999999999999 /* SipliWidget.appex */,
+				WA0006000000000000000001 /* SipliWatch.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -358,6 +425,8 @@
 			children = (
 				EE1111111111111111111111 /* WidgetKit.framework */,
 				EE2222222222222222222222 /* SwiftUI.framework */,
+				WA0003000000000000000002 /* HealthKit.framework */,
+				WA0004000000000000000002 /* WidgetKit.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -392,11 +461,13 @@
 				DF4D89045F6FF7DC59C91782 /* Sources */,
 				21F612D46A6DDAE6FA6387D5 /* Resources */,
 				FF7777777777777777777777 /* Embed App Extensions */,
+				WA0009000000000000000001 /* Embed Watch Content */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 				FF2222222222222222222222 /* PBXTargetDependency */,
+				WA000D200000000000000001 /* PBXTargetDependency */,
 			);
 			name = WaterQuest;
 			packageProductDependencies = (
@@ -422,6 +493,23 @@
 			productReference = AA9999999999999999999999 /* SipliWidget.appex */;
 			productType = "com.apple.product-type.app-extension";
 		};
+		WA0008000000000000000001 /* SipliWatch */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = WA000C000000000000000001 /* Build configuration list for PBXNativeTarget "SipliWatch" */;
+			buildPhases = (
+				WA000D000000000000000001 /* Sources */,
+				WA000A000000000000000001 /* Frameworks */,
+				WA000D100000000000000001 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SipliWatch;
+			productName = SipliWatch;
+			productReference = WA0006000000000000000001 /* SipliWatch.app */;
+			productType = "com.apple.product-type.application";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -435,6 +523,9 @@
 						ProvisioningStyle = Automatic;
 					};
 					FF1111111111111111111111 = {
+						ProvisioningStyle = Automatic;
+					};
+					WA0008000000000000000001 = {
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -454,6 +545,7 @@
 			targets = (
 				8696EFE2052B0D0EA16BCADF /* WaterQuest */,
 				FF1111111111111111111111 /* SipliWidget */,
+				WA0008000000000000000001 /* SipliWatch */,
 			);
 		};
 /* End PBXProject section */
@@ -477,6 +569,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		WA000D100000000000000001 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				WA0002000000000000000001 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -564,6 +664,27 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		WA000D000000000000000001 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				WA0001000000000000000001 /* SipliWatchApp.swift in Sources */,
+				WA0010000000000000000001 /* HydrationEntry.swift in Sources */,
+				WA0011000000000000000001 /* UserProfile.swift in Sources */,
+				WA0012000000000000000001 /* FluidType.swift in Sources */,
+				WA0013000000000000000001 /* GoalBreakdown.swift in Sources */,
+				WA0014000000000000000001 /* PersistedState.swift in Sources */,
+				WA0015000000000000000001 /* WeatherSnapshot.swift in Sources */,
+				WA0016000000000000000001 /* WorkoutSummary.swift in Sources */,
+				WA0017000000000000000001 /* UnitSystem.swift in Sources */,
+				WA0018000000000000000001 /* PersistenceService.swift in Sources */,
+				WA0019000000000000000001 /* GoalCalculator.swift in Sources */,
+				WA001A000000000000000001 /* Formatters.swift in Sources */,
+				WA001B000000000000000001 /* DateExtensions.swift in Sources */,
+				WA001C000000000000000001 /* Theme.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -571,6 +692,11 @@
 			isa = PBXTargetDependency;
 			target = FF1111111111111111111111 /* SipliWidget */;
 			targetProxy = FF3333333333333333333333 /* PBXContainerItemProxy */;
+		};
+		WA000D200000000000000001 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = WA0008000000000000000001 /* SipliWatch */;
+			targetProxy = WA0007000000000000000001 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -802,6 +928,62 @@
 			};
 			name = Release;
 		};
+		WA000C100000000000000001 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SipliWatch/SipliWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = K6623R3GP5;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SipliWatch/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Sipli;
+				INFOPLIST_KEY_WKApplication = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.watchapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Debug;
+		};
+		WA000C200000000000000001 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SipliWatch/SipliWatch.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = K6623R3GP5;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SipliWatch/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Sipli;
+				INFOPLIST_KEY_WKApplication = YES;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 2.3;
+				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.watchapp;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -828,6 +1010,15 @@
 			buildConfigurations = (
 				FF5555555555555555555555 /* Debug */,
 				FF6666666666666666666666 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		WA000C000000000000000001 /* Build configuration list for PBXNativeTarget "SipliWatch" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				WA000C100000000000000001 /* Debug */,
+				WA000C200000000000000001 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
