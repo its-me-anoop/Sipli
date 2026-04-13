@@ -20,5 +20,7 @@
     <string>$(CURRENT_PROJECT_VERSION)</string>
     <key>WKApplication</key>
     <true/>
+    <key>WKCompanionAppBundleIdentifier</key>
+    <string>com.waterquest.hydration</string>
 </dict>
 </plist>
