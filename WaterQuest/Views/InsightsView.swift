@@ -568,7 +568,7 @@ struct InsightsView: View {
 
             // Weekday headers
             HStack(spacing: 4) {
-                ForEach(calendar.veryShortWeekdaySymbols, id: \.self) { symbol in
+                ForEach(Array(calendar.veryShortWeekdaySymbols.enumerated()), id: \.offset) { _, symbol in
                     Text(symbol)
                         .font(.caption2.weight(.medium))
                         .foregroundStyle(.secondary)
