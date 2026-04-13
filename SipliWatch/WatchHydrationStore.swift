@@ -46,16 +46,22 @@ final class WatchHydrationStore: ObservableObject {
     }
 
     var topFluidTypes: [FluidType] {
-        let counts = Dictionary(grouping: entries, by: \.fluidType)
+        let defaults: [FluidType] = [.water, .coffee, .greenTea, .sparklingWater, .juice, .milk]
+
+        let fromHistory = Dictionary(grouping: entries, by: \.fluidType)
             .mapValues(\.count)
             .sorted { $0.value > $1.value }
             .prefix(6)
             .map(\.key)
 
-        if counts.isEmpty {
-            return [.water, .coffee, .greenTea, .sparklingWater, .juice, .milk]
+        // Pad with defaults if history has fewer than 6 types
+        var result = Array(fromHistory)
+        for fallback in defaults where result.count < 6 {
+            if !result.contains(fallback) {
+                result.append(fallback)
+            }
         }
-        return Array(counts)
+        return Array(result.prefix(6))
     }
 
     func addIntake(volumeML: Double, fluidType: FluidType = .water) {
