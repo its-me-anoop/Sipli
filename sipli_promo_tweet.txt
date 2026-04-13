@@ -1,0 +1,15 @@
+Suggested X post copy for Sipli:
+
+Option 1 (playful):
+Drinking water should feel less like a chore and more like a quest 💧
+Meet Sipli — hydration, made a game. Smart goals that adapt to weather and workouts, plus streaks, quests, and XP to keep you going.
+#iOS #Hydration #HealthKit
+
+Option 2 (short):
+Hydration, made a game. 💧
+Sipli turns your water intake into quests, streaks, and XP — with smart goals that adapt to weather and workouts.
+Now on iOS.
+
+Option 3 (dev angle):
+Built Sipli — a playful iOS hydration tracker with HealthKit + WeatherKit. Smart goals, streaks, quests, XP. Because drinking water should be fun. 💧
+#SwiftUI #iOSDev

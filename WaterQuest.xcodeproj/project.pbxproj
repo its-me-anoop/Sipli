@@ -64,6 +64,7 @@
 		5D5BF32CEAF21645C51E5442 /* GoalCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38731A03D043511C9AAD4C2 /* GoalCalculator.swift */; };
 		6B3494CD2F5249E200D313C3 /* QuickAddWaterIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3494CC2F5249E200D313C3 /* QuickAddWaterIntent.swift */; };
 		6BBC3B922F4F6AC100F5525A /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 6BBC3B912F4F6AC100F5525A /* AppIcon.icon */; };
+		WA00ICON0000000000000001 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 6676ED6B664E8F56F653FFFF /* AppIcon.icon */; };
 		6BDAF0F22F6375DE009ADC09 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 6BDAF0F12F6375DE009ADC09 /* Products.storekit */; };
 		7077C5CF3469D64E94804983 /* FluidType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A139EF313607077443D4FCFE /* FluidType.swift */; };
 		747A7C4F8A906C71164AB9DE /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */; };
@@ -626,6 +627,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				WA0002000000000000000001 /* Assets.xcassets in Resources */,
+				WA00ICON0000000000000001 /* AppIcon.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

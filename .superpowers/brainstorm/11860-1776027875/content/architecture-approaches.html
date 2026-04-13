@@ -1,0 +1,85 @@
+<h2>Watch App Architecture — 3 Approaches</h2>
+<p class="subtitle">How should the iPhone and Watch apps communicate and share data?</p>
+
+<div class="options">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>WatchConnectivity Only</h3>
+      <p>iPhone ↔ Watch sync via <code>WCSession</code>. Watch stores local copy of today's data. iPhone is the source of truth.</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>Real-time sync when phone is nearby</li>
+            <li>Simple mental model — iPhone owns the data</li>
+            <li>No iCloud complexity on Watch</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>Watch data stale when phone is out of range</li>
+            <li>Entries logged on Watch queue until phone reconnects</li>
+            <li>New framework to integrate (WatchConnectivity)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="b" onclick="toggleSelect(this)" style="border-left: 3px solid #4CAF50;">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Shared App Group + iCloud KVStore ⭐ Recommended</h3>
+      <p>Both apps read/write to the same App Group container + iCloud KVStore. Same sync mechanism the Widget already uses. Watch has full independent access.</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>Builds on existing persistence architecture</li>
+            <li>Watch works fully independently</li>
+            <li>Widget, iPhone, and Watch all share one data path</li>
+            <li>No new sync framework needed</li>
+            <li>iCloud handles cross-device sync automatically</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>iCloud KVStore has 1MB limit (fine for hydration data)</li>
+            <li>Sync latency (~seconds, not instant)</li>
+            <li>Need conflict resolution (you already have timestamp-based)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="c" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>WatchConnectivity + App Group Hybrid</h3>
+      <p>WatchConnectivity for real-time updates (instant sync). App Group + iCloud as fallback when phone is away. Best sync speed, most complex.</p>
+      <div class="pros-cons">
+        <div class="pros">
+          <h4>Pros</h4>
+          <ul>
+            <li>Instant sync when phone is nearby</li>
+            <li>Independent operation when phone is away</li>
+            <li>Best possible user experience</li>
+          </ul>
+        </div>
+        <div class="cons">
+          <h4>Cons</h4>
+          <ul>
+            <li>Two sync paths = more complexity and edge cases</li>
+            <li>Conflict resolution across both channels</li>
+            <li>Significantly more code to maintain</li>
+            <li>Overkill for hydration data (not time-critical)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
