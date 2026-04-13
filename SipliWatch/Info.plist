@@ -22,5 +22,9 @@
     <true/>
     <key>WKCompanionAppBundleIdentifier</key>
     <string>com.waterquest.hydration</string>
+    <key>NSHealthShareUsageDescription</key>
+    <string>Sipli reads your water intake data to show hydration progress on your Watch.</string>
+    <key>NSHealthUpdateUsageDescription</key>
+    <string>Sipli logs your water intake to Apple Health when you track hydration from your Watch.</string>
 </dict>
 </plist>
