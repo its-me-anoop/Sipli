@@ -1,5 +1,6 @@
 import Foundation
 import Combine
+import WidgetKit
 @preconcurrency import UserNotifications
 
 @MainActor
@@ -19,6 +20,7 @@ final class WatchHydrationStore: ObservableObject {
         persistence.setRemoteDataChangeHandler { [weak self] _ in
             Task { @MainActor in
                 self?.loadState()
+                WidgetCenter.shared.reloadAllTimelines()
             }
         }
     }
@@ -75,6 +77,7 @@ final class WatchHydrationStore: ObservableObject {
         )
         entries.append(entry)
         saveState()
+        WidgetCenter.shared.reloadAllTimelines()
 
         if wasBelow && todayTotalML >= goalBreakdown.totalML {
             justReachedGoal = true
@@ -93,6 +96,7 @@ final class WatchHydrationStore: ObservableObject {
     func deleteEntry(_ entry: HydrationEntry) {
         entries.removeAll { $0.id == entry.id }
         saveState()
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     func loadState() {
