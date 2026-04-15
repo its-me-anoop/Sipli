@@ -1124,6 +1124,41 @@ function Slide1() {
   );
 }
 
+/**
+ * Sprint 5a — candidate hero replacing the generic "Stay Hydrated, Effortlessly"
+ * headline with keyword-forward copy that matches the new ASO strategy.
+ *
+ * Copy-only change vs. Slide1 — identical composition (same bg, same blobs,
+ * same phone mockup) so an A/B test isolates the caption as the only variable.
+ *
+ * Rendered in the "Proposed (not live)" preview section at the bottom of the
+ * page. NOT wired into IPHONE_SCREENSHOTS — promoting to production happens
+ * only after PPO test data confirms it converts at least as well as Slide1.
+ */
+function Slide1HeroV2() {
+  return (
+    <DarkOceanBg
+      blobs={<>
+        <Blob color={BRAND.lagoon} size={600} x={-200} y={200} blur={160} opacity={0.3} />
+        <Blob color={BRAND.mint} size={500} x={700} y={1400} blur={140} opacity={0.2} />
+        <Blob color={BRAND.lavender} size={400} x={900} y={400} blur={130} opacity={0.15} />
+      </>}
+    >
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", height: "100%", paddingTop: H * 0.06 }}>
+        <div style={{ width: W * 0.22, aspectRatio: "1 / 1", borderRadius: W * 0.05, overflow: "hidden", boxShadow: "0 20px 60px rgba(28,120,245,0.3)", marginBottom: W * 0.035, flexShrink: 0 }}>
+          <img src="/app-icon.png" alt="Sipli" style={{ width: "100%", height: "100%", display: "block", objectFit: "contain" }} />
+        </div>
+        <div style={{ marginTop: W * 0.01 }}>
+          <CaptionBlock canvasW={W} label="Water Tracker · Drink Reminder" headline={<>Hydration,<br />on autopilot.</>} />
+        </div>
+        <div style={{ flex: 1, display: "flex", alignItems: "flex-end", justifyContent: "center", width: "100%" }}>
+          <Phone src="/screenshots/home-dark.png" alt="Sipli home screen" style={{ width: "82%", transform: "translateY(12%)" }} />
+        </div>
+      </div>
+    </DarkOceanBg>
+  );
+}
+
 function Slide2() {
   return (
     <DarkOceanBg
@@ -1386,6 +1421,15 @@ const IPHONE_SCREENSHOTS: ScreenshotEntry[] = [
   { name: "diary", component: Slide6 },
   { name: "widgets", component: Slide7 },
   { name: "more", component: Slide8 },
+];
+
+/**
+ * Proposed screenshots not yet live on the App Store. Used for the
+ * "Proposed (not live)" preview section so we can eyeball candidates
+ * alongside production before promoting them into IPHONE_SCREENSHOTS.
+ */
+const PROPOSED_SCREENSHOTS: ScreenshotEntry[] = [
+  { name: "hero-v2", component: Slide1HeroV2 },
 ];
 
 const IPAD_SCREENSHOTS: ScreenshotEntry[] = [
@@ -1876,6 +1920,15 @@ export default function ScreenshotsPage() {
         canvasW={W}
         canvasH={H}
         filenamePrefix="iphone"
+      />
+
+      <DeviceSection
+        title="Proposed (not live) 🧪"
+        screenshots={PROPOSED_SCREENSHOTS}
+        sizes={IPHONE_SIZES}
+        canvasW={W}
+        canvasH={H}
+        filenamePrefix="iphone-proposed"
       />
 
       <DeviceSection
