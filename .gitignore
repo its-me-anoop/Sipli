@@ -1,2 +1,10 @@
 appstore-screenshots/node_modules/
 appstore-screenshots/exports/
+
+# Xcode per-developer state (should never be committed)
+**/xcuserdata/
+*.xcuserstate
+
+# Python venv used by screenshot tooling
+.venv/
+__pycache__/
