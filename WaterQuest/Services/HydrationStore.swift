@@ -193,6 +193,21 @@ final class HydrationStore: ObservableObject {
         WidgetCenter.shared.reloadAllTimelines()
     }
 
+    /// Called by PhoneSessionManager when the Watch sends state via WCSession.
+    /// Merges entries only — does not overwrite iPhone-authoritative fields
+    /// (profile, weather, workout, premium) which the Watch never modifies.
+    func mergeWatchState(_ state: PersistedState) {
+        var byID = Dictionary(uniqueKeysWithValues: entries.map { ($0.id, $0) })
+        var hadNew = false
+        for entry in state.entries where byID[entry.id] == nil {
+            byID[entry.id] = entry
+            hadNew = true
+        }
+        guard hadNew else { return }
+        entries = byID.values.sorted { $0.date < $1.date }
+        persist()
+    }
+
     func applyRemoteState(_ state: PersistedState) {
         // Merge entries by ID: add any remote entries the phone doesn't have yet,
         // and keep any local entries the remote snapshot doesn't include (logged on

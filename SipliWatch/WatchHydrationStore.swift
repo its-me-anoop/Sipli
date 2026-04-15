@@ -20,10 +20,16 @@ final class WatchHydrationStore: ObservableObject {
 
     init() {
         loadState()
-        persistence.setRemoteDataChangeHandler { [weak self] _ in
+        // Decode and merge rather than blindly reloading, so Watch-local entries
+        // that haven't propagated to iCloud yet aren't lost when a newer iPhone
+        // snapshot arrives (Fix 1a).
+        persistence.setRemoteDataChangeHandler { [weak self] data in
+            guard let self else { return }
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            guard let remoteState = try? decoder.decode(PersistedState.self, from: data) else { return }
             Task { @MainActor in
-                self?.loadState()
-                WidgetCenter.shared.reloadAllTimelines()
+                self.applyRemoteState(remoteState)
             }
         }
         WatchSessionManager.shared.store = self
@@ -111,10 +117,13 @@ final class WatchHydrationStore: ObservableObject {
         profile = state.profile
         hasPremiumAccess = state.hasPremiumAccess
 
-        let weather = state.profile.prefersWeatherGoal ? state.lastWeather : nil
-        let workout = state.profile.prefersHealthKit ? state.lastWorkout : nil
+        // Fix 2a: use effectiveProfile so weather/workout adjustments are only
+        // applied when premium access is active, matching iPhone's dailyGoal.
+        let effectiveProfile = state.profile.applyingPremiumAccess(state.hasPremiumAccess)
+        let weather = effectiveProfile.prefersWeatherGoal ? state.lastWeather : nil
+        let workout = effectiveProfile.prefersHealthKit ? state.lastWorkout : nil
         goalBreakdown = GoalCalculator.dailyGoal(
-            profile: state.profile,
+            profile: effectiveProfile,
             weather: weather,
             workout: workout
         )
@@ -132,25 +141,37 @@ final class WatchHydrationStore: ObservableObject {
         WatchSessionManager.shared.sendState(state)
     }
 
-    /// Called by WatchSessionManager when the iPhone pushes a state update over WCSession.
+    /// Called by WatchSessionManager (WCSession) and the iCloud KVS change handler
+    /// when the iPhone pushes a state update.
     func applyRemoteState(_ state: PersistedState) {
         var byID = Dictionary(uniqueKeysWithValues: state.entries.map { ($0.id, $0) })
         for entry in entries where byID[entry.id] == nil {
             byID[entry.id] = entry
         }
-        entries = byID.values
+        let mergedEntries = byID.values
             .filter { !deletedEntryIDs.contains($0.id) }
             .sorted { $0.date < $1.date }
+
+        entries = mergedEntries
         profile = state.profile
         hasPremiumAccess = state.hasPremiumAccess
 
-        let weather = state.profile.prefersWeatherGoal ? state.lastWeather : nil
-        let workout = state.profile.prefersHealthKit ? state.lastWorkout : nil
+        // Fix 2a: apply premium access gate before goal calculation.
+        let effectiveProfile = state.profile.applyingPremiumAccess(state.hasPremiumAccess)
+        let weather = effectiveProfile.prefersWeatherGoal ? state.lastWeather : nil
+        let workout = effectiveProfile.prefersHealthKit ? state.lastWorkout : nil
         goalBreakdown = GoalCalculator.dailyGoal(
-            profile: state.profile,
+            profile: effectiveProfile,
             weather: weather,
             workout: workout
         )
+
+        // Fix 1b: persist the merged state so that a subsequent iCloud KVS
+        // notification sees up-to-date data and doesn't revert this merge.
+        var merged = state
+        merged.entries = mergedEntries
+        persistence.save(merged)
+
         WidgetCenter.shared.reloadAllTimelines()
     }
 

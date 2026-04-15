@@ -49,8 +49,10 @@ final class PhoneSessionManager: NSObject, WCSessionDelegate {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         guard let remoteState = try? decoder.decode(PersistedState.self, from: data) else { return }
+        // Fix 3: use mergeWatchState — Watch packets only contribute entries;
+        // they must not overwrite iPhone-authoritative profile/weather/workout.
         Task { @MainActor in
-            self.store?.applyRemoteState(remoteState)
+            self.store?.mergeWatchState(remoteState)
         }
     }
 }
