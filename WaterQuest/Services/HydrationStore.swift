@@ -39,6 +39,9 @@ final class HydrationStore: ObservableObject {
                 self.applyRemoteState(remoteState)
             }
         }
+
+        PhoneSessionManager.shared.store = self
+        PhoneSessionManager.shared.activate()
     }
 
     var dailyGoal: GoalBreakdown {
@@ -186,11 +189,21 @@ final class HydrationStore: ObservableObject {
             earthDay2026Earned: earthDay2026Earned
         )
         persistence.save(state)
+        PhoneSessionManager.shared.sendState(state)
         WidgetCenter.shared.reloadAllTimelines()
     }
 
-    private func applyRemoteState(_ state: PersistedState) {
-        entries = state.entries
+    func applyRemoteState(_ state: PersistedState) {
+        // Merge entries by ID: add any remote entries the phone doesn't have yet,
+        // and keep any local entries the remote snapshot doesn't include (logged on
+        // phone since the Watch's last iCloud save).
+        var byID = Dictionary(uniqueKeysWithValues: state.entries.map { ($0.id, $0) })
+        for entry in entries where byID[entry.id] == nil {
+            byID[entry.id] = entry
+        }
+        let hadExtraLocal = byID.count > state.entries.count
+        entries = byID.values.sorted { $0.date < $1.date }
+
         profile = state.profile
         lastWeather = state.lastWeather
         lastWorkout = state.lastWorkout
@@ -199,5 +212,9 @@ final class HydrationStore: ObservableObject {
         earthDayBannerDismissed = state.earthDay2026BannerDismissed
         earthDay2026Earned = state.earthDay2026Earned
         WidgetCenter.shared.reloadAllTimelines()
+
+        // If the phone had entries the remote didn't know about, push them back to
+        // iCloud so the Watch picks them up on its next sync.
+        if hadExtraLocal { persist() }
     }
 }

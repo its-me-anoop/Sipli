@@ -14,6 +14,9 @@ final class WatchHydrationStore: ObservableObject {
     var healthKitManager: WatchHealthKitManager?
 
     private let persistence = PersistenceService()
+    // IDs deleted during this session — excluded from the merge in saveState() so
+    // local deletions aren't resurrected by a stale iCloud snapshot.
+    private var deletedEntryIDs = Set<UUID>()
 
     init() {
         loadState()
@@ -23,6 +26,8 @@ final class WatchHydrationStore: ObservableObject {
                 WidgetCenter.shared.reloadAllTimelines()
             }
         }
+        WatchSessionManager.shared.store = self
+        WatchSessionManager.shared.activate()
     }
 
     var todayEntries: [HydrationEntry] {
@@ -94,6 +99,7 @@ final class WatchHydrationStore: ObservableObject {
     }
 
     func deleteEntry(_ entry: HydrationEntry) {
+        deletedEntryIDs.insert(entry.id)
         entries.removeAll { $0.id == entry.id }
         saveState()
         WidgetCenter.shared.reloadAllTimelines()
@@ -101,7 +107,7 @@ final class WatchHydrationStore: ObservableObject {
 
     func loadState() {
         let state = persistence.load(PersistedState.self, fallback: .default)
-        entries = state.entries
+        entries = state.entries.filter { !deletedEntryIDs.contains($0.id) }
         profile = state.profile
         hasPremiumAccess = state.hasPremiumAccess
 
@@ -116,8 +122,36 @@ final class WatchHydrationStore: ObservableObject {
 
     private func saveState() {
         var state = persistence.load(PersistedState.self, fallback: .default)
-        state.entries = entries
+        // Merge remote entries with in-memory entries by ID so that phone entries
+        // delivered by iCloud between our last loadState() and this save are not lost.
+        var byID = Dictionary(uniqueKeysWithValues: state.entries.map { ($0.id, $0) })
+        for entry in entries { byID[entry.id] = entry }
+        deletedEntryIDs.forEach { byID.removeValue(forKey: $0) }
+        state.entries = byID.values.sorted { $0.date < $1.date }
         persistence.save(state)
+        WatchSessionManager.shared.sendState(state)
+    }
+
+    /// Called by WatchSessionManager when the iPhone pushes a state update over WCSession.
+    func applyRemoteState(_ state: PersistedState) {
+        var byID = Dictionary(uniqueKeysWithValues: state.entries.map { ($0.id, $0) })
+        for entry in entries where byID[entry.id] == nil {
+            byID[entry.id] = entry
+        }
+        entries = byID.values
+            .filter { !deletedEntryIDs.contains($0.id) }
+            .sorted { $0.date < $1.date }
+        profile = state.profile
+        hasPremiumAccess = state.hasPremiumAccess
+
+        let weather = state.profile.prefersWeatherGoal ? state.lastWeather : nil
+        let workout = state.profile.prefersHealthKit ? state.lastWorkout : nil
+        goalBreakdown = GoalCalculator.dailyGoal(
+            profile: state.profile,
+            weather: weather,
+            workout: workout
+        )
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     private func suppressRemainingReminders() {

@@ -12,6 +12,8 @@
 		0A5C95DCB74AE59638E495D3 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98496F0A352BC5A580943E39 /* OnboardingView.swift */; };
 		0A6AF1AF6B3D3222F30C3E85 /* WeatherSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */; };
 		0A98E6835256CBC9D3B2DF65 /* HydrationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */; };
+		PS001000000000000000002 /* PhoneSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = PS001000000000000000001 /* PhoneSessionManager.swift */; };
+		WS001000000000000000002 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS001000000000000000001 /* WatchSessionManager.swift */; };
 		0E54D9CCCA944AAEB6EA20F8 /* HydrationEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */; };
 		11DFD61DBBED6087CAF037CC /* WeatherClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2DDAD6DD4B924CCA0509D0 /* WeatherClient.swift */; };
 		1DCE9DE6A19E823BA1E5079B /* DashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97414883E4C0F357148B7EC7 /* DashboardCard.swift */; };
@@ -197,6 +199,7 @@
 		22C158CF127D3436999E3C2B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationEntry.swift; sourceTree = "<group>"; };
 		32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationStore.swift; sourceTree = "<group>"; };
+		PS001000000000000000001 /* PhoneSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneSessionManager.swift; sourceTree = "<group>"; };
 		39EF82B8B03A482B4BC8CBF9 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3ABC282C313B061E1E34EDF7 /* StatPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatPill.swift; sourceTree = "<group>"; };
 		3BE15D5810B84C7C96E0EA4C /* WorkoutSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSummary.swift; sourceTree = "<group>"; };
@@ -271,6 +274,7 @@
 		WA000F000000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		WA001D000000000000000002 /* WatchHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHaptics.swift; sourceTree = "<group>"; };
 		WA001E000000000000000002 /* WatchHydrationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHydrationStore.swift; sourceTree = "<group>"; };
+		WS001000000000000000001 /* WatchSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSessionManager.swift; sourceTree = "<group>"; };
 		WA001F000000000000000002 /* WatchProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchProgressRing.swift; sourceTree = "<group>"; };
 		WA0020000000000000000002 /* WatchDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDashboardView.swift; sourceTree = "<group>"; };
 		WA0021000000000000000002 /* WatchTodayLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTodayLogView.swift; sourceTree = "<group>"; };
@@ -514,6 +518,7 @@
 				E4A8068B4418852446BD78E6 /* MotionManager.swift */,
 				BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */,
 				A37EBA9FC9F1233C2BC105DD /* PersistenceService.swift */,
+				PS001000000000000000001 /* PhoneSessionManager.swift */,
 				B26785D44340E5C0A267B325 /* SubscriptionManager.swift */,
 				8C2DDAD6DD4B924CCA0509D0 /* WeatherClient.swift */,
 			);
@@ -526,6 +531,7 @@
 				WA0001000000000000000002 /* SipliWatchApp.swift */,
 				WA001D000000000000000002 /* WatchHaptics.swift */,
 				WA001E000000000000000002 /* WatchHydrationStore.swift */,
+				WS001000000000000000001 /* WatchSessionManager.swift */,
 				WA002A000000000000000002 /* WatchHealthKitManager.swift */,
 				WA002B000000000000000002 /* WatchNotificationHandler.swift */,
 				WA0024000000000000000001 /* Views */,
@@ -797,6 +803,7 @@
 				747A7C4F8A906C71164AB9DE /* NotificationScheduler.swift in Sources */,
 				0A5C95DCB74AE59638E495D3 /* OnboardingView.swift in Sources */,
 				CCD4444444444444444444D4 /* PersistedState.swift in Sources */,
+				PS001000000000000000002 /* PhoneSessionManager.swift in Sources */,
 				83C67F5F3E24629A72299C6E /* PersistenceService.swift in Sources */,
 				D6E8A4F1B37C920E5D1A8F63 /* PreviewEnvironment.swift in Sources */,
 				E367CAB1741850BAFCE4F3F9 /* PrimaryButton.swift in Sources */,
@@ -839,6 +846,7 @@
 				WA001C000000000000000001 /* Theme.swift in Sources */,
 				WA001D000000000000000001 /* WatchHaptics.swift in Sources */,
 				WA001E000000000000000001 /* WatchHydrationStore.swift in Sources */,
+				WS001000000000000000002 /* WatchSessionManager.swift in Sources */,
 				WA002A000000000000000001 /* WatchHealthKitManager.swift in Sources */,
 				WA002B000000000000000001 /* WatchNotificationHandler.swift in Sources */,
 				WA001F000000000000000001 /* WatchProgressRing.swift in Sources */,
