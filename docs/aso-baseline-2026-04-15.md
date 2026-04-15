@@ -75,9 +75,34 @@ The first 3 lines (what users see before "…more"):
 
 ## Current keyword field
 
-**NOT PUBLICLY VISIBLE** — only readable inside App Store Connect → My Apps → Sipli → App Information → Keywords.
+Captured from App Store Connect on 2026-04-15 (user-provided):
 
-**Action required from user:** please share the current 100-character keyword field verbatim so Sprint 2's diff can be planned.
+```
+refill,pledge,earth day,reusable bottle,plastic free,hydrate,water reminder,earth week,habit,drink
+```
+
+**Length:** 98 / 100 chars.
+
+### Token-by-token analysis
+
+| Token | Chars | Category | Value |
+| --- | --- | --- | --- |
+| `refill` | 6 | Seasonal / Earth Week | Low — niche term |
+| `pledge` | 6 | Seasonal / Earth Week | Very low — brand voice, not search voice |
+| `earth day` | 9 (phrase) | Seasonal | High for 1 week/year, zero for 51 |
+| `reusable bottle` | 15 (phrase) | Seasonal | Medium for 1 week, low rest of year |
+| `plastic free` | 12 (phrase) | Seasonal | Medium for 1 week, low rest of year |
+| `hydrate` | 7 | Evergreen | Medium — direct intent |
+| `water reminder` | 14 (phrase) | Evergreen | **High** — direct search term |
+| `earth week` | 10 (phrase) | Seasonal | Same as earth day |
+| `habit` | 5 | Evergreen | Medium — broader |
+| `drink` | 5 | Evergreen | Medium — broad |
+
+**Total spend on seasonal terms:** ~58 of 98 chars (59%) — effectively 59% of the keyword budget is vacant except for one week in April.
+
+**Duplicate-with-subtitle risk:** `hydrate` overlaps with subtitle `Hydration` (shared stem). Not a fatal duplicate, but inefficient.
+
+**Missing high-volume evergreen tokens:** `h2o`, `bottle`, `intake`, `thirst`, `goal`, `watch`, `widget`, `health`, `streak`, `log`.
 
 ## Current screenshots
 
@@ -129,10 +154,11 @@ Ranked by leverage — fix the earliest ones first.
 - [x] Current metrics documented
 - [x] Top findings identified
 - [x] v3.0 status confirmed (not yet submitted — Sprint 1 can ship independently)
-- [ ] Keyword field captured from App Store Connect (user will paste in a reply)
+- [x] Keyword field captured from App Store Connect
 - [ ] Current screenshots captured (will pull from public App Store visual, not blocking Sprint 1)
 
 **Sprint 1 (title + subtitle rewrite) is unblocked and ready to ship as a metadata-only update.**
+**Sprint 2 (keyword field rewrite) is unblocked — proposed replacement documented in `2026-04-15-aso-incremental-rollout.md`.**
 
 ---
 

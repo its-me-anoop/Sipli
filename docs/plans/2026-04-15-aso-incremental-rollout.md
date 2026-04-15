@@ -114,21 +114,89 @@ The original P0 plan bundled the metadata rewrite, screenshot redesign, and loca
 
 ### Sprint 2 — Keyword field rewrite
 
-**Proposed change:** replace the 100-char keyword field with:
+**Before (98 chars):**
 ```
-hydration,drink,h2o,bottle,intake,log,hydrate,thirst,reminder,goal,watch,widget,health,habit,streak
+refill,pledge,earth day,reusable bottle,plastic free,hydrate,water reminder,earth week,habit,drink
 ```
-(98 chars, no duplicates with the new title/subtitle from Sprint 1)
 
-**Why after title+subtitle:** Sprint 1 proved (or disproved) whether our top-volume keywords (`water tracker`, `drink water reminder`) lift impressions. Sprint 2 now tests the *long-tail* — whether we've picked the right 15 supporting keywords. Isolated from Sprint 1, the attribution is clean.
+**After — evergreen proposal (98 chars):**
+```
+hydration,h2o,bottle,intake,log,hydrate,thirst,goal,watch,widget,health,habit,streak,refill,coffee
+```
 
-**Note:** because Sprint 1 now puts `water` and `tracker` in the title, and `drink`, `water`, `reminder`, `goals` in the subtitle, this keyword list already omits them (Apple's indexer treats the three fields as a union; repeating a word wastes slots).
+### Diff — what's leaving and why
 
-**Actions:** same flow as Sprint 1 — ASC edit → metadata-only submit → wait 3 days → measure.
+| Dropping | Reason |
+| --- | --- |
+| `pledge` | Brand voice, not search voice — nobody types "pledge" into App Store |
+| `earth day` | Seasonal — dead weight 51 weeks of the year. Rotate back in one week before Earth Week 2027 |
+| `reusable bottle` | Same — seasonal, large (15 chars) for niche term |
+| `plastic free` | Same — seasonal |
+| `earth week` | Same — seasonal |
+| `water reminder` | Now redundant: "water" is in the title, "reminder" is in the subtitle. Apple unions the fields; repeating wastes 14 chars |
+| `drink` | Now redundant: `drink` is in the subtitle ("Drink Water Reminder + Goals") |
 
-**Rollback:** if impressions drop > 15% or our top-3 target keywords fall > 10 positions, revert.
+Dropped in total: 7 tokens = 62 chars freed.
 
-**Final keyword hypothesis to validate before shipping Sprint 2:** we need to know what the *current* keyword field is so we can diff against the proposed one. Without the baseline, we can't tell whether any given keyword was already in play. See Open Questions in `docs/aso-baseline-2026-04-15.md` — user needs to share the current keyword field from App Store Connect before this sprint is safe to ship.
+### Diff — what's being added and why
+
+| Adding | Reason |
+| --- | --- |
+| `hydration` | Top-intent keyword. `hydrate` (already there) covers the stem, but `hydration` is what users actually type |
+| `h2o` | Short, low-competition; picks up "h2o tracker" searchers |
+| `bottle` | Strictly broader than the dropped `reusable bottle`, and evergreen |
+| `intake` | "Water intake" is a common search; covers the tail |
+| `log` | "Water log" / "hydration log" — utility framing |
+| `thirst` | Unique, low-competition; picks up "thirst tracker" long-tail |
+| `goal` | Near-miss of subtitle's `Goals`; covers singular-form searches and compound phrases like "hydration goal" |
+| `watch` | The Watch app ships in v3.0 — claim "water tracker watch" and similar |
+| `widget` | Widgets exist and are differentiating |
+| `health` | Covers "health tracker"; pairs with existing `healthkit` feature |
+| `streak` | Gamification framing, low-competition |
+| `coffee` | Left-field add — picks users looking for caffeine/beverage tracking, underserved term |
+
+### Retained
+
+- `hydrate` — stem is different from `hydration`; keep both
+- `habit` — broad, evergreen, low cost
+- `refill` — bridge word between the Earth Week pledge moment and evergreen use. If metrics show it's dead weight, drop in Sprint 2b
+
+### Seasonal rotation (documented for later, not now)
+
+Apple allows metadata-only updates, which means we can **rotate keywords seasonally** up to ~6 times per year without pushing a binary. Suggested rotations:
+
+- **Mid-April → Mid-May:** swap in `earth week,reusable,plastic` replacing some of the broad tokens (e.g., `coffee`, `log`, `refill`)
+- **Jun–Jul (summer / heat):** swap in `summer,heat,dehydration`
+- **Sep (back to school):** swap in `school,backpack,routine`
+- **Jan (new year):** swap in `resolution,new year,goals2026`
+
+File a `docs/aso-seasonal-keyword-rotation.md` when we get to Sprint 2.5.
+
+### Why after Sprint 1
+
+Sprint 1 proves (or disproves) whether our top-volume keywords (`water tracker`, `drink water reminder`) lift impressions. Sprint 2 then tests the *long-tail* — whether we've picked the right supporting keywords. Isolated from Sprint 1, attribution is clean.
+
+### Actions
+
+Same flow as Sprint 1 — ASC edit → metadata-only submit → wait 3 days → measure.
+
+1. In App Store Connect → App Information → Keywords (EN-US), paste the new 98-char string.
+2. Log ship datetime in `docs/aso-metrics-weekly.md` with the before/after string.
+3. Wait 3 days.
+4. Pull impressions + rank deltas on: `hydration`, `water tracker`, `drink water reminder`, `h2o tracker`, `bottle tracker`.
+
+### Rollback
+
+If impressions drop > 15% or our top-3 target keywords fall > 10 positions, revert to the previous field. The previous string is saved above as "Before" for one-shot restore.
+
+### Earth Week timing note
+
+Earth Week 2026 is **April 20–26**. Shipping the evergreen keyword field on 2026-04-15 (today) means we intentionally forgo the 2026 Earth Week seasonal boost to instead capture evergreen traffic over 51 weeks. If the user prefers a seasonal capture, a sub-option is:
+
+- **Sprint 2a (today–April 27):** ship a *seasonal variant* keeping `earth week,reusable,plastic` for 12 days, then rotate to evergreen proposal
+- **Sprint 2b (April 27):** rotate to the evergreen proposal above
+
+The all-evergreen path is simpler and lower-risk. Mentioning 2a as an option for the user to consider.
 
 ---
 
