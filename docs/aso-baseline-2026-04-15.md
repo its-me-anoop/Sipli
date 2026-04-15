@@ -71,7 +71,7 @@ The first 3 lines (what users see before "…more"):
 
 > For Earth Week: The Refill Pledge. A small promise for Apr 20–26 — refill, not rebuy. We added a personalized pledge card you can share, a new "Why Reusable Bottles" screen, and Earth Day visuals on your dashboard. Refill, not rebuy. One habit at a time.
 
-**Note:** as of 2026-04-15 the public store is still showing **v2.3** release notes. The v3.0 Watch app build (committed 2026-04-12 through 2026-04-15) has not yet propagated to the public listing. Confirm whether v3.0 is in review, approved-but-held, or not yet submitted before planning the screenshot swap.
+**Note:** as of 2026-04-15 the public store is still showing **v2.3** release notes. User confirmed the v3.0 Watch-app build is **not yet submitted** — still building locally. This is actually useful for sequencing: we can ship Sprint 1 as a metadata-only update on the live v2.3 listing *today*, and ship v3.0 when it's ready without bundling the two.
 
 ## Current keyword field
 
@@ -128,11 +128,11 @@ Ranked by leverage — fix the earliest ones first.
 - [x] Public listing captured verbatim
 - [x] Current metrics documented
 - [x] Top findings identified
-- [ ] Keyword field captured from App Store Connect (awaiting user)
-- [ ] Current screenshots captured (awaiting user or screen grab)
-- [ ] v3.0 review status confirmed (awaiting user / App Store Connect check)
+- [x] v3.0 status confirmed (not yet submitted — Sprint 1 can ship independently)
+- [ ] Keyword field captured from App Store Connect (user will paste in a reply)
+- [ ] Current screenshots captured (will pull from public App Store visual, not blocking Sprint 1)
 
-Once the three pending items are captured, Sprint 1 (subtitle rewrite) can ship.
+**Sprint 1 (title + subtitle rewrite) is unblocked and ready to ship as a metadata-only update.**
 
 ---
 
