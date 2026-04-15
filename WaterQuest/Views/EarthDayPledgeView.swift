@@ -44,8 +44,9 @@ struct EarthDayPledgeView: View {
                     VStack(spacing: 12) {
                         if let shareImage {
                             ShareLink(
-                                item: pledgeText,
+                                item: shareImage,
                                 subject: Text("Sipli Refill Pledge"),
+                                message: Text(pledgeText),
                                 preview: SharePreview("Sipli Refill Pledge", image: shareImage)
                             ) {
                                 HStack(spacing: 8) {
@@ -134,7 +135,7 @@ struct EarthDayPledgeView: View {
                     .foregroundStyle(.white.opacity(0.85))
             }
 
-            VStack(spacing: 8) {
+            VStack(spacing: 10) {
                 HStack(spacing: 8) {
                     Image("sipliIcon")
                         .resizable()
@@ -146,10 +147,7 @@ struct EarthDayPledgeView: View {
                         .foregroundStyle(.white)
                 }
 
-                Text("Available on the App Store")
-                    .font(.caption2.weight(.semibold))
-                    .foregroundStyle(.white.opacity(0.85))
-                    .tracking(0.4)
+                DownloadOnAppStoreBadge()
             }
             .padding(.top, 4)
         }
@@ -198,6 +196,38 @@ struct EarthDayPledgeView: View {
         if let uiImage = renderer.uiImage {
             shareImage = Image(uiImage: uiImage)
         }
+    }
+}
+
+// MARK: - Download on the App Store Badge
+
+/// Recreates Apple's official "Download on the App Store" badge using SwiftUI.
+/// Follows Apple's marketing guidelines: black rounded rectangle with white
+/// Apple logo, "Download on the" caption, and "App Store" wordmark.
+private struct DownloadOnAppStoreBadge: View {
+    var body: some View {
+        HStack(spacing: 8) {
+            Image(systemName: "applelogo")
+                .font(.system(size: 22, weight: .regular))
+                .foregroundStyle(.white)
+
+            VStack(alignment: .leading, spacing: -1) {
+                Text("Download on the")
+                    .font(.system(size: 9, weight: .regular))
+                    .foregroundStyle(.white)
+                    .tracking(0.2)
+                Text("App Store")
+                    .font(.system(size: 20, weight: .semibold, design: .default))
+                    .foregroundStyle(.white)
+                    .tracking(-0.3)
+            }
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 6)
+        .overlay(
+            RoundedRectangle(cornerRadius: 8, style: .continuous)
+                .strokeBorder(Color.white, lineWidth: 1)
+        )
     }
 }
 
