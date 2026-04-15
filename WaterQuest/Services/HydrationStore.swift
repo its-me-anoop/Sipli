@@ -50,6 +50,12 @@ final class HydrationStore: ObservableObject {
 
         PhoneSessionManager.shared.store = self
         PhoneSessionManager.shared.activate()
+
+        // One-time backfill for users who were on a pre-3.x build (where the
+        // counter didn't exist). Credits them for historical goal-hitting days
+        // so the review prompt fires when they next open the app, not only
+        // after three future completions.
+        backfillGoalCompletionCountIfNeeded()
     }
 
     var dailyGoal: GoalBreakdown {
@@ -127,6 +133,44 @@ final class HydrationStore: ObservableObject {
 
         goalCompletionCount += 1
         lastGoalCompletionDate = today
+    }
+
+    /// One-time backfill for users upgrading from a build that predates the
+    /// goal-completion counter. Scans historical entries and approximates the
+    /// number of days the user hit their goal by comparing each day's total
+    /// against the *current* daily goal.
+    ///
+    /// This is an approximation — historical weather/workout adjustments are
+    /// not reconstructed, so if the user's current goal is higher than past
+    /// goals were, this slightly under-counts. Conservative is fine: we want
+    /// the counter to credit committed users without over-crediting.
+    ///
+    /// Only runs once, gated by the sentinel "count is 0 AND date is nil",
+    /// which can only be true on a fresh install or an upgrade from a build
+    /// before these fields existed. Calling again after a successful backfill
+    /// is a no-op because the date will be set.
+    private func backfillGoalCompletionCountIfNeeded() {
+        guard goalCompletionCount == 0, lastGoalCompletionDate == nil else { return }
+        guard !entries.isEmpty else { return }
+
+        let currentGoalML = dailyGoal.totalML
+        guard currentGoalML > 0 else { return }
+
+        // Group today's and older entries by start-of-day.
+        var totalByDay: [Date: Double] = [:]
+        let calendar = Calendar.current
+        for entry in entries {
+            let day = calendar.startOfDay(for: entry.date)
+            totalByDay[day, default: 0] += entry.effectiveML
+        }
+
+        // Count distinct days where the total met the current goal.
+        let qualifyingDays = totalByDay.filter { $0.value >= currentGoalML }
+        guard !qualifyingDays.isEmpty else { return }
+
+        goalCompletionCount = qualifyingDays.count
+        lastGoalCompletionDate = qualifyingDays.keys.max()
+        persist()
     }
 
     func dismissEarthDayBanner() {

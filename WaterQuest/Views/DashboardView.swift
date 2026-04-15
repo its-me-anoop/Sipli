@@ -23,6 +23,9 @@ struct DashboardView: View {
     @State private var isRefreshing = false
     @State private var isPremiumPromptDismissed = false
     @State private var showEarthDayPledge = false
+    /// Gate for the App Store review prompt. We fire at most once per foreground
+    /// session; iOS itself additionally throttles to 3 prompts/user/year.
+    @State private var hasRequestedReviewThisSession = false
 
     private var goal: GoalBreakdown { store.dailyGoal }
     private var progress: Double { min(1, store.todayTotalML / max(1, goal.totalML)) }
@@ -61,6 +64,11 @@ struct DashboardView: View {
         }
         .onAppear {
             isPremiumPromptDismissed = false
+            // Fires for users whose counter was ≥ the threshold BEFORE this
+            // view mounted (e.g., existing users who just got a backfill on
+            // app launch). `.onChange` only fires on transitions, so without
+            // this we'd never ask an existing user.
+            maybeRequestReview()
         }
         .task(id: locationManager.lastLocation?.timestamp) {
             guard store.effectiveProfile.prefersWeatherGoal else { return }
@@ -91,10 +99,18 @@ struct DashboardView: View {
             // goal on a new day, starting from their Nth lifetime completion.
             // iOS handles throttling (max 3 prompts per user per year), so we
             // can safely ask on every subsequent qualifying day.
-            guard newValue > oldValue,
-                  newValue >= reviewPromptMinGoalCompletions else { return }
-            requestReview()
+            guard newValue > oldValue else { return }
+            maybeRequestReview()
         }
+    }
+
+    /// Fires the SwiftUI review-request action if the user qualifies and we
+    /// haven't already asked this session. Idempotent per foreground session.
+    private func maybeRequestReview() {
+        guard !hasRequestedReviewThisSession,
+              store.goalCompletionCount >= reviewPromptMinGoalCompletions else { return }
+        hasRequestedReviewThisSession = true
+        requestReview()
     }
 
     private var earthDayBannerVisible: Bool {
