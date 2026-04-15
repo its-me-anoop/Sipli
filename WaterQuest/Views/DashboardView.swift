@@ -1,4 +1,11 @@
 import SwiftUI
+import StoreKit
+
+/// Minimum lifetime goal completions before we ask the user for an App Store
+/// review. Set at 3 so we only prompt users who have repeatedly experienced the
+/// app's core value — the research suggests prompts at positive moments
+/// (just-hit-goal) dramatically improve rating quality.
+private let reviewPromptMinGoalCompletions = 3
 
 struct DashboardView: View {
     @EnvironmentObject private var store: HydrationStore
@@ -7,6 +14,7 @@ struct DashboardView: View {
     @EnvironmentObject private var locationManager: LocationManager
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @Environment(\.deepLinkEarthWeek) private var deepLinkEarthWeek
+    @Environment(\.requestReview) private var requestReview
 
     @StateObject private var aiService = HydrationAIService()
 
@@ -77,6 +85,15 @@ struct DashboardView: View {
             if deepLinkEarthWeek {
                 showEarthDayPledge = true
             }
+        }
+        .onChange(of: store.goalCompletionCount) { oldValue, newValue in
+            // Fire the Apple review prompt whenever the user hits their daily
+            // goal on a new day, starting from their Nth lifetime completion.
+            // iOS handles throttling (max 3 prompts per user per year), so we
+            // can safely ask on every subsequent qualifying day.
+            guard newValue > oldValue,
+                  newValue >= reviewPromptMinGoalCompletions else { return }
+            requestReview()
         }
     }
 

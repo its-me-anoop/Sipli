@@ -21,11 +21,18 @@ struct PersistedState: Codable {
     var premiumUpsellState: PremiumUpsellState
     var earthDay2026BannerDismissed: Bool
     var earthDay2026Earned: Bool
+    /// Lifetime count of days the user has hit their daily hydration goal.
+    /// Used to decide when to prompt for an App Store review.
+    var goalCompletionCount: Int
+    /// Start-of-day of the most recent day the user hit their goal.
+    /// Used to dedupe same-day increments when multiple intakes cross the goal.
+    var lastGoalCompletionDate: Date?
 
     // Keep gameState and manualWeather as ignored keys so old persisted JSON decodes without error
     private enum CodingKeys: String, CodingKey {
         case entries, profile, lastWeather, lastWorkout, hasPremiumAccess, premiumUpsellState, gameState, manualWeather
         case earthDay2026BannerDismissed, earthDay2026Earned
+        case goalCompletionCount, lastGoalCompletionDate
     }
 
     init(
@@ -36,7 +43,9 @@ struct PersistedState: Codable {
         hasPremiumAccess: Bool,
         premiumUpsellState: PremiumUpsellState,
         earthDay2026BannerDismissed: Bool = false,
-        earthDay2026Earned: Bool = false
+        earthDay2026Earned: Bool = false,
+        goalCompletionCount: Int = 0,
+        lastGoalCompletionDate: Date? = nil
     ) {
         self.entries = entries
         self.profile = profile
@@ -46,6 +55,8 @@ struct PersistedState: Codable {
         self.premiumUpsellState = premiumUpsellState
         self.earthDay2026BannerDismissed = earthDay2026BannerDismissed
         self.earthDay2026Earned = earthDay2026Earned
+        self.goalCompletionCount = goalCompletionCount
+        self.lastGoalCompletionDate = lastGoalCompletionDate
     }
 
     init(from decoder: Decoder) throws {
@@ -58,6 +69,8 @@ struct PersistedState: Codable {
         premiumUpsellState = try c.decodeIfPresent(PremiumUpsellState.self, forKey: .premiumUpsellState) ?? .default
         earthDay2026BannerDismissed = try c.decodeIfPresent(Bool.self, forKey: .earthDay2026BannerDismissed) ?? false
         earthDay2026Earned          = try c.decodeIfPresent(Bool.self, forKey: .earthDay2026Earned) ?? false
+        goalCompletionCount    = try c.decodeIfPresent(Int.self,  forKey: .goalCompletionCount) ?? 0
+        lastGoalCompletionDate = try c.decodeIfPresent(Date.self, forKey: .lastGoalCompletionDate)
         // .gameState and .manualWeather silently ignored if present in old JSON
     }
 
@@ -71,6 +84,8 @@ struct PersistedState: Codable {
         try c.encode(premiumUpsellState, forKey: .premiumUpsellState)
         try c.encode(earthDay2026BannerDismissed, forKey: .earthDay2026BannerDismissed)
         try c.encode(earthDay2026Earned,          forKey: .earthDay2026Earned)
+        try c.encode(goalCompletionCount,         forKey: .goalCompletionCount)
+        try c.encodeIfPresent(lastGoalCompletionDate, forKey: .lastGoalCompletionDate)
     }
 
     static let `default` = PersistedState(

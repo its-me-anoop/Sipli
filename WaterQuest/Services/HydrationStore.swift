@@ -11,6 +11,12 @@ final class HydrationStore: ObservableObject {
     @Published private(set) var premiumUpsellState: PremiumUpsellState
     @Published var earthDayBannerDismissed: Bool
     @Published var earthDay2026Earned: Bool
+    /// Lifetime count of days the user has hit their daily hydration goal.
+    /// Observed by DashboardView to decide when to prompt for an App Store review.
+    @Published private(set) var goalCompletionCount: Int
+    /// Start-of-day of the most recent day the user hit their goal.
+    /// Used by ``checkGoalCompletion()`` to avoid double-counting same-day crossings.
+    @Published private(set) var lastGoalCompletionDate: Date?
 
     private let persistence = PersistenceService.shared
 
@@ -28,6 +34,8 @@ final class HydrationStore: ObservableObject {
         self.premiumUpsellState = state.premiumUpsellState
         self.earthDayBannerDismissed = state.earthDay2026BannerDismissed
         self.earthDay2026Earned = state.earthDay2026Earned
+        self.goalCompletionCount = state.goalCompletionCount
+        self.lastGoalCompletionDate = state.lastGoalCompletionDate
 
         persistence.setRemoteDataChangeHandler { [weak self] data in
             guard let self else { return }
@@ -95,8 +103,30 @@ final class HydrationStore: ObservableObject {
         if !earthDay2026Earned, EarthDayEvent.isEarthDay(entry.date) {
             earthDay2026Earned = true
         }
+        checkGoalCompletion()
         persist()
         return entry
+    }
+
+    /// Increments ``goalCompletionCount`` the first time today's total crosses
+    /// the daily goal on a given day. Monotonic — never decrements if the user
+    /// later deletes entries.
+    ///
+    /// Apple's review-request API handles its own throttling (max 3 prompts
+    /// per user per year), so we count every qualifying day and let iOS decide
+    /// whether to show the modal.
+    private func checkGoalCompletion() {
+        let goalML = dailyGoal.totalML
+        guard goalML > 0, todayTotalML >= goalML else { return }
+
+        let today = Calendar.current.startOfDay(for: Date())
+        if let last = lastGoalCompletionDate,
+           Calendar.current.isDate(last, inSameDayAs: today) {
+            return // already counted today
+        }
+
+        goalCompletionCount += 1
+        lastGoalCompletionDate = today
     }
 
     func dismissEarthDayBanner() {
@@ -115,6 +145,7 @@ final class HydrationStore: ObservableObject {
         entries[index].volumeML = volumeML
         if let fluidType { entries[index].fluidType = fluidType }
         entries[index].note = note
+        checkGoalCompletion()
         persist()
     }
 
@@ -160,6 +191,7 @@ final class HydrationStore: ObservableObject {
         entries.removeAll { $0.source == .healthKit && $0.date.isSameDay(as: date) }
         entries.append(contentsOf: healthKitEntries)
         entries.sort { $0.date < $1.date }
+        checkGoalCompletion()
         persist()
     }
 
@@ -169,6 +201,7 @@ final class HydrationStore: ObservableObject {
         entries.removeAll { $0.source == .healthKit && $0.date >= start }
         entries.append(contentsOf: healthKitEntries)
         entries.sort { $0.date < $1.date }
+        checkGoalCompletion()
         persist()
     }
 
@@ -186,7 +219,9 @@ final class HydrationStore: ObservableObject {
             hasPremiumAccess: hasPremiumAccess,
             premiumUpsellState: premiumUpsellState,
             earthDay2026BannerDismissed: earthDayBannerDismissed,
-            earthDay2026Earned: earthDay2026Earned
+            earthDay2026Earned: earthDay2026Earned,
+            goalCompletionCount: goalCompletionCount,
+            lastGoalCompletionDate: lastGoalCompletionDate
         )
         persistence.save(state)
         PhoneSessionManager.shared.sendState(state)
@@ -205,6 +240,7 @@ final class HydrationStore: ObservableObject {
         }
         guard hadNew else { return }
         entries = byID.values.sorted { $0.date < $1.date }
+        checkGoalCompletion()
         persist()
     }
 
@@ -226,6 +262,21 @@ final class HydrationStore: ObservableObject {
         premiumUpsellState = state.premiumUpsellState
         earthDayBannerDismissed = state.earthDay2026BannerDismissed
         earthDay2026Earned = state.earthDay2026Earned
+
+        // Monotonic merge of the review-prompt counter: take whichever side
+        // has progressed further. Dates are compared loosely — the later one wins.
+        goalCompletionCount = max(goalCompletionCount, state.goalCompletionCount)
+        if let remote = state.lastGoalCompletionDate {
+            if let local = lastGoalCompletionDate {
+                lastGoalCompletionDate = max(local, remote)
+            } else {
+                lastGoalCompletionDate = remote
+            }
+        }
+        // In case the merged entries bring today above goal but the remote
+        // state didn't reflect that yet (e.g., an old snapshot).
+        checkGoalCompletion()
+
         WidgetCenter.shared.reloadAllTimelines()
 
         // If the phone had entries the remote didn't know about, push them back to
