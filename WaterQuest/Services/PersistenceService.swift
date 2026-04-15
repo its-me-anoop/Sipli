@@ -74,6 +74,29 @@ final class PersistenceService {
         }
     }
 
+    /// Saves to the local file only — intentionally skips iCloud KVS sync.
+    /// Used by the watchOS companion to avoid conflicting with iPhone's KVS writes.
+    func saveLocalOnly<T: Encodable>(_ value: T) {
+        let encoder = JSONEncoder()
+        encoder.dateEncodingStrategy = .iso8601
+        encoder.outputFormatting = [.prettyPrinted, .sortedKeys]
+        guard let data = try? encoder.encode(value) else { return }
+        let directory = url.deletingLastPathComponent()
+        if !FileManager.default.fileExists(atPath: directory.path) {
+            try? FileManager.default.createDirectory(at: directory, withIntermediateDirectories: true)
+        }
+        try? data.write(to: url, options: [.atomic])
+    }
+
+    /// Loads from the local file only — does not compare against iCloud KVS.
+    /// Used by the watchOS companion for cold-start display while WCSession delivers.
+    func loadLocalOnly<T: Decodable>(_ type: T.Type, fallback: T) -> T {
+        guard let data = try? Data(contentsOf: url) else { return fallback }
+        let decoder = JSONDecoder()
+        decoder.dateDecodingStrategy = .iso8601
+        return (try? decoder.decode(T.self, from: data)) ?? fallback
+    }
+
     func setRemoteDataChangeHandler(_ handler: @escaping (Data) -> Void) {
         onRemoteDataChanged = handler
     }

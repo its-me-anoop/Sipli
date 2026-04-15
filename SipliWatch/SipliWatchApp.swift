@@ -41,7 +41,9 @@ struct SipliWatchApp: App {
         }
         .onChange(of: scenePhase) { _, phase in
             if phase == .active {
-                store.loadState()
+                // Request iPhone to push its authoritative state.
+                // loadCachedState() already ran at init; this gets the freshest data.
+                store.requestSync()
             }
         }
     }

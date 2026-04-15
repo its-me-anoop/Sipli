@@ -3,6 +3,11 @@ import Combine
 import WidgetKit
 @preconcurrency import UserNotifications
 
+/// Watch-side store. The Watch is a pure companion of the iPhone:
+///   • It never writes to iCloud KVS — only the iPhone manages cloud sync.
+///   • iPhone is the single source of truth; full state is received via WCSession.
+///   • Watch optimistically adds entries locally and sends them to iPhone.
+///   • Watch sends explicit deletion IDs to iPhone rather than inferring deletions.
 @MainActor
 final class WatchHydrationStore: ObservableObject {
     @Published var entries: [HydrationEntry] = []
@@ -13,28 +18,19 @@ final class WatchHydrationStore: ObservableObject {
 
     var healthKitManager: WatchHealthKitManager?
 
+    // Local-only cache (no iCloud writes).
     private let persistence = PersistenceService()
-    // IDs deleted during this session — excluded from the merge in saveState() so
-    // local deletions aren't resurrected by a stale iCloud snapshot.
-    private var deletedEntryIDs = Set<UUID>()
+    // Entries logged on Watch not yet confirmed in an iPhone state push.
+    private var pendingEntryIDs = Set<UUID>()
 
     init() {
-        loadState()
-        // Decode and merge rather than blindly reloading, so Watch-local entries
-        // that haven't propagated to iCloud yet aren't lost when a newer iPhone
-        // snapshot arrives (Fix 1a).
-        persistence.setRemoteDataChangeHandler { [weak self] data in
-            guard let self else { return }
-            let decoder = JSONDecoder()
-            decoder.dateDecodingStrategy = .iso8601
-            guard let remoteState = try? decoder.decode(PersistedState.self, from: data) else { return }
-            Task { @MainActor in
-                self.applyRemoteState(remoteState)
-            }
-        }
+        loadCachedState()
+        // No iCloud KVS handler — Watch syncs exclusively with iPhone via WCSession.
         WatchSessionManager.shared.store = self
         WatchSessionManager.shared.activate()
     }
+
+    // MARK: - Computed
 
     var todayEntries: [HydrationEntry] {
         let startOfDay = Date().startOfDay
@@ -60,22 +56,19 @@ final class WatchHydrationStore: ObservableObject {
 
     var topFluidTypes: [FluidType] {
         let defaults: [FluidType] = [.water, .coffee, .greenTea, .sparklingWater, .juice, .milk]
-
         let fromHistory = Dictionary(grouping: entries, by: \.fluidType)
             .mapValues(\.count)
             .sorted { $0.value > $1.value }
             .prefix(6)
             .map(\.key)
-
-        // Pad with defaults if history has fewer than 6 types
         var result = Array(fromHistory)
         for fallback in defaults where result.count < 6 {
-            if !result.contains(fallback) {
-                result.append(fallback)
-            }
+            if !result.contains(fallback) { result.append(fallback) }
         }
         return Array(result.prefix(6))
     }
+
+    // MARK: - Actions
 
     func addIntake(volumeML: Double, fluidType: FluidType = .water) {
         let wasBelow = todayTotalML < goalBreakdown.totalML
@@ -87,92 +80,97 @@ final class WatchHydrationStore: ObservableObject {
             fluidType: fluidType
         )
         entries.append(entry)
-        saveState()
+        pendingEntryIDs.insert(entry.id)
+        cacheLocally()
+        WidgetCenter.shared.reloadAllTimelines()
+
+        // Send new entry to iPhone — iPhone processes it and pushes full state back.
+        WatchSessionManager.shared.sendNewEntry(entry)
+
+        if wasBelow && todayTotalML >= goalBreakdown.totalML {
+            justReachedGoal = true
+            WatchHaptics.goalReached()
+            suppressRemainingReminders()
+        }
+
+        if let hk = healthKitManager, hk.isAuthorized {
+            Task { await hk.logWaterIntake(ml: volumeML) }
+        }
+    }
+
+    func deleteEntry(_ entry: HydrationEntry) {
+        entries.removeAll { $0.id == entry.id }
+        pendingEntryIDs.remove(entry.id)
+        cacheLocally()
+        WidgetCenter.shared.reloadAllTimelines()
+        // Tell iPhone to delete the entry so it can persist and push state back.
+        WatchSessionManager.shared.sendDeletion(id: entry.id)
+    }
+
+    // MARK: - Sync
+
+    /// Receives the iPhone's authoritative full state. Replaces local state entirely,
+    /// preserving only entries that were logged on Watch and not yet confirmed.
+    func applyRemoteState(_ state: PersistedState) {
+        let wasBelow = todayTotalML < goalBreakdown.totalML
+
+        // Retire pending entries that iPhone now acknowledges.
+        pendingEntryIDs = pendingEntryIDs.filter { id in
+            !state.entries.contains(where: { $0.id == id })
+        }
+
+        // Full replace from iPhone + any still-unconfirmed Watch entries.
+        let pendingEntries = entries.filter { pendingEntryIDs.contains($0.id) }
+        entries = (state.entries + pendingEntries).sorted { $0.date < $1.date }
+
+        profile = state.profile
+        hasPremiumAccess = state.hasPremiumAccess
+        updateGoal(from: state)
+        cacheLocally()
         WidgetCenter.shared.reloadAllTimelines()
 
         if wasBelow && todayTotalML >= goalBreakdown.totalML {
             justReachedGoal = true
             WatchHaptics.goalReached()
-            // Suppress remaining reminders for today
             suppressRemainingReminders()
         }
-
-        if let hk = healthKitManager, hk.isAuthorized {
-            Task {
-                await hk.logWaterIntake(ml: volumeML)
-            }
-        }
     }
 
-    func deleteEntry(_ entry: HydrationEntry) {
-        deletedEntryIDs.insert(entry.id)
-        entries.removeAll { $0.id == entry.id }
-        saveState()
-        WidgetCenter.shared.reloadAllTimelines()
+    /// Called when the Watch app becomes active — asks iPhone to push its state.
+    func requestSync() {
+        WatchSessionManager.shared.sendSyncRequest()
     }
 
-    func loadState() {
-        let state = persistence.load(PersistedState.self, fallback: .default)
-        entries = state.entries.filter { !deletedEntryIDs.contains($0.id) }
+    // MARK: - Private
+
+    /// Loads from the local cache file (no iCloud). Used at cold start while
+    /// WCSession delivers the authoritative iPhone state.
+    func loadCachedState() {
+        let state = persistence.loadLocalOnly(PersistedState.self, fallback: .default)
+        entries = state.entries
         profile = state.profile
         hasPremiumAccess = state.hasPremiumAccess
+        updateGoal(from: state)
+    }
 
-        // Fix 2a: use effectiveProfile so weather/workout adjustments are only
-        // applied when premium access is active, matching iPhone's dailyGoal.
+    /// Writes current state to the local file only — never touches iCloud KVS.
+    private func cacheLocally() {
+        let state = PersistedState(
+            entries: entries,
+            profile: profile,
+            lastWeather: nil,
+            lastWorkout: .empty,
+            hasPremiumAccess: hasPremiumAccess,
+            premiumUpsellState: .default
+        )
+        persistence.saveLocalOnly(state)
+    }
+
+    private func updateGoal(from state: PersistedState) {
         let effectiveProfile = state.profile.applyingPremiumAccess(state.hasPremiumAccess)
         let weather = effectiveProfile.prefersWeatherGoal ? state.lastWeather : nil
         let workout = effectiveProfile.prefersHealthKit ? state.lastWorkout : nil
-        goalBreakdown = GoalCalculator.dailyGoal(
-            profile: effectiveProfile,
-            weather: weather,
-            workout: workout
-        )
-    }
-
-    private func saveState() {
-        var state = persistence.load(PersistedState.self, fallback: .default)
-        // Merge remote entries with in-memory entries by ID so that phone entries
-        // delivered by iCloud between our last loadState() and this save are not lost.
-        var byID = Dictionary(uniqueKeysWithValues: state.entries.map { ($0.id, $0) })
-        for entry in entries { byID[entry.id] = entry }
-        deletedEntryIDs.forEach { byID.removeValue(forKey: $0) }
-        state.entries = byID.values.sorted { $0.date < $1.date }
-        persistence.save(state)
-        WatchSessionManager.shared.sendState(state)
-    }
-
-    /// Called by WatchSessionManager (WCSession) and the iCloud KVS change handler
-    /// when the iPhone pushes a state update.
-    func applyRemoteState(_ state: PersistedState) {
-        var byID = Dictionary(uniqueKeysWithValues: state.entries.map { ($0.id, $0) })
-        for entry in entries where byID[entry.id] == nil {
-            byID[entry.id] = entry
-        }
-        let mergedEntries = byID.values
-            .filter { !deletedEntryIDs.contains($0.id) }
-            .sorted { $0.date < $1.date }
-
-        entries = mergedEntries
-        profile = state.profile
-        hasPremiumAccess = state.hasPremiumAccess
-
-        // Fix 2a: apply premium access gate before goal calculation.
-        let effectiveProfile = state.profile.applyingPremiumAccess(state.hasPremiumAccess)
-        let weather = effectiveProfile.prefersWeatherGoal ? state.lastWeather : nil
-        let workout = effectiveProfile.prefersHealthKit ? state.lastWorkout : nil
-        goalBreakdown = GoalCalculator.dailyGoal(
-            profile: effectiveProfile,
-            weather: weather,
-            workout: workout
-        )
-
-        // Fix 1b: persist the merged state so that a subsequent iCloud KVS
-        // notification sees up-to-date data and doesn't revert this merge.
-        var merged = state
-        merged.entries = mergedEntries
-        persistence.save(merged)
-
-        WidgetCenter.shared.reloadAllTimelines()
+        goalBreakdown = GoalCalculator.dailyGoal(profile: effectiveProfile, weather: weather, workout: workout)
     }
 
     private func suppressRemainingReminders() {

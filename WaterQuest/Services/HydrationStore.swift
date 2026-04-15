@@ -272,20 +272,38 @@ final class HydrationStore: ObservableObject {
         WidgetCenter.shared.reloadAllTimelines()
     }
 
-    /// Called by PhoneSessionManager when the Watch sends state via WCSession.
-    /// Merges entries only — does not overwrite iPhone-authoritative fields
-    /// (profile, weather, workout, premium) which the Watch never modifies.
-    func mergeWatchState(_ state: PersistedState) {
-        var byID = Dictionary(uniqueKeysWithValues: entries.map { ($0.id, $0) })
-        var hadNew = false
-        for entry in state.entries where byID[entry.id] == nil {
-            byID[entry.id] = entry
-            hadNew = true
-        }
-        guard hadNew else { return }
-        entries = byID.values.sorted { $0.date < $1.date }
+    /// Called by PhoneSessionManager when Watch sends a new entry via WCSession.
+    func addWatchEntry(_ entry: HydrationEntry) {
+        guard !entries.contains(where: { $0.id == entry.id }) else { return }
+        entries.append(entry)
+        entries.sort { $0.date < $1.date }
+        notificationScheduler?.onIntakeLogged(entry: entry)
         checkGoalCompletion()
         persist()
+    }
+
+    /// Called by PhoneSessionManager when Watch deletes an entry via WCSession.
+    func deleteEntry(byID id: UUID) {
+        guard entries.contains(where: { $0.id == id }) else { return }
+        entries.removeAll { $0.id == id }
+        persist()
+    }
+
+    /// Push current state to Watch — used when Watch requests a sync on foreground.
+    func pushStateToWatch() {
+        let state = PersistedState(
+            entries: entries,
+            profile: profile,
+            lastWeather: lastWeather,
+            lastWorkout: lastWorkout,
+            hasPremiumAccess: hasPremiumAccess,
+            premiumUpsellState: premiumUpsellState,
+            earthDay2026BannerDismissed: earthDayBannerDismissed,
+            earthDay2026Earned: earthDay2026Earned,
+            goalCompletionCount: goalCompletionCount,
+            lastGoalCompletionDate: lastGoalCompletionDate
+        )
+        PhoneSessionManager.shared.sendState(state)
     }
 
     func applyRemoteState(_ state: PersistedState) {
