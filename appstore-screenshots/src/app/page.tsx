@@ -28,18 +28,18 @@ const IPAD_SIZES = [
 ] as const;
 
 /* ─── Apple Watch ─── */
-// Series 11 (42mm) simulator screenshot native size
-const WW = 374;
-const WH = 446;
+// Design at the most common valid App Store size; images scale to fill
+const WW = 396;
+const WH = 484;
 
+// Only the 6 sizes Apple App Store Connect actually accepts
 const WATCH_SIZES = [
-  { label: '42mm (native)', w: 374, h: 446 },
-  { label: '45mm', w: 396, h: 484 },
-  { label: '44mm', w: 368, h: 448 },
-  { label: '41mm', w: 352, h: 430 },
-  { label: '40mm', w: 324, h: 394 },
-  { label: '49mm Ultra', w: 410, h: 502 },
-  { label: '38mm', w: 272, h: 340 },
+  { label: 'Series 9/8/7 45mm', w: 396, h: 484 },
+  { label: 'Series 9/8/7 44mm', w: 368, h: 448 },
+  { label: 'Series 10/11 42mm', w: 416, h: 496 },
+  { label: 'Series 10/11 46mm', w: 422, h: 514 },
+  { label: 'Ultra 49mm', w: 410, h: 502 },
+  { label: 'Series 4–6 40mm', w: 312, h: 390 },
 ] as const;
 
 /* ─── Phone mockup measurements ─── */
