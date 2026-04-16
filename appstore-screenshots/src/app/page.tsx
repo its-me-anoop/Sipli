@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useRef, useEffect, useState, useCallback } from "react";
-import { toPng } from "html-to-image";
+import { toJpeg } from "html-to-image";
 
 /* ═══════════════════════════════════════════════════════
    DIMENSIONS & SIZES
@@ -89,11 +89,11 @@ async function captureAndDownload(
   el.style.opacity = "1";
   el.style.zIndex = "-1";
 
-  const opts = { width: sourceW, height: sourceH, pixelRatio: 1, cacheBust: true };
+  const opts = { width: sourceW, height: sourceH, pixelRatio: 1, cacheBust: true, quality: 0.95 };
 
   try {
-    await toPng(el, opts);
-    const dataUrl = await toPng(el, opts);
+    await toJpeg(el, opts);
+    const dataUrl = await toJpeg(el, opts);
 
     const img = new Image();
     await new Promise<void>((resolve, reject) => {
@@ -111,9 +111,9 @@ async function captureAndDownload(
     ctx.imageSmoothingQuality = "high";
     ctx.drawImage(img, 0, 0, targetW, targetH);
 
-    const resizedUrl = canvas.toDataURL("image/png");
+    const resizedUrl = canvas.toDataURL("image/jpeg", 0.95);
     const link = document.createElement("a");
-    link.download = `${filename}-${targetW}x${targetH}.png`;
+    link.download = `${filename}-${targetW}x${targetH}.jpg`;
     link.href = resizedUrl;
     link.click();
   } finally {
