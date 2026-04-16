@@ -27,6 +27,20 @@ const IPAD_SIZES = [
   { label: 'iPad Pro 11"', w: 1668, h: 2388 },
 ] as const;
 
+/* ─── Apple Watch ─── */
+const WW = 396;
+const WH = 484;
+
+const WATCH_SIZES = [
+  { label: '45mm', w: 396, h: 484 },
+  { label: '44mm', w: 368, h: 448 },
+  { label: '41mm', w: 352, h: 430 },
+  { label: '40mm', w: 324, h: 394 },
+  { label: '49mm Ultra', w: 410, h: 502 },
+  { label: '42mm', w: 312, h: 390 },
+  { label: '38mm', w: 272, h: 340 },
+] as const;
+
 /* ─── Phone mockup measurements ─── */
 const MK_W = 1022;
 const MK_H = 2082;
@@ -1407,6 +1421,246 @@ function IPadSlide5() {
 }
 
 /* ═══════════════════════════════════════════════════════
+   APPLE WATCH COMPONENTS & SLIDES
+   ═══════════════════════════════════════════════════════ */
+
+function WatchProgressRing({
+  progress,
+  size = 160,
+  id = "wr",
+}: {
+  progress: number;
+  size?: number;
+  id?: string;
+}) {
+  const strokeW = size * 0.075;
+  const r = size / 2 - strokeW;
+  const circ = 2 * Math.PI * r;
+  const dash = circ * Math.min(progress, 1);
+  return (
+    <svg width={size} height={size} style={{ display: "block" }}>
+      <defs>
+        <linearGradient id={`${id}Grad`} x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stopColor={BRAND.lagoon} />
+          <stop offset="100%" stopColor={BRAND.mint} />
+        </linearGradient>
+      </defs>
+      <circle
+        cx={size / 2} cy={size / 2} r={r}
+        fill="none"
+        stroke="rgba(255,255,255,0.08)"
+        strokeWidth={strokeW}
+        transform={`rotate(-90 ${size / 2} ${size / 2})`}
+      />
+      {progress > 0 && (
+        <circle
+          cx={size / 2} cy={size / 2} r={r}
+          fill="none"
+          stroke={`url(#${id}Grad)`}
+          strokeWidth={strokeW}
+          strokeLinecap="round"
+          strokeDasharray={`${dash} ${circ - dash}`}
+          transform={`rotate(-90 ${size / 2} ${size / 2})`}
+        />
+      )}
+    </svg>
+  );
+}
+
+function WatchDarkBg({ children }: { children: React.ReactNode }) {
+  return (
+    <div style={{ width: WW, height: WH, position: "relative", overflow: "hidden", background: "#000000" }}>
+      {children}
+    </div>
+  );
+}
+
+/* ─── Watch Slide 1: Dashboard ─── */
+function WatchSlide1() {
+  const ringSize = WW * 0.54;
+  return (
+    <WatchDarkBg>
+      <div style={{
+        position: "absolute", top: WH * 0.08, left: "50%",
+        transform: "translateX(-50%)",
+        width: ringSize * 1.3, height: ringSize * 1.3, borderRadius: "50%",
+        background: "radial-gradient(circle, rgba(28,120,245,0.2) 0%, transparent 68%)",
+        pointerEvents: "none",
+      }} />
+      <div style={{
+        display: "flex", flexDirection: "column", alignItems: "center",
+        height: "100%", paddingTop: WH * 0.05, paddingBottom: WH * 0.04,
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: WW * 0.025, marginBottom: WH * 0.02 }}>
+          <span style={{ fontSize: WW * 0.055, lineHeight: 1 }}>💧</span>
+          <span style={{ fontSize: WW * 0.052, fontWeight: 700, color: "rgba(255,255,255,0.7)", letterSpacing: "0.06em", textTransform: "uppercase" }}>Sipli</span>
+        </div>
+        <div style={{ position: "relative", width: ringSize, height: ringSize, flexShrink: 0 }}>
+          <WatchProgressRing progress={0.72} size={ringSize} id="ws1" />
+          <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ fontSize: WW * 0.15, fontWeight: 700, color: "#FFFFFF", lineHeight: 1, letterSpacing: "-0.03em" }}>1.8</div>
+            <div style={{ fontSize: WW * 0.065, fontWeight: 600, color: BRAND.mint, lineHeight: 1 }}>L</div>
+            <div style={{ fontSize: WW * 0.038, fontWeight: 500, color: "rgba(255,255,255,0.42)", marginTop: WH * 0.006 }}>of 2.5 L</div>
+          </div>
+        </div>
+        <div style={{ display: "flex", gap: WW * 0.1, marginTop: WH * 0.018 }}>
+          {[{ label: "72%", sub: "Done" }, { label: "5", sub: "Entries" }].map(({ label, sub }) => (
+            <div key={sub} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: WW * 0.062, fontWeight: 700, color: BRAND.lagoon }}>{label}</div>
+              <div style={{ fontSize: WW * 0.034, color: "rgba(255,255,255,0.38)", marginTop: 2 }}>{sub}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ flex: 1, width: "100%", display: "flex", flexDirection: "column", gap: WH * 0.01, paddingLeft: WW * 0.06, paddingRight: WW * 0.06, marginTop: WH * 0.022, overflow: "hidden" }}>
+          {[{ icon: "💧", label: "Water", time: "9:32 AM", amount: "300 mL" }, { icon: "☕", label: "Coffee", time: "11:15 AM", amount: "200 mL" }].map(({ icon, label, time, amount }) => (
+            <div key={label} style={{ display: "flex", alignItems: "center", gap: WW * 0.03, background: "rgba(255,255,255,0.06)", borderRadius: WW * 0.038, padding: `${WH * 0.016}px ${WW * 0.04}px` }}>
+              <span style={{ fontSize: WW * 0.062, lineHeight: 1 }}>{icon}</span>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: WW * 0.047, fontWeight: 600, color: "#FFFFFF" }}>{label}</div>
+                <div style={{ fontSize: WW * 0.034, color: "rgba(255,255,255,0.38)" }}>{time}</div>
+              </div>
+              <div style={{ fontSize: WW * 0.042, color: BRAND.lagoon, fontWeight: 600 }}>{amount}</div>
+            </div>
+          ))}
+        </div>
+        <div style={{ width: WW * 0.56, height: WH * 0.1, borderRadius: WW * 0.12, background: BRAND.lagoon, display: "flex", alignItems: "center", justifyContent: "center", gap: WW * 0.02, marginTop: WH * 0.018, flexShrink: 0, boxShadow: "0 4px 20px rgba(28,120,245,0.4)" }}>
+          <span style={{ fontSize: WW * 0.07, color: "#FFFFFF", lineHeight: 1, marginTop: -2 }}>+</span>
+          <span style={{ fontSize: WW * 0.048, fontWeight: 700, color: "#FFFFFF" }}>Add</span>
+        </div>
+      </div>
+    </WatchDarkBg>
+  );
+}
+
+/* ─── Watch Slide 2: Quick Add ─── */
+function WatchSlide2() {
+  return (
+    <WatchDarkBg>
+      <div style={{ position: "absolute", inset: 0, background: "radial-gradient(circle at 50% 42%, rgba(28,120,245,0.22) 0%, transparent 62%)", pointerEvents: "none" }} />
+      <div style={{ display: "flex", flexDirection: "column", alignItems: "center", height: "100%", paddingTop: WH * 0.06, paddingBottom: WH * 0.06 }}>
+        <div style={{ width: WW * 0.22, height: WW * 0.22, borderRadius: "50%", background: "rgba(28,120,245,0.18)", border: "2px solid rgba(28,120,245,0.4)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: WW * 0.1, marginBottom: WH * 0.022, flexShrink: 0 }}>
+          💧
+        </div>
+        <div style={{ fontSize: WW * 0.048, fontWeight: 600, color: "rgba(255,255,255,0.55)", letterSpacing: "0.06em", marginBottom: WH * 0.018 }}>WATER</div>
+        <div style={{ display: "flex", alignItems: "center", gap: WW * 0.06, marginBottom: WH * 0.012 }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: WH * 0.01, alignItems: "center" }}>
+            <div style={{ color: "rgba(255,255,255,0.28)", fontSize: WW * 0.042, lineHeight: 1 }}>▲</div>
+            <div style={{ color: "rgba(255,255,255,0.28)", fontSize: WW * 0.042, lineHeight: 1 }}>▼</div>
+          </div>
+          <div style={{ textAlign: "center" }}>
+            <div style={{ fontSize: WW * 0.24, fontWeight: 700, color: "#FFFFFF", lineHeight: 0.88, letterSpacing: "-0.04em" }}>250</div>
+            <div style={{ fontSize: WW * 0.065, fontWeight: 600, color: BRAND.lagoon, marginTop: WH * 0.01 }}>mL</div>
+          </div>
+        </div>
+        <div style={{ display: "flex", alignItems: "center", gap: WW * 0.025, marginBottom: WH * 0.02 }}>
+          <div style={{ width: WW * 0.024, height: WH * 0.022, borderRadius: WW * 0.018, background: "rgba(255,255,255,0.18)" }} />
+          <span style={{ fontSize: WW * 0.034, color: "rgba(255,255,255,0.32)" }}>Scroll Digital Crown to adjust</span>
+        </div>
+        <div style={{ flex: 1 }} />
+        <div style={{ width: "80%", height: WH * 0.115, borderRadius: WW * 0.14, background: `linear-gradient(135deg, ${BRAND.lagoon} 0%, ${BRAND.mint} 100%)`, display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 6px 24px rgba(28,120,245,0.45)", flexShrink: 0 }}>
+          <span style={{ fontSize: WW * 0.062, fontWeight: 700, color: "#FFFFFF", letterSpacing: "-0.01em" }}>Log Intake</span>
+        </div>
+      </div>
+    </WatchDarkBg>
+  );
+}
+
+/* ─── Watch Slide 3: Fluid Picker ─── */
+function WatchSlide3() {
+  const drinks = [
+    { icon: "💧", label: "Water", selected: true },
+    { icon: "☕", label: "Coffee" },
+    { icon: "🍵", label: "Tea" },
+    { icon: "🧃", label: "Juice" },
+    { icon: "🥛", label: "Milk" },
+    { icon: "🫖", label: "Herbal" },
+  ];
+  return (
+    <WatchDarkBg>
+      <div style={{ display: "flex", flexDirection: "column", height: "100%", paddingTop: WH * 0.045, paddingBottom: WH * 0.04, paddingLeft: WW * 0.05, paddingRight: WW * 0.05 }}>
+        <div style={{ fontSize: WW * 0.054, fontWeight: 700, color: "rgba(255,255,255,0.72)", textAlign: "center", letterSpacing: "0.02em", marginBottom: WH * 0.03, flexShrink: 0 }}>
+          Choose Drink
+        </div>
+        <div style={{ flex: 1, display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gridTemplateRows: "repeat(2, 1fr)", gap: WW * 0.028 }}>
+          {drinks.map(({ icon, label, selected }) => (
+            <div key={label} style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", borderRadius: WW * 0.065, background: selected ? "rgba(28,120,245,0.25)" : "rgba(255,255,255,0.06)", border: selected ? "1.5px solid rgba(28,120,245,0.6)" : "1.5px solid transparent", gap: WH * 0.008, padding: `${WH * 0.01}px ${WW * 0.01}px` }}>
+              <span style={{ fontSize: WW * 0.1, lineHeight: 1 }}>{icon}</span>
+              <span style={{ fontSize: WW * 0.036, fontWeight: 600, color: selected ? BRAND.lagoon : "rgba(255,255,255,0.55)", textAlign: "center" }}>{label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </WatchDarkBg>
+  );
+}
+
+/* ─── Watch Slide 4: Today's Log ─── */
+function WatchSlide4() {
+  const entries = [
+    { icon: "💧", label: "Water", time: "9:32 AM", amount: "300 mL" },
+    { icon: "☕", label: "Coffee", time: "11:15 AM", amount: "200 mL" },
+    { icon: "🍵", label: "Tea", time: "2:08 PM", amount: "240 mL" },
+    { icon: "💧", label: "Water", time: "4:45 PM", amount: "350 mL" },
+  ];
+  return (
+    <WatchDarkBg>
+      <div style={{ display: "flex", flexDirection: "column", height: "100%", paddingTop: WH * 0.045, paddingBottom: WH * 0.04, paddingLeft: WW * 0.06, paddingRight: WW * 0.06 }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: WH * 0.025, flexShrink: 0 }}>
+          <span style={{ fontSize: WW * 0.06, fontWeight: 700, color: "#FFFFFF" }}>Today</span>
+          <span style={{ fontSize: WW * 0.062, fontWeight: 700, color: BRAND.lagoon }}>1.8 L</span>
+        </div>
+        <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: WH * 0.012, overflow: "hidden" }}>
+          {entries.map(({ icon, label, time, amount }, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "center", gap: WW * 0.03, background: "rgba(255,255,255,0.055)", borderRadius: WW * 0.04, padding: `${WH * 0.016}px ${WW * 0.04}px` }}>
+              <span style={{ fontSize: WW * 0.065, lineHeight: 1, flexShrink: 0 }}>{icon}</span>
+              <div style={{ flex: 1, minWidth: 0 }}>
+                <div style={{ fontSize: WW * 0.046, fontWeight: 600, color: "#FFFFFF", lineHeight: 1.2 }}>{label}</div>
+                <div style={{ fontSize: WW * 0.033, color: "rgba(255,255,255,0.36)", lineHeight: 1.2 }}>{time}</div>
+              </div>
+              <div style={{ fontSize: WW * 0.04, fontWeight: 600, color: BRAND.mint, flexShrink: 0 }}>{amount}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </WatchDarkBg>
+  );
+}
+
+/* ─── Watch Slide 5: Goal Reached ─── */
+function WatchSlide5() {
+  const ringSize = WW * 0.50;
+  const confetti = [
+    { x: "14%", y: "10%", color: BRAND.lagoon, size: 6 },
+    { x: "82%", y: "13%", color: BRAND.mint, size: 5 },
+    { x: "7%", y: "66%", color: BRAND.sun, size: 7 },
+    { x: "88%", y: "72%", color: BRAND.lagoon, size: 5 },
+    { x: "50%", y: "5%", color: BRAND.mint, size: 4 },
+    { x: "92%", y: "40%", color: BRAND.lavender, size: 4 },
+    { x: "4%", y: "38%", color: BRAND.sun, size: 5 },
+  ];
+  return (
+    <div style={{ width: WW, height: WH, position: "relative", overflow: "hidden", background: "linear-gradient(160deg, #0A1929 0%, #051224 100%)" }}>
+      <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -50%)", width: WW * 1.1, height: WW * 1.1, borderRadius: "50%", background: "radial-gradient(circle, rgba(48,194,163,0.26) 0%, transparent 65%)", pointerEvents: "none" }} />
+      {confetti.map(({ x, y, color, size }, i) => (
+        <div key={i} style={{ position: "absolute", left: x, top: y, width: size, height: size, borderRadius: "50%", background: color, opacity: 0.65 }} />
+      ))}
+      <div style={{ position: "relative", zIndex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", height: "100%", gap: WH * 0.022, padding: `0 ${WW * 0.08}px` }}>
+        <div style={{ position: "relative", width: ringSize, height: ringSize, flexShrink: 0 }}>
+          <WatchProgressRing progress={1.0} size={ringSize} id="ws5" />
+          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ fontSize: ringSize * 0.36, lineHeight: 1, color: BRAND.mint }}>✓</div>
+          </div>
+        </div>
+        <div style={{ fontSize: WW * 0.085, fontWeight: 700, color: "#FFFFFF", textAlign: "center", lineHeight: 1.1, letterSpacing: "-0.02em" }}>
+          Goal<br />Reached!
+        </div>
+        <div style={{ fontSize: WW * 0.062, fontWeight: 600, color: BRAND.mint }}>2.5 L today 🎉</div>
+      </div>
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
    SCREENSHOT REGISTRIES
    ═══════════════════════════════════════════════════════ */
 
@@ -1446,6 +1700,14 @@ const EARTH_SCREENSHOTS: ScreenshotEntry[] = [
   { name: "earth-pledge", component: EarthSlide3 },
   { name: "earth-insights", component: EarthSlide4 },
   { name: "earth-facts", component: EarthSlide5 },
+];
+
+const WATCH_SCREENSHOTS: ScreenshotEntry[] = [
+  { name: "watch-dashboard", component: WatchSlide1 },
+  { name: "watch-quick-add", component: WatchSlide2 },
+  { name: "watch-beverages", component: WatchSlide3 },
+  { name: "watch-log", component: WatchSlide4 },
+  { name: "watch-goal-reached", component: WatchSlide5 },
 ];
 
 /* ═══════════════════════════════════════════════════════
@@ -1965,6 +2227,15 @@ export default function ScreenshotsPage() {
         canvasW={IW}
         canvasH={IH}
         filenamePrefix="ipad"
+      />
+
+      <DeviceSection
+        title="Apple Watch"
+        screenshots={WATCH_SCREENSHOTS}
+        sizes={WATCH_SIZES}
+        canvasW={WW}
+        canvasH={WH}
+        filenamePrefix="watch"
       />
 
       <p style={{ textAlign: "center", color: "rgba(255,255,255,0.3)", marginTop: 40, fontSize: 13 }}>
