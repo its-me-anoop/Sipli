@@ -5,7 +5,9 @@ struct WatchDashboardView: View {
     @State private var showQuickAdd = false
 
     var body: some View {
-        ScrollView {
+        // `List` is the correct root container on watchOS. Nesting a `List`
+        // inside a `ScrollView` breaks rendering and swipe-to-delete.
+        List {
             VStack(spacing: 12) {
                 WatchProgressRing(
                     progress: store.progress,
@@ -33,10 +35,14 @@ struct WatchDashboardView: View {
                 }
                 .buttonStyle(.borderedProminent)
                 .tint(Theme.lagoon)
-
-                WatchTodayLogView()
             }
+            .frame(maxWidth: .infinity)
+            .listRowBackground(Color.clear)
+            .listRowInsets(EdgeInsets(top: 0, leading: 0, bottom: 8, trailing: 0))
+
+            WatchTodayLogView()
         }
+        .listStyle(.plain)
         .sheet(isPresented: $showQuickAdd) {
             WatchQuickAddView()
         }

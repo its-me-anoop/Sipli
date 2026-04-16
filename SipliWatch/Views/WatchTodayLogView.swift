@@ -1,5 +1,8 @@
 import SwiftUI
 
+/// Today's Log content. MUST be used as direct children of a `List` —
+/// nesting a `List` inside a `ScrollView` on watchOS breaks rendering
+/// and swipe-to-delete, so this view emits list rows directly.
 struct WatchTodayLogView: View {
     @EnvironmentObject private var store: WatchHydrationStore
 
@@ -8,26 +11,27 @@ struct WatchTodayLogView: View {
             Text("No drinks logged yet today")
                 .font(.system(size: 12))
                 .foregroundStyle(.secondary)
+                .frame(maxWidth: .infinity, alignment: .center)
                 .padding(.top, 8)
+                .listRowBackground(Color.clear)
         } else {
-            VStack(spacing: 4) {
+            Section {
+                ForEach(store.todayEntries.sorted(by: { $0.date > $1.date })) { entry in
+                    WatchEntryRow(entry: entry, unitSystem: store.profile.unitSystem)
+                        .listRowBackground(Color.clear)
+                        .listRowInsets(EdgeInsets(top: 2, leading: 0, bottom: 2, trailing: 0))
+                }
+                .onDelete { offsets in
+                    let sorted = store.todayEntries.sorted(by: { $0.date > $1.date })
+                    for offset in offsets {
+                        store.deleteEntry(sorted[offset])
+                    }
+                }
+            } header: {
                 Text("Today's Log")
                     .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(.secondary)
-                    .frame(maxWidth: .infinity, alignment: .leading)
-
-                List {
-                    ForEach(store.todayEntries.sorted(by: { $0.date > $1.date })) { entry in
-                        WatchEntryRow(entry: entry, unitSystem: store.profile.unitSystem)
-                    }
-                    .onDelete { offsets in
-                        let sorted = store.todayEntries.sorted(by: { $0.date > $1.date })
-                        for offset in offsets {
-                            store.deleteEntry(sorted[offset])
-                        }
-                    }
-                }
-                .listStyle(.plain)
+                    .textCase(nil)
             }
         }
     }
