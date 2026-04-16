@@ -10,6 +10,10 @@ enum Legal {
     static let hydrationExerciseCitationURL = URL(string: "https://acsm.org/9-facts-about-hydration-electrolytes/")!
     static let manageSubscriptionsURL = URL(string: "https://apps.apple.com/account/subscriptions")!
     static let appStoreURL = URL(string: "https://apps.apple.com/us/app/sipli/id6758851574")!
+    /// Deep-links straight to Sipli's "Write a Review" sheet inside the App
+    /// Store app. Used by the Settings "Rate Sipli" row for users who want to
+    /// leave a review outside of the Apple-throttled `.requestReview` prompt.
+    static let appStoreReviewURL = URL(string: "https://apps.apple.com/app/id6758851574?action=write-review")!
     // swiftlint:enable force_unwrapping
 }
 

@@ -554,6 +554,32 @@ struct SettingsView: View {
                 }
                 .buttonStyle(.plain)
 
+                Link(destination: Legal.appStoreReviewURL) {
+                    HStack(spacing: 8) {
+                        Image(systemName: "star.fill")
+                            .foregroundStyle(Theme.sun)
+                            .frame(width: 22)
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text("Rate Sipli")
+                                .font(.subheadline.weight(.medium))
+                                .foregroundStyle(.primary)
+                            Text("Sipli is built by one person — a short review makes a real difference.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                        Spacer()
+                        Image(systemName: "arrow.up.right")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(.tertiary)
+                    }
+                    .padding(12)
+                    .background(
+                        RoundedRectangle(cornerRadius: 12, style: .continuous)
+                            .fill(Theme.card)
+                    )
+                }
+                .simultaneousGesture(TapGesture().onEnded { Haptics.selection() })
+
                 Link(destination: Legal.privacyURL) {
                     HStack(spacing: 8) {
                         Image(systemName: "hand.raised.fill")
