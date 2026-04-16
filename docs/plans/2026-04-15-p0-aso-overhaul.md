@@ -138,6 +138,8 @@ PREMIUM (monthly or annual)
 
 Final strings committed to `docs/app-store-metadata/en-us.md`. Apply in App Store Connect → App Information → "Localizable Information (English (US))" and "Version Information".
 
+**Status (2026-04-16):** delivered as part of the consolidated v3.0 launch package. See `docs/app-store-metadata/en-us.md` for the paste-ready strings and `~/.claude/plans/whimsical-tickling-parnas.md` for the competitor-informed rationale that drove each field.
+
 ---
 
 ## Step 3 — Screenshot Redesign

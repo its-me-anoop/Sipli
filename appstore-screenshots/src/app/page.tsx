@@ -1288,8 +1288,8 @@ function Slide7() {
 }
 
 function Slide8() {
-  const features = ["Weather-Adjusted Goals", "HealthKit Sync", "Dark & Light Mode", "Hydration Heatmap", "Activity Tracking", "Smart Reminders", "Daily Log", "Multiple Beverages"];
-  const comingSoon = ["Apple Watch App", "Shortcuts"];
+  const features = ["Apple Watch App", "Weather-Adjusted Goals", "HealthKit Sync", "Dark & Light Mode", "Hydration Heatmap", "Activity Tracking", "Smart Reminders", "Daily Log", "Multiple Beverages"];
+  const comingSoon = ["Shortcuts"];
   return (
     <div style={{ width: W, height: H, position: "relative", overflow: "hidden", background: `linear-gradient(175deg, #080E1A 0%, ${BRAND.darkBg2} 50%, #060C18 100%)` }}>
       <Blob color={BRAND.lagoon} size={700} x={W / 2 - 350} y={H / 2 - 350} blur={200} opacity={0.12} />

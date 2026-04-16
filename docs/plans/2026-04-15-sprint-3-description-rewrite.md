@@ -3,7 +3,7 @@
 **Date:** 2026-04-15
 **Sprints:** 3 (above-the-fold only) and 4 (full body)
 **Parent plan:** [2026-04-15-aso-incremental-rollout.md](./2026-04-15-aso-incremental-rollout.md)
-**Status:** Draft — awaiting user approval on voice direction for above-the-fold.
+**Status:** Superseded 2026-04-16 by the consolidated v3.0 launch package at `docs/app-store-metadata/en-us.md` (source plan: `~/.claude/plans/whimsical-tickling-parnas.md`). The above-the-fold and full-body description in that package map closely to Option A below, with the adaptive-intelligence positioning extended across every field. Kept for sprint history.
 **Ship mode:** metadata-only update via App Store Connect (no binary).
 
 ## Why split into Sprints 3 and 4
