@@ -46,6 +46,7 @@
 		94AF3267A3C90279716F2BE6 /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A8068B4418852446BD78E6 /* MotionManager.swift */; };
 		A1B2326FF853A75236509F2C /* icon.json in Resources */ = {isa = PBXBuildFile; fileRef = 732CBE184502476DC56921F8 /* icon.json */; };
 		A543E5598AAD6E7D7CD5164C /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 161A82CD61225A1F302ECA9D /* DateExtensions.swift */; };
+		AB92FFFB14A831BB3B5FB42A /* NotificationCategoriesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4A8703E51FB5E078BD00AB /* NotificationCategoriesTests.swift */; };
 		B45B8AFC80046E64CEA7EE18 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50CF0F6325F9C80BFB71AA0D /* UserProfile.swift */; };
 		B67E99532D94983258FFDC94 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 39EF82B8B03A482B4BC8CBF9 /* LaunchScreen.storyboard */; };
 		BBBF0A2E700E876678D8DA69 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD0B42119D7BD312FCDAF766 /* SettingsView.swift */; };
@@ -86,6 +87,7 @@
 		ED03000000000000000001 /* EarthDayPledgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED03000000000000000002 /* EarthDayPledgeView.swift */; };
 		ED04000000000000000001 /* EarthInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED04000000000000000002 /* EarthInfoView.swift */; };
 		ED05000000000000000001 /* EarthProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED05000000000000000002 /* EarthProgressView.swift */; };
+		EDBE22FF0F30A88A5820362A /* NotificationCategories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E73BC8B42AADA53E70C6538 /* NotificationCategories.swift */; };
 		EE3333333333333333333333 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE1111111111111111111111 /* WidgetKit.framework */; };
 		EE4444444444444444444444 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE2222222222222222222222 /* SwiftUI.framework */; };
 		F61E51CCFB80BD3F264454D4 /* NotificationMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D8C127CF4F113AB2D5DB40D /* NotificationMessageTests.swift */; };
@@ -209,6 +211,7 @@
 		1BD898210B2BA8EE347F72F4 /* Sipli.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sipli.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C049D1800E773480DC7E47B /* NotificationContextTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationContextTests.swift; sourceTree = "<group>"; };
 		22C158CF127D3436999E3C2B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
+		2B4A8703E51FB5E078BD00AB /* NotificationCategoriesTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationCategoriesTests.swift; sourceTree = "<group>"; };
 		31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationEntry.swift; sourceTree = "<group>"; };
 		32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationStore.swift; sourceTree = "<group>"; };
 		39EF82B8B03A482B4BC8CBF9 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -220,6 +223,7 @@
 		50CF0F6325F9C80BFB71AA0D /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		55B57443B7032DDCF70ACB8C /* HydrationAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationAIService.swift; sourceTree = "<group>"; };
 		59DFB425E8198F6C001CB5A8 /* WaterQuestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WaterQuestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5E73BC8B42AADA53E70C6538 /* NotificationCategories.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationCategories.swift; sourceTree = "<group>"; };
 		63F661B4016F8BE1E8DDA5B5 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
 		6862392928A13FBD5E45D6E3 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		69F362557BEECECFAA26285A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -465,6 +469,7 @@
 				A0A71028244F753823101D35 /* WaterQuestTests.swift */,
 				1C049D1800E773480DC7E47B /* NotificationContextTests.swift */,
 				6D8C127CF4F113AB2D5DB40D /* NotificationMessageTests.swift */,
+				2B4A8703E51FB5E078BD00AB /* NotificationCategoriesTests.swift */,
 			);
 			name = WaterQuestTests;
 			path = WaterQuestTests;
@@ -567,6 +572,7 @@
 				PS001000000000000000001 /* PhoneSessionManager.swift */,
 				B26785D44340E5C0A267B325 /* SubscriptionManager.swift */,
 				8C2DDAD6DD4B924CCA0509D0 /* WeatherClient.swift */,
+				5E73BC8B42AADA53E70C6538 /* NotificationCategories.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -893,6 +899,7 @@
 				0A6AF1AF6B3D3222F30C3E85 /* WeatherSnapshot.swift in Sources */,
 				CAA880E64AF96B5C0988D2A3 /* WorkoutSummary.swift in Sources */,
 				130C730FC298C86A95B83F02 /* NotificationContext.swift in Sources */,
+				EDBE22FF0F30A88A5820362A /* NotificationCategories.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -903,6 +910,7 @@
 				145E47AF20C5FE4874944743 /* WaterQuestTests.swift in Sources */,
 				76BC1045791BD2737D00FCD6 /* NotificationContextTests.swift in Sources */,
 				F61E51CCFB80BD3F264454D4 /* NotificationMessageTests.swift in Sources */,
+				AB92FFFB14A831BB3B5FB42A /* NotificationCategoriesTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -20,6 +20,7 @@ struct WaterQuestApp: App {
     }
 
     init() {
+        NotificationCategories.registerAll()
         let location = LocationManager()
         _locationManager = StateObject(wrappedValue: location)
         _weatherClient = StateObject(wrappedValue: WeatherClient(locationManager: location))
