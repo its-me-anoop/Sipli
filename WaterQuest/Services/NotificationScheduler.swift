@@ -290,6 +290,7 @@ final class NotificationScheduler: ObservableObject {
 
             // Replace the first-fire notification.
             await MainActor.run {
+                guard batchID == self.smartBatchID else { return }  // stale batch — a new scheduling pass happened while AI was generating; skip.
                 let firstIdentifier = "\(self.smartIdentifierPrefix)\(batchID).0"
                 let center = UNUserNotificationCenter.current()
                 center.removePendingNotificationRequests(withIdentifiers: [firstIdentifier])
@@ -311,7 +312,7 @@ final class NotificationScheduler: ObservableObject {
 
     /// Entry point used by both smart and classic scheduling paths. Picks a
     /// curated message appropriate for the slot; the AI wire-up (see
-    /// `scheduleAIReplacement(...)`) can later swap the first-fire notification
+    /// `scheduleAIReplacementForFirstFire(...)`) can later swap the first-fire notification
     /// for a generated message.
     func messageFor(context: NotificationContext, slot: MessageSlot) -> String {
         switch slot {
