@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="ad.size" content="width=320,height=50">
+<title>Sipli — 320x50</title>
+<script>
+  var clickTag = "https://apps.apple.com/us/app/sipli/id6758851574";
+</script>
+<style>
+  html,body{margin:0;padding:0;width:320px;height:50px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;}
+  #ad{position:relative;width:320px;height:50px;background:linear-gradient(100deg,#0A3D91 0%,#1C78F5 60%,#30C2A3 140%);color:#fff;cursor:pointer;overflow:hidden;}
+  #ad::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse at 85% 50%,rgba(255,255,255,.18),transparent 60%);pointer-events:none;}
+  .row{position:relative;display:flex;align-items:center;height:100%;padding:0 10px 0 12px;gap:10px;}
+  .ring{width:28px;height:28px;border-radius:50%;background:conic-gradient(#30C2A3 0 70%,rgba(255,255,255,.2) 70% 100%);display:flex;align-items:center;justify-content:center;flex-shrink:0;animation:pulse 2.4s ease-in-out infinite;}
+  .ring::after{content:"";position:absolute;width:20px;height:20px;border-radius:50%;background:linear-gradient(160deg,#0A3D91,#1C78F5);}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(48,194,163,.5);}50%{box-shadow:0 0 0 5px rgba(48,194,163,0);}}
+  .text{flex:1;min-width:0;}
+  .brand{font-weight:700;font-size:13px;letter-spacing:-.2px;line-height:1;}
+  .tag{font-weight:500;font-size:10.5px;color:rgba(255,255,255,.82);line-height:1.2;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .cta{background:#fff;color:#0A3D91;font-weight:700;font-size:11px;padding:7px 12px;border-radius:999px;letter-spacing:.2px;white-space:nowrap;box-shadow:0 3px 8px rgba(10,61,145,.3);}
+</style>
+</head>
+<body>
+<div id="ad" onclick="window.open(window.clickTag,'_blank')">
+  <div class="row">
+    <div class="ring"></div>
+    <div class="text">
+      <div class="brand">Sipli — Water Tracker</div>
+      <div class="tag">Adaptive goals · Apple Watch ready</div>
+    </div>
+    <div class="cta">GET</div>
+  </div>
+</div>
+</body>
+</html>

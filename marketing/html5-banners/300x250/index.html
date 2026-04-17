@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="ad.size" content="width=300,height=250">
+<title>Sipli — 300x250</title>
+<script>
+  var clickTag = "https://apps.apple.com/us/app/sipli/id6758851574";
+</script>
+<style>
+  html,body{margin:0;padding:0;width:300px;height:250px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;}
+  #ad{position:relative;width:300px;height:250px;background:linear-gradient(160deg,#0A3D91 0%,#1C78F5 55%,#30C2A3 120%);color:#fff;cursor:pointer;overflow:hidden;border-radius:8px;}
+  #ad::before{content:"";position:absolute;inset:-20% -10% auto -10%;height:70%;background:radial-gradient(ellipse at center top,rgba(255,255,255,.25),transparent 60%);pointer-events:none;}
+  .ring{position:absolute;top:20px;right:18px;width:58px;height:58px;border-radius:50%;background:conic-gradient(#30C2A3 0 70%,rgba(255,255,255,.18) 70% 100%);display:flex;align-items:center;justify-content:center;animation:pulse 2.4s ease-in-out infinite;}
+  .ring::after{content:"";position:absolute;inset:6px;border-radius:50%;background:linear-gradient(160deg,#0A3D91,#1C78F5);}
+  .pct{position:relative;font-weight:700;font-size:16px;letter-spacing:.3px;z-index:1;}
+  @keyframes pulse{0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(48,194,163,.45);}50%{transform:scale(1.04);box-shadow:0 0 0 10px rgba(48,194,163,0);}}
+  .brand{position:absolute;top:22px;left:20px;font-weight:700;font-size:22px;letter-spacing:-.5px;}
+  .brand .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#30C2A3;margin-left:4px;vertical-align:middle;transform:translateY(-2px);}
+  .headline{position:absolute;top:92px;left:20px;right:20px;font-size:20px;line-height:1.2;font-weight:700;letter-spacing:-.3px;}
+  .sub{position:absolute;top:158px;left:20px;right:20px;font-size:12px;line-height:1.35;color:rgba(255,255,255,.82);font-weight:500;}
+  .cta{position:absolute;bottom:18px;left:20px;right:20px;height:36px;border-radius:999px;background:#fff;color:#0A3D91;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;letter-spacing:.2px;box-shadow:0 6px 14px rgba(10,61,145,.35);animation:nudge 2.8s ease-in-out infinite;}
+  .cta span.arrow{margin-left:8px;transition:transform .2s;}
+  #ad:hover .cta{transform:translateY(-1px);}
+  #ad:hover .cta span.arrow{transform:translateX(3px);}
+  @keyframes nudge{0%,100%{transform:translateY(0);}50%{transform:translateY(-2px);}}
+</style>
+</head>
+<body>
+<div id="ad" onclick="window.open(window.clickTag,'_blank')">
+  <div class="brand">Sipli<span class="dot"></span></div>
+  <div class="ring"><div class="pct">70%</div></div>
+  <div class="headline">Adaptive water goals</div>
+  <div class="sub">Now on Apple Watch — log a sip in one tap.</div>
+  <div class="cta">Download free <span class="arrow">›</span></div>
+</div>
+</body>
+</html>

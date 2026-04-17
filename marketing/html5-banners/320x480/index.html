@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="ad.size" content="width=320,height=480">
+<title>Sipli — 320x480</title>
+<script>
+  var clickTag = "https://apps.apple.com/us/app/sipli/id6758851574";
+</script>
+<style>
+  html,body{margin:0;padding:0;width:320px;height:480px;overflow:hidden;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Helvetica Neue",Arial,sans-serif;}
+  #ad{position:relative;width:320px;height:480px;background:linear-gradient(170deg,#062B6E 0%,#0A3D91 40%,#1C78F5 80%,#30C2A3 130%);color:#fff;cursor:pointer;overflow:hidden;}
+  .glow{position:absolute;top:-40%;left:-30%;width:160%;height:90%;background:radial-gradient(ellipse at center,rgba(255,255,255,.22),transparent 62%);pointer-events:none;}
+  .brand{position:absolute;top:28px;left:24px;font-weight:700;font-size:20px;letter-spacing:-.4px;}
+  .brand .dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:#30C2A3;margin-left:4px;vertical-align:middle;transform:translateY(-2px);}
+  .kicker{position:absolute;top:30px;right:24px;font-size:10px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;color:rgba(255,255,255,.7);}
+  .ring-wrap{position:absolute;top:88px;left:50%;transform:translateX(-50%);width:164px;height:164px;}
+  .ring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(#30C2A3 0 72%,rgba(255,255,255,.16) 72% 100%);display:flex;align-items:center;justify-content:center;animation:rotate 9s linear infinite;}
+  .ring::after{content:"";position:absolute;inset:14px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#1C78F5,#062B6E);}
+  .ring-inner{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:1;}
+  .pct{font-weight:800;font-size:46px;line-height:1;letter-spacing:-1px;}
+  .ml{font-weight:600;font-size:11px;color:rgba(255,255,255,.75);margin-top:4px;letter-spacing:.3px;}
+  @keyframes rotate{from{transform:rotate(0);}to{transform:rotate(360deg);}}
+  .ring-wrap .pct,.ring-wrap .ml{animation:counterRotate 9s linear infinite;}
+  @keyframes counterRotate{from{transform:rotate(0);}to{transform:rotate(-360deg);}}
+  .headline{position:absolute;top:280px;left:24px;right:24px;font-size:26px;line-height:1.15;font-weight:800;letter-spacing:-.6px;}
+  .sub{position:absolute;top:360px;left:24px;right:24px;font-size:13px;line-height:1.4;color:rgba(255,255,255,.82);font-weight:500;}
+  .cta{position:absolute;bottom:24px;left:24px;right:24px;height:46px;border-radius:999px;background:#fff;color:#0A3D91;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:15px;letter-spacing:.2px;box-shadow:0 8px 20px rgba(10,61,145,.4);animation:nudge 2.8s ease-in-out infinite;}
+  .cta span.arrow{margin-left:8px;transition:transform .2s;}
+  #ad:hover .cta span.arrow{transform:translateX(4px);}
+  @keyframes nudge{0%,100%{transform:translateY(0);}50%{transform:translateY(-3px);}}
+  .rating{position:absolute;bottom:78px;left:0;right:0;text-align:center;font-size:11px;font-weight:600;color:rgba(255,255,255,.8);letter-spacing:.3px;}
+  .rating .star{color:#FAAB2B;margin-right:2px;}
+</style>
+</head>
+<body>
+<div id="ad" onclick="window.open(window.clickTag,'_blank')">
+  <div class="glow"></div>
+  <div class="brand">Sipli<span class="dot"></span></div>
+  <div class="kicker">Free · iPhone · Watch</div>
+  <div class="ring-wrap">
+    <div class="ring"></div>
+    <div class="ring-inner">
+      <div class="pct">72%</div>
+      <div class="ml">1,820 / 2,500 ml</div>
+    </div>
+  </div>
+  <div class="headline">Hydration that adapts to you.</div>
+  <div class="sub">Adaptive goals flex with your weight, weather, and workouts. Log a sip in one tap.</div>
+  <div class="rating"><span class="star">★</span>5.0 on the App Store</div>
+  <div class="cta">Download free <span class="arrow">›</span></div>
+</div>
+</body>
+</html>
