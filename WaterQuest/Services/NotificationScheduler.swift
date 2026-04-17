@@ -35,11 +35,6 @@ final class NotificationScheduler: ObservableObject {
     @Published var authorizationStatus: UNAuthorizationStatus = .notDetermined
 
     // MARK: - Configuration
-    /// Minimum seconds between any two delivered notifications.
-    private let minimumGapSeconds: Double = 1800 // 30 min
-
-    /// How many seconds of silence before we consider the user "quiet".
-    private let quietThresholdMultiplier: Double = 2.0
     private let smartIdentifierPrefix = "sipli.smart."
 
     // MARK: - Internal state
@@ -213,6 +208,14 @@ final class NotificationScheduler: ObservableObject {
         return clamped * 60.0 // convert to seconds
     }
 
+    /// Number of classic reminders per day. Derived from the same interval
+    /// math smart mode uses so the two modes stay in lockstep.
+    private func classicReminderCount(profile: UserProfile) -> Int {
+        let awakeMinutes = max(60, profile.sleepMinutes - profile.wakeMinutes)
+        let intervalMinutes = computeInterval(profile: profile) / 60
+        return max(1, min(12, Int(round(Double(awakeMinutes) / intervalMinutes))))
+    }
+
     // MARK: - FoundationModels AI generation (Apple Intelligence devices only)
 
     private func generateAIMessage(context: NotificationContext) async -> String? {
@@ -369,8 +372,7 @@ final class NotificationScheduler: ObservableObject {
 
     private func scheduleClassicReminders(context: NotificationContext) {
         let profile = context.profile
-        let awakeMinutes = max(60, profile.sleepMinutes - profile.wakeMinutes)
-        let count = max(1, min(12, Int(round(Double(awakeMinutes) / min(max(Double(awakeMinutes) / 8.0, 60), 150)))))
+        let count = classicReminderCount(profile: profile)
         let times = classicReminderTimes(wakeMinutes: profile.wakeMinutes, sleepMinutes: profile.sleepMinutes, count: count)
         for (index, minutes) in times.enumerated() {
             var dateComponents = DateComponents()
