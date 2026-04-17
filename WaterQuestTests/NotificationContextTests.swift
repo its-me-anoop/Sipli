@@ -76,3 +76,19 @@ final class NotificationContextTests: XCTestCase {
         XCTAssertEqual(context.todayTotalML, 1000, accuracy: 0.001)
     }
 }
+
+extension NotificationContextTests {
+
+    @MainActor
+    func test_buildNotificationContext_returnsGoalAndPremiumFromStore() {
+        let store = HydrationStore()
+        store.updateProfile { $0.weightKg = 70 }
+        store.updatePremiumAccess(false)
+
+        let context = store.buildNotificationContext()
+
+        XCTAssertFalse(context.hasPremiumAccess)
+        XCTAssertGreaterThan(context.goalML, 0)
+        XCTAssertEqual(context.profile.weightKg, 70)
+    }
+}

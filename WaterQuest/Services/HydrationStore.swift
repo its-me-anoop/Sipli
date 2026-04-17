@@ -88,15 +88,57 @@ final class HydrationStore: ObservableObject {
     var todayCompositions: [FluidComposition] {
         let total = max(1, todayTotalML) // Avoid division by zero
         var grouped: [FluidType: Double] = [:]
-        
+
         for entry in todayEntries {
             grouped[entry.fluidType, default: 0] += entry.effectiveML
         }
-        
+
         // Convert to proportions and sort by volume descending
         return grouped
             .map { FluidComposition(type: $0.key, proportion: $0.value / total) }
             .sorted { $0.proportion > $1.proportion }
+    }
+
+    /// Assemble an immutable snapshot of everything the notification scheduler
+    /// needs. Called from every site that reschedules reminders.
+    ///
+    /// `currentStreak` replicates the algorithm in `InsightsView.swift` — a run
+    /// of consecutive goal-met days ending either today (if today is met) or
+    /// yesterday (if not). We inline rather than extract for Phase 1 because
+    /// Phase 4 will pull out a proper `StreakCalculator` alongside the
+    /// histogram work.
+    func buildNotificationContext() -> NotificationContext {
+        NotificationContext(
+            profile: effectiveProfile,
+            entries: entries,
+            goalML: dailyGoal.totalML,
+            currentStreak: computeCurrentStreak(goalML: dailyGoal.totalML),
+            hasPremiumAccess: hasPremiumAccess,
+            capturedAt: Date()
+        )
+    }
+
+    private func computeCurrentStreak(goalML: Double) -> Int {
+        guard goalML > 0 else { return 0 }
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+
+        // Totals for last 90 days, index 0 = today.
+        var totals: [Double] = []
+        for offset in 0..<90 {
+            guard let day = calendar.date(byAdding: .day, value: -offset, to: today) else { break }
+            let total = entries
+                .filter { calendar.isDate($0.date, inSameDayAs: day) }
+                .reduce(0.0) { $0 + $1.effectiveML }
+            totals.append(total)
+        }
+
+        let startIdx = (totals.first ?? 0) >= goalML ? 0 : 1
+        var streak = 0
+        for i in startIdx..<totals.count {
+            if totals[i] >= goalML { streak += 1 } else { break }
+        }
+        return streak
     }
 
     @discardableResult
