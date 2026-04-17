@@ -12,10 +12,9 @@
 		0A5C95DCB74AE59638E495D3 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98496F0A352BC5A580943E39 /* OnboardingView.swift */; };
 		0A6AF1AF6B3D3222F30C3E85 /* WeatherSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */; };
 		0A98E6835256CBC9D3B2DF65 /* HydrationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */; };
-		PS001000000000000000002 /* PhoneSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = PS001000000000000000001 /* PhoneSessionManager.swift */; };
-		WS001000000000000000002 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS001000000000000000001 /* WatchSessionManager.swift */; };
 		0E54D9CCCA944AAEB6EA20F8 /* HydrationEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */; };
 		11DFD61DBBED6087CAF037CC /* WeatherClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2DDAD6DD4B924CCA0509D0 /* WeatherClient.swift */; };
+		145E47AF20C5FE4874944743 /* WaterQuestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0A71028244F753823101D35 /* WaterQuestTests.swift */; };
 		1DCE9DE6A19E823BA1E5079B /* DashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97414883E4C0F357148B7EC7 /* DashboardCard.swift */; };
 		289CD9C4C7D7FC94DDA3DEB7 /* GoalBreakdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */; };
 		2935FCF5A46AC8630A581FE4 /* Gemini_Generated_Image_15xog715xog715xo.png in Resources */ = {isa = PBXBuildFile; fileRef = C5DD4230940B25D30C9598B4 /* Gemini_Generated_Image_15xog715xog715xo.png */; };
@@ -35,7 +34,6 @@
 		6B55F77D2F8F608C006CE606 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE2222222222222222222222 /* SwiftUI.framework */; };
 		6B55F78A2F8F608F006CE606 /* SipliWatchWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6B55F77B2F8F608C006CE606 /* SipliWatchWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		6BBC3B922F4F6AC100F5525A /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 6BBC3B912F4F6AC100F5525A /* AppIcon.icon */; };
-		WWICON00000000000000001 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = WWICON00000000000000002 /* AppIcon.icon */; };
 		6BDAF0F22F6375DE009ADC09 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 6BDAF0F12F6375DE009ADC09 /* Products.storekit */; };
 		7077C5CF3469D64E94804983 /* FluidType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A139EF313607077443D4FCFE /* FluidType.swift */; };
 		747A7C4F8A906C71164AB9DE /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */; };
@@ -76,6 +74,7 @@
 		D1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift */; };
 		D4E5F6A7B8C9D0E1F2A3B4C5 /* RippleEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7B8C9D0E1F2A3 /* RippleEffect.swift */; };
 		D6E8A4F1B37C920E5D1A8F63 /* PreviewEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F3E9B2C4D61805FA93B1E2 /* PreviewEnvironment.swift */; };
+		DD67B493165182283E1E0920 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F0A6D9151D9D1AF5B281F860 /* Foundation.framework */; };
 		E054558C7B7CF349F6CDD709 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE848C59D9014D3ABE6E04BE /* SplashScreenView.swift */; };
 		E27FB3C46FDAA80AD7E43C6F /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F021A59BB7CB33328B5ABBC4 /* Formatters.swift */; };
 		E367CAB1741850BAFCE4F3F9 /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B9CF2D397867B06457E11FA /* PrimaryButton.swift */; };
@@ -90,6 +89,7 @@
 		EE4444444444444444444444 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE2222222222222222222222 /* SwiftUI.framework */; };
 		F9760161C65BFA2368DB8094 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7043107E62B2C04F4C58EB /* DashboardView.swift */; };
 		FF8888888888888888888888 /* SipliWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA9999999999999999999999 /* SipliWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		PS001000000000000000002 /* PhoneSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = PS001000000000000000001 /* PhoneSessionManager.swift */; };
 		WA0001000000000000000001 /* SipliWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA0001000000000000000002 /* SipliWatchApp.swift */; };
 		WA0002000000000000000001 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = WA0002000000000000000002 /* Assets.xcassets */; };
 		WA0003000000000000000001 /* HealthKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = WA0003000000000000000002 /* HealthKit.framework */; };
@@ -117,6 +117,7 @@
 		WA0023000000000000000001 /* WatchFluidPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA0023000000000000000002 /* WatchFluidPickerView.swift */; };
 		WA002A000000000000000001 /* WatchHealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA002A000000000000000002 /* WatchHealthKitManager.swift */; };
 		WA002B000000000000000001 /* WatchNotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA002B000000000000000002 /* WatchNotificationHandler.swift */; };
+		WS001000000000000000002 /* WatchSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = WS001000000000000000001 /* WatchSessionManager.swift */; };
 		WWEXT001000000000000001 /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37EBA9FC9F1233C2BC105DD /* PersistenceService.swift */; };
 		WWEXT002000000000000001 /* GoalCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38731A03D043511C9AAD4C2 /* GoalCalculator.swift */; };
 		WWEXT003000000000000001 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F021A59BB7CB33328B5ABBC4 /* Formatters.swift */; };
@@ -130,6 +131,7 @@
 		WWEXT011000000000000001 /* WorkoutSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE15D5810B84C7C96E0EA4C /* WorkoutSummary.swift */; };
 		WWEXT012000000000000001 /* PersistedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8888888888888888888888 /* PersistedState.swift */; };
 		WWEXT013000000000000001 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CBD2C7DC27199FF61EB613 /* Theme.swift */; };
+		WWICON00000000000000001 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = WWICON00000000000000002 /* AppIcon.icon */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -139,6 +141,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = 6B55F77A2F8F608C006CE606;
 			remoteInfo = SipliWatchWidgetsExtension;
+		};
+		E0E2EDDD4272F387559AFC50 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D67A7263546728AB364FF765 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8696EFE2052B0D0EA16BCADF;
+			remoteInfo = WaterQuest;
 		};
 		FF3333333333333333333333 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -199,7 +208,6 @@
 		22C158CF127D3436999E3C2B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationEntry.swift; sourceTree = "<group>"; };
 		32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationStore.swift; sourceTree = "<group>"; };
-		PS001000000000000000001 /* PhoneSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneSessionManager.swift; sourceTree = "<group>"; };
 		39EF82B8B03A482B4BC8CBF9 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3ABC282C313B061E1E34EDF7 /* StatPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatPill.swift; sourceTree = "<group>"; };
 		3BE15D5810B84C7C96E0EA4C /* WorkoutSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSummary.swift; sourceTree = "<group>"; };
@@ -208,13 +216,13 @@
 		4B013DED6E9276AA1DBE33BC /* WaterQuest.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WaterQuest.entitlements; sourceTree = "<group>"; };
 		50CF0F6325F9C80BFB71AA0D /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
 		55B57443B7032DDCF70ACB8C /* HydrationAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationAIService.swift; sourceTree = "<group>"; };
+		59DFB425E8198F6C001CB5A8 /* WaterQuestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WaterQuestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		63F661B4016F8BE1E8DDA5B5 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
 		6862392928A13FBD5E45D6E3 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		69F362557BEECECFAA26285A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6B3494CC2F5249E200D313C3 /* QuickAddWaterIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddWaterIntent.swift; sourceTree = "<group>"; };
 		6B55F77B2F8F608C006CE606 /* SipliWatchWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SipliWatchWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6BBC3B912F4F6AC100F5525A /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
-		WWICON00000000000000002 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		6BDAF0F12F6375DE009ADC09 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		732CBE184502476DC56921F8 /* icon.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = icon.json; sourceTree = "<group>"; };
 		7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSnapshot.swift; sourceTree = "<group>"; };
@@ -227,6 +235,7 @@
 		98496F0A352BC5A580943E39 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		9FBC0C7A2F89C0FD52822D48 /* AddIntakeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddIntakeView.swift; sourceTree = "<group>"; };
 		9FC934C6863AFC8E01D302CE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		A0A71028244F753823101D35 /* WaterQuestTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WaterQuestTests.swift; sourceTree = "<group>"; };
 		A139EF313607077443D4FCFE /* FluidType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FluidType.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A7B8C9D0E1F2 /* Ripple.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Ripple.metal; sourceTree = "<group>"; };
@@ -261,10 +270,12 @@
 		EE1111111111111111111111 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		EE2222222222222222222222 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		F021A59BB7CB33328B5ABBC4 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
+		F0A6D9151D9D1AF5B281F860 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS18.0.sdk/System/Library/Frameworks/Foundation.framework; sourceTree = DEVELOPER_DIR; };
 		F38731A03D043511C9AAD4C2 /* GoalCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalCalculator.swift; sourceTree = "<group>"; };
 		FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalBreakdown.swift; sourceTree = "<group>"; };
 		FD0B42119D7BD312FCDAF766 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		FE848C59D9014D3ABE6E04BE /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
+		PS001000000000000000001 /* PhoneSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneSessionManager.swift; sourceTree = "<group>"; };
 		WA0001000000000000000002 /* SipliWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SipliWatchApp.swift; sourceTree = "<group>"; };
 		WA0002000000000000000002 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		WA0003000000000000000002 /* HealthKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = HealthKit.framework; path = System/Library/Frameworks/HealthKit.framework; sourceTree = SDKROOT; };
@@ -274,20 +285,19 @@
 		WA000F000000000000000001 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		WA001D000000000000000002 /* WatchHaptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHaptics.swift; sourceTree = "<group>"; };
 		WA001E000000000000000002 /* WatchHydrationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHydrationStore.swift; sourceTree = "<group>"; };
-		WS001000000000000000001 /* WatchSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSessionManager.swift; sourceTree = "<group>"; };
 		WA001F000000000000000002 /* WatchProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchProgressRing.swift; sourceTree = "<group>"; };
 		WA0020000000000000000002 /* WatchDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchDashboardView.swift; sourceTree = "<group>"; };
 		WA0021000000000000000002 /* WatchTodayLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchTodayLogView.swift; sourceTree = "<group>"; };
 		WA0022000000000000000002 /* WatchQuickAddView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchQuickAddView.swift; sourceTree = "<group>"; };
 		WA0023000000000000000002 /* WatchFluidPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchFluidPickerView.swift; sourceTree = "<group>"; };
-		WA0025000000000000000002 /* SipliWatchWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SipliWatchWidget.swift; sourceTree = "<group>"; };
-		WA0026000000000000000002 /* WatchQuickAddIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchQuickAddIntent.swift; sourceTree = "<group>"; };
 		WA002A000000000000000002 /* WatchHealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchHealthKitManager.swift; sourceTree = "<group>"; };
 		WA002B000000000000000002 /* WatchNotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchNotificationHandler.swift; sourceTree = "<group>"; };
+		WS001000000000000000001 /* WatchSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSessionManager.swift; sourceTree = "<group>"; };
+		WWICON00000000000000002 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		6B55F78E2F8F608F006CE606 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		6B55F78E2F8F608F006CE606 /* Exceptions for "SipliWatchWidgets" folder in "SipliWatchWidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -297,7 +307,18 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		6B55F77E2F8F608C006CE606 /* SipliWatchWidgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6B55F78E2F8F608F006CE606 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = SipliWatchWidgets; sourceTree = "<group>"; };
+		6B55F77E2F8F608C006CE606 /* SipliWatchWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6B55F78E2F8F608F006CE606 /* Exceptions for "SipliWatchWidgets" folder in "SipliWatchWidgetsExtension" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = SipliWatchWidgets;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -307,6 +328,14 @@
 			files = (
 				6B55F77D2F8F608C006CE606 /* SwiftUI.framework in Frameworks */,
 				6B55F77C2F8F608C006CE606 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		A59C59EB9F5D278762101606 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				DD67B493165182283E1E0920 /* Foundation.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -341,6 +370,7 @@
 				6B55F77E2F8F608C006CE606 /* SipliWatchWidgets */,
 				DA0C73A8FD8A545CB27D2691 /* Products */,
 				EE5555555555555555555555 /* Frameworks */,
+				B8448B27DB729B6EE2A846DE /* WaterQuestTests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -425,6 +455,15 @@
 			path = App;
 			sourceTree = "<group>";
 		};
+		B8448B27DB729B6EE2A846DE /* WaterQuestTests */ = {
+			isa = PBXGroup;
+			children = (
+				A0A71028244F753823101D35 /* WaterQuestTests.swift */,
+			);
+			name = WaterQuestTests;
+			path = WaterQuestTests;
+			sourceTree = "<group>";
+		};
 		BB1111111111111111111111 /* SipliWidget */ = {
 			isa = PBXGroup;
 			children = (
@@ -456,6 +495,14 @@
 			path = Assets;
 			sourceTree = "<group>";
 		};
+		CE78007E236B8644A63D4776 /* iOS */ = {
+			isa = PBXGroup;
+			children = (
+				F0A6D9151D9D1AF5B281F860 /* Foundation.framework */,
+			);
+			name = iOS;
+			sourceTree = "<group>";
+		};
 		D5CFBAA6834C033BD13BB3DF /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -481,6 +528,7 @@
 				AA9999999999999999999999 /* SipliWidget.appex */,
 				WA0006000000000000000001 /* SipliWatch.app */,
 				6B55F77B2F8F608C006CE606 /* SipliWatchWidgetsExtension.appex */,
+				59DFB425E8198F6C001CB5A8 /* WaterQuestTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -500,6 +548,7 @@
 				EE2222222222222222222222 /* SwiftUI.framework */,
 				WA0003000000000000000002 /* HealthKit.framework */,
 				WA0004000000000000000002 /* WidgetKit.framework */,
+				CE78007E236B8644A63D4776 /* iOS */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -558,6 +607,24 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		274BAD7378B778D37EDBBFCF /* WaterQuestTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 77F4B772DEF6D21EE14B5114 /* Build configuration list for PBXNativeTarget "WaterQuestTests" */;
+			buildPhases = (
+				FABD92D04633A0E8AC52FE12 /* Sources */,
+				A59C59EB9F5D278762101606 /* Frameworks */,
+				AE789F84C04FECC1ECBB061B /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				55F0987F52D0AB2180CD205B /* PBXTargetDependency */,
+			);
+			name = WaterQuestTests;
+			productName = WaterQuestTests;
+			productReference = 59DFB425E8198F6C001CB5A8 /* WaterQuestTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
 		6B55F77A2F8F608C006CE606 /* SipliWatchWidgetsExtension */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 6B55F78F2F8F608F006CE606 /* Build configuration list for PBXNativeTarget "SipliWatchWidgetsExtension" */;
@@ -574,8 +641,6 @@
 				6B55F77E2F8F608C006CE606 /* SipliWatchWidgets */,
 			);
 			name = SipliWatchWidgetsExtension;
-			packageProductDependencies = (
-			);
 			productName = SipliWatchWidgetsExtension;
 			productReference = 6B55F77B2F8F608C006CE606 /* SipliWatchWidgetsExtension.appex */;
 			productType = "com.apple.product-type.app-extension";
@@ -596,8 +661,6 @@
 				WA000D200000000000000001 /* PBXTargetDependency */,
 			);
 			name = WaterQuest;
-			packageProductDependencies = (
-			);
 			productName = WaterQuest;
 			productReference = 1BD898210B2BA8EE347F72F4 /* Sipli.app */;
 			productType = "com.apple.product-type.application";
@@ -672,6 +735,7 @@
 			);
 			mainGroup = 0EBBC986DBD277FF7074538D;
 			minimizedProjectReferenceProxies = 1;
+			productRefGroup = DA0C73A8FD8A545CB27D2691 /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
@@ -679,6 +743,7 @@
 				FF1111111111111111111111 /* SipliWidget */,
 				WA0008000000000000000001 /* SipliWatch */,
 				6B55F77A2F8F608C006CE606 /* SipliWatchWidgetsExtension */,
+				274BAD7378B778D37EDBBFCF /* WaterQuestTests */,
 			);
 		};
 /* End PBXProject section */
@@ -699,6 +764,13 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 		6B55F7792F8F608C006CE606 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		AE789F84C04FECC1ECBB061B /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -826,6 +898,14 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		FABD92D04633A0E8AC52FE12 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				145E47AF20C5FE4874944743 /* WaterQuestTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		WA000D000000000000000001 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -860,6 +940,12 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		55F0987F52D0AB2180CD205B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = WaterQuest;
+			target = 8696EFE2052B0D0EA16BCADF /* WaterQuest */;
+			targetProxy = E0E2EDDD4272F387559AFC50 /* PBXContainerItemProxy */;
+		};
 		6B55F7892F8F608F006CE606 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 6B55F77A2F8F608C006CE606 /* SipliWatchWidgetsExtension */;
@@ -960,6 +1046,21 @@
 			};
 			name = Release;
 		};
+		348828D7E75E5D4A717526FF /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.tests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sipli.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Sipli";
+			};
+			name = Debug;
+		};
 		59E4C3849D114E63DD2217AF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1058,6 +1159,22 @@
 				TARGETED_DEVICE_FAMILY = 4;
 				VALIDATE_PRODUCT = YES;
 				WATCHOS_DEPLOYMENT_TARGET = 11.0;
+			};
+			name = Release;
+		};
+		77AB64292CDB6D38DF4EDBB2 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.tests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = 1;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Sipli.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/Sipli";
+				VALIDATE_PRODUCT = YES;
 			};
 			name = Release;
 		};
@@ -1261,6 +1378,15 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;
+		};
+		77F4B772DEF6D21EE14B5114 /* Build configuration list for PBXNativeTarget "WaterQuestTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				77AB64292CDB6D38DF4EDBB2 /* Release */,
+				348828D7E75E5D4A717526FF /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		A600C5B0C7B31CB000413D3A /* Build configuration list for PBXProject "WaterQuest" */ = {
 			isa = XCConfigurationList;
