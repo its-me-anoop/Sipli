@@ -163,6 +163,9 @@ final class NotificationScheduler: ObservableObject {
             nextFireDate = now.addingTimeInterval(60)
         }
 
+        // Pre-loop snapshot of the first-fire time, before the while loop mutates the iterator.
+        let firstFireDate = nextFireDate
+
         // End of awake window today.
         guard let sleepDate = calendar.date(bySettingHour: profile.sleepMinutes / 60,
                                              minute: profile.sleepMinutes % 60,
@@ -191,6 +194,14 @@ final class NotificationScheduler: ObservableObject {
             fireDate = fireDate.addingTimeInterval(intervalSeconds)
             index += 1
         }
+
+        if index > 0 {
+            scheduleAIReplacementForFirstFire(
+                batchID: batchID,
+                firstFireDate: firstFireDate,
+                context: context
+            )
+        }
     }
 
     /// Base interval between reminders, auto-calculated from awake hours.
@@ -204,10 +215,10 @@ final class NotificationScheduler: ObservableObject {
 
     // MARK: - FoundationModels AI generation (Apple Intelligence devices only)
 
-    private func generateAIMessage(progress: Double, todayTotalML: Double, goalML: Double, isEscalation: Bool) async -> String? {
+    private func generateAIMessage(context: NotificationContext) async -> String? {
         #if canImport(FoundationModels)
         if #available(iOS 26.0, *) {
-            return await _generateAIMessageWithFoundationModels(progress: progress, todayTotalML: todayTotalML, goalML: goalML, isEscalation: isEscalation)
+            return await _generateAIMessageWithFoundationModels(context: context)
         }
         #endif
         return nil
@@ -215,17 +226,17 @@ final class NotificationScheduler: ObservableObject {
 
     #if canImport(FoundationModels)
     @available(iOS 26.0, *)
-    private func _generateAIMessageWithFoundationModels(progress: Double, todayTotalML: Double, goalML: Double, isEscalation: Bool) async -> String? {
+    private func _generateAIMessageWithFoundationModels(context: NotificationContext) async -> String? {
         guard SystemLanguageModel.default.isAvailable else { return nil }
 
-        let percentText = String(format: "%.0f", progress * 100)
-        let escalationHint = isEscalation
-            ? " The user has been inactive for a while, so gently encourage them to drink."
+        let percentText = String(format: "%.0f", context.progress * 100)
+        let streakLine = context.currentStreak > 0
+            ? "\nCurrent streak: \(context.currentStreak) days"
             : ""
 
         let prompt = """
             Generate a single short (max 12 words), friendly, motivational hydration reminder.
-            The user has completed \(percentText)% of their daily water goal (\(Int(todayTotalML)) of \(Int(goalML)) ml).\(escalationHint)
+            The user has completed \(percentText)% of their daily water goal (\(Int(context.todayTotalML)) of \(Int(context.goalML)) ml).\(streakLine)
             Reply with ONLY the reminder text. No quotes, no punctuation beyond one exclamation mark.
             """
 
@@ -244,6 +255,57 @@ final class NotificationScheduler: ObservableObject {
         }
     }
     #endif
+
+    /// Fire-and-forget: after the synchronous batch is scheduled, try to
+    /// replace the soonest-firing notification with AI-generated copy.
+    /// Premium-gated. Skips when FoundationModels isn't available. Honors
+    /// a 2-second timeout — curated copy stands on timeout or failure.
+    private func scheduleAIReplacementForFirstFire(
+        batchID: Int,
+        firstFireDate: Date,
+        context: NotificationContext
+    ) {
+        guard context.hasPremiumAccess else { return }
+
+        Task { [weak self] in
+            guard let self = self else { return }
+
+            let aiText: String?
+            do {
+                aiText = try await withThrowingTaskGroup(of: String?.self) { group in
+                    group.addTask { await self.generateAIMessage(context: context) }
+                    group.addTask {
+                        try await Task.sleep(for: .seconds(2))
+                        throw CancellationError()
+                    }
+                    let result = try await group.next() ?? nil
+                    group.cancelAll()
+                    return result
+                }
+            } catch {
+                aiText = nil
+            }
+
+            guard let aiText else { return }
+
+            // Replace the first-fire notification.
+            await MainActor.run {
+                let firstIdentifier = "\(self.smartIdentifierPrefix)\(batchID).0"
+                let center = UNUserNotificationCenter.current()
+                center.removePendingNotificationRequests(withIdentifiers: [firstIdentifier])
+
+                let delay = max(1, firstFireDate.timeIntervalSinceNow)
+                let content = self.hydrationReminderContent(body: aiText)
+                let trigger = UNTimeIntervalNotificationTrigger(timeInterval: delay, repeats: false)
+                let replacement = UNNotificationRequest(
+                    identifier: "\(self.smartIdentifierPrefix)\(batchID).0.ai",
+                    content: content,
+                    trigger: trigger
+                )
+                center.add(replacement)
+            }
+        }
+    }
 
     // MARK: - Message selection
 
