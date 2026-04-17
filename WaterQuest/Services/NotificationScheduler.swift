@@ -4,6 +4,18 @@ import UserNotifications
 import FoundationModels
 #endif
 
+/// Logical slot for a reminder message. Slots decouple copy selection from
+/// raw progress thresholds so later phases (celebration, workout, comeback)
+/// can add new tiers without reshaping the API.
+enum MessageSlot: Equatable {
+    case first       // early in the day or low progress
+    case mid         // midday or mid progress
+    case late        // late day or high progress
+    case escalation  // streak at risk (Phase 4 wires this to time-sensitive)
+    // Phase 2: case celebration
+    // Phase 3: case workout, case comeback
+}
+
 /// Intelligent notification scheduler that adapts to user activity.
 ///
 /// **Smart mode** (default):
@@ -246,6 +258,34 @@ final class NotificationScheduler: ObservableObject {
             return midMessages.randomElement() ?? "Keep the momentum going — sip up!"
         }
         return lateMessages.randomElement() ?? "Almost there — a few more sips!"
+    }
+
+    // MARK: - Message selection
+
+    /// Entry point used by both smart and classic scheduling paths. Picks a
+    /// curated message appropriate for the slot; the AI wire-up (see
+    /// `scheduleAIReplacement(...)`) can later swap the first-fire notification
+    /// for a generated message.
+    func messageFor(context: NotificationContext, slot: MessageSlot) -> String {
+        switch slot {
+        case .first:
+            return earlyMessages.randomElement() ?? "Start your day right — grab some water!"
+        case .mid:
+            return midMessages.randomElement() ?? "Keep the momentum going — sip up!"
+        case .late:
+            return lateMessages.randomElement() ?? "Almost there — a few more sips!"
+        case .escalation:
+            return escalationMessages.randomElement() ?? "It's been a while — time for a sip!"
+        }
+    }
+
+    /// Convenience: picks a slot from raw progress when the caller doesn't
+    /// have a specific one in mind (e.g. an ordinary smart reminder).
+    func slotFor(context: NotificationContext) -> MessageSlot {
+        let p = context.progress
+        if p < 0.25 { return .first }
+        if p < 0.6  { return .mid }
+        return .late
     }
 
     private let escalationMessages = [

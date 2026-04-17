@@ -88,6 +88,7 @@
 		ED05000000000000000001 /* EarthProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED05000000000000000002 /* EarthProgressView.swift */; };
 		EE3333333333333333333333 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE1111111111111111111111 /* WidgetKit.framework */; };
 		EE4444444444444444444444 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE2222222222222222222222 /* SwiftUI.framework */; };
+		F61E51CCFB80BD3F264454D4 /* NotificationMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D8C127CF4F113AB2D5DB40D /* NotificationMessageTests.swift */; };
 		F9760161C65BFA2368DB8094 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7043107E62B2C04F4C58EB /* DashboardView.swift */; };
 		FF8888888888888888888888 /* SipliWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA9999999999999999999999 /* SipliWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		PS001000000000000000002 /* PhoneSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = PS001000000000000000001 /* PhoneSessionManager.swift */; };
@@ -226,6 +227,7 @@
 		6B55F77B2F8F608C006CE606 /* SipliWatchWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SipliWatchWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6BBC3B912F4F6AC100F5525A /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		6BDAF0F12F6375DE009ADC09 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
+		6D8C127CF4F113AB2D5DB40D /* NotificationMessageTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationMessageTests.swift; sourceTree = "<group>"; };
 		732CBE184502476DC56921F8 /* icon.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = icon.json; sourceTree = "<group>"; };
 		7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSnapshot.swift; sourceTree = "<group>"; };
 		7B8BDAA9F823F748DDAD26EB /* ProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRing.swift; sourceTree = "<group>"; };
@@ -462,6 +464,7 @@
 			children = (
 				A0A71028244F753823101D35 /* WaterQuestTests.swift */,
 				1C049D1800E773480DC7E47B /* NotificationContextTests.swift */,
+				6D8C127CF4F113AB2D5DB40D /* NotificationMessageTests.swift */,
 			);
 			name = WaterQuestTests;
 			path = WaterQuestTests;
@@ -899,6 +902,7 @@
 			files = (
 				145E47AF20C5FE4874944743 /* WaterQuestTests.swift in Sources */,
 				76BC1045791BD2737D00FCD6 /* NotificationContextTests.swift in Sources */,
+				F61E51CCFB80BD3F264454D4 /* NotificationMessageTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
