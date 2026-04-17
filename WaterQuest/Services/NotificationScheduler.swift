@@ -182,11 +182,7 @@ final class NotificationScheduler: ObservableObject {
             let slot = slotFor(context: context)
             let body = messageFor(context: context, slot: slot)
 
-            let content = UNMutableNotificationContent()
-            content.title = "Sipli"
-            content.body = body
-            content.sound = .default
-            content.categoryIdentifier = NotificationCategoryID.hydrationReminder.rawValue
+            let content = hydrationReminderContent(body: body)
 
             let trigger = UNTimeIntervalNotificationTrigger(timeInterval: delay, repeats: false)
             let request = UNNotificationRequest(identifier: "\(smartIdentifierPrefix)\(batchID).\(index)", content: content, trigger: trigger)
@@ -320,11 +316,7 @@ final class NotificationScheduler: ObservableObject {
 
             let slot = classicSlot(forMinutes: minutes, context: context)
 
-            let content = UNMutableNotificationContent()
-            content.title = "Sipli"
-            content.body = messageFor(context: context, slot: slot)
-            content.sound = .default
-            content.categoryIdentifier = NotificationCategoryID.hydrationReminder.rawValue
+            let content = hydrationReminderContent(body: messageFor(context: context, slot: slot))
 
             let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: true)
             let request = UNNotificationRequest(identifier: "sipli.classic.\(index)", content: content, trigger: trigger)
@@ -366,6 +358,18 @@ final class NotificationScheduler: ObservableObject {
                 completion()
             }
         }
+    }
+
+    // MARK: - Notification content helpers
+
+    private func hydrationReminderContent(body: String) -> UNMutableNotificationContent {
+        let content = UNMutableNotificationContent()
+        content.title = "Sipli"
+        content.body = body
+        content.sound = .default
+        content.categoryIdentifier = NotificationCategoryID.hydrationReminder.rawValue
+        content.userInfo = ["deepLink": "sipli://add-intake"]
+        return content
     }
 }
 
