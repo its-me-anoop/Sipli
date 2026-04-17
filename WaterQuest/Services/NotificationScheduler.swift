@@ -47,7 +47,8 @@ final class NotificationScheduler: ObservableObject {
     private var lastKnownEntries: [DateEntry] = []
     /// Whether we already fired an escalated nudge since the last log.
     private var didFireEscalation = false
-    /// Stored context for rescheduling from `onIntakeLogged`.
+    /// Reserved: Phase 2+ will read this when escalation state needs to
+    /// survive across scheduling passes. Currently assigned but unread.
     private var currentContext: NotificationContext?
     /// Monotonic batch identifier so smart request IDs are never reused.
     private var smartBatchID: Int = 0
