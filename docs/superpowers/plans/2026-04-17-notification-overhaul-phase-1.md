@@ -379,7 +379,8 @@ func buildNotificationContext() -> NotificationContext {
         entries: entries,
         goalML: dailyGoal.totalML,
         currentStreak: computeCurrentStreak(goalML: dailyGoal.totalML),
-        hasPremiumAccess: hasPremiumAccess
+        hasPremiumAccess: hasPremiumAccess,
+        capturedAt: Date()
     )
 }
 

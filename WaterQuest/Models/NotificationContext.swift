@@ -9,23 +9,27 @@ import Foundation
 ///
 /// Phase 1 fields only. Phase 2 adds `weather` and `recentWorkout`; later
 /// phases add `reminderAnchors`, `lastLogAt`, and `logTimeHistogram`.
-struct NotificationContext {
+struct NotificationContext: Sendable {
     let profile: UserProfile
     let entries: [HydrationEntry]
     let goalML: Double
     let currentStreak: Int
     let hasPremiumAccess: Bool
+    /// The moment this snapshot was taken. Computed properties key off
+    /// this — not `Date()` at read time — so the same value always yields
+    /// the same result.
+    let capturedAt: Date
 
-    /// Effective ml logged today (sum of ``HydrationEntry/effectiveML``).
+    /// Effective ml logged on the capture day (sum of
+    /// ``HydrationEntry/effectiveML``).
     var todayTotalML: Double {
-        let now = Date()
-        return entries
-            .filter { $0.date.isSameDay(as: now) }
+        entries
+            .filter { $0.date.isSameDay(as: capturedAt) }
             .reduce(0) { $0 + $1.effectiveML }
     }
 
-    /// Today's progress ratio, clamped to `[0, 1]`. Returns `0` when the
-    /// goal is zero or negative.
+    /// Progress ratio for the capture day, clamped to `[0, 1]`. Returns
+    /// `0` when the goal is zero or negative.
     var progress: Double {
         guard goalML > 0 else { return 0 }
         return min(1, todayTotalML / goalML)
