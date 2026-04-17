@@ -1,3 +1,21 @@
+# =========================================================================
+# STALE — DO NOT REGENERATE FROM THIS FILE.
+#
+# This project has moved away from XcodeGen. The authoritative project
+# definition lives in WaterQuest.xcodeproj/project.pbxproj, which is
+# edited directly (see scripts/add_test_target.rb and add_files.rb for
+# the pattern using the `xcodeproj` Ruby gem).
+#
+# Running `xcodegen generate` against this file will silently delete:
+#   - SipliWatch target
+#   - SipliWidget target
+#   - SipliWatchWidgetsExtension target
+#   - WaterQuestTests target
+# and will rename the shipping app from `Sipli` back to `Thirsty.ai`.
+#
+# This file is kept only as a historical artifact. To add or modify
+# targets, write a Ruby script under `scripts/` instead.
+# =========================================================================
 name: Thirsty.ai
 options:
   bundleIdPrefix: com.waterquest

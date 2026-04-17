@@ -1,3 +1,13 @@
+# One-shot setup: adds the WaterQuestTests unit-test bundle target to
+# WaterQuest.xcodeproj, wires it to the existing shared scheme.
+#
+# Idempotency caveat: the script short-circuits at the target-level check
+# below. If it crashes BETWEEN `project.save` (pbxproj persisted) and
+# `scheme.save!` (scheme not yet updated), re-running will see the target
+# already exists and skip the scheme update, leaving the scheme half-
+# configured. Recovery: delete the WaterQuestTests target from the project
+# (via Xcode UI or a short `xcodeproj` snippet) and re-run.
+
 require 'xcodeproj'
 
 PROJECT_PATH  = File.expand_path('../WaterQuest.xcodeproj', __dir__)
@@ -25,6 +35,16 @@ test_target = project.new_target(
   project.products_group,
   :swift
 )
+
+# Unit test bundles get Foundation linked implicitly via SDKROOT —
+# drop the explicit reference the DSL added (its path is pinned to a
+# specific iPhoneOS<version>.sdk and will rot on Xcode upgrades).
+frameworks_phase = test_target.frameworks_build_phase
+frameworks_phase.files.to_a.each do |build_file|
+  if build_file.display_name == 'Foundation.framework'
+    frameworks_phase.remove_build_file(build_file)
+  end
+end
 
 # --- Build settings for Debug and Release ---
 %w[Debug Release].each do |config_name|
