@@ -158,7 +158,6 @@ final class NotificationScheduler: ObservableObject {
                                              second: 0, of: now) else { return }
 
         // Pre-schedule reminders until sleep time (capped at 20).
-        let progress = goalML > 0 ? todayTotal / goalML : 0
         var index = 0
         var fireDate = nextFireDate
 
@@ -169,7 +168,8 @@ final class NotificationScheduler: ObservableObject {
                 continue
             }
 
-            let body = curatedMessage(progress: progress, isEscalation: false)
+            let slot = slotFor(context: context)
+            let body = messageFor(context: context, slot: slot)
 
             let content = UNMutableNotificationContent()
             content.title = "Sipli"
@@ -193,16 +193,6 @@ final class NotificationScheduler: ObservableObject {
         let intervalMinutes = Double(awakeMinutes) / 8.0
         let clamped = min(max(intervalMinutes, 60), 150) // 1hr floor, 2.5hr ceiling
         return clamped * 60.0 // convert to seconds
-    }
-
-    // MARK: - Message generation
-
-    private func generateMessage(progress: Double, todayTotalML: Double, goalML: Double, isEscalation: Bool) async -> String {
-        // Try on-device AI first; fall back to curated pool.
-        if let aiMessage = await generateAIMessage(progress: progress, todayTotalML: todayTotalML, goalML: goalML, isEscalation: isEscalation) {
-            return aiMessage
-        }
-        return curatedMessage(progress: progress, isEscalation: isEscalation)
     }
 
     // MARK: - FoundationModels AI generation (Apple Intelligence devices only)
@@ -247,21 +237,6 @@ final class NotificationScheduler: ObservableObject {
         }
     }
     #endif
-
-    // MARK: - Curated fallback messages
-
-    private func curatedMessage(progress: Double, isEscalation: Bool) -> String {
-        if isEscalation {
-            return escalationMessages.randomElement() ?? "It's been a while — time for a sip!"
-        }
-        if progress < 0.25 {
-            return earlyMessages.randomElement() ?? "Start your day right — grab some water!"
-        }
-        if progress < 0.6 {
-            return midMessages.randomElement() ?? "Keep the momentum going — sip up!"
-        }
-        return lateMessages.randomElement() ?? "Almost there — a few more sips!"
-    }
 
     // MARK: - Message selection
 
@@ -327,22 +302,16 @@ final class NotificationScheduler: ObservableObject {
         let awakeMinutes = max(60, profile.sleepMinutes - profile.wakeMinutes)
         let count = max(1, min(12, Int(round(Double(awakeMinutes) / min(max(Double(awakeMinutes) / 8.0, 60), 150)))))
         let times = classicReminderTimes(wakeMinutes: profile.wakeMinutes, sleepMinutes: profile.sleepMinutes, count: count)
-        let staticMessages = [
-            "Sip time! Your future self is cheering.",
-            "Take a water break — you deserve it.",
-            "Quick check-in: a few sips goes far.",
-            "A little hydration goes a long way.",
-            "Tiny sip, big win. Let's go!"
-        ]
-
         for (index, minutes) in times.enumerated() {
             var dateComponents = DateComponents()
             dateComponents.hour = minutes / 60
             dateComponents.minute = minutes % 60
 
+            let slot = classicSlot(forMinutes: minutes, context: context)
+
             let content = UNMutableNotificationContent()
             content.title = "Sipli"
-            content.body = staticMessages[index % staticMessages.count]
+            content.body = messageFor(context: context, slot: slot)
             content.sound = .default
             content.categoryIdentifier = "HYDRATION_REMINDER"
 
@@ -357,6 +326,19 @@ final class NotificationScheduler: ObservableObject {
         let span = max(1, sleepMinutes - wakeMinutes)
         let gap = span / adjustedCount
         return (0..<adjustedCount).map { wakeMinutes + $0 * gap }
+    }
+
+    /// Maps a classic reminder's schedule time to a slot. Classic mode
+    /// reminders repeat daily so progress isn't known at schedule time;
+    /// time-of-day is the only signal.
+    private func classicSlot(forMinutes minutes: Int, context: NotificationContext) -> MessageSlot {
+        let wake = context.profile.wakeMinutes
+        let sleep = context.profile.sleepMinutes
+        let awakeMinutes = max(1, sleep - wake)
+        let relative = Double(minutes - wake) / Double(awakeMinutes)
+        if relative < 0.33 { return .first }
+        if relative < 0.66 { return .mid }
+        return .late
     }
 
     private func clearPendingSmartReminders(completion: @escaping @MainActor () -> Void) {
