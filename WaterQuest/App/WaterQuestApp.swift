@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications
 
 @main
 struct WaterQuestApp: App {
@@ -14,6 +15,7 @@ struct WaterQuestApp: App {
     @StateObject private var locationManager: LocationManager
     @StateObject private var weatherClient: WeatherClient
     @StateObject private var subscriptionManager = SubscriptionManager()
+    @StateObject private var deepLinkForwarder = NotificationDeepLinkForwarder()
 
     private var isSetupComplete: Bool {
         hasOnboarded || FileManager.default.ubiquityIdentityToken != nil
@@ -21,6 +23,7 @@ struct WaterQuestApp: App {
 
     init() {
         NotificationCategories.registerAll()
+        UNUserNotificationCenter.current().delegate = NotificationHandler.shared
         let location = LocationManager()
         _locationManager = StateObject(wrappedValue: location)
         _weatherClient = StateObject(wrappedValue: WeatherClient(locationManager: location))
@@ -39,6 +42,8 @@ struct WaterQuestApp: App {
             .preferredColorScheme(appTheme.colorScheme)
             .task {
                 store.notificationScheduler = notifier
+                NotificationHandler.shared.store = store
+                NotificationHandler.shared.deepLinkForwarder = deepLinkForwarder
                 await subscriptionManager.initialise()
                 store.updatePremiumAccess(subscriptionManager.hasPremiumAccess)
                 _ = subscriptionManager.startTransactionListener()
@@ -91,6 +96,12 @@ struct WaterQuestApp: App {
                     }
                 }
             }
+            .onChange(of: deepLinkForwarder.shouldOpenAddIntake) { _, shouldOpen in
+                if shouldOpen {
+                    deepLinkAddIntake = true
+                    deepLinkForwarder.shouldOpenAddIntake = false
+                }
+            }
             .onChange(of: deepLinkEarthWeek) {
                 if deepLinkEarthWeek {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -113,6 +124,19 @@ struct WaterQuestApp: App {
         guard store.effectiveProfile.prefersHealthKit else { return }
         if let entries = await healthKit.fetchRecentWaterEntries(days: 7) {
             store.syncHealthKitEntriesRange(entries, days: 7)
+        }
+    }
+}
+
+// MARK: - Notification Deep Link Forwarder
+
+@MainActor
+final class NotificationDeepLinkForwarder: ObservableObject, NotificationDeepLinkForwarding {
+    @Published var shouldOpenAddIntake: Bool = false
+
+    nonisolated func openAddIntake() {
+        Task { @MainActor in
+            self.shouldOpenAddIntake = true
         }
     }
 }

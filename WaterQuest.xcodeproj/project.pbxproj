@@ -44,6 +44,7 @@
 		83C67F5F3E24629A72299C6E /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37EBA9FC9F1233C2BC105DD /* PersistenceService.swift */; };
 		8CE43E783BB223277701CF7E /* UnitSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032684376DE05B0CC4838664 /* UnitSystem.swift */; };
 		94AF3267A3C90279716F2BE6 /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A8068B4418852446BD78E6 /* MotionManager.swift */; };
+		979E86A905E1BA27F04E7E13 /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB248542D61873060DDABFF /* NotificationHandler.swift */; };
 		A1B2326FF853A75236509F2C /* icon.json in Resources */ = {isa = PBXBuildFile; fileRef = 732CBE184502476DC56921F8 /* icon.json */; };
 		A543E5598AAD6E7D7CD5164C /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 161A82CD61225A1F302ECA9D /* DateExtensions.swift */; };
 		AB92FFFB14A831BB3B5FB42A /* NotificationCategoriesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4A8703E51FB5E078BD00AB /* NotificationCategoriesTests.swift */; };
@@ -260,6 +261,7 @@
 		AA8888888888888888888888 /* PersistedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistedState.swift; sourceTree = "<group>"; };
 		AA9999999999999999999999 /* SipliWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SipliWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACD53555ACD00A8A78268A7F /* MascotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MascotView.swift; sourceTree = "<group>"; };
+		ADB248542D61873060DDABFF /* NotificationHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationHandler.swift; sourceTree = "<group>"; };
 		B2126EAEDD87BD49B24C7BE2 /* MainTabView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabView.swift; sourceTree = "<group>"; };
 		B26785D44340E5C0A267B325 /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
 		B2C3D4E5F6A7B8C9D0E1F2A3 /* RippleEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RippleEffect.swift; sourceTree = "<group>"; };
@@ -573,6 +575,7 @@
 				B26785D44340E5C0A267B325 /* SubscriptionManager.swift */,
 				8C2DDAD6DD4B924CCA0509D0 /* WeatherClient.swift */,
 				5E73BC8B42AADA53E70C6538 /* NotificationCategories.swift */,
+				ADB248542D61873060DDABFF /* NotificationHandler.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -900,6 +903,7 @@
 				CAA880E64AF96B5C0988D2A3 /* WorkoutSummary.swift in Sources */,
 				130C730FC298C86A95B83F02 /* NotificationContext.swift in Sources */,
 				EDBE22FF0F30A88A5820362A /* NotificationCategories.swift in Sources */,
+				979E86A905E1BA27F04E7E13 /* NotificationHandler.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
