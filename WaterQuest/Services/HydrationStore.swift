@@ -147,7 +147,7 @@ final class HydrationStore: ObservableObject {
         let ml = units.ml(from: amount)
         let entry = HydrationEntry(date: Date(), volumeML: ml, source: source, fluidType: fluidType, note: note)
         entries.append(entry)
-        notificationScheduler?.onIntakeLogged(entry: entry)
+        notificationScheduler?.onIntakeLogged(entry: entry, context: buildNotificationContext())
         if !earthDay2026Earned, EarthDayEvent.isEarthDay(entry.date) {
             earthDay2026Earned = true
         }
@@ -319,7 +319,7 @@ final class HydrationStore: ObservableObject {
         guard !entries.contains(where: { $0.id == entry.id }) else { return }
         entries.append(entry)
         entries.sort { $0.date < $1.date }
-        notificationScheduler?.onIntakeLogged(entry: entry)
+        notificationScheduler?.onIntakeLogged(entry: entry, context: buildNotificationContext())
         checkGoalCompletion()
         persist()
     }

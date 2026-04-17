@@ -875,7 +875,7 @@ struct SettingsView: View {
     }
 
     private func rescheduleReminders() {
-        notifier.scheduleReminders(profile: store.effectiveProfile, entries: store.entries, goalML: store.dailyGoal.totalML)
+        notifier.scheduleReminders(context: store.buildNotificationContext())
     }
 
     private func minutes(from date: Date) -> Int {

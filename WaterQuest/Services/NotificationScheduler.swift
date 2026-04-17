@@ -47,10 +47,8 @@ final class NotificationScheduler: ObservableObject {
     private var lastKnownEntries: [DateEntry] = []
     /// Whether we already fired an escalated nudge since the last log.
     private var didFireEscalation = false
-    /// Stored profile for rescheduling from `onIntakeLogged`.
-    private var currentProfile: UserProfile?
-    /// Stored goal for rescheduling from `onIntakeLogged`.
-    private var currentGoalML: Double = 2000
+    /// Stored context for rescheduling from `onIntakeLogged`.
+    private var currentContext: NotificationContext?
     /// Monotonic batch identifier so smart request IDs are never reused.
     private var smartBatchID: Int = 0
 
@@ -74,33 +72,35 @@ final class NotificationScheduler: ObservableObject {
 
     /// Call this whenever the profile, entries, or app lifecycle change.
     /// Tears down previous notifications and schedules fresh ones.
-    func scheduleReminders(profile: UserProfile, entries: [HydrationEntry] = [], goalML: Double = 2000) {
+    func scheduleReminders(context: NotificationContext) {
         UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-        UNUserNotificationCenter.current().removeAllDeliveredNotifications()
+        // NOTE: removeAllDeliveredNotifications() deliberately NOT called here —
+        // wiping the user's Notification Center on every foreground destroys
+        // their history. Task 11 drops the stale call entirely.
 
-        currentProfile = profile
-        currentGoalML = goalML
-        lastKnownEntries = entries.map { DateEntry(date: $0.date, volumeML: $0.effectiveML) }
+        currentContext = context
+        lastKnownEntries = context.entries.map { DateEntry(date: $0.date, volumeML: $0.effectiveML) }
         didFireEscalation = false
 
-        guard profile.remindersEnabled else { return }
+        guard context.profile.remindersEnabled else { return }
 
-        if profile.smartRemindersEnabled {
-            scheduleSmartReminders(profile: profile, goalML: goalML)
+        if context.profile.smartRemindersEnabled {
+            scheduleSmartReminders(context: context)
         } else {
-            scheduleClassicReminders(profile: profile)
+            scheduleClassicReminders(context: context)
         }
     }
 
     /// Call this when a new intake is logged so smart reminders reschedule
     /// around the latest activity.
-    func onIntakeLogged(entry: HydrationEntry) {
+    func onIntakeLogged(entry: HydrationEntry, context: NotificationContext) {
         lastKnownEntries.append(DateEntry(date: entry.date, volumeML: entry.effectiveML))
         didFireEscalation = false
+        currentContext = context
 
-        guard let profile = currentProfile, profile.remindersEnabled, profile.smartRemindersEnabled else { return }
+        guard context.profile.remindersEnabled, context.profile.smartRemindersEnabled else { return }
         clearPendingSmartReminders {
-            self.scheduleSmartReminders(profile: profile, goalML: self.currentGoalML)
+            self.scheduleSmartReminders(context: context)
         }
     }
 
@@ -109,7 +109,9 @@ final class NotificationScheduler: ObservableObject {
     /// Schedules multiple upcoming notifications until sleep time so they
     /// fire even when the app is suspended by iOS.  Re-evaluated each time
     /// the app foregrounds, entries change, or settings change.
-    private func scheduleSmartReminders(profile: UserProfile, goalML: Double) {
+    private func scheduleSmartReminders(context: NotificationContext) {
+        let profile = context.profile
+        let goalML = context.goalML
         let now = Date()
         let intervalSeconds = computeInterval(profile: profile)
         let calendar = Calendar.current
@@ -319,7 +321,8 @@ final class NotificationScheduler: ObservableObject {
 
     // MARK: - Classic (fixed-schedule) reminders
 
-    private func scheduleClassicReminders(profile: UserProfile) {
+    private func scheduleClassicReminders(context: NotificationContext) {
+        let profile = context.profile
         let awakeMinutes = max(60, profile.sleepMinutes - profile.wakeMinutes)
         let count = max(1, min(12, Int(round(Double(awakeMinutes) / min(max(Double(awakeMinutes) / 8.0, 60), 150)))))
         let times = classicReminderTimes(wakeMinutes: profile.wakeMinutes, sleepMinutes: profile.sleepMinutes, count: count)

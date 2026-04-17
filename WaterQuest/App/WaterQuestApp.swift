@@ -44,7 +44,7 @@ struct WaterQuestApp: App {
                 guard isSetupComplete else { return }
                 await notifier.refreshAuthorizationStatus()
                 await healthKit.refreshAuthorizationStatus()
-                notifier.scheduleReminders(profile: store.effectiveProfile, entries: store.entries, goalML: store.dailyGoal.totalML)
+                notifier.scheduleReminders(context: store.buildNotificationContext())
             }
             .task(id: store.effectiveProfile.prefersHealthKit) {
                 guard isSetupComplete else { return }
@@ -57,7 +57,7 @@ struct WaterQuestApp: App {
             .onChange(of: subscriptionManager.isSubscribed) { _, _ in
                 store.updatePremiumAccess(subscriptionManager.hasPremiumAccess)
                 guard isSetupComplete else { return }
-                notifier.scheduleReminders(profile: store.effectiveProfile, entries: store.entries, goalML: store.dailyGoal.totalML)
+                notifier.scheduleReminders(context: store.buildNotificationContext())
             }
             .onChange(of: scenePhase) { _, phase in
                 if phase == .active {
@@ -66,7 +66,7 @@ struct WaterQuestApp: App {
                         store.updatePremiumAccess(subscriptionManager.hasPremiumAccess)
                         await refreshHealthKitWaterEntries()
                         await notifier.refreshAuthorizationStatus()
-                        notifier.scheduleReminders(profile: store.effectiveProfile, entries: store.entries, goalML: store.dailyGoal.totalML)
+                        notifier.scheduleReminders(context: store.buildNotificationContext())
                     }
                 }
             }

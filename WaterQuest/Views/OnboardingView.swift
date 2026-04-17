@@ -434,7 +434,7 @@ struct OnboardingView: View {
             profile.prefersHealthKit = prefersHealthKit
         }
 
-        notifier.scheduleReminders(profile: store.effectiveProfile)
+        notifier.scheduleReminders(context: store.buildNotificationContext())
         onComplete()
     }
 
