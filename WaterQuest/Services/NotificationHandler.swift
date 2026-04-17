@@ -107,7 +107,13 @@ final class NotificationHandler: NSObject, UNUserNotificationCenterDelegate {
                 content: content,
                 trigger: trigger
             )
-            center.add(request)
+            center.add(request) { error in
+                if let error = error {
+                    #if DEBUG
+                    print("NotificationHandler: failed to schedule snooze — \(error)")
+                    #endif
+                }
+            }
         }
     }
 }

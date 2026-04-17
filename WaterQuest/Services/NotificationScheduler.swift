@@ -74,10 +74,21 @@ final class NotificationScheduler: ObservableObject {
     /// Call this whenever the profile, entries, or app lifecycle change.
     /// Tears down previous notifications and schedules fresh ones.
     func scheduleReminders(context: NotificationContext) {
-        UNUserNotificationCenter.current().removeAllPendingNotificationRequests()
-        // NOTE: removeAllDeliveredNotifications() deliberately NOT called here —
+        // Clear only scheduler-owned pending requests. `sipli.snooze.*` and
+        // other out-of-band notifications (e.g. future workout anchors in
+        // Phase 3) survive this call.
+        // removeAllDeliveredNotifications() is also deliberately NOT called —
         // wiping the user's Notification Center on every foreground destroys
-        // their history. Task 11 drops the stale call entirely.
+        // their history. Task 11 drops that stale call entirely.
+        let center = UNUserNotificationCenter.current()
+        center.getPendingNotificationRequests { requests in
+            let schedulerIDs = requests
+                .map(\.identifier)
+                .filter { $0.hasPrefix("sipli.smart.") || $0.hasPrefix("sipli.classic.") }
+            if !schedulerIDs.isEmpty {
+                center.removePendingNotificationRequests(withIdentifiers: schedulerIDs)
+            }
+        }
 
         currentContext = context
         lastKnownEntries = context.entries.map { DateEntry(date: $0.date, volumeML: $0.effectiveML) }
