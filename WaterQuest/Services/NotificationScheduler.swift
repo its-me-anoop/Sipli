@@ -8,10 +8,12 @@ import FoundationModels
 /// raw progress thresholds so later phases (celebration, workout, comeback)
 /// can add new tiers without reshaping the API.
 enum MessageSlot: Equatable {
-    case first       // early in the day or low progress
-    case mid         // midday or mid progress
-    case late        // late day or high progress
-    case escalation  // streak at risk (Phase 4 wires this to time-sensitive)
+    case first        // early in the day or low progress
+    case mid          // midday or mid progress
+    case late         // late day or high progress
+    case escalation   // streak at risk (Phase 4 wires this to time-sensitive)
+    case morningWake  // fires at wake time — drink water first thing
+    case preBedtime   // fires 30 min before sleep — leave a bottle by the bed
     // Phase 2: case celebration
     // Phase 3: case workout, case comeback
 }
@@ -96,6 +98,10 @@ final class NotificationScheduler: ObservableObject {
         } else {
             scheduleClassicReminders(context: context)
         }
+
+        // Anchor reminders (morning wake, pre-bedtime) fire regardless of
+        // smart/classic mode. Available to free and premium users.
+        scheduleAnchorReminders(context: context)
     }
 
     /// Call this when a new intake is logged so smart reminders reschedule
@@ -327,6 +333,10 @@ final class NotificationScheduler: ObservableObject {
             return lateMessages.randomElement() ?? "Almost there — a few more sips!"
         case .escalation:
             return escalationMessages.randomElement() ?? "It's been a while — time for a sip!"
+        case .morningWake:
+            return morningWakeMessages.randomElement() ?? "Good morning! Start your day with a glass of water."
+        case .preBedtime:
+            return preBedtimeMessages.randomElement() ?? "Leave a bottle of water by your bedside for tomorrow morning."
         }
     }
 
@@ -368,6 +378,22 @@ final class NotificationScheduler: ObservableObject {
         "You're so close — finish strong!"
     ]
 
+    private let morningWakeMessages = [
+        "Good morning! Start your day with a glass of water.",
+        "Rise and sip — your body's been waiting eight hours.",
+        "Morning ritual: a full glass before anything else.",
+        "Wake up, drink up. Hydrate first thing.",
+        "Kickstart your day — a glass of water is the best first move."
+    ]
+
+    private let preBedtimeMessages = [
+        "Before bed: leave a bottle of water on your nightstand.",
+        "Set a bottle of water by your bed — tomorrow-you will thank you.",
+        "Nightstand check: place a bottle of water within arm's reach.",
+        "Prep for morning — put a bottle of water by your bedside.",
+        "Quick bedtime habit: a bottle of water by the bed."
+    ]
+
     // MARK: - Classic (fixed-schedule) reminders
 
     private func scheduleClassicReminders(context: NotificationContext) {
@@ -387,6 +413,50 @@ final class NotificationScheduler: ObservableObject {
             let request = UNNotificationRequest(identifier: "sipli.classic.\(index)", content: content, trigger: trigger)
             UNUserNotificationCenter.current().add(request)
         }
+    }
+
+    // MARK: - Anchor reminders (wake + pre-bedtime, daily repeating)
+
+    /// Schedules the two daily anchor notifications:
+    ///   - morning wake anchor fires at `profile.wakeMinutes`
+    ///   - pre-bedtime anchor fires 30 minutes before `profile.sleepMinutes`
+    ///
+    /// Both use stable identifiers (`sipli.anchor.morning`, `sipli.anchor.prebed`)
+    /// so repeat calls replace the existing schedule rather than stacking.
+    /// Fires regardless of smart/classic mode and irrespective of premium.
+    private func scheduleAnchorReminders(context: NotificationContext) {
+        let profile = context.profile
+        let center = UNUserNotificationCenter.current()
+
+        let morningMinutes = profile.wakeMinutes
+        var morningComps = DateComponents()
+        morningComps.hour = morningMinutes / 60
+        morningComps.minute = morningMinutes % 60
+
+        let morningContent = hydrationReminderContent(body: messageFor(context: context, slot: .morningWake))
+        let morningTrigger = UNCalendarNotificationTrigger(dateMatching: morningComps, repeats: true)
+        let morningRequest = UNNotificationRequest(
+            identifier: "sipli.anchor.morning",
+            content: morningContent,
+            trigger: morningTrigger
+        )
+        center.add(morningRequest)
+
+        // 30 min before sleep. Clamp to >= 0 in case the user sets a
+        // sleep time within the first half-hour after midnight.
+        let preBedMinutes = max(0, profile.sleepMinutes - 30)
+        var preBedComps = DateComponents()
+        preBedComps.hour = preBedMinutes / 60
+        preBedComps.minute = preBedMinutes % 60
+
+        let preBedContent = hydrationReminderContent(body: messageFor(context: context, slot: .preBedtime))
+        let preBedTrigger = UNCalendarNotificationTrigger(dateMatching: preBedComps, repeats: true)
+        let preBedRequest = UNNotificationRequest(
+            identifier: "sipli.anchor.prebed",
+            content: preBedContent,
+            trigger: preBedTrigger
+        )
+        center.add(preBedRequest)
     }
 
     private func classicReminderTimes(wakeMinutes: Int, sleepMinutes: Int, count: Int) -> [Int] {

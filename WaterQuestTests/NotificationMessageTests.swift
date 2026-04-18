@@ -69,4 +69,18 @@ final class NotificationMessageTests: XCTestCase {
         let scheduler = NotificationScheduler()
         XCTAssertEqual(scheduler.slotFor(context: makeContext(progress: 0.8)), .late)
     }
+
+    @MainActor
+    func test_messageFor_morningWakeSlot_returnsNonEmpty() {
+        let scheduler = NotificationScheduler()
+        let msg = scheduler.messageFor(context: makeContext(progress: 0), slot: .morningWake)
+        XCTAssertFalse(msg.isEmpty)
+    }
+
+    @MainActor
+    func test_messageFor_preBedtimeSlot_returnsNonEmpty() {
+        let scheduler = NotificationScheduler()
+        let msg = scheduler.messageFor(context: makeContext(progress: 0.9), slot: .preBedtime)
+        XCTAssertFalse(msg.isEmpty)
+    }
 }
