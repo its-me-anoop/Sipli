@@ -8,3 +8,6 @@ appstore-screenshots/exports/
 # Python venv used by screenshot tooling
 .venv/
 __pycache__/
+
+# Claude Code worktree scratch (tracked gitlinks break GitHub Pages checkout)
+.claude/worktrees/
