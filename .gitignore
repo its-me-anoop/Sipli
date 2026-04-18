@@ -11,3 +11,7 @@ __pycache__/
 
 # Claude Code worktree scratch (tracked gitlinks break GitHub Pages checkout)
 .claude/worktrees/
+
+# macOS Finder metadata
+.DS_Store
+**/.DS_Store
