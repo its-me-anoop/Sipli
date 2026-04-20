@@ -1,0 +1,822 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=1920,initial-scale=1" />
+<title>Sipli — Earth Week 2026</title>
+<style>
+  :root {
+    --stage-w: 1920px;
+    --stage-h: 1080px;
+    --bg-0: #000000;
+    --bg-1: #04120b;
+    --bg-2: #06291a;
+    --green-hi: #3ca36e;
+    --green-mid: #1c7a4f;
+    --green-lo: #0c4d33;
+    --blue-hi: #30C2A3;
+    --blue-mid: #1C78F5;
+    --blue-lo: #062B6E;
+    --ink: #ffffff;
+    --ink-dim: rgba(255,255,255,0.72);
+    --ink-faint: rgba(255,255,255,0.45);
+    --scene-ease: cubic-bezier(.22,.61,.36,1);
+  }
+
+  * { box-sizing: border-box; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    background: #000;
+    color: var(--ink);
+    font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display",
+                 "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* 16:9 stage that scales to viewport — this is what you screen-record. */
+  #viewport {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #000;
+  }
+  #stage {
+    position: relative;
+    width: var(--stage-w);
+    height: var(--stage-h);
+    transform-origin: center center;
+    overflow: hidden;
+    background: radial-gradient(ellipse at 50% 40%,
+                  #0a2a1b 0%, #03120a 55%, #000 100%);
+    box-shadow: 0 0 120px rgba(0,0,0,.6) inset;
+  }
+
+  /* Ambient earth glow behind everything */
+  .ambient {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    opacity: .55;
+    background:
+      radial-gradient(1200px 800px at 20% 120%, rgba(48,194,163,.18), transparent 60%),
+      radial-gradient(1000px 700px at 85% -10%, rgba(28,122,79,.22), transparent 60%);
+    mix-blend-mode: screen;
+  }
+
+  /* Every scene is absolutely stacked; only .live is visible. */
+  .scene {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 900ms var(--scene-ease);
+    will-change: opacity, transform;
+  }
+  .scene.live { opacity: 1; }
+
+  /* Typographic system (Keynote-style: huge, tight tracking, thin/bold contrast) */
+  .eyebrow {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 6px;
+    text-transform: uppercase;
+    color: var(--blue-hi);
+    margin-bottom: 28px;
+  }
+  .eyebrow.green { color: #6fd39a; }
+  .title {
+    font-size: 128px;
+    font-weight: 700;
+    letter-spacing: -3.2px;
+    line-height: 0.98;
+    text-align: center;
+    max-width: 1500px;
+    margin: 0;
+  }
+  .title.xl { font-size: 176px; letter-spacing: -5px; }
+  .title.sm { font-size: 96px; }
+  .subtitle {
+    font-size: 34px;
+    font-weight: 400;
+    letter-spacing: -0.2px;
+    color: var(--ink-dim);
+    margin-top: 36px;
+    max-width: 1200px;
+    text-align: center;
+    line-height: 1.3;
+  }
+  .caption {
+    font-size: 20px;
+    font-weight: 500;
+    color: var(--ink-faint);
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+  }
+
+  /* === Scene 1: cold open === */
+  #s-open { background: radial-gradient(ellipse at 50% 50%, #031a10 0%, #000 70%); }
+  .logo-bloom {
+    width: 240px;
+    height: 240px;
+    border-radius: 56px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,.06),
+      0 40px 80px rgba(0,0,0,.6),
+      0 0 100px rgba(60,163,110,.35);
+    transform: scale(.86);
+    opacity: 0;
+    animation: bloom 2.6s var(--scene-ease) forwards;
+    animation-delay: .3s;
+  }
+  .logo-bloom img { width: 100%; height: 100%; display: block; }
+  @keyframes bloom {
+    0%   { opacity: 0; transform: scale(.72); filter: blur(18px); }
+    50%  { opacity: 1; }
+    100% { opacity: 1; transform: scale(1); filter: blur(0); }
+  }
+
+  /* === Scene 2: title === */
+  .stack { display: flex; flex-direction: column; align-items: center; }
+  .rise { opacity: 0; transform: translateY(40px); }
+  .scene.live .rise { animation: rise 1.2s var(--scene-ease) forwards; }
+  .scene.live .rise.d1 { animation-delay: .15s; }
+  .scene.live .rise.d2 { animation-delay: .5s; }
+  .scene.live .rise.d3 { animation-delay: .9s; }
+  .scene.live .rise.d4 { animation-delay: 1.3s; }
+  @keyframes rise {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Earth Week gradient text */
+  .grad-green {
+    background: linear-gradient(120deg, #7cd69f 0%, #38a66f 55%, #1c7a4f 100%);
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+  }
+  .grad-water {
+    background: linear-gradient(120deg, #8fe4d0 0%, #30C2A3 50%, #1C78F5 100%);
+    -webkit-background-clip: text;
+            background-clip: text;
+    color: transparent;
+  }
+
+  /* === Scene 3: dates strip === */
+  .date-row {
+    display: flex;
+    align-items: baseline;
+    gap: 48px;
+    font-feature-settings: "tnum";
+  }
+  .date-day {
+    font-size: 280px;
+    font-weight: 700;
+    letter-spacing: -10px;
+    line-height: .9;
+  }
+  .date-block { text-align: left; }
+  .date-label {
+    font-size: 22px;
+    font-weight: 600;
+    letter-spacing: 4px;
+    color: var(--ink-faint);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .date-detail {
+    font-size: 36px;
+    font-weight: 500;
+    color: var(--ink-dim);
+    letter-spacing: -.3px;
+  }
+  .dash {
+    font-size: 180px;
+    font-weight: 300;
+    color: var(--ink-faint);
+    letter-spacing: -4px;
+  }
+
+  /* === Scene 4: ethos quote === */
+  .quote {
+    font-size: 148px;
+    font-weight: 700;
+    letter-spacing: -3.8px;
+    line-height: 1.02;
+    max-width: 1500px;
+    text-align: center;
+  }
+
+  /* === Device frames === */
+  .device-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 80px;
+  }
+  .phone {
+    position: relative;
+    width: 360px;
+    aspect-ratio: 1320 / 2868;
+    border-radius: 56px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 12px #0c0f12,
+      0 0 0 13px #2a2f35,
+      0 60px 110px rgba(0,0,0,.55),
+      0 0 80px rgba(48,194,163,.12);
+  }
+  .phone.lg { width: 460px; }
+  .phone img {
+    width: 100%;
+    height: 100%;
+    display: block;
+    object-fit: cover;
+  }
+  .phone::after { /* screen gloss */
+    content: "";
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    background: linear-gradient(130deg, rgba(255,255,255,.06) 0%, transparent 40%);
+  }
+  .watch {
+    position: relative;
+    width: 260px;
+    aspect-ratio: 1 / 1.21;
+    border-radius: 56px;
+    overflow: hidden;
+    background: #000;
+    box-shadow:
+      0 0 0 10px #1a1d21,
+      0 0 0 11px #2c3035,
+      0 40px 80px rgba(0,0,0,.5),
+      0 0 60px rgba(48,194,163,.15);
+  }
+  .watch img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* Scene 5: dashboard banner call-out */
+  .spotlight {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 120px;
+  }
+  .spot-text {
+    max-width: 620px;
+  }
+  .spot-text .eyebrow { text-align: left; }
+  .spot-text .title { text-align: left; font-size: 92px; letter-spacing: -2.4px; }
+  .spot-text .subtitle { margin-top: 24px; font-size: 28px; text-align: left; }
+
+  /* Highlight overlay marker */
+  .halo {
+    position: absolute;
+    border-radius: 22px;
+    box-shadow:
+      0 0 0 3px rgba(124, 214, 159, .9),
+      0 0 0 10px rgba(124, 214, 159, .25),
+      0 0 60px rgba(124, 214, 159, .45);
+    pointer-events: none;
+    opacity: 0;
+  }
+  .scene.live .halo { animation: haloPulse 1.8s var(--scene-ease) 1.2s forwards; }
+  @keyframes haloPulse {
+    0%   { opacity: 0; transform: scale(.94); }
+    60%  { opacity: 1; transform: scale(1); }
+    100% { opacity: .9; transform: scale(1); }
+  }
+
+  /* === Scene 6: pledge card (recreated from EarthDayPledgeView) === */
+  .pledge-wrap {
+    display: flex;
+    gap: 80px;
+    align-items: center;
+    justify-content: center;
+  }
+  .pledge-card {
+    width: 520px;
+    padding: 44px 40px;
+    border-radius: 42px;
+    background: linear-gradient(135deg, #389e6b 0%, #14704c 55%, #0b4d36 100%);
+    box-shadow:
+      0 40px 80px rgba(0,0,0,.45),
+      0 0 0 1px rgba(255,255,255,.12) inset;
+    position: relative;
+    overflow: hidden;
+  }
+  .pledge-card::before {
+    content: "";
+    position: absolute;
+    inset: -40% -20% auto auto;
+    width: 80%;
+    aspect-ratio: 1/1;
+    background: radial-gradient(circle, rgba(255,255,255,.18), transparent 65%);
+  }
+  .pledge-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 16px;
+    border-radius: 999px;
+    background: rgba(255,255,255,.18);
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #fff;
+  }
+  .pledge-quote {
+    font-size: 56px;
+    font-weight: 700;
+    line-height: 1.05;
+    letter-spacing: -1.2px;
+    margin: 28px 0 18px;
+  }
+  .pledge-sign {
+    font-size: 22px;
+    font-weight: 600;
+    color: rgba(255,255,255,.92);
+  }
+  .pledge-foot {
+    margin-top: 32px;
+    font-size: 18px;
+    font-weight: 500;
+    color: rgba(255,255,255,.82);
+    line-height: 1.4;
+  }
+  .pledge-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-top: 28px;
+  }
+  .pledge-row img {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    background: #fff;
+  }
+  .pledge-row .pname {
+    font-size: 24px;
+    font-weight: 700;
+  }
+  .appstore-badge {
+    display: inline-flex;
+    gap: 12px;
+    align-items: center;
+    margin-top: 16px;
+    padding: 8px 16px;
+    border: 1px solid rgba(255,255,255,.8);
+    border-radius: 12px;
+  }
+  .appstore-badge .apple { font-size: 32px; line-height: 1; }
+  .appstore-badge .cap { font-size: 12px; line-height: 1; letter-spacing: .4px; opacity: .9; }
+  .appstore-badge .word { font-size: 24px; font-weight: 600; letter-spacing: -.4px; line-height: 1.1; }
+
+  /* === Scene 7: earth progress hero === */
+  .earth-hero {
+    position: relative;
+    width: 720px;
+    height: 720px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .earth-hero .earth-img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0 0 60px rgba(60,163,110,.55));
+    animation: slowSpin 60s linear infinite;
+  }
+  @keyframes slowSpin { to { transform: rotate(360deg); } }
+  .earth-hero .ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px rgba(124,214,159,.18), 0 0 140px rgba(48,194,163,.2);
+  }
+  .earth-pct {
+    position: absolute;
+    font-size: 148px;
+    font-weight: 800;
+    letter-spacing: -4px;
+    text-shadow: 0 8px 30px rgba(0,0,0,.6);
+  }
+
+  /* === Scene 8: features grid === */
+  .grid3 {
+    display: grid;
+    grid-template-columns: repeat(3, auto);
+    gap: 64px;
+    align-items: end;
+    justify-items: center;
+  }
+  .feat-label {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--ink-dim);
+    margin-top: 22px;
+    letter-spacing: .3px;
+  }
+
+  /* === Scene 9: watch === */
+  .watch-row { display: flex; gap: 64px; align-items: center; }
+
+  /* === Scene 10: closing CTA === */
+  .cta-bar {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    padding: 20px 36px;
+    border-radius: 999px;
+    background: #fff;
+    color: #0b4d36;
+    font-size: 28px;
+    font-weight: 700;
+    letter-spacing: -.2px;
+    margin-top: 40px;
+    box-shadow: 0 30px 60px rgba(124,214,159,.25);
+  }
+  .cta-bar .apple { font-size: 30px; }
+  .url {
+    font-size: 22px;
+    color: var(--ink-faint);
+    letter-spacing: .3px;
+    margin-top: 22px;
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+  }
+
+  /* Kenburns-style gentle drift for static hero shots */
+  .drift {
+    animation: drift 14s ease-in-out infinite alternate;
+  }
+  @keyframes drift {
+    from { transform: scale(1) translate(0, 0); }
+    to   { transform: scale(1.05) translate(-12px, -8px); }
+  }
+
+  /* Progress bar (Keynote-like timeline) */
+  #progress {
+    position: absolute;
+    left: 0; right: 0; bottom: 0;
+    height: 3px;
+    background: rgba(255,255,255,.08);
+    z-index: 20;
+  }
+  #progress .bar {
+    height: 100%;
+    width: 0;
+    background: linear-gradient(90deg, #38a66f, #30C2A3);
+    transition: width .2s linear;
+  }
+
+  /* Small controls (hidden during recording with ?clean=1) */
+  .controls {
+    position: absolute;
+    left: 24px;
+    bottom: 24px;
+    display: flex;
+    gap: 10px;
+    z-index: 30;
+    font-size: 12px;
+    color: var(--ink-faint);
+    font-family: ui-monospace, "SF Mono", Menlo, monospace;
+    letter-spacing: .5px;
+  }
+  .controls button {
+    background: rgba(255,255,255,.06);
+    border: 1px solid rgba(255,255,255,.12);
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 12px;
+  }
+  .controls button:hover { background: rgba(255,255,255,.12); }
+  body.clean .controls { display: none; }
+  body.clean #progress { display: none; }
+</style>
+</head>
+<body>
+<div id="viewport">
+  <div id="stage">
+    <div class="ambient"></div>
+
+    <!-- ====== Scene 1: Cold open ====== -->
+    <section class="scene" id="s-open" data-dur="5000">
+      <div class="stack">
+        <div class="logo-bloom">
+          <img src="assets/app-icon.png" alt="Sipli" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Scene 2: Title ====== -->
+    <section class="scene" id="s-title" data-dur="7000">
+      <div class="stack">
+        <div class="eyebrow green rise d1">Sipli presents</div>
+        <h1 class="title xl rise d2">
+          Every sip, <span class="grad-green">less&nbsp;plastic.</span>
+        </h1>
+        <p class="subtitle rise d3">
+          A one-week invitation to refill, not rebuy.
+        </p>
+      </div>
+    </section>
+
+    <!-- ====== Scene 3: Dates ====== -->
+    <section class="scene" id="s-dates" data-dur="7000">
+      <div class="stack">
+        <div class="eyebrow green rise d1">Earth Week 2026</div>
+        <div class="date-row rise d2">
+          <div class="date-block">
+            <div class="date-label">Starts</div>
+            <div class="date-day grad-green">20</div>
+            <div class="date-detail">April · Monday</div>
+          </div>
+          <div class="dash">—</div>
+          <div class="date-block">
+            <div class="date-label">Ends</div>
+            <div class="date-day grad-green">26</div>
+            <div class="date-detail">April · Sunday</div>
+          </div>
+        </div>
+        <p class="subtitle rise d3">
+          Seven days inside Sipli — with Earth Day at the centre.
+        </p>
+      </div>
+    </section>
+
+    <!-- ====== Scene 4: Ethos ====== -->
+    <section class="scene" id="s-ethos" data-dur="7000">
+      <div class="stack">
+        <div class="eyebrow green rise d1">The Refill Habit</div>
+        <p class="quote rise d2">
+          Every refill is<br/>
+          <span class="grad-green">one&nbsp;less</span> plastic bottle.
+        </p>
+      </div>
+    </section>
+
+    <!-- ====== Scene 5: Dashboard banner ====== -->
+    <section class="scene" id="s-banner" data-dur="10000">
+      <div class="spotlight">
+        <div class="spot-text">
+          <div class="eyebrow green rise d1">On your dashboard</div>
+          <h2 class="title rise d2">
+            A gentle nudge.<br/>Once a day.
+          </h2>
+          <p class="subtitle rise d3">
+            The Earth Week banner appears quietly on your Today screen
+            — with one tap to take the Refill Pledge.
+          </p>
+        </div>
+        <div style="position: relative;">
+          <div class="phone lg rise d2" style="animation-delay: .8s;">
+            <img src="assets/screenshots/iphone/hero.jpg" alt="Sipli dashboard" class="drift" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Scene 6: Refill pledge ====== -->
+    <section class="scene" id="s-pledge" data-dur="11000">
+      <div class="pledge-wrap">
+        <div class="spot-text" style="max-width: 520px;">
+          <div class="eyebrow green rise d1">Take the pledge</div>
+          <h2 class="title rise d2">
+            Refill,<br/>not rebuy.
+          </h2>
+          <p class="subtitle rise d3">
+            A shareable card you can post anywhere —
+            rendered entirely on-device.
+          </p>
+        </div>
+        <div class="pledge-card rise d2" style="animation-delay: .7s;">
+          <span class="pledge-chip">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="#fff" aria-hidden="true">
+              <path d="M17 8C13 8 10.5 10 9 13c-1.2-3-3-5-6-5 0 4 2 8 6 9 1-2 3-4 6-5-2 2-4 4-5 6 4 0 8-2 9-6 1-3-1-4-2-4z"/>
+            </svg>
+            Earth Week 2026
+          </span>
+          <p class="pledge-quote">
+            I pledge to refill,<br/>not&nbsp;rebuy,<br/>this Earth Week.
+          </p>
+          <div class="pledge-sign">— Anoop</div>
+          <div class="pledge-foot">
+            Every sip tracked is one less plastic bottle.
+          </div>
+          <div class="pledge-row">
+            <img src="assets/sipli-icon.png" alt="Sipli" />
+            <div class="pname">Sipli</div>
+          </div>
+          <div class="appstore-badge">
+            <span class="apple"></span>
+            <span>
+              <div class="cap">Download on the</div>
+              <div class="word">App Store</div>
+            </span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Scene 7: Earth progress ====== -->
+    <section class="scene" id="s-earth" data-dur="9000">
+      <div class="stack">
+        <div class="eyebrow green rise d1">Earth Week progress</div>
+        <div class="earth-hero rise d2" style="animation-delay: .3s;">
+          <div class="ring"></div>
+          <img class="earth-img" src="assets/earth.png" alt="Earth" />
+          <div class="earth-pct">72%</div>
+        </div>
+        <p class="subtitle rise d3" style="animation-delay: 1.2s;">
+          Your bottle becomes the planet —
+          filling a little further with every sip.
+        </p>
+      </div>
+    </section>
+
+    <!-- ====== Scene 8: Features grid ====== -->
+    <section class="scene" id="s-grid" data-dur="12000">
+      <div class="stack">
+        <div class="eyebrow green rise d1">Inside Sipli</div>
+        <h2 class="title sm rise d2" style="margin-bottom: 56px;">
+          Small details, <span class="grad-water">everywhere</span>.
+        </h2>
+        <div class="grid3 rise d3" style="animation-delay: .8s;">
+          <div>
+            <div class="phone">
+              <img src="assets/screenshots/iphone/insights.jpg" alt="Insights" />
+            </div>
+            <div class="feat-label">Insights</div>
+          </div>
+          <div>
+            <div class="phone">
+              <img src="assets/screenshots/iphone/coach.jpg" alt="Hydration Coach" />
+            </div>
+            <div class="feat-label">Hydration Coach</div>
+          </div>
+          <div>
+            <div class="phone">
+              <img src="assets/screenshots/iphone/widgets.jpg" alt="Widgets" />
+            </div>
+            <div class="feat-label">Widgets &amp; Lock Screen</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Scene 9: Watch ====== -->
+    <section class="scene" id="s-watch" data-dur="8000">
+      <div class="stack">
+        <div class="eyebrow green rise d1">On your wrist</div>
+        <h2 class="title sm rise d2" style="margin-bottom: 56px;">
+          One tap. <span class="grad-water">One&nbsp;sip.</span>
+        </h2>
+        <div class="watch-row rise d3" style="animation-delay: .6s;">
+          <div class="watch">
+            <img src="assets/screenshots/watch/face.png" alt="Watch face" />
+          </div>
+          <div class="watch">
+            <img src="assets/screenshots/watch/dashboard.png" alt="Watch dashboard" />
+          </div>
+          <div class="watch">
+            <img src="assets/screenshots/watch/quick-add.png" alt="Quick add" />
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== Scene 10: Closing CTA ====== -->
+    <section class="scene" id="s-end" data-dur="10000">
+      <div class="stack">
+        <div class="eyebrow green rise d1">Sipli · Earth Week · April 20–26, 2026</div>
+        <h1 class="title xl rise d2">
+          <span class="grad-green">Refill</span><br/>the habit.
+        </h1>
+        <p class="subtitle rise d3" style="max-width: 1000px;">
+          Available free on the App Store, for iPhone and Apple&nbsp;Watch.
+        </p>
+        <div class="cta-bar rise d4">
+          <svg width="28" height="28" viewBox="0 0 24 24" fill="#0b4d36" aria-hidden="true">
+            <path d="M16.365 1.43c0 1.14-.46 2.25-1.19 3.07-.79.88-2.06 1.56-3.29 1.46-.14-1.09.43-2.23 1.18-3.02.85-.9 2.3-1.54 3.3-1.51zM20.5 17.27c-.6 1.4-.89 2.03-1.66 3.26-1.08 1.71-2.6 3.85-4.48 3.86-1.67.02-2.1-1.09-4.37-1.07-2.27.01-2.74 1.09-4.41 1.07-1.88-.03-3.32-1.96-4.4-3.67-3.03-4.8-3.35-10.42-1.48-13.42 1.33-2.13 3.42-3.38 5.39-3.38 2.01 0 3.28 1.1 4.94 1.1 1.62 0 2.6-1.1 4.93-1.1 1.76 0 3.62.96 4.95 2.63-4.35 2.39-3.64 8.62.59 10.72z"/>
+          </svg>
+          Download on the App Store
+        </div>
+        <div class="url rise d4" style="animation-delay: 1.6s;">
+          apps.apple.com/app/id6758851574
+        </div>
+      </div>
+    </section>
+
+    <div id="progress"><div class="bar"></div></div>
+    <div class="controls">
+      <button id="btn-restart">RESTART</button>
+      <button id="btn-pause">PAUSE</button>
+      <span id="clock">0.0s</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(() => {
+  const stage = document.getElementById('stage');
+  const bar   = document.querySelector('#progress .bar');
+  const clockEl = document.getElementById('clock');
+  const scenes = [...document.querySelectorAll('.scene')];
+  const totalDur = scenes.reduce((s, el) => s + (+el.dataset.dur || 5000), 0);
+
+  // Fit stage to viewport while preserving 16:9.
+  function fit() {
+    const vw = window.innerWidth, vh = window.innerHeight;
+    const sx = vw / 1920, sy = vh / 1080;
+    const s = Math.min(sx, sy);
+    stage.style.transform = `scale(${s})`;
+  }
+  window.addEventListener('resize', fit, { passive: true });
+  fit();
+
+  // Orchestrate scenes on a manual timeline so transitions stay crisp.
+  let startTime = performance.now();
+  let elapsedOffset = 0;
+  let paused = false;
+  let currentIdx = -1;
+
+  function setActive(i) {
+    if (i === currentIdx) return;
+    scenes.forEach(s => s.classList.remove('live'));
+    const s = scenes[i];
+    if (!s) return;
+    // restart entrance animations by re-toggling the class
+    void s.offsetWidth;
+    s.classList.add('live');
+    currentIdx = i;
+  }
+
+  function frame(now) {
+    if (paused) { requestAnimationFrame(frame); return; }
+    const t = (now - startTime) + elapsedOffset;
+    const loopT = t % totalDur;
+
+    // figure out current scene
+    let acc = 0, idx = 0;
+    for (let i = 0; i < scenes.length; i++) {
+      const d = +scenes[i].dataset.dur || 5000;
+      if (loopT < acc + d) { idx = i; break; }
+      acc += d;
+    }
+    setActive(idx);
+
+    bar.style.width = ((loopT / totalDur) * 100).toFixed(2) + '%';
+    clockEl.textContent = (loopT / 1000).toFixed(1) + 's / ' + (totalDur/1000).toFixed(0) + 's';
+
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+
+  // Controls
+  document.getElementById('btn-restart').addEventListener('click', () => {
+    startTime = performance.now();
+    elapsedOffset = 0;
+    currentIdx = -1;
+  });
+  const pauseBtn = document.getElementById('btn-pause');
+  pauseBtn.addEventListener('click', () => {
+    if (paused) {
+      startTime = performance.now();
+      paused = false;
+      pauseBtn.textContent = 'PAUSE';
+    } else {
+      elapsedOffset += performance.now() - startTime;
+      paused = true;
+      pauseBtn.textContent = 'PLAY';
+    }
+  });
+
+  document.addEventListener('keydown', e => {
+    if (e.key === ' ') { e.preventDefault(); pauseBtn.click(); }
+    if (e.key === 'r' || e.key === 'R') { document.getElementById('btn-restart').click(); }
+  });
+
+  // ?clean=1 hides controls for screen-recording.
+  if (new URLSearchParams(location.search).get('clean') === '1') {
+    document.body.classList.add('clean');
+  }
+})();
+</script>
+</body>
+</html>
