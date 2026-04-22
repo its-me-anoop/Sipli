@@ -280,4 +280,20 @@ enum FluidType: String, CaseIterable, Codable, Identifiable, Hashable {
     var hydrationLabel: String {
         "\(Int(hydrationFactor * 100))% hydration"
     }
+
+    /// All fluid types sorted by how often they appear in `entries`, most-used first.
+    /// Ties (and never-used types) fall back to `FluidType.allCases` declaration order
+    /// so the list is stable across logs with equal counts.
+    static func ranked(from entries: [HydrationEntry]) -> [FluidType] {
+        let counts = Dictionary(grouping: entries, by: \.fluidType).mapValues(\.count)
+        let enumIndex: [FluidType: Int] = Dictionary(
+            uniqueKeysWithValues: FluidType.allCases.enumerated().map { ($1, $0) }
+        )
+        return FluidType.allCases.sorted { lhs, rhs in
+            let l = counts[lhs] ?? 0
+            let r = counts[rhs] ?? 0
+            if l != r { return l > r }
+            return enumIndex[lhs, default: 0] < enumIndex[rhs, default: 0]
+        }
+    }
 }

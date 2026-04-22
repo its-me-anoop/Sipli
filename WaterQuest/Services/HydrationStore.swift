@@ -85,6 +85,12 @@ final class HydrationStore: ObservableObject {
         todayEntries.reduce(0) { $0 + $1.volumeML }
     }
 
+    /// Fluid types ordered by lifetime log count, most-used first. Used by the
+    /// intake picker so frequent drinks surface without scrolling.
+    var rankedFluidTypes: [FluidType] {
+        FluidType.ranked(from: entries)
+    }
+
     var todayCompositions: [FluidComposition] {
         let total = max(1, todayTotalML) // Avoid division by zero
         var grouped: [FluidType: Double] = [:]

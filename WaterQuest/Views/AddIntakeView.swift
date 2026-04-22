@@ -47,7 +47,7 @@ struct AddIntakeView: View {
                 if subscriptionManager.hasAccess(to: .fluidTypes) {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack(spacing: isRegular ? 12 : 8) {
-                            ForEach(FluidType.allCases) { type in
+                            ForEach(store.rankedFluidTypes) { type in
                                 Button {
                                     Haptics.selection()
                                     withAnimation(Theme.quickSpring) {

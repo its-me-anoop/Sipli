@@ -40,6 +40,7 @@
 		747A7C4F8A906C71164AB9DE /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */; };
 		75107A8584630E7E2B030165 /* MascotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD53555ACD00A8A78268A7F /* MascotView.swift */; };
 		76BC1045791BD2737D00FCD6 /* NotificationContextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C049D1800E773480DC7E47B /* NotificationContextTests.swift */; };
+		FB22770022DD00FC11FA22B3 /* FluidTypeRankingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE11AA0011AA22BB33CC44DD /* FluidTypeRankingTests.swift */; };
 		7C578D3D8C788EDEDD9F383C /* HydrationAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B57443B7032DDCF70ACB8C /* HydrationAIService.swift */; };
 		83C67F5F3E24629A72299C6E /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37EBA9FC9F1233C2BC105DD /* PersistenceService.swift */; };
 		8CE43E783BB223277701CF7E /* UnitSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032684376DE05B0CC4838664 /* UnitSystem.swift */; };
@@ -211,6 +212,7 @@
 		161A82CD61225A1F302ECA9D /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensions.swift; sourceTree = "<group>"; };
 		1BD898210B2BA8EE347F72F4 /* Sipli.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sipli.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C049D1800E773480DC7E47B /* NotificationContextTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationContextTests.swift; sourceTree = "<group>"; };
+		FE11AA0011AA22BB33CC44DD /* FluidTypeRankingTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FluidTypeRankingTests.swift; sourceTree = "<group>"; };
 		22C158CF127D3436999E3C2B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		2B4A8703E51FB5E078BD00AB /* NotificationCategoriesTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationCategoriesTests.swift; sourceTree = "<group>"; };
 		31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationEntry.swift; sourceTree = "<group>"; };
@@ -472,6 +474,7 @@
 				1C049D1800E773480DC7E47B /* NotificationContextTests.swift */,
 				6D8C127CF4F113AB2D5DB40D /* NotificationMessageTests.swift */,
 				2B4A8703E51FB5E078BD00AB /* NotificationCategoriesTests.swift */,
+				FE11AA0011AA22BB33CC44DD /* FluidTypeRankingTests.swift */,
 			);
 			name = WaterQuestTests;
 			path = WaterQuestTests;
@@ -915,6 +918,7 @@
 				76BC1045791BD2737D00FCD6 /* NotificationContextTests.swift in Sources */,
 				F61E51CCFB80BD3F264454D4 /* NotificationMessageTests.swift in Sources */,
 				AB92FFFB14A831BB3B5FB42A /* NotificationCategoriesTests.swift in Sources */,
+				FB22770022DD00FC11FA22B3 /* FluidTypeRankingTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
