@@ -36,45 +36,50 @@ struct WelcomeStep: View {
     }
 
     private var hero: some View {
-        ZStack {
-            // Hero box with tinted water gradient + soft glow
-            RoundedRectangle(cornerRadius: 28, style: .continuous)
-                .fill(Color(red: 0.910, green: 0.957, blue: 0.984))
-                .overlay(
-                    Circle()
-                        .fill(
-                            RadialGradient(
-                                colors: [Color(red: 0.122, green: 0.639, blue: 0.910).opacity(0.18), .clear],
-                                center: .center, startRadius: 5, endRadius: 200
+        GeometryReader { proxy in
+            ZStack {
+                // Hero box with tinted background + soft radial glow
+                RoundedRectangle(cornerRadius: 28, style: .continuous)
+                    .fill(Color(red: 0.910, green: 0.957, blue: 0.984))
+                    .overlay(
+                        Circle()
+                            .fill(
+                                RadialGradient(
+                                    colors: [Color(red: 0.122, green: 0.639, blue: 0.910).opacity(0.18), .clear],
+                                    center: .center, startRadius: 5, endRadius: 200
+                                )
                             )
-                        )
-                        .frame(width: 360, height: 360)
-                        .blur(radius: 8)
-                )
+                            .frame(width: 360, height: 360)
+                            .blur(radius: 8)
+                    )
 
-            // Animated water at bottom (two layered gradients)
-            GeometryReader { proxy in
+                // Animated water — anchored to the bottom of the hero,
+                // occupying the lower ~55% so the bottle dips into it.
                 ZStack(alignment: .bottom) {
-                    waterLayer(width: proxy.size.width, height: proxy.size.height, opacity: 0.85, ampPx: 16, period: 9, phaseShift: 0)
-                    waterLayer(width: proxy.size.width, height: proxy.size.height, opacity: 0.4, ampPx: 12, period: 11, phaseShift: .pi)
+                    Color.clear  // anchor for alignment
+                    waterLayer(width: proxy.size.width, opacity: 0.85, ampPx: 16, period: 9, phaseShift: 0)
+                        .frame(height: proxy.size.height * 0.55, alignment: .bottom)
+                    waterLayer(width: proxy.size.width, opacity: 0.40, ampPx: 12, period: 11, phaseShift: .pi)
+                        .frame(height: proxy.size.height * 0.50, alignment: .bottom)
                 }
+                .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .bottom)
                 .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+
+                // Floating drops
+                FloatingDrops(phase: dropPhase, reduceMotion: reduceMotion)
+                    .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
+
+                // Bottle with bob — sits centered, bottom dips into water.
+                SipliBottle(fill: 0.62, size: 200)
+                    .offset(y: bobOffset)
+                    .rotationEffect(.degrees(bobOffset == 0 ? 0 : -3))
             }
-
-            // Floating drops
-            FloatingDrops(phase: dropPhase, reduceMotion: reduceMotion)
-                .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
-
-            // Bottle with bob
-            SipliBottle(fill: 0.62, size: 200)
-                .offset(y: bobOffset)
-                .rotationEffect(.degrees(bobOffset == 0 ? 0 : -3))
         }
         .frame(maxWidth: .infinity, minHeight: 360)
     }
 
     @ViewBuilder
-    private func waterLayer(width: CGFloat, height: CGFloat, opacity: Double, ampPx: CGFloat, period: Double, phaseShift: Double) -> some View {
+    private func waterLayer(width: CGFloat, opacity: Double, ampPx: CGFloat, period: Double, phaseShift: Double) -> some View {
         TimelineView(.animation(minimumInterval: 1.0 / 30.0)) { context in
             let t = context.date.timeIntervalSinceReferenceDate
             let phase = reduceMotion ? phaseShift : (t * (2 * .pi / period) + phaseShift)
@@ -86,8 +91,7 @@ struct WelcomeStep: View {
                     )
                 )
                 .opacity(opacity)
-                .frame(width: width, height: height * 0.42)
-                .offset(y: height * 0.29)
+                .frame(width: width)
         }
     }
 
@@ -125,6 +129,9 @@ struct WelcomeStep: View {
     }
 }
 
+/// Wavy fill — wave surface sits near the TOP of the supplied rect, the body
+/// fills down to the bottom edge. Amplitude stays clear of the rect's top
+/// so the wave never clips.
 private struct WaterFill: Shape {
     var phase: Double
     var amplitude: CGFloat
@@ -138,12 +145,14 @@ private struct WaterFill: Shape {
         var path = Path()
         let w = rect.width
         let h = rect.height
+        let baseY = amplitude + 4   // clearance from rect.top
         let step: CGFloat = 6
         path.move(to: CGPoint(x: 0, y: h))
+        path.addLine(to: CGPoint(x: 0, y: baseY))
         var x: CGFloat = 0
         while x <= w {
             let t = x / w
-            let y = amplitude + sin(t * .pi * 4 + phase) * amplitude * 0.6 + amplitude * 0.5
+            let y = baseY + sin(t * .pi * 4 + phase) * amplitude
             path.addLine(to: CGPoint(x: x, y: y))
             x += step
         }
