@@ -77,6 +77,7 @@ Track every published post's hook, angle, feature highlighted, visual concept, a
 | Date | Hook | Angle | Feature highlighted | Visual concept | Hashtags |
 |---|---|---|---|---|---|
 | 2026-04-11 | "3pm headache. Checked my app. 'You're 900ml behind.' Every single day this week." | Confession + pattern recognition | Smart goal that shifts with weather & workouts | Dark near-black BG, single Sipli app screen floating on the right, soft cyan glow, minimal 3-word headline on left | #buildinpublic |
+| 2026-04-23 | "most health apps scream at you." | Anti-notification-fatigue / gentle wellness / friend vs drill sergeant contrast | Quiet personalized nudges (knows how much water you need) | Text-only (no image) | None |
 
 ---
 
