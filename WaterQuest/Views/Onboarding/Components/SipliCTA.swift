@@ -114,7 +114,9 @@ struct SipliBackButton: View {
     }
 }
 
-/// Top bar — back button on the left, mono "01 / 07" stepper centered.
+/// Top bar — back button only (the step indicator was removed at the
+/// designer's request so the screens lead with their headline). The
+/// `stepIndex` and `total` arguments are kept for API parity.
 struct SipliTopBar: View {
     let stepIndex: Int
     let total: Int
@@ -129,20 +131,6 @@ struct SipliTopBar: View {
                 Color.clear.frame(width: 40, height: 40)
             }
             Spacer()
-            HStack(spacing: 4) {
-                Text(String(format: "%02d", stepIndex + 1))
-                    .font(.sipliMono(12, weight: .semibold))
-                    .foregroundStyle(OnboardingPalette.ink)
-                Text("/")
-                    .font(.sipliMono(12, weight: .medium))
-                    .foregroundStyle(OnboardingPalette.ink2.opacity(0.5))
-                Text(String(format: "%02d", total))
-                    .font(.sipliMono(12, weight: .medium))
-                    .foregroundStyle(OnboardingPalette.ink2.opacity(0.55))
-            }
-            .tracking(1)
-            Spacer()
-            Color.clear.frame(width: 40, height: 40)
         }
         .padding(.horizontal, 24)
         .padding(.top, 8)

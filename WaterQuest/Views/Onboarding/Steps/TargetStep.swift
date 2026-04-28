@@ -41,13 +41,6 @@ struct TargetStep: View {
                         .padding(.horizontal, 24)
                         .padding(.bottom, 12)
 
-                    if state.customGoalEnabled {
-                        targetSlider
-                            .padding(.horizontal, 24)
-                            .padding(.bottom, 8)
-                            .transition(.opacity.combined(with: .move(edge: .top)))
-                    }
-
                     customGoalToggle
                         .padding(.horizontal, 24)
                         .padding(.top, 4)
@@ -80,6 +73,15 @@ struct TargetStep: View {
     private var targetStage: some View {
         HStack(alignment: .center, spacing: 12) {
             SipliBottle(fill: displayedFillFraction, size: 110)
+
+            // Vertical custom-goal slider sits between the bottle and the
+            // numeric readout so its handle visually maps to the bottle's
+            // water level.
+            if state.customGoalEnabled {
+                verticalGoalSlider
+                    .frame(width: 28, height: 150)
+                    .transition(.opacity)
+            }
 
             VStack(alignment: .trailing, spacing: 4) {
                 HStack(alignment: .lastTextBaseline, spacing: 4) {
@@ -127,55 +129,41 @@ struct TargetStep: View {
         )
     }
 
-    private var targetSlider: some View {
+    private var verticalGoalSlider: some View {
         let r = state.customGoalRange()
         let pct = (state.customGoalValue - r.lowerBound) / (r.upperBound - r.lowerBound)
-        let labels: (String, String) = state.unitSystem == .metric ? ("1.0L", "4.0L") : ("33 oz", "135 oz")
-        return VStack(spacing: 6) {
-            GeometryReader { proxy in
-                let w = proxy.size.width
-                ZStack(alignment: .leading) {
-                    Capsule()
-                        .fill(OnboardingPalette.ink.opacity(0.08))
-                        .frame(height: 14)
+        return GeometryReader { proxy in
+            let h = proxy.size.height
+            ZStack(alignment: .bottom) {
+                Capsule()
+                    .fill(OnboardingPalette.ink.opacity(0.08))
+                    .frame(width: 14, height: h)
 
-                    Capsule()
-                        .fill(OnboardingPalette.water)
-                        .frame(width: max(0, pct * w), height: 14)
+                Capsule()
+                    .fill(OnboardingPalette.water)
+                    .frame(width: 14, height: max(0, pct * h))
 
-                    Circle()
-                        .fill(Color.white)
-                        .frame(width: 28, height: 28)
-                        .overlay(Circle().stroke(OnboardingPalette.water, lineWidth: 3))
-                        .shadow(color: OnboardingPalette.water.opacity(0.3), radius: 4, x: 0, y: 4)
-                        .offset(x: max(0, pct * w - 14))
-                }
-                .contentShape(Rectangle())
-                .gesture(
-                    DragGesture(minimumDistance: 0)
-                        .onChanged { value in updateFrom(x: value.location.x, in: w, range: r) }
-                        .onEnded { _ in Haptics.selection() }
-                )
+                Circle()
+                    .fill(Color.white)
+                    .frame(width: 26, height: 26)
+                    .overlay(Circle().stroke(OnboardingPalette.water, lineWidth: 3))
+                    .shadow(color: OnboardingPalette.water.opacity(0.3), radius: 4, x: 0, y: 4)
+                    .offset(y: -(pct * h - 13))
             }
-            .frame(height: 28)
-
-            HStack {
-                Text(labels.0)
-                Spacer()
-                Text(labels.1)
-            }
-            .font(.sipliMono(11, weight: .medium))
-            .foregroundStyle(OnboardingPalette.ink3)
-            .padding(.top, 4)
+            .frame(maxWidth: .infinity)
+            .contentShape(Rectangle())
+            .gesture(
+                DragGesture(minimumDistance: 0)
+                    .onChanged { value in updateFromY(y: value.location.y, in: h, range: r) }
+                    .onEnded { _ in Haptics.selection() }
+            )
         }
-        .padding(.top, 6)
     }
 
-    private func updateFrom(x: CGFloat, in width: CGFloat, range: ClosedRange<Double>) {
-        guard width > 0 else { return }
-        let pct = max(0, min(1, x / width))
+    private func updateFromY(y: CGFloat, in height: CGFloat, range: ClosedRange<Double>) {
+        guard height > 0 else { return }
+        let pct = max(0, min(1, 1.0 - (y / height)))
         let value = Double(range.lowerBound) + pct * (range.upperBound - range.lowerBound)
-        // Snap by 50ml in metric, 2oz in imperial
         let step = state.unitSystem == .metric ? 50.0 : 2.0
         let snapped = (value / step).rounded() * step
         let clamped = min(max(snapped, range.lowerBound), range.upperBound)

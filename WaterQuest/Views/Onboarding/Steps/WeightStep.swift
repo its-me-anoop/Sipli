@@ -41,16 +41,16 @@ struct WeightStep: View {
                         .font(.system(size: 15))
                         .foregroundStyle(OnboardingPalette.ink3)
                         .padding(.horizontal, 24)
-                        .padding(.bottom, 24)
+                        .padding(.bottom, 22)
 
-                    readout
-                        .padding(.bottom, 20)
+                    HStack(alignment: .center, spacing: 18) {
+                        readout
+                        verticalRuler
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 22)
 
                     unitToggle
-                        .padding(.bottom, 18)
-
-                    rulerSection
-                        .padding(.horizontal, 24)
                         .padding(.bottom, 16)
                 }
             }
@@ -73,24 +73,25 @@ struct WeightStep: View {
     }
 
     private var readout: some View {
-        VStack(spacing: 4) {
-            HStack(alignment: .lastTextBaseline, spacing: 10) {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack(alignment: .lastTextBaseline, spacing: 8) {
                 Text("\(Int(state.weight))")
-                    .font(.editorialSerif(110, weight: .regular))
+                    .font(.editorialSerif(96, weight: .regular))
                     .foregroundStyle(OnboardingPalette.ink)
                     .id(weightDisplayKey)
                     .contentTransition(.numericText())
                 Text(unit.uppercased())
-                    .font(.sipliMono(18, weight: .semibold))
+                    .font(.sipliMono(16, weight: .semibold))
                     .foregroundStyle(OnboardingPalette.ink3)
-                    .padding(.bottom, 14)
+                    .padding(.bottom, 12)
             }
             (Text("That's about ").foregroundStyle(OnboardingPalette.ink3)
                 + Text(dailyEstimateLabel).foregroundStyle(OnboardingPalette.water).fontWeight(.semibold)
-                + Text(" a day").foregroundStyle(OnboardingPalette.ink3))
+                + Text("\na day").foregroundStyle(OnboardingPalette.ink3))
                 .font(.system(size: 14))
+                .lineSpacing(2)
         }
-        .frame(maxWidth: .infinity)
+        .frame(maxWidth: .infinity, alignment: .leading)
         .animation(.spring(response: 0.25, dampingFraction: 0.55), value: state.weight)
     }
 
@@ -129,86 +130,90 @@ struct WeightStep: View {
         let oldKg = state.unitSystem.kg(from: state.weight)
         withAnimation(.spring(response: 0.45, dampingFraction: 0.78)) {
             state.unitSystem = unit
-            // Convert weight to new unit's natural value, snapped to default if out of range.
             let converted = unit.amountFromKG(oldKg)
             let r = unit == .metric ? 35.0...150.0 : 77.0...330.0
-            let snapStep = unit == .metric ? 1.0 : 1.0
-            let snapped = (converted / snapStep).rounded() * snapStep
+            let snapped = converted.rounded()
             state.weight = min(max(snapped, r.lowerBound), r.upperBound)
         }
         Haptics.selection()
     }
 
-    private var rulerSection: some View {
+    private var verticalRuler: some View {
         let pct = (state.weight - range.lowerBound) / (range.upperBound - range.lowerBound)
         let tickCount = 41
-        return VStack(spacing: 6) {
+        return HStack(spacing: 14) {
+            // Ticks column — drag up to increase, like a wall-mounted measuring tape.
             GeometryReader { proxy in
-                let w = proxy.size.width
+                let h = proxy.size.height
                 ZStack(alignment: .topLeading) {
-                    HStack(spacing: 0) {
+                    VStack(spacing: 0) {
                         ForEach(0..<tickCount, id: \.self) { i in
-                            let tickPct = Double(i) / Double(tickCount - 1)
+                            // i=0 at the top maps to the highest weight.
+                            let topToBottom = Double(i) / Double(tickCount - 1)
+                            let valuePct = 1.0 - topToBottom
                             let isMajor = i % 5 == 0
-                            let dist = abs(tickPct - pct)
+                            let dist = abs(valuePct - pct)
                             let close = dist < 0.08
-                            Capsule()
-                                .fill(OnboardingPalette.ink.opacity(close ? 1 : 0.4))
-                                .frame(width: 2, height: tickHeight(isMajor: isMajor, close: close))
-                                .frame(maxWidth: .infinity, alignment: .center)
-                                .animation(.easeOut(duration: 0.18), value: pct)
+                            HStack(spacing: 0) {
+                                Capsule()
+                                    .fill(OnboardingPalette.ink.opacity(close ? 1 : 0.35))
+                                    .frame(width: tickWidth(isMajor: isMajor, close: close), height: 2)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                                    .animation(.easeOut(duration: 0.18), value: pct)
+                            }
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .frame(maxHeight: .infinity)
                         }
                     }
-                    .frame(height: 56, alignment: .bottom)
+                    .frame(width: 56, alignment: .leading)
 
-                    cursorView
-                        .offset(x: pct * w - 1, y: 0)
+                    // Cursor: a horizontal water-coloured line + arrowhead pointing at the ticks.
+                    HStack(spacing: 4) {
+                        Triangle()
+                            .fill(OnboardingPalette.water)
+                            .frame(width: 8, height: 12)
+                            .rotationEffect(.degrees(90))
+                        Capsule()
+                            .fill(OnboardingPalette.water)
+                            .frame(width: 56, height: 3)
+                    }
+                    .offset(x: -4, y: (1.0 - pct) * h - 1.5)
                 }
                 .contentShape(Rectangle())
                 .gesture(
                     DragGesture(minimumDistance: 0)
                         .onChanged { value in
-                            updateFrom(x: value.location.x, in: w)
+                            updateFrom(y: value.location.y, in: h)
                         }
                         .onEnded { _ in Haptics.selection() }
                 )
             }
-            .frame(height: 56)
+            .frame(width: 80, height: 240)
 
-            HStack {
-                Text("\(Int(range.lowerBound))")
+            // Numeric scale on the trailing side: max top, min bottom.
+            VStack(alignment: .trailing) {
+                Text("\(Int(range.upperBound))")
                 Spacer()
                 Text("\(Int((range.lowerBound + range.upperBound) / 2))")
                 Spacer()
-                Text("\(Int(range.upperBound))")
+                Text("\(Int(range.lowerBound))")
             }
             .font(.sipliMono(11, weight: .medium))
             .foregroundStyle(OnboardingPalette.ink3)
+            .frame(height: 240)
         }
     }
 
-    private var cursorView: some View {
-        VStack(spacing: 0) {
-            Triangle()
-                .fill(OnboardingPalette.water)
-                .frame(width: 12, height: 8)
-                .offset(y: -4)
-            Capsule()
-                .fill(OnboardingPalette.water)
-                .frame(width: 3, height: 56)
-        }
+    private func tickWidth(isMajor: Bool, close: Bool) -> CGFloat {
+        if isMajor { return close ? 56 : 42 }
+        return close ? 30 : 18
     }
 
-    private func tickHeight(isMajor: Bool, close: Bool) -> CGFloat {
-        if isMajor { return close ? 38 : 28 }
-        return close ? 22 : 14
-    }
-
-    private func updateFrom(x: CGFloat, in width: CGFloat) {
-        guard width > 0 else { return }
-        let pct = max(0, min(1, x / width))
+    private func updateFrom(y: CGFloat, in height: CGFloat) {
+        guard height > 0 else { return }
+        let pct = max(0, min(1, 1.0 - (y / height)))
         let value = Double(range.lowerBound) + pct * (range.upperBound - range.lowerBound)
-        let rounded = (value).rounded()
+        let rounded = value.rounded()
         if Int(rounded) != Int(state.weight) {
             state.weight = rounded
             weightDisplayKey = UUID()
