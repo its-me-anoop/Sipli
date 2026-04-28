@@ -828,64 +828,14 @@ private struct HydrationSummaryCard: View {
 
     private var cardBackground: some View {
         let shape = RoundedRectangle(cornerRadius: 24, style: .continuous)
-        let glowOpacity = colorScheme == .dark ? 0.24 : 0.16
-
+        // Onboarding-style clean opaque card. The summaryCard gradient
+        // (sky → cream) carries the warmth; we add only a single soft border
+        // matching the onboarding's `glassBorder` to define the edge.
         return shape
             .fill(Theme.summaryCard)
             .overlay(
                 shape
-                    .fill(
-                        LinearGradient(
-                            colors: [
-                                Color.white.opacity(colorScheme == .dark ? 0.12 : 0.42),
-                                Color.clear,
-                                Theme.lagoon.opacity(colorScheme == .dark ? 0.08 : 0.12)
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
-            )
-            .overlay(alignment: .topLeading) {
-                Circle()
-                    .fill(
-                        RadialGradient(
-                            colors: [Theme.lagoon.opacity(glowOpacity), .clear],
-                            center: .center,
-                            startRadius: 0,
-                            endRadius: isRegular ? 210 : 150
-                        )
-                    )
-                    .frame(width: isRegular ? 320 : 240, height: isRegular ? 240 : 180)
-                    .offset(x: -80, y: -70)
-            }
-            .overlay(alignment: .bottomTrailing) {
-                Circle()
-                    .fill(
-                        RadialGradient(
-                            colors: [Theme.mint.opacity(glowOpacity * 0.82), .clear],
-                            center: .center,
-                            startRadius: 0,
-                            endRadius: isRegular ? 190 : 140
-                        )
-                    )
-                    .frame(width: isRegular ? 300 : 220, height: isRegular ? 220 : 170)
-                    .offset(x: 70, y: 90)
-            }
-            .overlay(
-                shape
-                    .strokeBorder(
-                        LinearGradient(
-                            colors: [
-                                Color.white.opacity(colorScheme == .dark ? 0.2 : 0.5),
-                                Theme.lagoon.opacity(colorScheme == .dark ? 0.22 : 0.34),
-                                Color.white.opacity(colorScheme == .dark ? 0.08 : 0.2)
-                            ],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        ),
-                        lineWidth: 1.1
-                    )
+                    .stroke(Theme.glassBorder, lineWidth: 1)
             )
     }
 }

@@ -25,13 +25,14 @@ struct LiquidGlassCard<Content: View>: View {
 
         content
             .background(
-                shape
-                    .fill(Theme.card)
-                    .overlay(shape.fill((tintColor ?? Theme.glassAccent).opacity(0.10)))
+                shape.fill(Theme.card)
+            )
+            .overlay(
+                shape.stroke(Theme.glassBorder, lineWidth: 1)
             )
             .opacity(isInteractive ? 1 : 0.98)
-        .clipShape(shape)
-        .shadow(color: Theme.shadowColor.opacity(0.65), radius: 10, x: 0, y: 5)
+            .clipShape(shape)
+            .shadow(color: Theme.shadowColor.opacity(0.5), radius: 14, x: 0, y: 8)
     }
 }
 

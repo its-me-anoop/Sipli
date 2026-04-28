@@ -149,9 +149,10 @@ enum Theme {
         endPoint: .bottom
     )
 
-    /// Clean card surface matching onboarding's `cardSurface` — flat white in
-    /// light mode, deep slate in dark mode. Single-stop gradient so existing
-    /// `LinearGradient` consumers keep their type.
+    /// Clean, opaque card surface matching onboarding's `cardSurface` —
+    /// solid white in light mode, deep slate in dark mode. Both stops of the
+    /// gradient share the same colour so existing `LinearGradient` consumers
+    /// keep their type but the result reads as a flat fill.
     static let card = LinearGradient(
         colors: [
             Color(uiColor: UIColor { traits in
@@ -161,8 +162,8 @@ enum Theme {
             }),
             Color(uiColor: UIColor { traits in
                 traits.userInterfaceStyle == .dark
-                    ? UIColor(red: 0.12, green: 0.15, blue: 0.20, alpha: 1)
-                    : UIColor(red: 0.985, green: 0.980, blue: 0.965, alpha: 1)
+                    ? UIColor(red: 0.14, green: 0.17, blue: 0.24, alpha: 1)
+                    : .white
             })
         ],
         startPoint: .top,
@@ -186,20 +187,20 @@ enum Theme {
         endPoint: .bottomTrailing
     )
 
-    /// Hero/summary card — paper-toned with a soft sky → cream gradient that
-    /// echoes the onboarding's target stage card. Less assertive than the old
-    /// solid-blue summary card so the bottle illustration carries the colour.
+    /// Hero/summary card — opaque sky → cream gradient that echoes the
+    /// onboarding's target stage card. The bottle illustration carries the
+    /// colour, so this stays light and solid (no translucency).
     static let summaryCard = LinearGradient(
         colors: [
             Color(uiColor: UIColor { traits in
                 traits.userInterfaceStyle == .dark
                     ? UIColor(red: 0.08, green: 0.14, blue: 0.22, alpha: 1)
-                    : UIColor(red: 0.910, green: 0.957, blue: 0.984, alpha: 1) // sky cream
+                    : UIColor(red: 0.890, green: 0.945, blue: 0.984, alpha: 1) // sky
             }),
             Color(uiColor: UIColor { traits in
                 traits.userInterfaceStyle == .dark
                     ? UIColor(red: 0.10, green: 0.18, blue: 0.26, alpha: 1)
-                    : UIColor(red: 1.0, green: 0.956, blue: 0.878, alpha: 1)   // sun cream
+                    : UIColor(red: 1.0, green: 0.945, blue: 0.855, alpha: 1)   // cream
             })
         ],
         startPoint: .topLeading,

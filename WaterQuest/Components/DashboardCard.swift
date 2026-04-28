@@ -31,7 +31,11 @@ struct DashboardCard<Content: View>: View {
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .fill(backgroundGradient)
         )
-        .shadow(color: Theme.shadowColor.opacity(0.5), radius: 10, x: 0, y: 5)
+        .overlay(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .stroke(Theme.glassBorder, lineWidth: 1)
+        )
+        .shadow(color: Theme.shadowColor.opacity(0.5), radius: 14, x: 0, y: 8)
     }
 }
 
