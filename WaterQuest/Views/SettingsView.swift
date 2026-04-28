@@ -130,7 +130,7 @@ struct SettingsView: View {
                             .foregroundStyle(.secondary)
                         Spacer()
                         Text("\(Int(store.profile.unitSystem.amountFromKG(store.profile.weightKg))) \(store.profile.unitSystem.bodyWeightUnit)")
-                            .font(.system(.subheadline, design: .rounded).weight(.bold))
+                            .font(Theme.editorialSerif(20))
                             .foregroundStyle(Theme.lagoon)
                             .contentTransition(.numericText())
                     }

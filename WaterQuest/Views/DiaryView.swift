@@ -113,20 +113,26 @@ struct DiaryView: View {
     }
 
     private var daySummary: some View {
-        HStack {
-            VStack(alignment: .leading, spacing: 4) {
+        HStack(alignment: .center) {
+            VStack(alignment: .leading, spacing: 6) {
                 Text(selectedDate, style: .date)
-                    .font(.headline)
+                    .font(Theme.editorialSerif(22))
+                    .foregroundStyle(Theme.ink)
 
                 HStack(spacing: 6) {
-                    Text("Total: \(Formatters.volumeString(ml: dailyTotal, unit: store.profile.unitSystem))")
-                        .font(.subheadline.weight(.semibold))
+                    Text("Total")
+                        .font(Theme.sipliMono(10, weight: .semibold))
+                        .tracking(0.6)
+                        .foregroundStyle(Theme.textSecondary)
+                    Text(Formatters.volumeString(ml: dailyTotal, unit: store.profile.unitSystem))
+                        .font(Theme.editorialSerif(22))
                         .foregroundStyle(Theme.lagoon)
-
                     if goalMet {
                         Label("Goal met", systemImage: "checkmark.circle.fill")
-                            .font(.caption.weight(.bold))
-                            .foregroundStyle(.green)
+                            .font(Theme.sipliMono(10, weight: .semibold))
+                            .tracking(0.6)
+                            .foregroundStyle(Theme.mint)
+                            .padding(.leading, 4)
                     }
                 }
             }
@@ -135,18 +141,22 @@ struct DiaryView: View {
 
             VStack(alignment: .trailing, spacing: 2) {
                 Text("Goal")
-                    .font(.caption2.weight(.bold))
-                    .foregroundStyle(.secondary)
-                    .textCase(.uppercase)
+                    .font(Theme.sipliMono(10, weight: .semibold))
+                    .tracking(0.6)
+                    .foregroundStyle(Theme.textSecondary)
                 Text(Formatters.volumeString(ml: store.dailyGoal.totalML, unit: store.profile.unitSystem))
-                    .font(.subheadline.weight(.heavy))
+                    .font(Theme.editorialSerif(22))
                     .foregroundStyle(Theme.lagoon)
             }
         }
-        .padding(16)
+        .padding(18)
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .fill(Theme.card)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(Theme.glassBorder, lineWidth: 1)
         )
     }
 

@@ -27,14 +27,15 @@ struct EarthDayPledgeView: View {
         NavigationStack {
             ScrollView {
                 VStack(spacing: 24) {
-                    Text("Take the Refill Pledge")
-                        .font(.system(.title, design: .rounded).weight(.bold))
+                    (Text("Take the\n").foregroundStyle(Theme.ink)
+                        + Text("refill pledge.").italic().foregroundStyle(Theme.lagoon))
+                        .font(Theme.editorialSerif(34))
                         .multilineTextAlignment(.center)
                         .padding(.top, 8)
 
                     Text("A small Earth Week commitment. Sipli's refill habit is better for you — and a bit kinder to the planet.")
                         .font(.subheadline)
-                        .foregroundStyle(.secondary)
+                        .foregroundStyle(Theme.textSecondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 16)
 

@@ -244,8 +244,9 @@ struct InsightsView: View {
     private var headerSummary: some View {
         VStack(alignment: .leading, spacing: isRegular ? 16 : 12) {
             HStack(alignment: .center, spacing: 8) {
-                Text("Your hydration trend")
-                    .font(isRegular ? .title2.weight(.semibold) : .title3.weight(.semibold))
+                (Text("Your hydration ").foregroundStyle(Theme.ink)
+                    + Text("trend.").italic().foregroundStyle(Theme.lagoon))
+                    .font(Theme.editorialSerif(isRegular ? 32 : 28))
                 Spacer(minLength: 0)
                 if store.earthDay2026Earned {
                     earthDayBadgePill

@@ -9,18 +9,20 @@ struct DashboardCard<Content: View>: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             if let icon = icon {
-                HStack(spacing: 8) {
+                HStack(spacing: 10) {
                     Image(systemName: icon)
                         .foregroundStyle(Theme.lagoon)
-                        .font(.headline)
-                    Text(title)
-                        .font(.system(.headline, design: .rounded))
-                        .foregroundStyle(.primary)
+                        .font(.body.weight(.semibold))
+                    Text(title.uppercased())
+                        .font(Theme.sipliMono(11, weight: .semibold))
+                        .tracking(1.2)
+                        .foregroundStyle(Theme.textSecondary)
                 }
-            } else {
-                Text(title)
-                    .font(.system(.headline, design: .rounded))
-                    .foregroundStyle(.secondary)
+            } else if !title.isEmpty {
+                Text(title.uppercased())
+                    .font(Theme.sipliMono(11, weight: .semibold))
+                    .tracking(1.2)
+                    .foregroundStyle(Theme.textSecondary)
             }
 
             content

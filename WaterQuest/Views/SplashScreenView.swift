@@ -15,13 +15,15 @@ struct SplashScreenView: View {
 
                 SplashHeroView(isRegular: isRegular, reduceMotion: reduceMotion)
 
-                VStack(spacing: isRegular ? 12 : 8) {
-                    Text("Sipli")
-                        .font(.system(isRegular ? .largeTitle : .title, design: .rounded).weight(.bold))
-                        .kerning(0.3)
-                    Text("Hydration that fits your day")
-                        .font(isRegular ? .title3.weight(.medium) : .subheadline.weight(.medium))
-                        .foregroundStyle(.secondary)
+                VStack(spacing: isRegular ? 14 : 10) {
+                    (Text("Sip ").foregroundStyle(Theme.ink)
+                        + Text("more.").italic().foregroundStyle(Theme.lagoon))
+                        .font(Theme.editorialSerif(isRegular ? 56 : 42))
+                    Text("Hydration that fits your day.")
+                        .font(Theme.sipliMono(isRegular ? 12 : 11, weight: .medium))
+                        .tracking(1.2)
+                        .textCase(.uppercase)
+                        .foregroundStyle(Theme.textSecondary)
                 }
                 .padding(.top, isRegular ? 36 : 26)
 
@@ -31,9 +33,11 @@ struct SplashScreenView: View {
                     ProgressView()
                         .tint(Theme.lagoon)
                         .controlSize(.regular)
-                    Text("Getting things ready...")
-                        .font(isRegular ? .subheadline : .footnote)
-                        .foregroundStyle(.secondary)
+                    Text("Getting things ready")
+                        .font(Theme.sipliMono(11, weight: .medium))
+                        .tracking(0.8)
+                        .textCase(.uppercase)
+                        .foregroundStyle(Theme.textSecondary)
                 }
                 .padding(.bottom, isRegular ? 72 : 56)
             }
