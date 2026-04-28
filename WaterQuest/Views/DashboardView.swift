@@ -796,13 +796,11 @@ private struct HydrationSummaryCard: View {
         .frame(minHeight: isRegular ? 430 : 350)
         .background(cardBackground)
         .shadow(color: Theme.shadowColor.opacity(0.6), radius: 15, x: 0, y: 8)
-        .onPressingChanged { point in
-            if let point {
-                rippleOrigin = point
-                rippleCounter += 1
-            }
-        }
-        .modifier(RippleEffect(at: rippleOrigin, trigger: rippleCounter))
+        // Press-ripple removed: `onPressingChanged` installs a
+        // `DragGesture(minimumDistance: 0)` that intercepts vertical swipes
+        // and prevents the parent ScrollView from scrolling when the touch
+        // begins on the card. Onboarding's small ripple targets aren't
+        // inside a ScrollView so they're unaffected.
         .accessibilityElement(children: .combine)
     }
 

@@ -46,8 +46,19 @@ enum Theme {
     static let sun = Color(red: 1.0, green: 0.698, blue: 0.243)            // #FFB23E
     static let lavender = Color(red: 0.722, green: 0.651, blue: 1.0)       // #B8A6FF
     static let peach = Color(red: 0.96, green: 0.51, blue: 0.35)
-    /// "Ink" — deep navy text/headline color from the onboarding palette.
-    static let ink = Color(red: 0.039, green: 0.102, blue: 0.184)          // #0A1A2F
+    /// "Ink" — primary headline/text color. Deep navy in light mode, warm
+    /// off-white in dark mode so it always contrasts against `Theme.paper`.
+#if os(watchOS)
+    static let ink = Color(red: 0.039, green: 0.102, blue: 0.184)
+#else
+    static let ink = Color(
+        uiColor: UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(red: 0.945, green: 0.953, blue: 0.965, alpha: 1) // off-white
+                : UIColor(red: 0.039, green: 0.102, blue: 0.184, alpha: 1) // #0A1A2F
+        }
+    )
+#endif
     /// Warm off-white paper background — the dominant onboarding surface.
 #if os(watchOS)
     static let paper = Color(red: 0.957, green: 0.945, blue: 0.918)
