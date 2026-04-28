@@ -7,6 +7,9 @@ struct LiquidProgressView: View {
     let isRegular: Bool
     let bottleWidth: CGFloat?
     let bottleHeight: CGFloat?
+    /// When `false`, the centered percentage label and completion star are
+    /// suppressed. Used by onboarding which renders the bottle decoratively.
+    var showProgressLabel: Bool = true
 
     @StateObject private var motionManager = MotionManager()
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -102,20 +105,22 @@ struct LiquidProgressView: View {
                 .scaledToFit()
                 .frame(width: width, height: height)
 
-            VStack(spacing: 0) {
-                Text(Formatters.percentString(clampedProgress))
-                    .font(.system(isRegular ? .largeTitle : .title, design: .rounded).weight(.heavy))
-                    .foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
-                    .contentTransition(.numericText())
-
-                if clampedProgress >= 1.0 {
-                    Image(systemName: "star.fill")
-                        .font(isRegular ? .title3 : .subheadline)
-                        .foregroundStyle(Theme.sun)
-                        .padding(.top, 4)
+            if showProgressLabel {
+                VStack(spacing: 0) {
+                    Text(Formatters.percentString(clampedProgress))
+                        .font(.system(isRegular ? .largeTitle : .title, design: .rounded).weight(.heavy))
+                        .foregroundStyle(.white)
                         .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
-                        .transition(.scale)
+                        .contentTransition(.numericText())
+
+                    if clampedProgress >= 1.0 {
+                        Image(systemName: "star.fill")
+                            .font(isRegular ? .title3 : .subheadline)
+                            .foregroundStyle(Theme.sun)
+                            .padding(.top, 4)
+                            .shadow(color: .black.opacity(0.3), radius: 2, x: 0, y: 1)
+                            .transition(.scale)
+                    }
                 }
             }
         }

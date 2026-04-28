@@ -23,6 +23,16 @@ enum GoalCalculator {
         return GoalBreakdown(baseML: base, weatherAdjustmentML: weatherAdjustment, workoutAdjustmentML: workoutAdjustment, totalML: total)
     }
 
+    /// Goal preview shown during onboarding, before weather/HealthKit data sources are connected.
+    /// Mirrors `dailyGoal(profile:weather:workout:)` minus the weather and workout adjustments —
+    /// those streams only become available after the user grants the relevant permissions
+    /// on the final onboarding step.
+    static func previewDailyGoal(weightKg: Double, activity: ActivityLevel, customGoalML: Double?) -> Double {
+        let computed = weightKg * activity.multiplier
+        let base = customGoalML ?? computed
+        return max(1200, base)
+    }
+
     private static func weatherAdjustmentFor(tempC: Double, humidity: Double) -> Double {
         var adjustment: Double = 0
         switch tempC {

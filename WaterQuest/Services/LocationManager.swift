@@ -8,6 +8,8 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
     @Published var authorizationStatus: CLAuthorizationStatus
     @Published var lastLocation: CLLocation?
 
+    private var pendingAuthContinuation: CheckedContinuation<CLAuthorizationStatus, Never>?
+
     override init() {
         authorizationStatus = manager.authorizationStatus
         super.init()
@@ -17,6 +19,19 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
 
     func requestPermission() {
         manager.requestWhenInUseAuthorization()
+    }
+
+    /// Async wrapper around `requestWhenInUseAuthorization`. Returns immediately
+    /// if the user has already answered the system dialog; otherwise suspends
+    /// until `didChangeAuthorization` fires with a non-`.notDetermined` status.
+    func requestWhenInUseAuthorizationAsync() async -> CLAuthorizationStatus {
+        if authorizationStatus != .notDetermined {
+            return authorizationStatus
+        }
+        return await withCheckedContinuation { (continuation: CheckedContinuation<CLAuthorizationStatus, Never>) in
+            pendingAuthContinuation = continuation
+            manager.requestWhenInUseAuthorization()
+        }
     }
 
     func requestLocation() {
@@ -30,6 +45,10 @@ final class LocationManager: NSObject, ObservableObject, CLLocationManagerDelega
             self.authorizationStatus = status
             if status == .authorizedWhenInUse || status == .authorizedAlways {
                 self.manager.startUpdatingLocation()
+            }
+            if status != .notDetermined, let cont = self.pendingAuthContinuation {
+                self.pendingAuthContinuation = nil
+                cont.resume(returning: status)
             }
         }
     }

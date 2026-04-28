@@ -9,26 +9,32 @@
 /* Begin PBXBuildFile section */
 		00E5359EB56D89B045DDBDF1 /* AddIntakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBC0C7A2F89C0FD52822D48 /* AddIntakeView.swift */; };
 		0252DDA30195EA614A439A3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9FC934C6863AFC8E01D302CE /* Assets.xcassets */; };
-		0A5C95DCB74AE59638E495D3 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98496F0A352BC5A580943E39 /* OnboardingView.swift */; };
 		0A6AF1AF6B3D3222F30C3E85 /* WeatherSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */; };
 		0A98E6835256CBC9D3B2DF65 /* HydrationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */; };
+		0C93F570D7DFBA18FF035984 /* ActivityStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84831A8CDF761270D25F9BE2 /* ActivityStep.swift */; };
 		0E54D9CCCA944AAEB6EA20F8 /* HydrationEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */; };
 		11DFD61DBBED6087CAF037CC /* WeatherClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2DDAD6DD4B924CCA0509D0 /* WeatherClient.swift */; };
 		130C730FC298C86A95B83F02 /* NotificationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A124A12B05E971BF67DE82E5 /* NotificationContext.swift */; };
 		145E47AF20C5FE4874944743 /* WaterQuestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0A71028244F753823101D35 /* WaterQuestTests.swift */; };
 		1DCE9DE6A19E823BA1E5079B /* DashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97414883E4C0F357148B7EC7 /* DashboardCard.swift */; };
+		2478B6682ECF9BC073380F5D /* WeightStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCAC93043D1BF833574E34AC /* WeightStep.swift */; };
 		289CD9C4C7D7FC94DDA3DEB7 /* GoalBreakdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */; };
 		2935FCF5A46AC8630A581FE4 /* Gemini_Generated_Image_15xog715xog715xo.png in Resources */ = {isa = PBXBuildFile; fileRef = C5DD4230940B25D30C9598B4 /* Gemini_Generated_Image_15xog715xog715xo.png */; };
 		2CA08ED2F08EB233538DC4D5 /* LiquidGlassCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E0244F70DCB30BB868A196 /* LiquidGlassCard.swift */; };
+		33176B4699DA09CE6DE815DE /* TargetStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226D661FFE4695FDE7BF0C2F /* TargetStep.swift */; };
 		35CC573F0348943EF21D693D /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F661B4016F8BE1E8DDA5B5 /* HealthKitManager.swift */; };
 		368738D16B3E40D6E50CF1D8 /* StatPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABC282C313B061E1E34EDF7 /* StatPill.swift */; };
 		371AD185C88F6CB932BDEF79 /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26785D44340E5C0A267B325 /* SubscriptionManager.swift */; };
 		3BB230DF2DB8B5BC7C5AEECE /* WaveView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9728B3EA3CEC0654348AC8A3 /* WaveView.swift */; };
+		3EE732F838BF314BAEB04DEB /* OnboardingStateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A29B76655AD8F5DD3EE3B27E /* OnboardingStateTests.swift */; };
 		3F684105CCCD5783655879E4 /* WaterQuestApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = B4AE7C21F7B60BC9212AFC46 /* WaterQuestApp.swift */; };
+		402032D37B9F543CBC410E2F /* OnboardingStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32666279C657FCC433303B6A /* OnboardingStep.swift */; };
+		4226DE4ED2EDCC1399B12C56 /* OnboardingPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74CE0825C3B3CDF22BA05A4C /* OnboardingPalette.swift */; };
 		449C15C42674C41122CC02B6 /* ProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8BDAA9F823F748DDAD26EB /* ProgressRing.swift */; };
 		4E93E1598D092FFCC6C6381F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C158CF127D3436999E3C2B /* RootView.swift */; };
 		524BE8DF8217231DA89BF9FE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CBD2C7DC27199FF61EB613 /* Theme.swift */; };
 		5315257190E860C18C6545B0 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6862392928A13FBD5E45D6E3 /* LocationManager.swift */; };
+		57F94F846C1A4A60E68FF4E3 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5162AEA3445DA53E4A567A99 /* OnboardingView.swift */; };
 		5D5BF32CEAF21645C51E5442 /* GoalCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38731A03D043511C9AAD4C2 /* GoalCalculator.swift */; };
 		6B3494CD2F5249E200D313C3 /* QuickAddWaterIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3494CC2F5249E200D313C3 /* QuickAddWaterIntent.swift */; };
 		6B55F77C2F8F608C006CE606 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE1111111111111111111111 /* WidgetKit.framework */; };
@@ -37,11 +43,13 @@
 		6BBC3B922F4F6AC100F5525A /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 6BBC3B912F4F6AC100F5525A /* AppIcon.icon */; };
 		6BDAF0F22F6375DE009ADC09 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 6BDAF0F12F6375DE009ADC09 /* Products.storekit */; };
 		7077C5CF3469D64E94804983 /* FluidType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A139EF313607077443D4FCFE /* FluidType.swift */; };
+		71068784F139C3C926C0B903 /* DoneStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = B71BF6FC4700645993778AA0 /* DoneStep.swift */; };
 		747A7C4F8A906C71164AB9DE /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */; };
 		75107A8584630E7E2B030165 /* MascotView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ACD53555ACD00A8A78268A7F /* MascotView.swift */; };
 		76BC1045791BD2737D00FCD6 /* NotificationContextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C049D1800E773480DC7E47B /* NotificationContextTests.swift */; };
-		FB22770022DD00FC11FA22B3 /* FluidTypeRankingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE11AA0011AA22BB33CC44DD /* FluidTypeRankingTests.swift */; };
+		78DCF6CB0A493619E0F28E83 /* WelcomeStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 048A92B8C02660676EB65482 /* WelcomeStep.swift */; };
 		7C578D3D8C788EDEDD9F383C /* HydrationAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B57443B7032DDCF70ACB8C /* HydrationAIService.swift */; };
+		80C8743328574E8AC32F38EA /* SipliCTA.swift in Sources */ = {isa = PBXBuildFile; fileRef = E978A95F2A11281369173920 /* SipliCTA.swift */; };
 		83C67F5F3E24629A72299C6E /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37EBA9FC9F1233C2BC105DD /* PersistenceService.swift */; };
 		8CE43E783BB223277701CF7E /* UnitSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032684376DE05B0CC4838664 /* UnitSystem.swift */; };
 		94AF3267A3C90279716F2BE6 /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A8068B4418852446BD78E6 /* MotionManager.swift */; };
@@ -49,12 +57,15 @@
 		A1B2326FF853A75236509F2C /* icon.json in Resources */ = {isa = PBXBuildFile; fileRef = 732CBE184502476DC56921F8 /* icon.json */; };
 		A543E5598AAD6E7D7CD5164C /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 161A82CD61225A1F302ECA9D /* DateExtensions.swift */; };
 		AB92FFFB14A831BB3B5FB42A /* NotificationCategoriesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4A8703E51FB5E078BD00AB /* NotificationCategoriesTests.swift */; };
+		ADB3F54617F84087FCD95972 /* AnswerChipStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B778ABD25FE0AC8D415F3B6C /* AnswerChipStack.swift */; };
 		B45B8AFC80046E64CEA7EE18 /* UserProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50CF0F6325F9C80BFB71AA0D /* UserProfile.swift */; };
 		B67E99532D94983258FFDC94 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 39EF82B8B03A482B4BC8CBF9 /* LaunchScreen.storyboard */; };
 		BBBF0A2E700E876678D8DA69 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FD0B42119D7BD312FCDAF766 /* SettingsView.swift */; };
 		C0AC658494F0FF61381C286D /* InsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EB90E806138FFE1C09E7187A /* InsightsView.swift */; };
 		C3D4E5F6A7B8C9D0E1F2A3B4 /* Ripple.metal in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6A7B8C9D0E1F2 /* Ripple.metal */; };
 		C4B819181FF00CD089496479 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D58355784786E63DFFB9EC4 /* Haptics.swift */; };
+		C517CAF66856A9661171AF89 /* ScheduleStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78D82D72BE04D7EA2959A3A0 /* ScheduleStep.swift */; };
+		C5B7F7922B231598B6FED729 /* SipliBottle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C470DB38C8A43150913B8CE /* SipliBottle.swift */; };
 		CAA880E64AF96B5C0988D2A3 /* WorkoutSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE15D5810B84C7C96E0EA4C /* WorkoutSummary.swift */; };
 		CC1111111111111111111111 /* SipliWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1111111111111111111111 /* SipliWidget.swift */; };
 		CC2222222222222222222222 /* WidgetDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3333333333333333333333 /* WidgetDataProvider.swift */; };
@@ -79,9 +90,11 @@
 		D1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift */; };
 		D4E5F6A7B8C9D0E1F2A3B4C5 /* RippleEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7B8C9D0E1F2A3 /* RippleEffect.swift */; };
 		D6E8A4F1B37C920E5D1A8F63 /* PreviewEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F3E9B2C4D61805FA93B1E2 /* PreviewEnvironment.swift */; };
+		DD40106D69AA7DD6CBF3F356 /* NameStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD8EC9497A17C7431EBD5DB /* NameStep.swift */; };
 		E054558C7B7CF349F6CDD709 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE848C59D9014D3ABE6E04BE /* SplashScreenView.swift */; };
 		E27FB3C46FDAA80AD7E43C6F /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F021A59BB7CB33328B5ABBC4 /* Formatters.swift */; };
 		E367CAB1741850BAFCE4F3F9 /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B9CF2D397867B06457E11FA /* PrimaryButton.swift */; };
+		E4C51058218BC12CB9F566C8 /* NotificationsStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A662F7C3476A0C51044664F /* NotificationsStep.swift */; };
 		E5EDB875107A7CBE67F2F031 /* LiquidProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C07CD814951765EE1A1499 /* LiquidProgressView.swift */; };
 		EB9033481146A1C9561176DB /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2126EAEDD87BD49B24C7BE2 /* MainTabView.swift */; };
 		ED01000000000000000001 /* EarthDayBannerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED01000000000000000002 /* EarthDayBannerCard.swift */; };
@@ -93,7 +106,9 @@
 		EE3333333333333333333333 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE1111111111111111111111 /* WidgetKit.framework */; };
 		EE4444444444444444444444 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE2222222222222222222222 /* SwiftUI.framework */; };
 		F61E51CCFB80BD3F264454D4 /* NotificationMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D8C127CF4F113AB2D5DB40D /* NotificationMessageTests.swift */; };
+		F9645386F9E847E3933BD025 /* OnboardingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA294C8DAE1E1B8B16805C2F /* OnboardingState.swift */; };
 		F9760161C65BFA2368DB8094 /* DashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD7043107E62B2C04F4C58EB /* DashboardView.swift */; };
+		FB22770022DD00FC11FA22B3 /* FluidTypeRankingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE11AA0011AA22BB33CC44DD /* FluidTypeRankingTests.swift */; };
 		FF8888888888888888888888 /* SipliWidget.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = AA9999999999999999999999 /* SipliWidget.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		PS001000000000000000002 /* PhoneSessionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = PS001000000000000000001 /* PhoneSessionManager.swift */; };
 		WA0001000000000000000001 /* SipliWatchApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA0001000000000000000002 /* SipliWatchApp.swift */; };
@@ -209,13 +224,16 @@
 
 /* Begin PBXFileReference section */
 		032684376DE05B0CC4838664 /* UnitSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitSystem.swift; sourceTree = "<group>"; };
+		048A92B8C02660676EB65482 /* WelcomeStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WelcomeStep.swift; sourceTree = "<group>"; };
 		161A82CD61225A1F302ECA9D /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensions.swift; sourceTree = "<group>"; };
 		1BD898210B2BA8EE347F72F4 /* Sipli.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sipli.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C049D1800E773480DC7E47B /* NotificationContextTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationContextTests.swift; sourceTree = "<group>"; };
-		FE11AA0011AA22BB33CC44DD /* FluidTypeRankingTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FluidTypeRankingTests.swift; sourceTree = "<group>"; };
+		1FD8EC9497A17C7431EBD5DB /* NameStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NameStep.swift; sourceTree = "<group>"; };
+		226D661FFE4695FDE7BF0C2F /* TargetStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TargetStep.swift; sourceTree = "<group>"; };
 		22C158CF127D3436999E3C2B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
 		2B4A8703E51FB5E078BD00AB /* NotificationCategoriesTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationCategoriesTests.swift; sourceTree = "<group>"; };
 		31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationEntry.swift; sourceTree = "<group>"; };
+		32666279C657FCC433303B6A /* OnboardingStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingStep.swift; sourceTree = "<group>"; };
 		32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationStore.swift; sourceTree = "<group>"; };
 		39EF82B8B03A482B4BC8CBF9 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3ABC282C313B061E1E34EDF7 /* StatPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatPill.swift; sourceTree = "<group>"; };
@@ -224,26 +242,31 @@
 		42E0244F70DCB30BB868A196 /* LiquidGlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassCard.swift; sourceTree = "<group>"; };
 		4B013DED6E9276AA1DBE33BC /* WaterQuest.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WaterQuest.entitlements; sourceTree = "<group>"; };
 		50CF0F6325F9C80BFB71AA0D /* UserProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserProfile.swift; sourceTree = "<group>"; };
+		5162AEA3445DA53E4A567A99 /* OnboardingView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		55B57443B7032DDCF70ACB8C /* HydrationAIService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationAIService.swift; sourceTree = "<group>"; };
 		59DFB425E8198F6C001CB5A8 /* WaterQuestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WaterQuestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E73BC8B42AADA53E70C6538 /* NotificationCategories.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationCategories.swift; sourceTree = "<group>"; };
 		63F661B4016F8BE1E8DDA5B5 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
 		6862392928A13FBD5E45D6E3 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		69F362557BEECECFAA26285A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6A662F7C3476A0C51044664F /* NotificationsStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationsStep.swift; sourceTree = "<group>"; };
 		6B3494CC2F5249E200D313C3 /* QuickAddWaterIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddWaterIntent.swift; sourceTree = "<group>"; };
 		6B55F77B2F8F608C006CE606 /* SipliWatchWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SipliWatchWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		6BBC3B912F4F6AC100F5525A /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		6BDAF0F12F6375DE009ADC09 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		6D8C127CF4F113AB2D5DB40D /* NotificationMessageTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationMessageTests.swift; sourceTree = "<group>"; };
 		732CBE184502476DC56921F8 /* icon.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = icon.json; sourceTree = "<group>"; };
+		74CE0825C3B3CDF22BA05A4C /* OnboardingPalette.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingPalette.swift; sourceTree = "<group>"; };
+		78D82D72BE04D7EA2959A3A0 /* ScheduleStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScheduleStep.swift; sourceTree = "<group>"; };
 		7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSnapshot.swift; sourceTree = "<group>"; };
 		7B8BDAA9F823F748DDAD26EB /* ProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRing.swift; sourceTree = "<group>"; };
+		7C470DB38C8A43150913B8CE /* SipliBottle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SipliBottle.swift; sourceTree = "<group>"; };
+		84831A8CDF761270D25F9BE2 /* ActivityStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ActivityStep.swift; sourceTree = "<group>"; };
 		85C07CD814951765EE1A1499 /* LiquidProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidProgressView.swift; sourceTree = "<group>"; };
 		8B9CF2D397867B06457E11FA /* PrimaryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrimaryButton.swift; sourceTree = "<group>"; };
 		8C2DDAD6DD4B924CCA0509D0 /* WeatherClient.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherClient.swift; sourceTree = "<group>"; };
 		9728B3EA3CEC0654348AC8A3 /* WaveView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaveView.swift; sourceTree = "<group>"; };
 		97414883E4C0F357148B7EC7 /* DashboardCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardCard.swift; sourceTree = "<group>"; };
-		98496F0A352BC5A580943E39 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
 		9FBC0C7A2F89C0FD52822D48 /* AddIntakeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddIntakeView.swift; sourceTree = "<group>"; };
 		9FC934C6863AFC8E01D302CE /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A0A71028244F753823101D35 /* WaterQuestTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WaterQuestTests.swift; sourceTree = "<group>"; };
@@ -251,6 +274,7 @@
 		A139EF313607077443D4FCFE /* FluidType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FluidType.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A7B8C9D0E1F2 /* Ripple.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Ripple.metal; sourceTree = "<group>"; };
+		A29B76655AD8F5DD3EE3B27E /* OnboardingStateTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingStateTests.swift; sourceTree = "<group>"; };
 		A37EBA9FC9F1233C2BC105DD /* PersistenceService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceService.swift; sourceTree = "<group>"; };
 		A7F3E9B2C4D61805FA93B1E2 /* PreviewEnvironment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PreviewEnvironment.swift; sourceTree = "<group>"; };
 		AA1111111111111111111111 /* SipliWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SipliWidget.swift; sourceTree = "<group>"; };
@@ -268,12 +292,16 @@
 		B26785D44340E5C0A267B325 /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
 		B2C3D4E5F6A7B8C9D0E1F2A3 /* RippleEffect.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RippleEffect.swift; sourceTree = "<group>"; };
 		B4AE7C21F7B60BC9212AFC46 /* WaterQuestApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WaterQuestApp.swift; sourceTree = "<group>"; };
+		B71BF6FC4700645993778AA0 /* DoneStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DoneStep.swift; sourceTree = "<group>"; };
+		B778ABD25FE0AC8D415F3B6C /* AnswerChipStack.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AnswerChipStack.swift; sourceTree = "<group>"; };
 		B9CBD2C7DC27199FF61EB613 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
 		BD7043107E62B2C04F4C58EB /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		C5DD4230940B25D30C9598B4 /* Gemini_Generated_Image_15xog715xog715xo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Gemini_Generated_Image_15xog715xog715xo.png; sourceTree = "<group>"; };
+		DA294C8DAE1E1B8B16805C2F /* OnboardingState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingState.swift; sourceTree = "<group>"; };
 		E2B3C4D5F6071829A3B4C5D6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E4A8068B4418852446BD78E6 /* MotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
+		E978A95F2A11281369173920 /* SipliCTA.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SipliCTA.swift; sourceTree = "<group>"; };
 		EB90E806138FFE1C09E7187A /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
 		ED01000000000000000002 /* EarthDayBannerCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthDayBannerCard.swift; sourceTree = "<group>"; };
 		ED02000000000000000002 /* EarthDayEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthDayEvent.swift; sourceTree = "<group>"; };
@@ -285,7 +313,9 @@
 		F021A59BB7CB33328B5ABBC4 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
 		F38731A03D043511C9AAD4C2 /* GoalCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalCalculator.swift; sourceTree = "<group>"; };
 		FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GoalBreakdown.swift; sourceTree = "<group>"; };
+		FCAC93043D1BF833574E34AC /* WeightStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WeightStep.swift; sourceTree = "<group>"; };
 		FD0B42119D7BD312FCDAF766 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		FE11AA0011AA22BB33CC44DD /* FluidTypeRankingTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FluidTypeRankingTests.swift; sourceTree = "<group>"; };
 		FE848C59D9014D3ABE6E04BE /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 		PS001000000000000000001 /* PhoneSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhoneSessionManager.swift; sourceTree = "<group>"; };
 		WA0001000000000000000002 /* SipliWatchApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SipliWatchApp.swift; sourceTree = "<group>"; };
@@ -402,6 +432,18 @@
 			path = WaterQuest;
 			sourceTree = "<group>";
 		};
+		232A97B7F9CE6E41E36DF632 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				DA294C8DAE1E1B8B16805C2F /* OnboardingState.swift */,
+				32666279C657FCC433303B6A /* OnboardingStep.swift */,
+				BD6FDC6A5DD24EE7DF2CAF8E /* Components */,
+				5A3A920DC8845112221718EE /* Steps */,
+			);
+			name = Onboarding;
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
 		44EAA4E4ABDD288F8271E4DF /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -416,6 +458,22 @@
 				A124A12B05E971BF67DE82E5 /* NotificationContext.swift */,
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		5A3A920DC8845112221718EE /* Steps */ = {
+			isa = PBXGroup;
+			children = (
+				048A92B8C02660676EB65482 /* WelcomeStep.swift */,
+				1FD8EC9497A17C7431EBD5DB /* NameStep.swift */,
+				6A662F7C3476A0C51044664F /* NotificationsStep.swift */,
+				84831A8CDF761270D25F9BE2 /* ActivityStep.swift */,
+				B71BF6FC4700645993778AA0 /* DoneStep.swift */,
+				FCAC93043D1BF833574E34AC /* WeightStep.swift */,
+				78D82D72BE04D7EA2959A3A0 /* ScheduleStep.swift */,
+				226D661FFE4695FDE7BF0C2F /* TargetStep.swift */,
+			);
+			name = Steps;
+			path = Steps;
 			sourceTree = "<group>";
 		};
 		6676ED6B664E8F56F653FFFF /* AppIcon.icon */ = {
@@ -475,6 +533,7 @@
 				6D8C127CF4F113AB2D5DB40D /* NotificationMessageTests.swift */,
 				2B4A8703E51FB5E078BD00AB /* NotificationCategoriesTests.swift */,
 				FE11AA0011AA22BB33CC44DD /* FluidTypeRankingTests.swift */,
+				A29B76655AD8F5DD3EE3B27E /* OnboardingStateTests.swift */,
 			);
 			name = WaterQuestTests;
 			path = WaterQuestTests;
@@ -511,6 +570,18 @@
 			path = Assets;
 			sourceTree = "<group>";
 		};
+		BD6FDC6A5DD24EE7DF2CAF8E /* Components */ = {
+			isa = PBXGroup;
+			children = (
+				74CE0825C3B3CDF22BA05A4C /* OnboardingPalette.swift */,
+				7C470DB38C8A43150913B8CE /* SipliBottle.swift */,
+				B778ABD25FE0AC8D415F3B6C /* AnswerChipStack.swift */,
+				E978A95F2A11281369173920 /* SipliCTA.swift */,
+			);
+			name = Components;
+			path = Components;
+			sourceTree = "<group>";
+		};
 		D5CFBAA6834C033BD13BB3DF /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -521,10 +592,11 @@
 				ED03000000000000000002 /* EarthDayPledgeView.swift */,
 				ED04000000000000000002 /* EarthInfoView.swift */,
 				B2126EAEDD87BD49B24C7BE2 /* MainTabView.swift */,
-				98496F0A352BC5A580943E39 /* OnboardingView.swift */,
 				22C158CF127D3436999E3C2B /* RootView.swift */,
 				FD0B42119D7BD312FCDAF766 /* SettingsView.swift */,
 				FE848C59D9014D3ABE6E04BE /* SplashScreenView.swift */,
+				232A97B7F9CE6E41E36DF632 /* Onboarding */,
+				5162AEA3445DA53E4A567A99 /* OnboardingView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -882,7 +954,6 @@
 				75107A8584630E7E2B030165 /* MascotView.swift in Sources */,
 				94AF3267A3C90279716F2BE6 /* MotionManager.swift in Sources */,
 				747A7C4F8A906C71164AB9DE /* NotificationScheduler.swift in Sources */,
-				0A5C95DCB74AE59638E495D3 /* OnboardingView.swift in Sources */,
 				CCD4444444444444444444D4 /* PersistedState.swift in Sources */,
 				PS001000000000000000002 /* PhoneSessionManager.swift in Sources */,
 				83C67F5F3E24629A72299C6E /* PersistenceService.swift in Sources */,
@@ -907,6 +978,21 @@
 				130C730FC298C86A95B83F02 /* NotificationContext.swift in Sources */,
 				EDBE22FF0F30A88A5820362A /* NotificationCategories.swift in Sources */,
 				979E86A905E1BA27F04E7E13 /* NotificationHandler.swift in Sources */,
+				F9645386F9E847E3933BD025 /* OnboardingState.swift in Sources */,
+				402032D37B9F543CBC410E2F /* OnboardingStep.swift in Sources */,
+				78DCF6CB0A493619E0F28E83 /* WelcomeStep.swift in Sources */,
+				4226DE4ED2EDCC1399B12C56 /* OnboardingPalette.swift in Sources */,
+				C5B7F7922B231598B6FED729 /* SipliBottle.swift in Sources */,
+				ADB3F54617F84087FCD95972 /* AnswerChipStack.swift in Sources */,
+				80C8743328574E8AC32F38EA /* SipliCTA.swift in Sources */,
+				DD40106D69AA7DD6CBF3F356 /* NameStep.swift in Sources */,
+				E4C51058218BC12CB9F566C8 /* NotificationsStep.swift in Sources */,
+				0C93F570D7DFBA18FF035984 /* ActivityStep.swift in Sources */,
+				71068784F139C3C926C0B903 /* DoneStep.swift in Sources */,
+				2478B6682ECF9BC073380F5D /* WeightStep.swift in Sources */,
+				C517CAF66856A9661171AF89 /* ScheduleStep.swift in Sources */,
+				33176B4699DA09CE6DE815DE /* TargetStep.swift in Sources */,
+				57F94F846C1A4A60E68FF4E3 /* OnboardingView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -919,6 +1005,7 @@
 				F61E51CCFB80BD3F264454D4 /* NotificationMessageTests.swift in Sources */,
 				AB92FFFB14A831BB3B5FB42A /* NotificationCategoriesTests.swift in Sources */,
 				FB22770022DD00FC11FA22B3 /* FluidTypeRankingTests.swift in Sources */,
+				3EE732F838BF314BAEB04DEB /* OnboardingStateTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
