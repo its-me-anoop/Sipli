@@ -2,11 +2,44 @@ import SwiftUI
 
 struct TargetStep: View {
     @Binding var state: OnboardingState
+    @EnvironmentObject private var weather: WeatherClient
+    @EnvironmentObject private var locationManager: LocationManager
+    @EnvironmentObject private var subscriptionManager: SubscriptionManager
     let answers: [OnboardingAnswerChip]
     let onContinue: () -> Void
     let onBack: () -> Void
 
+    private var hasWeatherPremium: Bool {
+        subscriptionManager.hasAccess(to: .weatherGoals)
+    }
+
     private var displayedML: Double { state.displayedTargetML }
+
+    /// Goal with weather + (always-zero here) workout adjustments applied via
+    /// the canonical GoalCalculator. Only meaningful when the user has the
+    /// weather toggle on AND we have a snapshot.
+    private var weatherAdjustedGoal: GoalBreakdown? {
+        guard state.prefersWeatherGoal, let snapshot = weather.currentWeather else { return nil }
+        let profile = UserProfile(
+            name: state.name,
+            unitSystem: state.unitSystem,
+            weightKg: state.weightKg,
+            activityLevel: state.activityLevel,
+            customGoalML: state.customGoalML,
+            remindersEnabled: true,
+            wakeMinutes: state.wakeMinutes,
+            sleepMinutes: state.sleepMinutes,
+            prefersWeatherGoal: true,
+            prefersHealthKit: false,
+            smartRemindersEnabled: false
+        )
+        return GoalCalculator.dailyGoal(profile: profile, weather: snapshot, workout: nil)
+    }
+
+    private var canFetchWeather: Bool {
+        let status = locationManager.authorizationStatus
+        return status == .authorizedWhenInUse || status == .authorizedAlways
+    }
 
     private var displayedFillFraction: Double {
         let v = displayedML
@@ -48,7 +81,23 @@ struct TargetStep: View {
                     weatherToggle
                         .padding(.horizontal, 24)
                         .padding(.top, 10)
-                        .padding(.bottom, 16)
+
+                    if state.prefersWeatherGoal && hasWeatherPremium {
+                        weatherAdjustmentCard
+                            .padding(.horizontal, 24)
+                            .padding(.top, 10)
+                            .transition(.opacity.combined(with: .move(edge: .top)))
+                    }
+
+                    Color.clear.frame(height: 16) // bottom breathing room
+                }
+            }
+            .onChange(of: state.prefersWeatherGoal) { _, isOn in
+                if isOn && hasWeatherPremium { fetchWeatherIfPossible() }
+            }
+            .task { @MainActor in
+                if state.prefersWeatherGoal && hasWeatherPremium {
+                    fetchWeatherIfPossible()
                 }
             }
             .animation(.spring(response: 0.45, dampingFraction: 0.82), value: state.customGoalEnabled)
@@ -197,6 +246,151 @@ struct TargetStep: View {
         )
     }
 
+    // MARK: - Weather adjustment readout
+
+    private var weatherAdjustmentCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            switch weather.status {
+            case .idle where weather.currentWeather != nil:
+                if let snapshot = weather.currentWeather, let breakdown = weatherAdjustedGoal {
+                    weatherReadout(snapshot: snapshot, breakdown: breakdown)
+                }
+            case .loading:
+                weatherLoading
+            case .failed:
+                weatherFailed
+            case .idle where !canFetchWeather:
+                // Permission still pending or denied — surface that quietly.
+                weatherPermissionPending
+            default:
+                EmptyView()
+            }
+
+            // Apple Weather attribution — required by WeatherKit terms.
+            Link(destination: Legal.weatherAttributionURL) {
+                HStack(spacing: 4) {
+                    Image(systemName: "applelogo")
+                        .font(.system(size: 9, weight: .medium))
+                    Text("Weather")
+                        .font(.sipliMono(10, weight: .medium))
+                        .tracking(0.6)
+                    Spacer()
+                    Image(systemName: "arrow.up.right")
+                        .font(.system(size: 9, weight: .medium))
+                }
+                .foregroundStyle(OnboardingPalette.ink3)
+                .padding(.top, 4)
+            }
+            .accessibilityLabel("Weather data legal attribution")
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 14)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(Color.white)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .stroke(OnboardingPalette.ink.opacity(0.06), lineWidth: 1)
+        )
+    }
+
+    private func weatherReadout(snapshot: WeatherSnapshot, breakdown: GoalBreakdown) -> some View {
+        let tempLabel = Formatters.temperatureString(celsius: snapshot.temperatureC, unit: state.unitSystem)
+        let adjustML = breakdown.weatherAdjustmentML
+        let totalML = breakdown.totalML
+
+        return VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .center, spacing: 10) {
+                Image(systemName: WeatherSnapshot.sfSymbol(for: snapshot.conditionKey))
+                    .font(.system(size: 18, weight: .semibold))
+                    .foregroundStyle(OnboardingPalette.sun)
+                    .frame(width: 28)
+                VStack(alignment: .leading, spacing: 1) {
+                    Text("\(snapshot.condition) · \(tempLabel)")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundStyle(OnboardingPalette.ink)
+                    Text(adjustmentSubtitle(adjustML: adjustML))
+                        .font(.system(size: 12))
+                        .foregroundStyle(OnboardingPalette.ink3)
+                }
+                Spacer()
+            }
+
+            HStack(alignment: .lastTextBaseline) {
+                Text("New target")
+                    .font(.system(size: 12))
+                    .foregroundStyle(OnboardingPalette.ink3)
+                Spacer()
+                Text(formatVolume(ml: totalML))
+                    .font(.editorialSerif(28, weight: .regular))
+                    .foregroundStyle(OnboardingPalette.water)
+                    .contentTransition(.numericText())
+            }
+        }
+    }
+
+    private var weatherLoading: some View {
+        HStack(spacing: 10) {
+            ProgressView().tint(OnboardingPalette.water)
+            Text("Checking your local weather…")
+                .font(.system(size: 13))
+                .foregroundStyle(OnboardingPalette.ink3)
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var weatherFailed: some View {
+        HStack(spacing: 10) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .foregroundStyle(OnboardingPalette.coral)
+            VStack(alignment: .leading, spacing: 2) {
+                Text("Couldn't reach Weather right now")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(OnboardingPalette.ink)
+                Text("We'll retry once you're back online.")
+                    .font(.system(size: 12))
+                    .foregroundStyle(OnboardingPalette.ink3)
+            }
+            Spacer()
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private var weatherPermissionPending: some View {
+        Text("Allow location access to see today's adjustment.")
+            .font(.system(size: 12))
+            .foregroundStyle(OnboardingPalette.ink3)
+            .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func adjustmentSubtitle(adjustML: Double) -> String {
+        if adjustML > 0 {
+            return "+\(Int(adjustML)) ml today"
+        } else if adjustML < 0 {
+            return "\(Int(adjustML)) ml today"
+        }
+        return "No adjustment today"
+    }
+
+    private func formatVolume(ml: Double) -> String {
+        switch state.unitSystem {
+        case .metric:
+            return String(format: "%.1f L", ml / 1000.0)
+        case .imperial:
+            let oz = state.unitSystem.amount(fromML: ml)
+            return "\(Int(oz)) oz"
+        }
+    }
+
+    private func fetchWeatherIfPossible() {
+        Task { @MainActor in
+            await weather.refresh()
+        }
+    }
+
     private var weatherToggle: some View {
         HStack(spacing: 12) {
             ZStack {
@@ -216,10 +410,25 @@ struct TargetStep: View {
                     .foregroundStyle(OnboardingPalette.ink3)
             }
             Spacer()
-            SipliToggle(isOn: $state.prefersWeatherGoal, tint: OnboardingPalette.water)
+            PremiumGatedToggle(
+                isOn: $state.prefersWeatherGoal,
+                isPremium: hasWeatherPremium,
+                onPaywall: {
+                    Haptics.selection()
+                    subscriptionManager.presentPaywall(for: .weatherGoals)
+                }
+            )
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            if !hasWeatherPremium {
+                Haptics.selection()
+                subscriptionManager.presentPaywall(for: .weatherGoals)
+            }
+        }
+        .accessibilityHint(hasWeatherPremium ? "" : "Premium feature. Opens upgrade screen.")
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(Color.white)

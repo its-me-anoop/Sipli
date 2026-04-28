@@ -2,9 +2,14 @@ import SwiftUI
 
 struct ActivityStep: View {
     @Binding var state: OnboardingState
+    @EnvironmentObject private var subscriptionManager: SubscriptionManager
     let answers: [OnboardingAnswerChip]
     let onContinue: () -> Void
     let onBack: () -> Void
+
+    private var hasHealthKitPremium: Bool {
+        subscriptionManager.hasAccess(to: .healthKitSync)
+    }
 
     private struct Option: Identifiable {
         let id: ActivityLevel
@@ -162,10 +167,27 @@ struct ActivityStep: View {
                     .foregroundStyle(OnboardingPalette.ink3)
             }
             Spacer()
-            SipliToggle(isOn: $state.prefersHealthKit, tint: OnboardingPalette.water)
+            PremiumGatedToggle(
+                isOn: $state.prefersHealthKit,
+                isPremium: hasHealthKitPremium,
+                onPaywall: {
+                    Haptics.selection()
+                    subscriptionManager.presentPaywall(for: .healthKitSync)
+                }
+            )
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
+        .contentShape(Rectangle())
+        .onTapGesture {
+            // Whole-row tap target opens the paywall when locked, mirroring
+            // the kit-card pattern from the design.
+            if !hasHealthKitPremium {
+                Haptics.selection()
+                subscriptionManager.presentPaywall(for: .healthKitSync)
+            }
+        }
+        .accessibilityHint(hasHealthKitPremium ? "" : "Premium feature. Opens upgrade screen.")
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(OnboardingPalette.coral.opacity(0.08))

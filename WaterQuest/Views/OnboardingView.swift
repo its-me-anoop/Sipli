@@ -11,6 +11,7 @@ struct OnboardingView: View {
     @EnvironmentObject private var notifier: NotificationScheduler
     @EnvironmentObject private var locationManager: LocationManager
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
+    @EnvironmentObject private var weather: WeatherClient
 
     var onComplete: () -> Void
 
@@ -124,10 +125,12 @@ struct OnboardingView: View {
         // means we shouldn't read Health data going forward.
         guard newValue, !oldValue else { return }
 
-        // Premium-locked: roll back; the user will see the paywall after
-        // onboarding completes (App-Store-friendly — no mid-onboard paywall).
+        // Non-premium users see a paywall pill instead of this toggle, so
+        // direct user taps can't reach this branch. Roll back defensively
+        // (in case state is set programmatically) and surface the paywall.
         guard subscriptionManager.hasAccess(to: .healthKitSync) else {
             DispatchQueue.main.async { state.prefersHealthKit = false }
+            subscriptionManager.presentPaywall(for: .healthKitSync)
             return
         }
 
@@ -152,14 +155,23 @@ struct OnboardingView: View {
 
     private func handleWeatherToggle(was oldValue: Bool, now newValue: Bool) {
         guard newValue, !oldValue else { return }
+        // Non-premium users see a paywall pill in place of this toggle, so
+        // hitting this branch from a tap is impossible. Defensively roll the
+        // flag back if it's set programmatically (e.g. from persisted state)
+        // and surface the paywall.
         guard subscriptionManager.hasAccess(to: .weatherGoals) else {
             DispatchQueue.main.async { state.prefersWeatherGoal = false }
+            subscriptionManager.presentPaywall(for: .weatherGoals)
             return
         }
-        guard !hasRequestedLocation else { return }
-        hasRequestedLocation = true
-        Task {
-            _ = await locationManager.requestWhenInUseAuthorizationAsync()
+        Task { @MainActor in
+            let status = await locationManager.requestWhenInUseAuthorizationAsync()
+            hasRequestedLocation = true
+            if status == .authorizedWhenInUse || status == .authorizedAlways {
+                await weather.refresh()
+            } else {
+                Haptics.warning()
+            }
         }
     }
 
