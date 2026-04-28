@@ -136,33 +136,30 @@ struct NameStep: View {
     }
 
     private var userInputBubble: some View {
-        HStack(spacing: 6) {
-            TextField("", text: $state.name, prompt: Text("Type your name…").foregroundColor(.white.opacity(0.45)))
-                .focused($nameFieldFocused)
-                .textInputAutocapitalization(.words)
-                .disableAutocorrection(true)
-                .submitLabel(.done)
-                .font(.system(size: 18, weight: .medium))
-                .foregroundStyle(OnboardingPalette.paper)
-                .tint(OnboardingPalette.sun)
-                .accentColor(OnboardingPalette.sun)
-                .onSubmit {
-                    if state.canContinueFromName { onContinue() }
-                }
-        }
-        .padding(.horizontal, 18)
-        .padding(.vertical, 14)
-        .frame(minWidth: 200, alignment: .leading)
-        .background(
-            UnevenRoundedRectangle(
-                topLeadingRadius: 22,
-                bottomLeadingRadius: 22,
-                bottomTrailingRadius: 6,
-                topTrailingRadius: 22,
-                style: .continuous
+        TextField("", text: $state.name, prompt: Text("Type your name…").foregroundColor(.white.opacity(0.45)))
+            .focused($nameFieldFocused)
+            .textInputAutocapitalization(.words)
+            .disableAutocorrection(true)
+            .submitLabel(.done)
+            .font(.system(size: 18, weight: .medium))
+            .foregroundStyle(OnboardingPalette.paper)
+            .tint(OnboardingPalette.sun)
+            .onSubmit {
+                if state.canContinueFromName { onContinue() }
+            }
+            .padding(.horizontal, 18)
+            .padding(.vertical, 14)
+            .frame(maxWidth: 280, alignment: .leading)
+            .background(
+                UnevenRoundedRectangle(
+                    topLeadingRadius: 22,
+                    bottomLeadingRadius: 22,
+                    bottomTrailingRadius: 6,
+                    topTrailingRadius: 22,
+                    style: .continuous
+                )
+                .fill(OnboardingPalette.ink)
             )
-            .fill(OnboardingPalette.ink)
-        )
-        .shadow(color: OnboardingPalette.ink.opacity(0.30), radius: 18, x: 0, y: 6)
+            .shadow(color: OnboardingPalette.ink.opacity(0.30), radius: 18, x: 0, y: 6)
     }
 }
