@@ -741,16 +741,17 @@ private struct HydrationSummaryCard: View {
     var body: some View {
         HStack(alignment: .center, spacing: isRegular ? 28 : 16) {
             VStack(alignment: .leading, spacing: isRegular ? 8 : 6) {
-                Text(greeting)
-                    .font(.system(isRegular ? .title : .title2, design: .rounded).weight(.bold))
-                    .foregroundStyle(Theme.textPrimary)
+                editorialGreeting
+                    .foregroundStyle(Theme.ink)
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(Formatters.volumeString(ml: todayTotalML, unit: unitSystem))
-                        .font(.system(isRegular ? .title2 : .title3, design: .rounded).weight(.heavy))
+                        .font(Theme.editorialSerif(isRegular ? 36 : 32))
                         .foregroundStyle(Theme.lagoon)
+                        .contentTransition(.numericText())
                     Text("of \(Formatters.volumeString(ml: goalTotalML, unit: unitSystem)) today")
-                        .font(.subheadline)
+                        .font(Theme.sipliMono(11, weight: .medium))
+                        .tracking(0.6)
                         .foregroundStyle(Theme.textSecondary)
                 }
                 .padding(.top, 4)
@@ -803,6 +804,26 @@ private struct HydrationSummaryCard: View {
         }
         .modifier(RippleEffect(at: rippleOrigin, trigger: rippleCounter))
         .accessibilityElement(children: .combine)
+    }
+
+    /// Splits the greeting into "[lead], [name]." with the name set in the
+    /// onboarding's italic-water-blue accent — matches the "mean it." pattern.
+    @ViewBuilder
+    private var editorialGreeting: some View {
+        let parts = greeting.split(separator: ",", maxSplits: 1).map(String.init)
+        let baseFont = Theme.editorialSerif(isRegular ? 38 : 32)
+        if parts.count == 2 {
+            (Text(parts[0] + ",").foregroundStyle(Theme.ink)
+                + Text(parts[1])
+                    .italic()
+                    .foregroundStyle(Theme.lagoon))
+                .font(baseFont)
+                .lineSpacing(-2)
+        } else {
+            Text(greeting)
+                .font(baseFont)
+                .foregroundStyle(Theme.ink)
+        }
     }
 
     private var cardBackground: some View {

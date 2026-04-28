@@ -27,6 +27,27 @@ struct WaterQuestApp: App {
         let location = LocationManager()
         _locationManager = StateObject(wrappedValue: location)
         _weatherClient = StateObject(wrappedValue: WeatherClient(locationManager: location))
+        Self.applyAppearance()
+    }
+
+    /// Brand the navigation bar to use SF Serif so every `navigationTitle`
+    /// inherits the editorial onboarding aesthetic. Called once at launch;
+    /// per-screen overrides still work via the `.toolbar { ToolbarItem... }`
+    /// principal slot.
+    private static func applyAppearance() {
+        let large = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .largeTitle)
+            .withDesign(.serif)
+        let inline = UIFontDescriptor.preferredFontDescriptor(withTextStyle: .headline)
+            .withDesign(.serif)
+        let largeFont = large.map { UIFont(descriptor: $0, size: 0) } ?? UIFont.preferredFont(forTextStyle: .largeTitle)
+        let inlineFont = inline.map { UIFont(descriptor: $0, size: 0) } ?? UIFont.preferredFont(forTextStyle: .headline)
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        appearance.titleTextAttributes = [.font: inlineFont, .foregroundColor: UIColor(Theme.ink)]
+        appearance.largeTitleTextAttributes = [.font: largeFont, .foregroundColor: UIColor(Theme.ink)]
+        UINavigationBar.appearance().standardAppearance = appearance
+        UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        UINavigationBar.appearance().compactAppearance = appearance
     }
 
     var body: some Scene {

@@ -19,19 +19,47 @@ enum Legal {
 
 enum Theme {
     // MARK: Palette
+    // Warm "paper" identity inherited from the onboarding redesign.
 #if os(watchOS)
-    static let night = Color(white: 0.10)
-    static let deepSea = Color(white: 0.15)
+    static let night = Color(red: 0.910, green: 0.886, blue: 0.824)
+    static let deepSea = Color(red: 0.929, green: 0.906, blue: 0.855)
 #else
-    static let night = Color(uiColor: .systemGroupedBackground)
-    static let deepSea = Color(uiColor: .secondarySystemGroupedBackground)
+    static let night = Color(
+        uiColor: UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(red: 0.06, green: 0.10, blue: 0.16, alpha: 1)
+                : UIColor(red: 0.910, green: 0.886, blue: 0.824, alpha: 1) // #E8E2D2
+        }
+    )
+    static let deepSea = Color(
+        uiColor: UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(red: 0.10, green: 0.14, blue: 0.20, alpha: 1)
+                : UIColor(red: 0.929, green: 0.906, blue: 0.855, alpha: 1) // #EDE7DA
+        }
+    )
 #endif
-    static let lagoon = Color(red: 0.11, green: 0.47, blue: 0.96)
-    static let coral = Color(red: 0.94, green: 0.33, blue: 0.28)
-    static let mint = Color(red: 0.19, green: 0.76, blue: 0.64)
-    static let sun = Color(red: 0.98, green: 0.67, blue: 0.17)
-    static let lavender = Color(red: 0.49, green: 0.44, blue: 0.95)
+    /// Primary accent — matches `OnboardingPalette.water`.
+    static let lagoon = Color(red: 0.169, green: 0.420, blue: 1.0)         // #2B6BFF
+    static let coral = Color(red: 1.0, green: 0.478, blue: 0.400)          // #FF7A66
+    static let mint = Color(red: 0.435, green: 0.890, blue: 0.824)         // #6FE3D2 (aqua)
+    static let sun = Color(red: 1.0, green: 0.698, blue: 0.243)            // #FFB23E
+    static let lavender = Color(red: 0.722, green: 0.651, blue: 1.0)       // #B8A6FF
     static let peach = Color(red: 0.96, green: 0.51, blue: 0.35)
+    /// "Ink" — deep navy text/headline color from the onboarding palette.
+    static let ink = Color(red: 0.039, green: 0.102, blue: 0.184)          // #0A1A2F
+    /// Warm off-white paper background — the dominant onboarding surface.
+#if os(watchOS)
+    static let paper = Color(red: 0.957, green: 0.945, blue: 0.918)
+#else
+    static let paper = Color(
+        uiColor: UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(red: 0.08, green: 0.12, blue: 0.18, alpha: 1)
+                : UIColor(red: 0.957, green: 0.945, blue: 0.918, alpha: 1) // #F4F1EA
+        }
+    )
+#endif
 
     // MARK: Semantic Colors
     static let textPrimary = Color.primary
@@ -108,28 +136,37 @@ enum Theme {
 #else
     static let background = LinearGradient(
         colors: [
-            Color(uiColor: .systemGroupedBackground),
-            Color(uiColor: .secondarySystemGroupedBackground)
+            paper,
+            Color(
+                uiColor: UIColor { traits in
+                    traits.userInterfaceStyle == .dark
+                        ? UIColor(red: 0.10, green: 0.14, blue: 0.20, alpha: 1)
+                        : UIColor(red: 0.929, green: 0.906, blue: 0.855, alpha: 1) // #EDE7DA
+                }
+            )
         ],
         startPoint: .top,
         endPoint: .bottom
     )
 
+    /// Clean card surface matching onboarding's `cardSurface` — flat white in
+    /// light mode, deep slate in dark mode. Single-stop gradient so existing
+    /// `LinearGradient` consumers keep their type.
     static let card = LinearGradient(
         colors: [
             Color(uiColor: UIColor { traits in
                 traits.userInterfaceStyle == .dark
-                    ? UIColor(red: 0.14, green: 0.18, blue: 0.26, alpha: 1)
-                    : UIColor(red: 0.96, green: 0.97, blue: 1.0, alpha: 1)
+                    ? UIColor(red: 0.14, green: 0.17, blue: 0.24, alpha: 1)
+                    : .white
             }),
             Color(uiColor: UIColor { traits in
                 traits.userInterfaceStyle == .dark
-                    ? UIColor(red: 0.10, green: 0.14, blue: 0.22, alpha: 1)
-                    : UIColor(red: 0.90, green: 0.93, blue: 0.98, alpha: 1)
+                    ? UIColor(red: 0.12, green: 0.15, blue: 0.20, alpha: 1)
+                    : UIColor(red: 0.985, green: 0.980, blue: 0.965, alpha: 1)
             })
         ],
-        startPoint: .topLeading,
-        endPoint: .bottomTrailing
+        startPoint: .top,
+        endPoint: .bottom
     )
 
     static let coachCard = LinearGradient(
@@ -149,21 +186,24 @@ enum Theme {
         endPoint: .bottomTrailing
     )
 
+    /// Hero/summary card — paper-toned with a soft sky → cream gradient that
+    /// echoes the onboarding's target stage card. Less assertive than the old
+    /// solid-blue summary card so the bottle illustration carries the colour.
     static let summaryCard = LinearGradient(
         colors: [
             Color(uiColor: UIColor { traits in
                 traits.userInterfaceStyle == .dark
-                    ? UIColor(red: 0.08, green: 0.18, blue: 0.30, alpha: 1)
-                    : UIColor(red: 0.86, green: 0.93, blue: 1.0, alpha: 1)
+                    ? UIColor(red: 0.08, green: 0.14, blue: 0.22, alpha: 1)
+                    : UIColor(red: 0.910, green: 0.957, blue: 0.984, alpha: 1) // sky cream
             }),
             Color(uiColor: UIColor { traits in
                 traits.userInterfaceStyle == .dark
-                    ? UIColor(red: 0.10, green: 0.24, blue: 0.34, alpha: 1)
-                    : UIColor(red: 0.82, green: 0.92, blue: 0.96, alpha: 1)
+                    ? UIColor(red: 0.10, green: 0.18, blue: 0.26, alpha: 1)
+                    : UIColor(red: 1.0, green: 0.956, blue: 0.878, alpha: 1)   // sun cream
             })
         ],
-        startPoint: .top,
-        endPoint: .bottom
+        startPoint: .topLeading,
+        endPoint: .bottomTrailing
     )
 #endif
 
@@ -201,6 +241,17 @@ enum Theme {
     static let gentleSpring = Animation.easeInOut(duration: 0.35)
 
     // MARK: Typography (Dynamic Type)
+    /// Editorial serif (SF Serif italic-friendly) — used for headlines and
+    /// numerical readouts in the onboarding aesthetic. Falls back gracefully
+    /// to `.system(... design: .serif)` on every platform.
+    static func editorialSerif(_ size: CGFloat, weight: Font.Weight = .regular) -> Font {
+        .system(size: size, weight: weight, design: .serif)
+    }
+    /// Mono face for steppers, eyebrows, numerical labels.
+    static func sipliMono(_ size: CGFloat, weight: Font.Weight = .medium) -> Font {
+        .system(size: size, weight: weight, design: .monospaced)
+    }
+
     static func displayFont(_ style: Font.TextStyle = .title) -> Font {
         .system(style, design: .default).weight(.bold)
     }
@@ -434,21 +485,24 @@ struct AppWaterBackground: View {
 
         init(isLight: Bool) {
             if isLight {
-                topColor = Color(red: 0.93, green: 0.96, blue: 1.0)
-                bottomColor = Color(red: 0.82, green: 0.90, blue: 1.0)
-                blobA = Theme.lagoon.opacity(0.18)
-                blobB = Theme.mint.opacity(0.14)
-                blobC = Theme.lavender.opacity(0.10)
-                sheenTop = Color.white.opacity(0.4)
-                sheenBottom = Theme.lagoon.opacity(0.06)
+                // Warm-paper backdrop with very soft tinted blobs — same
+                // family as the onboarding hero background, gentler so it
+                // doesn't fight foreground content.
+                topColor = Color(red: 0.957, green: 0.945, blue: 0.918)    // #F4F1EA
+                bottomColor = Color(red: 0.929, green: 0.906, blue: 0.855) // #EDE7DA
+                blobA = Theme.lagoon.opacity(0.06)
+                blobB = Theme.sun.opacity(0.06)
+                blobC = Theme.coral.opacity(0.04)
+                sheenTop = Color.white.opacity(0.35)
+                sheenBottom = Theme.ink.opacity(0.03)
             } else {
-                topColor = Color(red: 0.06, green: 0.16, blue: 0.28)
-                bottomColor = Color(red: 0.02, green: 0.08, blue: 0.18)
-                blobA = Theme.lagoon.opacity(0.38)
-                blobB = Theme.mint.opacity(0.28)
-                blobC = Theme.lavender.opacity(0.22)
-                sheenTop = Color.white.opacity(0.08)
-                sheenBottom = Theme.lagoon.opacity(0.14)
+                topColor = Color(red: 0.06, green: 0.10, blue: 0.16)
+                bottomColor = Color(red: 0.02, green: 0.05, blue: 0.10)
+                blobA = Theme.lagoon.opacity(0.22)
+                blobB = Theme.sun.opacity(0.10)
+                blobC = Theme.coral.opacity(0.08)
+                sheenTop = Color.white.opacity(0.06)
+                sheenBottom = Theme.lagoon.opacity(0.10)
             }
         }
     }

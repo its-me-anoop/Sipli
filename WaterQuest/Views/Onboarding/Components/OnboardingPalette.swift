@@ -4,27 +4,30 @@ import SwiftUI
 /// Mirrors the design tokens from `Sipli Onboarding.html` so onboarding
 /// has its own warm "paper" identity, separate from the rest-of-app theme.
 enum OnboardingPalette {
-    // Inks
-    static let ink = Color(red: 0.039, green: 0.102, blue: 0.184)        // #0A1A2F
+    // Inks — `ink` mirrors `Theme.ink` (kept aliased here so existing call
+    // sites resolve without churn). `ink2`/`ink3` are tier shades only used
+    // inside onboarding.
+    static let ink = Theme.ink
     static let ink2 = Color(red: 0.169, green: 0.227, blue: 0.322)       // #2B3A52
     static let ink3 = Color(red: 0.420, green: 0.478, blue: 0.573)       // #6B7A92
 
     // Paper backgrounds
-    static let paper = Color(red: 0.957, green: 0.945, blue: 0.918)      // #F4F1EA
+    static let paper = Theme.paper                                        // #F4F1EA
     static let paper2 = Color(red: 0.929, green: 0.906, blue: 0.855)     // #EDE7DA
     static let paperOuter = Color(red: 0.910, green: 0.886, blue: 0.824) // #E8E2D2
 
-    // Water
-    static let water = Color(red: 0.169, green: 0.420, blue: 1.0)        // #2B6BFF
+    // Water — `water` mirrors `Theme.lagoon`.
+    static let water = Theme.lagoon
     static let waterDeep = Color(red: 0.055, green: 0.247, blue: 0.745)  // #0E3FBE
     static let waterBright = Color(red: 0.310, green: 0.718, blue: 1.0)  // #4FB7FF
 
-    // Accents
+    // Accents — main accents now live on `Theme`; aliases here keep
+    // existing onboarding call sites compiling.
     static let aqua = Color(red: 0.435, green: 0.890, blue: 0.824)       // #6FE3D2
-    static let sun = Color(red: 1.0, green: 0.698, blue: 0.243)          // #FFB23E
-    static let coral = Color(red: 1.0, green: 0.478, blue: 0.400)        // #FF7A66
-    static let lilac = Color(red: 0.722, green: 0.651, blue: 1.0)        // #B8A6FF
-    static let mint = Color(red: 0.659, green: 0.902, blue: 0.714)       // #A8E6B6
+    static let sun = Theme.sun
+    static let coral = Theme.coral
+    static let lilac = Theme.lavender
+    static let mint = Color(red: 0.659, green: 0.902, blue: 0.714)       // #A8E6B6 — softer mint, used only in chips
 
     // Bottle palette
     enum Bottle {
