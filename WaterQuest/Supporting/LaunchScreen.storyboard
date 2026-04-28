@@ -15,18 +15,18 @@
                         <rect key="frame" x="0.0" y="0.0" width="393" height="852"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Mascot" translatesAutoresizingMaskIntoConstraints="NO" id="img-mascot-01">
-                                <rect key="frame" x="136.5" y="336" width="120" height="120"/>
+                            <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="sipliIcon" translatesAutoresizingMaskIntoConstraints="NO" id="img-icon-01">
+                                <rect key="frame" x="156.5" y="356" width="80" height="116"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="120" id="w-mascot-01"/>
-                                    <constraint firstAttribute="height" constant="120" id="h-mascot-01"/>
+                                    <constraint firstAttribute="width" constant="80" id="w-icon-01"/>
+                                    <constraint firstAttribute="height" constant="116" id="h-icon-01"/>
                                 </constraints>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" name="PaperBackground"/>
                         <constraints>
-                            <constraint firstItem="img-mascot-01" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="cx-mascot-01"/>
-                            <constraint firstItem="img-mascot-01" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="-40" id="cy-mascot-01"/>
+                            <constraint firstItem="img-icon-01" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="cx-icon-01"/>
+                            <constraint firstItem="img-icon-01" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" constant="-20" id="cy-icon-01"/>
                         </constraints>
                     </view>
                 </viewController>
@@ -35,9 +35,9 @@
         </scene>
     </scenes>
     <resources>
-        <image name="Mascot" width="1024" height="1024"/>
-        <systemColor name="systemBackgroundColor">
-            <color white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-        </systemColor>
+        <image name="sipliIcon" width="1024" height="1024"/>
+        <namedColor name="PaperBackground">
+            <color red="0.957" green="0.945" blue="0.918" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
     </resources>
 </document>

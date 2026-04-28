@@ -153,6 +153,23 @@ struct PremiumPaywallView: View {
         }
     }
 
+    /// Splits the paywall title at the first space and italicises the
+    /// trailing words in water-blue — same "mean it." accent as onboarding.
+    @ViewBuilder
+    private var editorialPaywallTitle: some View {
+        let parts = context.title.split(separator: " ", maxSplits: 1).map(String.init)
+        let baseFont = Theme.editorialSerif(34)
+        if parts.count == 2 {
+            (Text(parts[0] + " ").foregroundStyle(Theme.ink)
+                + Text(parts[1] + ".").italic().foregroundStyle(Theme.lagoon))
+                .font(baseFont)
+        } else {
+            Text(context.title)
+                .font(baseFont)
+                .foregroundStyle(Theme.ink)
+        }
+    }
+
     private var disclosureText: String {
         let fallbackPrice = "the listed price"
         let price = selectedProduct?.displayPrice ?? fallbackPrice
@@ -213,36 +230,21 @@ struct PremiumPaywallView: View {
                         .accessibilityLabel("Close premium plans")
                     }
 
-                    Image("Mascot")
+                    Image("sipliIcon")
                         .resizable()
                         .scaledToFit()
-                        .frame(width: 104, height: 104)
+                        .frame(width: 96, height: 132)
                         .accessibilityHidden(true)
-                        .background(
-                            Circle()
-                                .fill(.ultraThinMaterial)
-                                .overlay(
-                                    Circle()
-                                        .stroke(
-                                            LinearGradient(
-                                                colors: [.white.opacity(0.8), .white.opacity(0.1)],
-                                                startPoint: .topLeading,
-                                                endPoint: .bottomTrailing
-                                            ),
-                                            lineWidth: 1.5
-                                        )
-                                )
-                                .shadow(color: Theme.lagoon.opacity(0.15), radius: 24, x: 0, y: 12)
-                        )
+                        .padding(.top, 4)
 
                     VStack(spacing: 12) {
-                        Text(context.title)
-                            .font(.title.bold())
+                        editorialPaywallTitle
                             .multilineTextAlignment(.center)
+                            .padding(.horizontal, 16)
 
                         Text(context.message)
                             .font(.subheadline)
-                            .foregroundStyle(.secondary)
+                            .foregroundStyle(Theme.textSecondary)
                             .multilineTextAlignment(.center)
                             .padding(.horizontal, 20)
                     }
@@ -300,25 +302,31 @@ struct PremiumPaywallView: View {
                         Button {
                             doPurchase(product)
                         } label: {
-                            Group {
+                            HStack(spacing: 10) {
                                 if isPurchasing {
-                                    HStack(spacing: 8) {
-                                        ProgressView().tint(.white)
-                                        Text("Processing...")
-                                    }
+                                    ProgressView().tint(.white)
+                                    Text("Processing…")
                                 } else {
                                     Text(purchaseButtonText)
                                         .multilineTextAlignment(.center)
                                 }
+                                if !isPurchasing {
+                                    ZStack {
+                                        Circle()
+                                            .fill(Color.white)
+                                            .frame(width: 28, height: 28)
+                                        Image(systemName: "arrow.right")
+                                            .font(.system(size: 13, weight: .bold))
+                                            .foregroundStyle(Theme.lagoon)
+                                    }
+                                }
                             }
-                            .font(.headline)
-                            .foregroundStyle(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding(.vertical, 14)
-                            .background(Theme.lagoon)
-                            .clipShape(Capsule())
-                            .shadow(color: Theme.lagoon.opacity(0.3), radius: 8, y: 4)
+                            .font(.system(size: 16, weight: .semibold))
+                            .foregroundStyle(Color.white)
+                            .frame(maxWidth: .infinity, minHeight: 60)
+                            .background(Capsule(style: .continuous).fill(Theme.lagoon))
                         }
+                        .buttonStyle(.plain)
                         .disabled(isPurchasing)
                     }
 
