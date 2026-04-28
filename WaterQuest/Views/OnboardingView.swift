@@ -17,7 +17,6 @@ struct OnboardingView: View {
     @State private var step: OnboardingStep = .welcome
     @State private var direction: OnboardingNavDirection = .forward
     @State private var state = OnboardingState()
-    @State private var hasRequestedHealthKit = false
     @State private var hasRequestedLocation = false
 
     var body: some View {
@@ -26,6 +25,11 @@ struct OnboardingView: View {
 
             stepContainer
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+        }
+        .task { @MainActor in
+            // Sync the toggle with the system's actual HealthKit auth state —
+            // if the user previously granted, surface that as ON; otherwise OFF.
+            state.prefersHealthKit = healthKit.isAuthorized
         }
         .onChange(of: state.prefersHealthKit) { oldValue, newValue in
             handleHealthKitToggle(was: oldValue, now: newValue)
@@ -115,16 +119,35 @@ struct OnboardingView: View {
     // MARK: - Permission handling
 
     private func handleHealthKitToggle(was oldValue: Bool, now newValue: Bool) {
+        // Toggling OFF: just update the flag; iOS doesn't allow programmatic
+        // permission revocation, but the user opting out from inside the app
+        // means we shouldn't read Health data going forward.
         guard newValue, !oldValue else { return }
+
+        // Premium-locked: roll back; the user will see the paywall after
+        // onboarding completes (App-Store-friendly — no mid-onboard paywall).
         guard subscriptionManager.hasAccess(to: .healthKitSync) else {
-            // Premium feature — keep flag false; user will see paywall after onboarding.
-            // Roll the toggle back so the visible state is honest.
             DispatchQueue.main.async { state.prefersHealthKit = false }
             return
         }
-        guard !hasRequestedHealthKit else { return }
-        hasRequestedHealthKit = true
-        Task { await healthKit.requestAuthorization() }
+
+        // Already authorized — leaving the toggle on is correct, no dialog
+        // needed (iOS would suppress it anyway).
+        if healthKit.isAuthorized { return }
+
+        Task { @MainActor in
+            await healthKit.requestAuthorization()
+            // If the user denied or dismissed the dialog, snap the toggle
+            // back so its visible state matches actual auth.
+            if !healthKit.isAuthorized {
+                withAnimation(.spring(response: 0.35, dampingFraction: 0.78)) {
+                    state.prefersHealthKit = false
+                }
+                Haptics.warning()
+            } else {
+                Haptics.success()
+            }
+        }
     }
 
     private func handleWeatherToggle(was oldValue: Bool, now newValue: Bool) {

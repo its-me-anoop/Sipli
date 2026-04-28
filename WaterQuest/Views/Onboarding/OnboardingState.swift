@@ -56,7 +56,7 @@ struct OnboardingState: Equatable {
         activityLevel: ActivityLevel = .steady,
         customGoalEnabled: Bool = false,
         customGoalValue: Double = 2400,
-        prefersHealthKit: Bool = true,
+        prefersHealthKit: Bool = false,
         prefersWeatherGoal: Bool = true,
         wakeHour: Double = 7,
         sleepHour: Double = 22,
