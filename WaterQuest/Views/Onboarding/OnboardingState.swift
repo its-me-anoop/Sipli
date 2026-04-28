@@ -117,7 +117,9 @@ struct OnboardingState: Equatable {
     var sleepMinutes: Int { minutesFromHour(sleepHour) }
 
     func weightSliderRange() -> ClosedRange<Double> {
-        unitSystem == .metric ? 35...150 : 77...330
+        // Full human range: 0–500 kg / 0–1100 lb. Covers infants through
+        // very-large adults; a typical user lands well inside the band.
+        unitSystem == .metric ? 0...500 : 0...1100
     }
 
     func customGoalRange() -> ClosedRange<Double> {

@@ -80,6 +80,8 @@ struct WeightStep: View {
                     .foregroundStyle(OnboardingPalette.ink)
                     .id(weightDisplayKey)
                     .contentTransition(.numericText())
+                    .minimumScaleFactor(0.55)
+                    .lineLimit(1)
                 Text(unit.uppercased())
                     .font(.sipliMono(16, weight: .semibold))
                     .foregroundStyle(OnboardingPalette.ink3)
@@ -131,7 +133,7 @@ struct WeightStep: View {
         withAnimation(.spring(response: 0.45, dampingFraction: 0.78)) {
             state.unitSystem = unit
             let converted = unit.amountFromKG(oldKg)
-            let r = unit == .metric ? 35.0...150.0 : 77.0...330.0
+            let r = state.weightSliderRange()
             let snapped = converted.rounded()
             state.weight = min(max(snapped, r.lowerBound), r.upperBound)
         }
@@ -140,7 +142,11 @@ struct WeightStep: View {
 
     private var verticalRuler: some View {
         let pct = (state.weight - range.lowerBound) / (range.upperBound - range.lowerBound)
-        let tickCount = 41
+        // 51 ticks across the 0–500 kg / 0–1100 lb range: 10 kg per tick
+        // (major every 50 kg) for metric; ~22 lb per tick (major every 110 lb)
+        // for imperial. Drag is continuous, so the underlying value is finer
+        // than the ticks suggest.
+        let tickCount = 51
         return HStack(spacing: 14) {
             // Ticks column — drag up to increase, like a wall-mounted measuring tape.
             GeometryReader { proxy in
