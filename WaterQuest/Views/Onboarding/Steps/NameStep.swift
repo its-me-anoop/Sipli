@@ -7,7 +7,6 @@ struct NameStep: View {
     let onBack: () -> Void
 
     @FocusState private var nameFieldFocused: Bool
-    @State private var caretVisible = true
     @State private var replyAppeared = false
 
     private var trimmed: String { state.name.trimmingCharacters(in: .whitespacesAndNewlines) }
@@ -150,18 +149,6 @@ struct NameStep: View {
                 .onSubmit {
                     if state.canContinueFromName { onContinue() }
                 }
-
-            if nameFieldFocused {
-                Rectangle()
-                    .fill(OnboardingPalette.sun)
-                    .frame(width: 2, height: 22)
-                    .opacity(caretVisible ? 1 : 0)
-                    .onAppear {
-                        withAnimation(.linear(duration: 0.5).repeatForever(autoreverses: true)) {
-                            caretVisible = false
-                        }
-                    }
-            }
         }
         .padding(.horizontal, 18)
         .padding(.vertical, 14)
