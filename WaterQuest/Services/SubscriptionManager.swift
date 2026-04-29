@@ -3,61 +3,63 @@ import StoreKit
 
 enum ProductID: String, CaseIterable, Identifiable {
     case monthly = "com.sipli.monthly"
+    /// Annual subscription billed monthly with a 12-month commitment.
+    /// New Apple tier (iOS 26.5, May 2026) — available everywhere except
+    /// US and Singapore. App Store Connect distinguishes this from the
+    /// upfront annual via the "monthly billing with 12-month commitment"
+    /// toggle on a yearly auto-renewable subscription.
+    case annualMonthly = "com.sipli.annual.monthly"
     case annual = "com.sipli.annual"
 
     var id: String { rawValue }
 
     var displayName: String {
         switch self {
-        case .monthly:
-            return "Monthly"
-        case .annual:
-            return "Annual"
+        case .monthly: return "Monthly"
+        case .annualMonthly: return "Annual, paid monthly"
+        case .annual: return "Annual"
         }
     }
 
     var shortDescription: String {
         switch self {
-        case .monthly:
-            return "Monthly billing"
-        case .annual:
-            return "Annual billing"
+        case .monthly: return "Maximum flexibility"
+        case .annualMonthly: return "Best of both — low entry, commitment discount"
+        case .annual: return "Cheapest, paid upfront"
         }
     }
 
     var billingSuffix: String {
         switch self {
-        case .monthly:
-            return "/mo"
-        case .annual:
-            return "/yr"
+        case .monthly: return "/mo"
+        case .annualMonthly: return "/mo"
+        case .annual: return "/yr"
         }
     }
 
     var badgeText: String? {
         switch self {
-        case .monthly:
-            return nil
-        case .annual:
-            return "Best Value"
+        case .monthly: return nil
+        case .annualMonthly: return "Recommended"
+        case .annual: return "Best Value"
         }
     }
 
+    /// Lower numbers render first. Order matches the brief: annual upfront
+    /// (cheapest), commitment-monthly (middle), flexible monthly (bottom).
     var sortOrder: Int {
         switch self {
-        case .annual:
-            return 0
-        case .monthly:
-            return 1
+        case .annual: return 0
+        case .annualMonthly: return 1
+        case .monthly: return 2
         }
     }
 
     var callToAction: String {
         switch self {
-        case .monthly:
-            return "Start Monthly Plan"
-        case .annual:
-            return "Start Annual Plan"
+        case .monthly: return "Start Monthly Plan"
+        case .annualMonthly: return "Start Annual Plan, Paid Monthly"
+        case .annual: return "Start Annual Plan"
         }
     }
 }
@@ -203,7 +205,15 @@ final class SubscriptionManager: ObservableObject {
 
     // MARK: - Products
     private func fetchProducts() async {
-        let ids = Set(ProductID.allCases.map { $0.rawValue })
+        // Honour the commitment-monthly feature flag at fetch time so we
+        // never render a tier that isn't enabled for this user / build.
+        let ids: Set<String> = {
+            var all = Set(ProductID.allCases.map { $0.rawValue })
+            if !Self.commitmentMonthlyTierEnabled {
+                all.remove(ProductID.annualMonthly.rawValue)
+            }
+            return all
+        }()
         let maxAttempts = 3
 
         for attempt in 1...maxAttempts {
@@ -243,13 +253,53 @@ final class SubscriptionManager: ObservableObject {
         products.first { $0.id == ProductID.monthly.rawValue }
     }
 
-    /// Returns the annual product, if loaded.
+    /// Returns the annual subscription billed-monthly product, if loaded.
+    /// Only fetched when the commitment-monthly tier is enabled (see
+    /// `commitmentMonthlyTierEnabled`).
+    var annualMonthlyProduct: Product? {
+        products.first { $0.id == ProductID.annualMonthly.rawValue }
+    }
+
+    /// Returns the upfront annual product, if loaded.
     var annualProduct: Product? {
         products.first { $0.id == ProductID.annual.rawValue }
     }
 
     var featuredProduct: Product? {
-        annualProduct ?? monthlyProduct
+        annualMonthlyProduct ?? annualProduct ?? monthlyProduct
+    }
+
+    /// `true` when the commitment-monthly tier should be offered. Read from
+    /// UserDefaults so it can be flipped via debug menu, remote-config push,
+    /// or A/B-test bucket assignment without a re-deploy. Defaults to off
+    /// until the iOS 26.5 launch (May 2026).
+    static var commitmentMonthlyTierEnabled: Bool {
+        UserDefaults.standard.bool(forKey: "subscription.commitmentMonthlyTierEnabled")
+    }
+
+    /// Tells the formatter which monthly plan to compare against when
+    /// computing savings tags.
+    var flexibleMonthlyPlanInfo: SubscriptionPlanInfo? {
+        monthlyProduct.map(SubscriptionManager.planInfo(from:))
+    }
+
+    /// Builds a neutral `SubscriptionPlanInfo` from a StoreKit `Product`.
+    /// Centralised here so the paywall view never reaches into `Product`
+    /// directly — this keeps display logic testable without needing a live
+    /// store connection.
+    static func planInfo(from product: Product) -> SubscriptionPlanInfo {
+        let unit: SubscriptionPeriodUnit = {
+            guard let period = product.subscription?.subscriptionPeriod else { return .month }
+            return period.unit == .year ? .year : .month
+        }()
+        return SubscriptionPlanInfo(
+            id: product.id,
+            displayPrice: product.displayPrice,
+            price: product.price,
+            periodUnit: unit,
+            isMonthlyCommitment: product.id == ProductID.annualMonthly.rawValue,
+            currencyCode: product.priceFormatStyle.currencyCode
+        )
     }
 
     var currentPlanName: String {

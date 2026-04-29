@@ -78,9 +78,20 @@ struct PremiumPaywallView: View {
 
     private var productOptions: [(id: ProductID, product: Product?)] {
         ProductID.allCases
+            .filter { id in
+                // Hide the commitment-monthly tier when the feature flag is
+                // off so the paywall doesn't render an empty "Unavailable"
+                // row for builds we don't ship the new tier on.
+                if id == .annualMonthly && !SubscriptionManager.commitmentMonthlyTierEnabled {
+                    return false
+                }
+                return true
+            }
             .sorted { $0.sortOrder < $1.sortOrder }
             .map { ($0, subscriptionManager.product(for: $0)) }
     }
+
+    private let displayFormatter: SubscriptionFormatting = SubscriptionFormatter()
 
     private var isLoadingProducts: Bool {
         subscriptionManager.availableProducts.isEmpty && !subscriptionManager.isInitialized
@@ -105,34 +116,16 @@ struct PremiumPaywallView: View {
         ]
     }
 
-    private var annualSavingsText: String? {
-        guard
-            let annualProduct = subscriptionManager.annualProduct,
-            let monthlyProduct = subscriptionManager.monthlyProduct
-        else {
-            return nil
-        }
-
-        let monthlyYearlyCost = NSDecimalNumber(decimal: monthlyProduct.price)
-            .multiplying(by: 12)
-        let annualCost = NSDecimalNumber(decimal: annualProduct.price)
-        let savings = monthlyYearlyCost.subtracting(annualCost)
-
-        guard savings.compare(NSDecimalNumber.zero) == .orderedDescending else {
-            return nil
-        }
-
-        let formattedSavings = savings.decimalValue.formatted(annualProduct.priceFormatStyle)
-        return "Save \(formattedSavings) per year"
-    }
-
-    private func productDescription(for productID: ProductID) -> String {
-        switch productID {
-        case .monthly:
-            return productID.shortDescription
-        case .annual:
-            return annualSavingsText ?? productID.shortDescription
-        }
+    /// Builds the formatter input for a `PlanOptionCard`. Returns `nil` when
+    /// the product hasn't loaded yet (network, sandbox warm-up, etc.) so the
+    /// card can show its "Unavailable" treatment.
+    private func display(for product: Product?) -> SubscriptionDisplay? {
+        guard let product else { return nil }
+        let plan = SubscriptionManager.planInfo(from: product)
+        return displayFormatter.display(
+            for: plan,
+            flexibleMonthly: subscriptionManager.flexibleMonthlyPlanInfo
+        )
     }
 
     private var introOfferText: String? {
@@ -178,9 +171,24 @@ struct PremiumPaywallView: View {
         switch selectedProductID {
         case .monthly:
             return "\(trialPrefix)Your monthly subscription starts at \(price)/mo and automatically renews unless canceled at least 24 hours before the end of the current period. Payment is charged to your Apple ID. Manage or cancel anytime in Settings > Apple ID > Subscriptions."
+        case .annualMonthly:
+            // Per Apple's "annual subscription, monthly billing" terms: the
+            // user is agreeing to 12 monthly payments. Cancelling stops the
+            // *next year's* renewal — the current 12-month commitment runs
+            // its course.
+            let perMonth = annualMonthlyPerMonthDisplay() ?? "the listed monthly amount"
+            return "\(trialPrefix)You're committing to 12 monthly payments of \(perMonth) (\(price) total). Cancelling stops next year's renewal — the current 12-month period continues until it ends. Payment is charged to your Apple ID. Manage or cancel anytime in Settings > Apple ID > Subscriptions."
         case .annual:
             return "\(trialPrefix)Your annual subscription renews at \(price)/yr unless canceled at least 24 hours before the end of the current period. Payment is charged to your Apple ID. Manage or cancel anytime in Settings > Apple ID > Subscriptions."
         }
+    }
+
+    /// Returns the per-month rate for the annual-monthly plan, formatted in
+    /// the storefront currency (e.g. "£1.99"). Used by the disclosure copy.
+    private func annualMonthlyPerMonthDisplay() -> String? {
+        guard let product = subscriptionManager.annualMonthlyProduct else { return nil }
+        let perMonth = product.price / 12
+        return perMonth.formatted(product.priceFormatStyle)
     }
 
     private var purchaseButtonText: String {
@@ -190,6 +198,12 @@ struct PremiumPaywallView: View {
            offer.paymentMode == .freeTrial {
             let trialDuration = trialDurationLabel(for: offer.period)
             return "Try free for \(trialDuration), then \(product.displayPrice)\(selectedProductID.billingSuffix)"
+        }
+        // For annual-monthly, the CTA reads in per-month terms even though
+        // the product price is the yearly total.
+        if selectedProductID == .annualMonthly,
+           let perMonth = annualMonthlyPerMonthDisplay() {
+            return "\(selectedProductID.callToAction) — \(perMonth)/mo"
         }
         return "\(selectedProductID.callToAction) — \(product.displayPrice)\(selectedProductID.billingSuffix)"
     }
@@ -272,8 +286,7 @@ struct PremiumPaywallView: View {
                             ForEach(productOptions, id: \.id) { option in
                                 PlanOptionCard(
                                     productID: option.id,
-                                    price: option.product?.displayPrice,
-                                    description: productDescription(for: option.id),
+                                    display: display(for: option.product),
                                     isSelected: selectedProductID == option.id,
                                     isAvailable: option.product != nil
                                 ) {
@@ -369,7 +382,13 @@ struct PremiumPaywallView: View {
     }
 
     private func syncSelectedPlan() {
-        if subscriptionManager.annualProduct != nil {
+        // When the commitment-monthly tier is enabled and loaded, default
+        // selection to it (low entry, "Recommended" badge). Otherwise fall
+        // back to the existing annual-upfront-or-monthly priority.
+        if SubscriptionManager.commitmentMonthlyTierEnabled,
+           subscriptionManager.annualMonthlyProduct != nil {
+            selectedProductID = .annualMonthly
+        } else if subscriptionManager.annualProduct != nil {
             selectedProductID = .annual
         } else if subscriptionManager.monthlyProduct != nil {
             selectedProductID = .monthly
@@ -473,8 +492,7 @@ private struct PremiumFeaturesCard: View {
 
 private struct PlanOptionCard: View {
     let productID: ProductID
-    let price: String?
-    let description: String
+    let display: SubscriptionDisplay?
     let isSelected: Bool
     let isAvailable: Bool
     let action: () -> Void
@@ -498,36 +516,49 @@ private struct PlanOptionCard: View {
                         }
                     }
 
-                    Text(description)
+                    Text(productID.shortDescription)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+
+                    if let commitment = display?.commitment {
+                        // Mandatory 12-month commitment disclosure for the
+                        // "annual subscription, paid monthly" tier — Apple
+                        // rejects paywalls that don't make this unmistakable.
+                        Text(commitment)
+                            .font(.footnote.weight(.medium))
+                            .foregroundStyle(.primary)
+                            .padding(.top, 2)
+                    }
+
+                    if let savings = display?.savings {
+                        Text(savings)
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Theme.mint)
+                    }
                 }
 
                 Spacer()
 
-                HStack(alignment: .firstTextBaseline, spacing: 2) {
-                    if let price {
-                        Text(price)
-                            .font(.title3.weight(.bold))
-                            .foregroundStyle(Theme.lagoon)
-                        Text(productID.billingSuffix)
-                            .font(.caption.weight(.medium))
-                            .foregroundStyle(.secondary)
-                    } else {
-                        Text("Unavailable")
-                            .font(.subheadline.weight(.semibold))
-                            .foregroundStyle(.secondary)
-                    }
+                if let display {
+                    Text(display.headline)
+                        .font(.title3.weight(.bold))
+                        .foregroundStyle(Theme.lagoon)
+                        .multilineTextAlignment(.trailing)
+                        .fixedSize(horizontal: false, vertical: true)
+                } else {
+                    Text("Unavailable")
+                        .font(.subheadline.weight(.semibold))
+                        .foregroundStyle(.secondary)
                 }
             }
             .padding(16)
             .background(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(.ultraThinMaterial)
+                    .fill(Theme.card)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .stroke(isSelected ? Theme.lagoon : Theme.glassBorder.opacity(0.4), lineWidth: isSelected ? 1.8 : 1)
+                    .stroke(isSelected ? Theme.lagoon : Theme.glassBorder.opacity(0.6), lineWidth: isSelected ? 2 : 1)
             )
             .opacity(isAvailable ? 1 : 0.7)
         }

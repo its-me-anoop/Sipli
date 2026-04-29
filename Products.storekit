@@ -81,9 +81,37 @@
           "codeOffers" : [
 
           ],
-          "displayPrice" : "2.99",
+          "displayPrice" : "23.88",
           "familyShareable" : false,
           "groupNumber" : 2,
+          "internalID" : "7000123450",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Annual access, paid £1.99 per month for 12 months",
+              "displayName" : "Annual, paid monthly",
+              "locale" : "en_US"
+            }
+          ],
+          "productID" : "com.sipli.annual.monthly",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "Annual paid monthly",
+          "subscriptionGroupID" : "21929945",
+          "type" : "RecurringSubscription",
+          "winbackOffers" : [
+
+          ]
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "2.99",
+          "familyShareable" : false,
+          "groupNumber" : 3,
           "internalID" : "6759669359",
           "introductoryOffer" : null,
           "localizations" : [
