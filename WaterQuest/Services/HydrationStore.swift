@@ -9,8 +9,6 @@ final class HydrationStore: ObservableObject {
     @Published var lastWorkout: WorkoutSummary
     @Published private(set) var hasPremiumAccess = false
     @Published private(set) var premiumUpsellState: PremiumUpsellState
-    @Published var earthDayBannerDismissed: Bool
-    @Published var earthDay2026Earned: Bool
     /// Lifetime count of days the user has hit their daily hydration goal.
     /// Observed by DashboardView to decide when to prompt for an App Store review.
     @Published private(set) var goalCompletionCount: Int
@@ -32,8 +30,6 @@ final class HydrationStore: ObservableObject {
         self.lastWorkout = state.lastWorkout
         self.hasPremiumAccess = state.hasPremiumAccess
         self.premiumUpsellState = state.premiumUpsellState
-        self.earthDayBannerDismissed = state.earthDay2026BannerDismissed
-        self.earthDay2026Earned = state.earthDay2026Earned
         self.goalCompletionCount = state.goalCompletionCount
         self.lastGoalCompletionDate = state.lastGoalCompletionDate
 
@@ -154,9 +150,6 @@ final class HydrationStore: ObservableObject {
         let entry = HydrationEntry(date: Date(), volumeML: ml, source: source, fluidType: fluidType, note: note)
         entries.append(entry)
         notificationScheduler?.onIntakeLogged(entry: entry, context: buildNotificationContext())
-        if !earthDay2026Earned, EarthDayEvent.isEarthDay(entry.date) {
-            earthDay2026Earned = true
-        }
         checkGoalCompletion()
         persist()
         return entry
@@ -218,12 +211,6 @@ final class HydrationStore: ObservableObject {
 
         goalCompletionCount = qualifyingDays.count
         lastGoalCompletionDate = qualifyingDays.keys.max()
-        persist()
-    }
-
-    func dismissEarthDayBanner() {
-        guard !earthDayBannerDismissed else { return }
-        earthDayBannerDismissed = true
         persist()
     }
 
@@ -310,8 +297,6 @@ final class HydrationStore: ObservableObject {
             lastWorkout: lastWorkout,
             hasPremiumAccess: hasPremiumAccess,
             premiumUpsellState: premiumUpsellState,
-            earthDay2026BannerDismissed: earthDayBannerDismissed,
-            earthDay2026Earned: earthDay2026Earned,
             goalCompletionCount: goalCompletionCount,
             lastGoalCompletionDate: lastGoalCompletionDate
         )
@@ -346,8 +331,6 @@ final class HydrationStore: ObservableObject {
             lastWorkout: lastWorkout,
             hasPremiumAccess: hasPremiumAccess,
             premiumUpsellState: premiumUpsellState,
-            earthDay2026BannerDismissed: earthDayBannerDismissed,
-            earthDay2026Earned: earthDay2026Earned,
             goalCompletionCount: goalCompletionCount,
             lastGoalCompletionDate: lastGoalCompletionDate
         )
@@ -370,8 +353,6 @@ final class HydrationStore: ObservableObject {
         lastWorkout = state.lastWorkout
         hasPremiumAccess = state.hasPremiumAccess
         premiumUpsellState = state.premiumUpsellState
-        earthDayBannerDismissed = state.earthDay2026BannerDismissed
-        earthDay2026Earned = state.earthDay2026Earned
 
         // Monotonic merge of the review-prompt counter: take whichever side
         // has progressed further. Dates are compared loosely — the later one wins.

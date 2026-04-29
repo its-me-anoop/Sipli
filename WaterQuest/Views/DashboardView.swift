@@ -13,7 +13,6 @@ struct DashboardView: View {
     @EnvironmentObject private var healthKit: HealthKitManager
     @EnvironmentObject private var locationManager: LocationManager
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
-    @Environment(\.deepLinkEarthWeek) private var deepLinkEarthWeek
     @Environment(\.requestReview) private var requestReview
 
     @StateObject private var aiService = HydrationAIService()
@@ -22,7 +21,6 @@ struct DashboardView: View {
     @State private var entryToDelete: HydrationEntry?
     @State private var isRefreshing = false
     @State private var isPremiumPromptDismissed = false
-    @State private var showEarthDayPledge = false
     /// Gate for the App Store review prompt. We fire at most once per foreground
     /// session; iOS itself additionally throttles to 3 prompts/user/year.
     @State private var hasRequestedReviewThisSession = false
@@ -86,14 +84,6 @@ struct DashboardView: View {
                 deleteEntry(entry)
             }
         }
-        .sheet(isPresented: $showEarthDayPledge) {
-            EarthDayPledgeView()
-        }
-        .onChange(of: deepLinkEarthWeek) {
-            if deepLinkEarthWeek {
-                showEarthDayPledge = true
-            }
-        }
         .onChange(of: store.goalCompletionCount) { oldValue, newValue in
             // Fire the Apple review prompt whenever the user hits their daily
             // goal on a new day, starting from their Nth lifetime completion.
@@ -113,31 +103,13 @@ struct DashboardView: View {
         requestReview()
     }
 
-    private var earthDayBannerVisible: Bool {
-        EarthDayEvent.isActive() && !store.earthDayBannerDismissed
-    }
-
-    @ViewBuilder
-    private var earthDayBanner: some View {
-        if earthDayBannerVisible {
-            EarthDayBannerCard(
-                onLearnMore: { showEarthDayPledge = true },
-                onDismiss: { store.dismissEarthDayBanner() }
-            )
-            .transition(.move(edge: .top).combined(with: .opacity))
-        }
-    }
-
     // MARK: - Layouts
 
     private var iPhoneLayout: some View {
         ScrollView {
             VStack(spacing: 16) {
-                earthDayBanner
-                    .padding(.top, 8)
-
                 summarySection
-                    .padding(.top, earthDayBannerVisible ? 0 : 8)
+                    .padding(.top, 8)
 
                 if subscriptionManager.hasAccess(to: .aiInsights), let tip = aiService.currentTip {
                     DashboardCard(title: "Hydration Coach", icon: "sparkles", backgroundGradient: Theme.coachCard) {
@@ -221,8 +193,6 @@ struct DashboardView: View {
     private var iPadLayout: some View {
         ScrollView {
             VStack(spacing: 20) {
-                earthDayBanner
-
                 // Summary card spans full width
                 HydrationSummaryCard(
                     greeting: greeting,
@@ -774,23 +744,13 @@ private struct HydrationSummaryCard: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            if EarthDayEvent.isActive() {
-                EarthProgressView(
-                    progress: progress,
-                    compositions: compositions,
-                    isRegular: isRegular,
-                    bottleWidth: isRegular ? 230 : 165,
-                    bottleHeight: isRegular ? 340 : 260
-                )
-            } else {
-                LiquidProgressView(
-                    progress: progress,
-                    compositions: compositions,
-                    isRegular: isRegular,
-                    bottleWidth: isRegular ? 230 : 165,
-                    bottleHeight: isRegular ? 340 : 260
-                )
-            }
+            LiquidProgressView(
+                progress: progress,
+                compositions: compositions,
+                isRegular: isRegular,
+                bottleWidth: isRegular ? 230 : 165,
+                bottleHeight: isRegular ? 340 : 260
+            )
         }
         .padding(isRegular ? 24 : 20)
         .frame(minHeight: isRegular ? 430 : 350)

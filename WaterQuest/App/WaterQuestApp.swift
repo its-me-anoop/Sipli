@@ -7,7 +7,6 @@ struct WaterQuestApp: App {
     @AppStorage("hasOnboarded") private var hasOnboarded: Bool = false
     @Environment(\.scenePhase) private var scenePhase
     @State private var deepLinkAddIntake = false
-    @State private var deepLinkEarthWeek = false
 
     @StateObject private var store = HydrationStore()
     @StateObject private var healthKit = HealthKitManager()
@@ -102,14 +101,11 @@ struct WaterQuestApp: App {
                 switch url.host {
                 case "add-intake":
                     deepLinkAddIntake = true
-                case "earth-week", "pledge":
-                    deepLinkEarthWeek = true
                 default:
                     break
                 }
             }
             .environment(\.deepLinkAddIntake, deepLinkAddIntake)
-            .environment(\.deepLinkEarthWeek, deepLinkEarthWeek)
             .onChange(of: deepLinkAddIntake) {
                 if deepLinkAddIntake {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
@@ -121,13 +117,6 @@ struct WaterQuestApp: App {
                 if shouldOpen {
                     deepLinkAddIntake = true
                     deepLinkForwarder.shouldOpenAddIntake = false
-                }
-            }
-            .onChange(of: deepLinkEarthWeek) {
-                if deepLinkEarthWeek {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        deepLinkEarthWeek = false
-                    }
                 }
             }
         }
@@ -167,18 +156,9 @@ private struct DeepLinkAddIntakeKey: EnvironmentKey {
     static let defaultValue = false
 }
 
-private struct DeepLinkEarthWeekKey: EnvironmentKey {
-    static let defaultValue = false
-}
-
 extension EnvironmentValues {
     var deepLinkAddIntake: Bool {
         get { self[DeepLinkAddIntakeKey.self] }
         set { self[DeepLinkAddIntakeKey.self] = newValue }
-    }
-
-    var deepLinkEarthWeek: Bool {
-        get { self[DeepLinkEarthWeekKey.self] }
-        set { self[DeepLinkEarthWeekKey.self] = newValue }
     }
 }

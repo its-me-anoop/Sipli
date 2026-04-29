@@ -98,11 +98,6 @@
 		E4C51058218BC12CB9F566C8 /* NotificationsStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A662F7C3476A0C51044664F /* NotificationsStep.swift */; };
 		E5EDB875107A7CBE67F2F031 /* LiquidProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85C07CD814951765EE1A1499 /* LiquidProgressView.swift */; };
 		EB9033481146A1C9561176DB /* MainTabView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2126EAEDD87BD49B24C7BE2 /* MainTabView.swift */; };
-		ED01000000000000000001 /* EarthDayBannerCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED01000000000000000002 /* EarthDayBannerCard.swift */; };
-		ED02000000000000000001 /* EarthDayEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED02000000000000000002 /* EarthDayEvent.swift */; };
-		ED03000000000000000001 /* EarthDayPledgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED03000000000000000002 /* EarthDayPledgeView.swift */; };
-		ED04000000000000000001 /* EarthInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED04000000000000000002 /* EarthInfoView.swift */; };
-		ED05000000000000000001 /* EarthProgressView.swift in Sources */ = {isa = PBXBuildFile; fileRef = ED05000000000000000002 /* EarthProgressView.swift */; };
 		EDBE22FF0F30A88A5820362A /* NotificationCategories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E73BC8B42AADA53E70C6538 /* NotificationCategories.swift */; };
 		EE3333333333333333333333 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE1111111111111111111111 /* WidgetKit.framework */; };
 		EE4444444444444444444444 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE2222222222222222222222 /* SwiftUI.framework */; };
@@ -305,11 +300,6 @@
 		E4A8068B4418852446BD78E6 /* MotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
 		E978A95F2A11281369173920 /* SipliCTA.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SipliCTA.swift; sourceTree = "<group>"; };
 		EB90E806138FFE1C09E7187A /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
-		ED01000000000000000002 /* EarthDayBannerCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthDayBannerCard.swift; sourceTree = "<group>"; };
-		ED02000000000000000002 /* EarthDayEvent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthDayEvent.swift; sourceTree = "<group>"; };
-		ED03000000000000000002 /* EarthDayPledgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthDayPledgeView.swift; sourceTree = "<group>"; };
-		ED04000000000000000002 /* EarthInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthInfoView.swift; sourceTree = "<group>"; };
-		ED05000000000000000002 /* EarthProgressView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EarthProgressView.swift; sourceTree = "<group>"; };
 		EE1111111111111111111111 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		EE2222222222222222222222 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		F021A59BB7CB33328B5ABBC4 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
@@ -491,8 +481,6 @@
 			isa = PBXGroup;
 			children = (
 				97414883E4C0F357148B7EC7 /* DashboardCard.swift */,
-				ED01000000000000000002 /* EarthDayBannerCard.swift */,
-				ED05000000000000000002 /* EarthProgressView.swift */,
 				3D58355784786E63DFFB9EC4 /* Haptics.swift */,
 				42E0244F70DCB30BB868A196 /* LiquidGlassCard.swift */,
 				85C07CD814951765EE1A1499 /* LiquidProgressView.swift */,
@@ -592,8 +580,6 @@
 				BD7043107E62B2C04F4C58EB /* DashboardView.swift */,
 				A1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift */,
 				EB90E806138FFE1C09E7187A /* InsightsView.swift */,
-				ED03000000000000000002 /* EarthDayPledgeView.swift */,
-				ED04000000000000000002 /* EarthInfoView.swift */,
 				B2126EAEDD87BD49B24C7BE2 /* MainTabView.swift */,
 				22C158CF127D3436999E3C2B /* RootView.swift */,
 				FD0B42119D7BD312FCDAF766 /* SettingsView.swift */,
@@ -644,7 +630,6 @@
 				63F661B4016F8BE1E8DDA5B5 /* HealthKitManager.swift */,
 				55B57443B7032DDCF70ACB8C /* HydrationAIService.swift */,
 				32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */,
-				ED02000000000000000002 /* EarthDayEvent.swift */,
 				6862392928A13FBD5E45D6E3 /* LocationManager.swift */,
 				E4A8068B4418852446BD78E6 /* MotionManager.swift */,
 				BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */,
@@ -932,11 +917,6 @@
 			files = (
 				00E5359EB56D89B045DDBDF1 /* AddIntakeView.swift in Sources */,
 				1DCE9DE6A19E823BA1E5079B /* DashboardCard.swift in Sources */,
-				ED01000000000000000001 /* EarthDayBannerCard.swift in Sources */,
-				ED05000000000000000001 /* EarthProgressView.swift in Sources */,
-				ED02000000000000000001 /* EarthDayEvent.swift in Sources */,
-				ED03000000000000000001 /* EarthDayPledgeView.swift in Sources */,
-				ED04000000000000000001 /* EarthInfoView.swift in Sources */,
 				F9760161C65BFA2368DB8094 /* DashboardView.swift in Sources */,
 				A543E5598AAD6E7D7CD5164C /* DateExtensions.swift in Sources */,
 				7077C5CF3469D64E94804983 /* FluidType.swift in Sources */,
