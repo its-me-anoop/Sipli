@@ -279,7 +279,7 @@ function CaptionBlock({
   canvasW: number;
 }) {
   const labelColor = light ? "rgba(28,120,245,0.9)" : "rgba(48,194,163,0.95)";
-  const headlineColor = light ? "#0A1929" : "#FFFFFF";
+  const headlineColor = light ? "#0A1929" : "#F1F3F6";
   return (
     <div style={{ textAlign: align }}>
       <div
@@ -304,6 +304,57 @@ function CaptionBlock({
         }}
       >
         {headline}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Editorial-serif variant of CaptionBlock used by the paywall slides.
+ * Pulls the marketing headline into the same `ui-serif`/`Cambria`/`Georgia`
+ * stack as the in-device "Unlock Sipli Premium." title, with the second word
+ * italicised and tinted lagoon — same two-tone treatment the SwiftUI paywall
+ * uses (`editorialPaywallTitle` in RootView.swift). This is the move that
+ * makes these slides read as Sipli rather than as a generic dark paywall.
+ */
+function EditorialCaption({
+  label,
+  pre,
+  italic,
+  align = "center",
+  canvasW,
+}: {
+  label: string;
+  pre: React.ReactNode;
+  italic: React.ReactNode;
+  align?: "center" | "left" | "right";
+  canvasW: number;
+}) {
+  return (
+    <div style={{ textAlign: align }}>
+      <div
+        style={{
+          fontSize: canvasW * 0.026,
+          fontWeight: 600,
+          color: "rgba(48,194,163,0.95)",
+          letterSpacing: "0.08em",
+          textTransform: "uppercase",
+          marginBottom: canvasW * 0.018,
+        }}
+      >
+        {label}
+      </div>
+      <div
+        style={{
+          fontFamily: 'ui-serif, "Iowan Old Style", "Apple Garamond", Georgia, serif',
+          fontSize: canvasW * 0.098,
+          fontWeight: 500,
+          lineHeight: 1.02,
+          letterSpacing: "-0.025em",
+        }}
+      >
+        <span style={{ color: "#F1F3F6" }}>{pre}</span>
+        <span style={{ color: PAYWALL_LAGOON, fontStyle: "italic" }}>{italic}</span>
       </div>
     </div>
   );
@@ -1319,6 +1370,778 @@ function Slide8() {
 }
 
 /* ═══════════════════════════════════════════════════════
+   PAYWALL — IN-DEVICE UI MOCKUP
+
+   Reproduces PremiumPaywallView (RootView.swift:65) in HTML so each tier
+   can be highlighted independently for App Store screenshots. Designed
+   at the device-screen aspect that fits inside Phone() at 82% scale —
+   roughly 972 × 2106 css px — with all measurements scaled accordingly.
+   Source-of-truth design specs: Theme.swift palette, ProductID enum,
+   PlanOptionCard / PremiumFeaturesCard layouts.
+   ═══════════════════════════════════════════════════════ */
+
+type PaywallTier = "annual" | "annualMonthly" | "monthly";
+
+const PAYWALL_INK = "#F1F3F6";
+const PAYWALL_INK_DIM = "rgba(241,243,246,0.65)";
+const PAYWALL_INK_FAINT = "rgba(241,243,246,0.62)";
+const PAYWALL_INK_OFFWHITE = "#F4F8FF";
+const PAYWALL_LAGOON = "#2B6BFF";
+const PAYWALL_MINT = "#6FE3D2";
+const PAYWALL_SUN = "#FFB23E";
+const PAYWALL_BG_DEEP = "#0A1320";
+const PAYWALL_BG_NAVY = "#0F1929";
+const PAYWALL_CARD = "#1B2538";
+const PAYWALL_CARD_GLASS = "rgba(20,28,42,0.55)";
+const PAYWALL_BORDER = "rgba(255,255,255,0.10)";
+
+function PaywallIcon({ kind, size = 32 }: { kind: string; size?: number }) {
+  const stroke = PAYWALL_LAGOON;
+  const sw = 2.2;
+  const common = {
+    width: size,
+    height: size,
+    viewBox: "0 0 24 24",
+    fill: "none" as const,
+    stroke,
+    strokeWidth: sw,
+    strokeLinecap: "round" as const,
+    strokeLinejoin: "round" as const,
+  };
+  switch (kind) {
+    case "cup":
+      return (
+        <svg {...common}>
+          <path d="M17 8h1a4 4 0 0 1 0 8h-1" />
+          <path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V8z" />
+          <path d="M6 1v3M10 1v3M14 1v3" />
+        </svg>
+      );
+    case "brain":
+      return (
+        <svg {...common}>
+          <path d="M12 5a3 3 0 0 0-5.99-.14 3 3 0 0 0-2.46 4.74 3 3 0 0 0 .14 5.66 3 3 0 0 0 2.32 4.74A3 3 0 0 0 12 19" />
+          <path d="M12 5a3 3 0 0 1 5.99-.14 3 3 0 0 1 2.46 4.74 3 3 0 0 1-.14 5.66 3 3 0 0 1-2.32 4.74A3 3 0 0 1 12 19" />
+        </svg>
+      );
+    case "heart":
+      return (
+        <svg {...common} fill={stroke}>
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />
+        </svg>
+      );
+    case "cloud":
+      return (
+        <svg {...common}>
+          <circle cx="6" cy="7" r="2.5" />
+          <path d="M6 11.5v0" />
+          <path d="M17.5 18a4.5 4.5 0 0 0 0-9 5.5 5.5 0 0 0-10.6.7" />
+          <path d="M5 18h12.5" />
+        </svg>
+      );
+    case "run":
+      return (
+        <svg {...common}>
+          <circle cx="13" cy="4" r="2" fill={stroke} stroke="none" />
+          <path d="M4 22l4-7 4 1 3-4-3-3-3 1-3-1" />
+          <path d="M14 12l4 2 2 6" />
+        </svg>
+      );
+    case "bell":
+      return (
+        <svg {...common}>
+          <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" />
+          <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" />
+          <circle cx="18" cy="6" r="2.2" fill={stroke} stroke="none" />
+        </svg>
+      );
+    case "sparkles":
+      return (
+        <svg {...common} fill={stroke}>
+          <path d="M12 2l1.6 4.4L18 8l-4.4 1.6L12 14l-1.6-4.4L6 8l4.4-1.6L12 2z" />
+          <path d="M19 14l.7 1.9 1.9.7-1.9.7-.7 1.9-.7-1.9-1.9-.7 1.9-.7L19 14z" />
+          <path d="M5 16l.5 1.5 1.5.5-1.5.5L5 20l-.5-1.5L3 18l1.5-.5L5 16z" />
+        </svg>
+      );
+    case "close":
+      return (
+        <svg {...common} stroke={PAYWALL_INK_DIM}>
+          <circle cx="12" cy="12" r="10" />
+          <path d="M9 9l6 6M15 9l-6 6" />
+        </svg>
+      );
+    case "arrow":
+      return (
+        <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={PAYWALL_LAGOON} strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M5 12h14M13 5l7 7-7 7" />
+        </svg>
+      );
+    default:
+      return null;
+  }
+}
+
+const PAYWALL_FEATURES: { kind: string; label: string }[] = [
+  { kind: "cup", label: "Beverage Types" },
+  { kind: "brain", label: "AI Insights" },
+  { kind: "heart", label: "HealthKit Sync" },
+  { kind: "cloud", label: "Weather Goals" },
+  { kind: "run", label: "Activity Goals" },
+  { kind: "bell", label: "Smart Reminders" },
+];
+
+function paywallTierData(tier: PaywallTier) {
+  return [
+    {
+      id: "annual" as const,
+      name: "Annual",
+      desc: "Cheapest, paid upfront",
+      price: "$19.99",
+      suffix: "/yr",
+      badge: "Best Value",
+      commitment: null as string | null,
+      savings: "1 month free",
+    },
+    {
+      id: "annualMonthly" as const,
+      name: "Annual, paid monthly",
+      desc: "Low entry, commitment discount",
+      price: "$1.99",
+      suffix: "/mo",
+      badge: "Recommended",
+      commitment: "12-month commitment",
+      savings: "Save 33% vs Monthly",
+    },
+    {
+      id: "monthly" as const,
+      name: "Monthly",
+      desc: "Maximum flexibility",
+      price: "$2.99",
+      suffix: "/mo",
+      badge: null as string | null,
+      commitment: null as string | null,
+      savings: null as string | null,
+    },
+  ].map((t) => ({ ...t, isSelected: t.id === tier }));
+}
+
+function paywallCTA(tier: PaywallTier): string {
+  switch (tier) {
+    case "annual":
+      return "Try free for 1 month, then $19.99/yr";
+    case "annualMonthly":
+      return "Start Annual Plan, Paid Monthly — $1.99/mo";
+    case "monthly":
+      return "Start Monthly Plan — $2.99/mo";
+  }
+}
+
+function paywallDisclosure(tier: PaywallTier): string {
+  switch (tier) {
+    case "annual":
+      return "Includes a free 1-month trial. Annual subscription renews at $19.99/yr unless canceled. Manage in Settings.";
+    case "annualMonthly":
+      return "12 monthly payments of $1.99 ($23.88 total). Cancelling stops next year's renewal. Manage in Settings.";
+    case "monthly":
+      return "Monthly subscription starts at $2.99/mo and renews unless canceled. Manage in Settings.";
+  }
+}
+
+function PaywallScreen({ tier }: { tier: PaywallTier }) {
+  const tiers = paywallTierData(tier);
+  return (
+    <div
+      style={{
+        position: "absolute",
+        inset: 0,
+        background: `linear-gradient(180deg, ${PAYWALL_BG_NAVY} 0%, ${PAYWALL_BG_DEEP} 60%, #07101C 100%)`,
+        color: PAYWALL_INK,
+        fontFamily:
+          '-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", system-ui, sans-serif',
+        overflow: "hidden",
+      }}
+    >
+      {/* AppWaterBackground-style colored blobs */}
+      <div
+        style={{
+          position: "absolute",
+          width: 760,
+          height: 760,
+          borderRadius: "50%",
+          background: "rgba(43,107,255,0.28)",
+          filter: "blur(96px)",
+          left: -240,
+          top: -240,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          width: 720,
+          height: 720,
+          borderRadius: "50%",
+          background: "rgba(255,178,62,0.10)",
+          filter: "blur(88px)",
+          right: -260,
+          top: 540,
+        }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          width: 820,
+          height: 720,
+          borderRadius: "50%",
+          background: "rgba(255,122,102,0.10)",
+          filter: "blur(96px)",
+          left: 60,
+          bottom: -260,
+        }}
+      />
+
+      {/* Status bar */}
+      <div
+        style={{
+          position: "relative",
+          height: 70,
+          padding: "32px 70px 0 70px",
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "flex-start",
+          fontSize: 26,
+          fontWeight: 600,
+          letterSpacing: "-0.01em",
+        }}
+      >
+        <span>9:41</span>
+        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+          {/* Cellular dots */}
+          <div style={{ display: "flex", gap: 3, alignItems: "flex-end", height: 14 }}>
+            {[5, 8, 11, 14].map((h, i) => (
+              <div
+                key={i}
+                style={{
+                  width: 3,
+                  height: h,
+                  background: PAYWALL_INK,
+                  borderRadius: 1,
+                }}
+              />
+            ))}
+          </div>
+          {/* Wifi (simplified) */}
+          <svg width={20} height={14} viewBox="0 0 20 14" fill={PAYWALL_INK}>
+            <path d="M10 13.6l2-2.4-2-2-2 2 2 2.4zM10 8l4-4-4-4-4 4 4 4z" />
+          </svg>
+          {/* Battery */}
+          <div style={{ display: "flex", alignItems: "center", gap: 1 }}>
+            <div
+              style={{
+                width: 30,
+                height: 14,
+                border: `1.5px solid ${PAYWALL_INK}`,
+                borderRadius: 4,
+                padding: 1.5,
+              }}
+            >
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  background: PAYWALL_INK,
+                  borderRadius: 1.5,
+                }}
+              />
+            </div>
+            <div
+              style={{
+                width: 2,
+                height: 6,
+                background: PAYWALL_INK,
+                borderRadius: 1,
+              }}
+            />
+          </div>
+        </div>
+      </div>
+
+      {/* Content scroll area */}
+      <div
+        style={{
+          position: "absolute",
+          top: 96,
+          left: 56,
+          right: 56,
+          bottom: 0,
+          display: "flex",
+          flexDirection: "column",
+        }}
+      >
+        {/* Close button */}
+        <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: -28 }}>
+          <PaywallIcon kind="close" size={56} />
+        </div>
+
+        {/* Hero icon */}
+        <div style={{ display: "flex", justifyContent: "center", marginTop: 16 }}>
+          <img
+            src="/sipli-icon.png"
+            alt=""
+            style={{ width: 184, height: 252, objectFit: "contain" }}
+            draggable={false}
+          />
+        </div>
+
+        {/* Title — editorial serif, two-tone */}
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: 24,
+            fontFamily: 'ui-serif, "Cambria", "Georgia", serif',
+            fontSize: 76,
+            lineHeight: 1.05,
+            fontWeight: 500,
+            letterSpacing: "-0.02em",
+          }}
+        >
+          <span style={{ color: PAYWALL_INK }}>Unlock </span>
+          <span style={{ color: PAYWALL_LAGOON, fontStyle: "italic" }}>Sipli Premium.</span>
+        </div>
+
+        {/* Subhead */}
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: 20,
+            padding: "0 12px",
+            fontSize: 28,
+            lineHeight: 1.4,
+            color: PAYWALL_INK_DIM,
+          }}
+        >
+          Beverage types · AI insights · HealthKit · Adaptive goals · Smart reminders.
+        </div>
+
+        {/* Premium features card */}
+        <div
+          style={{
+            marginTop: 32,
+            padding: "26px 26px 24px",
+            borderRadius: 32,
+            background: PAYWALL_CARD_GLASS,
+            border: `1px solid ${PAYWALL_BORDER}`,
+            backdropFilter: "blur(28px)",
+            WebkitBackdropFilter: "blur(28px)",
+          }}
+        >
+          <div
+            style={{
+              fontSize: 30,
+              fontWeight: 600,
+              marginBottom: 18,
+              display: "flex",
+              alignItems: "center",
+              gap: 10,
+            }}
+          >
+            <PaywallIcon kind="sparkles" size={28} />
+            <span>Sipli Premium</span>
+          </div>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1fr 1fr",
+              columnGap: 24,
+              rowGap: 18,
+            }}
+          >
+            {PAYWALL_FEATURES.map((f) => (
+              <div
+                key={f.label}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 14,
+                }}
+              >
+                <PaywallIcon kind={f.kind} size={28} />
+                <span style={{ fontSize: 26, fontWeight: 500 }}>{f.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Plan cards */}
+        <div style={{ marginTop: 24, display: "flex", flexDirection: "column", gap: 16 }}>
+          {tiers.map((t) => (
+            <div
+              key={t.id}
+              style={{
+                padding: "24px 26px",
+                borderRadius: 28,
+                background: PAYWALL_CARD,
+                border: t.isSelected
+                  ? `3px solid ${PAYWALL_LAGOON}`
+                  : `1px solid ${PAYWALL_BORDER}`,
+                boxShadow: t.isSelected
+                  ? `0 16px 40px rgba(43,107,255,0.28)`
+                  : "0 2px 8px rgba(0,0,0,0.18)",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                gap: 18,
+              }}
+            >
+              <div style={{ display: "flex", flexDirection: "column", gap: 6, minWidth: 0 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 10, flexWrap: "wrap" }}>
+                  <span style={{ fontSize: 30, fontWeight: 600 }}>{t.name}</span>
+                  {t.badge && (
+                    <span
+                      style={{
+                        background: PAYWALL_SUN,
+                        color: "#1A1304",
+                        fontSize: 17,
+                        fontWeight: 700,
+                        letterSpacing: "0.04em",
+                        textTransform: "uppercase",
+                        padding: "4px 11px",
+                        borderRadius: 14,
+                      }}
+                    >
+                      {t.badge}
+                    </span>
+                  )}
+                </div>
+                <span style={{ fontSize: 22, color: PAYWALL_INK_DIM }}>{t.desc}</span>
+                {t.commitment && (
+                  <span
+                    style={{
+                      fontSize: 21,
+                      fontWeight: 600,
+                      color: PAYWALL_INK,
+                      marginTop: 2,
+                    }}
+                  >
+                    {t.commitment}
+                  </span>
+                )}
+                {t.savings && (
+                  <span
+                    style={{
+                      fontSize: 20,
+                      fontWeight: 600,
+                      color: PAYWALL_MINT,
+                      marginTop: 2,
+                    }}
+                  >
+                    {t.savings}
+                  </span>
+                )}
+              </div>
+              <div
+                style={{
+                  textAlign: "right",
+                  whiteSpace: "nowrap",
+                  flexShrink: 0,
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: 40,
+                    fontWeight: 700,
+                    // On the selected card the lagoon ring + lagoon price
+                    // wash into one another. Promote the price to ink so the
+                    // chosen tier's number is the brightest thing on screen.
+                    color: t.isSelected ? PAYWALL_INK : PAYWALL_LAGOON,
+                    letterSpacing: "-0.02em",
+                    lineHeight: 1.1,
+                  }}
+                >
+                  {t.price}
+                </span>
+                <span
+                  style={{
+                    fontSize: 22,
+                    fontWeight: 600,
+                    color: t.isSelected ? PAYWALL_INK_DIM : PAYWALL_LAGOON,
+                    lineHeight: 1,
+                  }}
+                >
+                  {t.suffix}
+                </span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        {/* Disclosure */}
+        <div
+          style={{
+            marginTop: 22,
+            fontSize: 17,
+            lineHeight: 1.45,
+            textAlign: "center",
+            color: PAYWALL_INK_FAINT,
+            padding: "0 12px",
+          }}
+        >
+          {paywallDisclosure(tier)}
+        </div>
+
+        {/* CTA — shadow dropped because PhoneWithUI clips it at the device
+            screen radius (the bloom never makes it past the corner mask). */}
+        <div
+          style={{
+            marginTop: 22,
+            height: 96,
+            borderRadius: 48,
+            background: PAYWALL_LAGOON,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: 14,
+            padding: "0 28px",
+          }}
+        >
+          <span
+            style={{
+              fontSize: 26,
+              fontWeight: 600,
+              color: PAYWALL_INK_OFFWHITE,
+              letterSpacing: "-0.005em",
+            }}
+          >
+            {paywallCTA(tier)}
+          </span>
+          <div
+            style={{
+              width: 44,
+              height: 44,
+              borderRadius: 22,
+              background: PAYWALL_INK_OFFWHITE,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexShrink: 0,
+            }}
+          >
+            <PaywallIcon kind="arrow" size={22} />
+          </div>
+        </div>
+
+        {/* Restore */}
+        <div
+          style={{
+            textAlign: "center",
+            marginTop: 18,
+            fontSize: 22,
+            color: PAYWALL_LAGOON,
+            fontWeight: 500,
+          }}
+        >
+          Restore Purchase
+        </div>
+
+        {/* Footer */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "space-between",
+            marginTop: 14,
+            fontSize: 18,
+            color: PAYWALL_LAGOON,
+            padding: "0 14px",
+            fontWeight: 500,
+          }}
+        >
+          <span>Privacy Policy</span>
+          <span>Terms of Use</span>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* In-device paywall + marketing caption — three slide variants */
+
+function PhoneWithUI({
+  children,
+  style,
+  className = "",
+}: {
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+  className?: string;
+}) {
+  return (
+    <div
+      className={`relative ${className}`}
+      style={{ aspectRatio: `${MK_W}/${MK_H}`, ...style }}
+    >
+      <img
+        src="/mockup.png"
+        alt=""
+        className="block w-full h-full"
+        draggable={false}
+      />
+      <div
+        className="absolute z-10 overflow-hidden"
+        style={{
+          left: `${SC_L}%`,
+          top: `${SC_T}%`,
+          width: `${SC_W}%`,
+          height: `${SC_H}%`,
+          borderRadius: `${SC_RX}% / ${SC_RY}%`,
+        }}
+      >
+        {children}
+      </div>
+    </div>
+  );
+}
+
+function PaywallAnnualSlide() {
+  return (
+    <DarkOceanBg
+      blobs={
+        <>
+          <Blob color={BRAND.lagoon} size={620} x={-180} y={300} blur={170} opacity={0.32} />
+          <Blob color={BRAND.mint} size={460} x={780} y={1700} blur={140} opacity={0.18} />
+          <Blob color={BRAND.sun} size={360} x={900} y={500} blur={130} opacity={0.14} />
+        </>
+      }
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          paddingTop: H * 0.07,
+          paddingLeft: W * 0.08,
+          paddingRight: W * 0.08,
+          alignItems: "center",
+        }}
+      >
+        <EditorialCaption
+          canvasW={W}
+          label="1 Month Free"
+          pre={<>A month of Premium,<br /></>}
+          italic={<>on us.</>}
+        />
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "center",
+            width: "100%",
+          }}
+        >
+          <PhoneWithUI style={{ width: "82%", transform: "translateY(12%)" }}>
+            <PaywallScreen tier="annual" />
+          </PhoneWithUI>
+        </div>
+      </div>
+    </DarkOceanBg>
+  );
+}
+
+function PaywallAnnualMonthlySlide() {
+  return (
+    <DarkOceanBg
+      blobs={
+        <>
+          <Blob color={BRAND.lagoon} size={580} x={760} y={400} blur={170} opacity={0.32} />
+          <Blob color={BRAND.lavender} size={500} x={-180} y={1500} blur={150} opacity={0.22} />
+          <Blob color={BRAND.mint} size={360} x={300} y={2200} blur={130} opacity={0.16} />
+        </>
+      }
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          paddingTop: H * 0.07,
+          paddingLeft: W * 0.08,
+          paddingRight: W * 0.08,
+        }}
+      >
+        <EditorialCaption
+          canvasW={W}
+          label="Recommended"
+          align="left"
+          pre={<>A year,<br /></>}
+          italic={<>paid in sips.</>}
+        />
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "center",
+            width: "100%",
+          }}
+        >
+          <PhoneWithUI style={{ width: "82%", transform: "translateY(12%)" }}>
+            <PaywallScreen tier="annualMonthly" />
+          </PhoneWithUI>
+        </div>
+      </div>
+    </DarkOceanBg>
+  );
+}
+
+function PaywallMonthlySlide() {
+  return (
+    <DarkOceanBg
+      blobs={
+        <>
+          <Blob color={BRAND.mint} size={540} x={-200} y={500} blur={160} opacity={0.24} />
+          <Blob color={BRAND.lagoon} size={460} x={760} y={1500} blur={140} opacity={0.22} />
+          <Blob color={BRAND.peach} size={340} x={200} y={2200} blur={130} opacity={0.14} />
+        </>
+      }
+    >
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          height: "100%",
+          paddingTop: H * 0.07,
+          paddingLeft: W * 0.08,
+          paddingRight: W * 0.08,
+        }}
+      >
+        <EditorialCaption
+          canvasW={W}
+          label="No Commitment"
+          align="right"
+          pre={<>Sip steady.<br /></>}
+          italic={<>Cancel anytime.</>}
+        />
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            alignItems: "flex-end",
+            justifyContent: "center",
+            width: "100%",
+          }}
+        >
+          <PhoneWithUI style={{ width: "82%", transform: "translateY(12%)" }}>
+            <PaywallScreen tier="monthly" />
+          </PhoneWithUI>
+        </div>
+      </div>
+    </DarkOceanBg>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════
    iPAD SLIDES
    ═══════════════════════════════════════════════════════ */
 
@@ -1480,6 +2303,9 @@ const IPHONE_SCREENSHOTS: ScreenshotEntry[] = [
   { name: "diary", component: Slide6 },
   { name: "widgets", component: Slide7 },
   { name: "more", component: Slide8 },
+  { name: "paywall-annual", component: PaywallAnnualSlide },
+  { name: "paywall-annual-monthly", component: PaywallAnnualMonthlySlide },
+  { name: "paywall-monthly", component: PaywallMonthlySlide },
 ];
 
 /**
@@ -1973,6 +2799,14 @@ function DeviceSection({
 }
 
 export default function ScreenshotsPage() {
+  // Dev helper: expose html-to-image's toJpeg on window so a headless capture
+  // pipeline can grab data URLs directly. No-op in production builds.
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "production") {
+      (window as unknown as { __toJpeg?: typeof toJpeg }).__toJpeg = toJpeg;
+    }
+  }, []);
+
   return (
     <div style={{ minHeight: "100vh", background: "#0A0A0A", padding: "40px 32px" }}>
       <h1 style={{ color: "white", fontSize: 28, fontWeight: 700, margin: "0 0 40px 0" }}>
