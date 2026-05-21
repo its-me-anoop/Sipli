@@ -68,7 +68,7 @@ struct WeightStep: View {
     private var headline: some View {
         (Text("You weigh\n").foregroundStyle(OnboardingPalette.ink)
             + Text("about how much?").italic().foregroundStyle(OnboardingPalette.water))
-            .font(.editorialSerif(40))
+            .font(.editorialSerif(40, relativeTo: .largeTitle))
             .lineSpacing(-2)
     }
 
@@ -76,14 +76,14 @@ struct WeightStep: View {
         VStack(alignment: .leading, spacing: 6) {
             HStack(alignment: .lastTextBaseline, spacing: 8) {
                 Text("\(Int(state.weight))")
-                    .font(.editorialSerif(96, weight: .regular))
+                    .font(.editorialSerif(96, weight: .regular, relativeTo: .largeTitle))
                     .foregroundStyle(OnboardingPalette.ink)
                     .id(weightDisplayKey)
                     .contentTransition(.numericText())
                     .minimumScaleFactor(0.55)
                     .lineLimit(1)
                 Text(unit.uppercased())
-                    .font(.sipliMono(16, weight: .semibold))
+                    .font(.sipliMono(16, weight: .semibold, relativeTo: .body))
                     .foregroundStyle(OnboardingPalette.ink3)
                     .padding(.bottom, 12)
             }
@@ -204,7 +204,7 @@ struct WeightStep: View {
                 Spacer()
                 Text("\(Int(range.lowerBound))")
             }
-            .font(.sipliMono(11, weight: .medium))
+            .font(.sipliMono(11, weight: .medium, relativeTo: .caption))
             .foregroundStyle(OnboardingPalette.ink3)
             .frame(height: 240)
         }

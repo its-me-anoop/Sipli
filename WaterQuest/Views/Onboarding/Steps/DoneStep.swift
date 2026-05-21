@@ -44,7 +44,7 @@ struct DoneStep: View {
 
                     (Text("You're set,\n").foregroundStyle(OnboardingPalette.ink)
                         + Text("\(firstName).").italic().foregroundStyle(OnboardingPalette.water))
-                        .font(.editorialSerif(38))
+                        .font(.editorialSerif(38, relativeTo: .largeTitle))
                         .multilineTextAlignment(.center)
                         .padding(.top, 18)
 

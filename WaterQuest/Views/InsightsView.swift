@@ -175,7 +175,7 @@ struct InsightsView: View {
             HStack(alignment: .center, spacing: 8) {
                 (Text("Your hydration ").foregroundStyle(Theme.ink)
                     + Text("trend.").italic().foregroundStyle(Theme.lagoon))
-                    .font(Theme.editorialSerif(isRegular ? 32 : 28))
+                    .font(Theme.editorialSerif(isRegular ? 32 : 28, relativeTo: .title))
                 Spacer(minLength: 0)
             }
 

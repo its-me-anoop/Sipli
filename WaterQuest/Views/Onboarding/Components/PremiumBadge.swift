@@ -8,7 +8,7 @@ struct PremiumBadge: View {
             Image(systemName: "sparkles")
                 .font(.system(size: 9, weight: .bold))
             Text("Premium")
-                .font(.sipliMono(11, weight: .semibold))
+                .font(.sipliMono(11, weight: .semibold, relativeTo: .caption))
                 .tracking(0.4)
         }
         .foregroundStyle(OnboardingPalette.sun)

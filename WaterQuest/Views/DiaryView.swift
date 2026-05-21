@@ -116,20 +116,20 @@ struct DiaryView: View {
         HStack(alignment: .center) {
             VStack(alignment: .leading, spacing: 6) {
                 Text(selectedDate, style: .date)
-                    .font(Theme.editorialSerif(22))
+                    .font(Theme.editorialSerif(22, relativeTo: .title2))
                     .foregroundStyle(Theme.ink)
 
                 HStack(spacing: 6) {
                     Text("Total")
-                        .font(Theme.sipliMono(10, weight: .semibold))
+                        .font(Theme.sipliMono(10, weight: .semibold, relativeTo: .caption2))
                         .tracking(0.6)
                         .foregroundStyle(Theme.textSecondary)
                     Text(Formatters.volumeString(ml: dailyTotal, unit: store.profile.unitSystem))
-                        .font(Theme.editorialSerif(22))
+                        .font(Theme.editorialSerif(22, relativeTo: .title2))
                         .foregroundStyle(Theme.lagoon)
                     if goalMet {
                         Label("Goal met", systemImage: "checkmark.circle.fill")
-                            .font(Theme.sipliMono(10, weight: .semibold))
+                            .font(Theme.sipliMono(10, weight: .semibold, relativeTo: .caption2))
                             .tracking(0.6)
                             .foregroundStyle(Theme.mint)
                             .padding(.leading, 4)
@@ -141,11 +141,11 @@ struct DiaryView: View {
 
             VStack(alignment: .trailing, spacing: 2) {
                 Text("Goal")
-                    .font(Theme.sipliMono(10, weight: .semibold))
+                    .font(Theme.sipliMono(10, weight: .semibold, relativeTo: .caption2))
                     .tracking(0.6)
                     .foregroundStyle(Theme.textSecondary)
                 Text(Formatters.volumeString(ml: store.dailyGoal.totalML, unit: store.profile.unitSystem))
-                    .font(Theme.editorialSerif(22))
+                    .font(Theme.editorialSerif(22, relativeTo: .title2))
                     .foregroundStyle(Theme.lagoon)
             }
         }

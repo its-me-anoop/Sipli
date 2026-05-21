@@ -100,14 +100,14 @@ struct WelcomeStep: View {
             HStack(spacing: 8) {
                 SipliMark(size: 24)
                 Text("SIPLI")
-                    .font(.sipliMono(12, weight: .semibold))
+                    .font(.sipliMono(12, weight: .semibold, relativeTo: .caption))
                     .tracking(1.6)
                     .foregroundStyle(OnboardingPalette.ink)
             }
 
             (Text("Drink water\nlike you ").foregroundStyle(OnboardingPalette.ink)
             + Text("mean it.").italic().foregroundStyle(OnboardingPalette.water))
-                .font(.editorialSerif(46))
+                .font(.editorialSerif(46, relativeTo: .largeTitle))
                 .lineSpacing(-2)
 
             Text("A hydration habit that actually fits in your life. No streaks to lose sleep over.")

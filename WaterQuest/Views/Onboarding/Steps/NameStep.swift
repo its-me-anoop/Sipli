@@ -58,7 +58,7 @@ struct NameStep: View {
     private var headline: some View {
         (Text("What should we\n").foregroundStyle(OnboardingPalette.ink)
             + Text("call you?").italic().foregroundStyle(OnboardingPalette.water))
-            .font(.editorialSerif(44))
+            .font(.editorialSerif(44, relativeTo: .largeTitle))
             .lineSpacing(-3)
     }
 

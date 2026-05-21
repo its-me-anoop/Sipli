@@ -64,7 +64,7 @@ struct NotificationsStep: View {
     private var headline: some View {
         (Text("How loud\nshould we ").foregroundStyle(OnboardingPalette.ink)
             + Text("nudge?").italic().foregroundStyle(OnboardingPalette.water))
-            .font(.editorialSerif(40))
+            .font(.editorialSerif(40, relativeTo: .largeTitle))
             .lineSpacing(-2)
     }
 
@@ -98,7 +98,7 @@ struct NotificationsStep: View {
                             .stroke(OnboardingPalette.ink.opacity(0.08), lineWidth: 1)
                     )
                     Text("SIPLI")
-                        .font(.sipliMono(11, weight: .semibold))
+                        .font(.sipliMono(11, weight: .semibold, relativeTo: .caption))
                         .tracking(0.8)
                         .foregroundStyle(OnboardingPalette.ink3)
                     Spacer()
@@ -153,7 +153,7 @@ struct NotificationsStep: View {
         } label: {
             VStack(spacing: 4) {
                 Text(c.perDayLabel)
-                    .font(.editorialSerif(22))
+                    .font(.editorialSerif(22, relativeTo: .title2))
                     .foregroundStyle(selected ? OnboardingPalette.paper : OnboardingPalette.ink)
                 Text(c.label)
                     .font(.system(size: 14, weight: .semibold))

@@ -52,7 +52,7 @@ struct ScheduleStep: View {
     private var headline: some View {
         (Text("When are you\n").foregroundStyle(OnboardingPalette.ink)
             + Text("awake?").italic().foregroundStyle(OnboardingPalette.water))
-            .font(.editorialSerif(40))
+            .font(.editorialSerif(40, relativeTo: .largeTitle))
             .lineSpacing(-2)
     }
 
@@ -77,7 +77,7 @@ struct ScheduleStep: View {
             // Hour labels at 0/6/12/18
             ForEach([0, 6, 12, 18], id: \.self) { h in
                 Text(String(format: "%02d", h))
-                    .font(.sipliMono(11, weight: .medium))
+                    .font(.sipliMono(11, weight: .medium, relativeTo: .caption))
                     .foregroundStyle(OnboardingPalette.ink3)
                     .offset(y: -148)
                     .rotationEffect(.degrees(Double(h) / 24.0 * 360))
@@ -100,11 +100,11 @@ struct ScheduleStep: View {
             // Center text
             VStack(spacing: 2) {
                 Text(String(format: "%.1fh", state.awakeHours))
-                    .font(.editorialSerif(44, weight: .regular))
+                    .font(.editorialSerif(44, weight: .regular, relativeTo: .largeTitle))
                     .foregroundStyle(OnboardingPalette.ink)
                     .contentTransition(.numericText())
                 Text("AWAKE")
-                    .font(.sipliMono(10, weight: .semibold))
+                    .font(.sipliMono(10, weight: .semibold, relativeTo: .caption2))
                     .tracking(2)
                     .foregroundStyle(OnboardingPalette.ink3)
             }
@@ -218,11 +218,11 @@ struct ScheduleStep: View {
             }
             VStack(alignment: .leading, spacing: 1) {
                 Text(label)
-                    .font(.sipliMono(11, weight: .medium))
+                    .font(.sipliMono(11, weight: .medium, relativeTo: .caption))
                     .tracking(0.6)
                     .foregroundStyle(OnboardingPalette.ink3)
                 Text(value)
-                    .font(.editorialSerif(22, weight: .semibold))
+                    .font(.editorialSerif(22, weight: .semibold, relativeTo: .title2))
                     .foregroundStyle(OnboardingPalette.ink)
             }
             Spacer()

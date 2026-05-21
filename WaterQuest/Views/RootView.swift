@@ -151,7 +151,7 @@ struct PremiumPaywallView: View {
     @ViewBuilder
     private var editorialPaywallTitle: some View {
         let parts = context.title.split(separator: " ", maxSplits: 1).map(String.init)
-        let baseFont = Theme.editorialSerif(34)
+        let baseFont = Theme.editorialSerif(34, relativeTo: .largeTitle)
         if parts.count == 2 {
             (Text(parts[0] + " ").foregroundStyle(Theme.ink)
                 + Text(parts[1] + ".").italic().foregroundStyle(Theme.lagoon))

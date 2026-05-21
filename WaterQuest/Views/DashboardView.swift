@@ -733,11 +733,11 @@ private struct HydrationSummaryCard: View {
 
                 VStack(alignment: .leading, spacing: 2) {
                     Text(Formatters.volumeString(ml: todayTotalML, unit: unitSystem))
-                        .font(Theme.editorialSerif(isRegular ? 36 : 32))
+                        .font(Theme.editorialSerif(isRegular ? 36 : 32, relativeTo: .title))
                         .foregroundStyle(Theme.lagoon)
                         .contentTransition(.numericText())
                     Text("of \(Formatters.volumeString(ml: goalTotalML, unit: unitSystem)) today")
-                        .font(Theme.sipliMono(11, weight: .medium))
+                        .font(Theme.sipliMono(11, weight: .medium, relativeTo: .caption))
                         .tracking(0.6)
                         .foregroundStyle(Theme.textSecondary)
                 }
@@ -786,7 +786,7 @@ private struct HydrationSummaryCard: View {
     @ViewBuilder
     private var editorialGreeting: some View {
         let parts = greeting.split(separator: ",", maxSplits: 1).map(String.init)
-        let baseFont = Theme.editorialSerif(isRegular ? 38 : 32)
+        let baseFont = Theme.editorialSerif(isRegular ? 38 : 32, relativeTo: .largeTitle)
         if parts.count == 2 {
             (Text(parts[0] + ",").foregroundStyle(Theme.ink)
                 + Text(parts[1])

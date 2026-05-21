@@ -81,12 +81,14 @@ enum OnboardingPalette {
 
 extension Font {
     /// Editorial serif for headlines — falls back to SF Serif on iOS (close to Instrument Serif).
-    static func editorialSerif(_ size: CGFloat, weight: Font.Weight = .regular) -> Font {
-        .system(size: size, weight: weight, design: .serif)
+    static func editorialSerif(_ size: CGFloat, weight: Font.Weight = .regular, relativeTo textStyle: Font.TextStyle = .body) -> Font {
+        Font.custom(".AppleSystemUIFontSerif", size: size, relativeTo: textStyle)
+            .weight(weight)
     }
 
     /// Mono face for steppers, labels, numerical readouts. SF Mono on iOS (close to Geist Mono).
-    static func sipliMono(_ size: CGFloat, weight: Font.Weight = .medium) -> Font {
-        .system(size: size, weight: weight, design: .monospaced)
+    static func sipliMono(_ size: CGFloat, weight: Font.Weight = .medium, relativeTo textStyle: Font.TextStyle = .body) -> Font {
+        Font.custom(".AppleSystemUIFontMonospaced", size: size, relativeTo: textStyle)
+            .weight(weight)
     }
 }

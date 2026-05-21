@@ -34,8 +34,10 @@ struct AnswerChipStack: View {
     }
 
     private var chipStackHeight: CGFloat {
-        // Reserve enough room for the front chip plus visible lips of stacked chips.
-        expanded ? CGFloat(chips.count) * 48 : 64
+        // The front chip is ~44pt tall. In collapsed state the deepest stacking
+        // offset is 36pt upward, so the frame must be at least 64+36=100 to
+        // avoid clipping chips at 3+ depth. Expanded rows are each 48pt.
+        expanded ? CGFloat(chips.count) * 48 : 100
     }
 
     private func chipView(_ chip: OnboardingAnswerChip, indexFromTop: Int, isFront: Bool) -> some View {
@@ -86,12 +88,12 @@ private struct ChipBubble: View {
     var body: some View {
         HStack(alignment: .firstTextBaseline, spacing: 8) {
             Text(chip.label)
-                .font(.sipliMono(10, weight: .medium))
+                .font(.sipliMono(10, weight: .medium, relativeTo: .caption2))
                 .tracking(1)
                 .foregroundStyle(isFront ? Color.white.opacity(0.55) : OnboardingPalette.ink3)
 
             Text(chip.value)
-                .font(.editorialSerif(16))
+                .font(.editorialSerif(16, relativeTo: .body))
                 .italic()
                 .foregroundStyle(isFront ? Color.white : OnboardingPalette.ink)
         }

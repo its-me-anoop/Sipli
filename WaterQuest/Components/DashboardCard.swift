@@ -14,13 +14,13 @@ struct DashboardCard<Content: View>: View {
                         .foregroundStyle(Theme.lagoon)
                         .font(.body.weight(.semibold))
                     Text(title.uppercased())
-                        .font(Theme.sipliMono(11, weight: .semibold))
+                        .font(Theme.sipliMono(11, weight: .semibold, relativeTo: .caption))
                         .tracking(1.2)
                         .foregroundStyle(Theme.textSecondary)
                 }
             } else if !title.isEmpty {
                 Text(title.uppercased())
-                    .font(Theme.sipliMono(11, weight: .semibold))
+                    .font(Theme.sipliMono(11, weight: .semibold, relativeTo: .caption))
                     .tracking(1.2)
                     .foregroundStyle(Theme.textSecondary)
             }

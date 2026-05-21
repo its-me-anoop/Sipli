@@ -67,7 +67,7 @@ struct ActivityStep: View {
     private var headline: some View {
         (Text("How active\n").foregroundStyle(OnboardingPalette.ink)
             + Text("is your average day?").italic().foregroundStyle(OnboardingPalette.water))
-            .font(.editorialSerif(40))
+            .font(.editorialSerif(40, relativeTo: .largeTitle))
             .lineSpacing(-2)
     }
 
@@ -100,7 +100,7 @@ struct ActivityStep: View {
                 Spacer(minLength: 4)
 
                 Text(opt.mult)
-                    .font(.sipliMono(12, weight: .semibold))
+                    .font(.sipliMono(12, weight: .semibold, relativeTo: .caption))
                     .foregroundStyle(isSelected ? OnboardingPalette.ink : OnboardingPalette.ink3)
                     .padding(.horizontal, 8)
                     .padding(.vertical, 4)

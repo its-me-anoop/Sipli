@@ -115,7 +115,7 @@ struct TargetStep: View {
     private var headline: some View {
         (Text("Pour the perfect\n").foregroundStyle(OnboardingPalette.ink)
             + Text("daily amount.").italic().foregroundStyle(OnboardingPalette.water))
-            .font(.editorialSerif(40))
+            .font(.editorialSerif(40, relativeTo: .largeTitle))
             .lineSpacing(-2)
     }
 
@@ -135,11 +135,11 @@ struct TargetStep: View {
             VStack(alignment: .trailing, spacing: 4) {
                 HStack(alignment: .lastTextBaseline, spacing: 4) {
                     Text(displayedTopLine)
-                        .font(.editorialSerif(64, weight: .regular))
+                        .font(.editorialSerif(64, weight: .regular, relativeTo: .largeTitle))
                         .foregroundStyle(OnboardingPalette.ink)
                         .contentTransition(.numericText())
                     Text(displayedUnit)
-                        .font(.sipliMono(18, weight: .semibold))
+                        .font(.sipliMono(18, weight: .semibold, relativeTo: .body))
                         .foregroundStyle(OnboardingPalette.ink3)
                 }
                 .animation(.spring(response: 0.25, dampingFraction: 0.55), value: displayedML)
@@ -154,7 +154,7 @@ struct TargetStep: View {
                             .font(.system(size: 10, weight: .bold))
                         Text("AI calibrated")
                     }
-                    .font(.sipliMono(11, weight: .semibold))
+                    .font(.sipliMono(11, weight: .semibold, relativeTo: .caption))
                     .foregroundStyle(OnboardingPalette.sun)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 4)
@@ -272,7 +272,7 @@ struct TargetStep: View {
                     Image(systemName: "applelogo")
                         .font(.system(size: 9, weight: .medium))
                     Text("Weather")
-                        .font(.sipliMono(10, weight: .medium))
+                        .font(.sipliMono(10, weight: .medium, relativeTo: .caption2))
                         .tracking(0.6)
                     Spacer()
                     Image(systemName: "arrow.up.right")
@@ -324,7 +324,7 @@ struct TargetStep: View {
                     .foregroundStyle(OnboardingPalette.ink3)
                 Spacer()
                 Text(formatVolume(ml: totalML))
-                    .font(.editorialSerif(28, weight: .regular))
+                    .font(.editorialSerif(28, weight: .regular, relativeTo: .title))
                     .foregroundStyle(OnboardingPalette.water)
                     .contentTransition(.numericText())
             }

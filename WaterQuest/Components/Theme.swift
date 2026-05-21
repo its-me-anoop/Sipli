@@ -256,12 +256,16 @@ enum Theme {
     /// Editorial serif (SF Serif italic-friendly) — used for headlines and
     /// numerical readouts in the onboarding aesthetic. Falls back gracefully
     /// to `.system(... design: .serif)` on every platform.
-    static func editorialSerif(_ size: CGFloat, weight: Font.Weight = .regular) -> Font {
-        .system(size: size, weight: weight, design: .serif)
+    static func editorialSerif(_ size: CGFloat, weight: Font.Weight = .regular, relativeTo textStyle: Font.TextStyle = .body) -> Font {
+        // `.custom(_:size:relativeTo:)` opts into UIFontMetrics scaling for the given TextStyle,
+        // while the postfix `.design(.serif)` keeps the SF Serif design variant.
+        Font.custom(".AppleSystemUIFontSerif", size: size, relativeTo: textStyle)
+            .weight(weight)
     }
     /// Mono face for steppers, eyebrows, numerical labels.
-    static func sipliMono(_ size: CGFloat, weight: Font.Weight = .medium) -> Font {
-        .system(size: size, weight: weight, design: .monospaced)
+    static func sipliMono(_ size: CGFloat, weight: Font.Weight = .medium, relativeTo textStyle: Font.TextStyle = .body) -> Font {
+        Font.custom(".AppleSystemUIFontMonospaced", size: size, relativeTo: textStyle)
+            .weight(weight)
     }
 
     static func displayFont(_ style: Font.TextStyle = .title) -> Font {
