@@ -22,7 +22,7 @@
     "_billingGracePeriodEnabled" : false,
     "_billingIssuesEnabled" : false,
     "_developerTeamID" : "K6623R3GP5",
-    "_disableDialogs" : false,
+    "_disableDialogs" : true,
     "_failTransactionsEnabled" : false,
     "_lastSynchronizedDate" : 795048392.46428895,
     "_locale" : "en_US",

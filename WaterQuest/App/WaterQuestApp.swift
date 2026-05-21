@@ -61,6 +61,11 @@ struct WaterQuestApp: App {
             .environmentObject(subscriptionManager)
             .preferredColorScheme(appTheme.colorScheme)
             .task {
+                // Skip live StoreKit and notification setup during unit tests.
+                // SKTestSession cannot take over while the app host is issuing
+                // Product.products() against the real store; the two sessions
+                // conflict and produce SKInternalErrorDomain Code=3.
+                guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil else { return }
                 store.notificationScheduler = notifier
                 NotificationHandler.shared.store = store
                 NotificationHandler.shared.deepLinkForwarder = deepLinkForwarder
@@ -86,6 +91,7 @@ struct WaterQuestApp: App {
                 notifier.scheduleReminders(context: store.buildNotificationContext())
             }
             .onChange(of: scenePhase) { _, phase in
+                guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil else { return }
                 if phase == .active {
                     Task {
                         await subscriptionManager.refreshStatus()
