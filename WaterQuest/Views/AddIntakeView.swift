@@ -12,6 +12,9 @@ struct AddIntakeView: View {
     @State private var selectedFluidType: FluidType = .water
     @State private var showSavedBanner = false
     @State private var rippleTrigger = 0
+    @State private var amountLabelScale: Double = 1.0
+    @State private var lastHapticThreshold: Int = -1
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var isRegular: Bool { sizeClass == .regular }
 
@@ -30,6 +33,8 @@ struct AddIntakeView: View {
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Text("\(Int(amount))")
                         .font(.system(size: isRegular ? 56 : 44, weight: .bold, design: .default))
+                        .scaleEffect(amountLabelScale)
+                        .animation(reduceMotion ? .none : Theme.quickSpring, value: amountLabelScale)
                     Text(store.profile.unitSystem.volumeUnit)
                         .font(isRegular ? .title2 : .title3)
                         .foregroundStyle(.secondary)
@@ -38,8 +43,22 @@ struct AddIntakeView: View {
 
                 Slider(value: $amount, in: amountRange, step: amountStep)
                     .tint(selectedFluidType.color)
-                    .onChange(of: amount) {
+                    .onChange(of: amount) { _, newValue in
                         selectedPreset = nil
+                        // Scale up the label while dragging.
+                        if !reduceMotion {
+                            amountLabelScale = 1.06
+                            withAnimation(Theme.quickSpring) {
+                                amountLabelScale = 1.0
+                            }
+                        }
+                        // Haptic at each 100 ml threshold — rate-limited so
+                        // we only fire once per crossing, not on every tick.
+                        let threshold = Int(newValue / 100)
+                        if threshold != lastHapticThreshold {
+                            lastHapticThreshold = threshold
+                            Haptics.selection()
+                        }
                     }
             }
 

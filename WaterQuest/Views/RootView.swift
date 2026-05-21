@@ -497,6 +497,19 @@ private struct PlanOptionCard: View {
     let isAvailable: Bool
     let action: () -> Void
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private var cardScale: Double {
+        guard !reduceMotion else { return 1.0 }
+        return isSelected ? 1.02 : (isAvailable ? 0.985 : 1.0)
+    }
+
+    private var cardOpacity: Double {
+        guard isAvailable else { return 0.7 }
+        guard !reduceMotion else { return 1.0 }
+        return isSelected ? 1.0 : 0.7
+    }
+
     var body: some View {
         Button(action: action) {
             HStack(spacing: 14) {
@@ -560,9 +573,17 @@ private struct PlanOptionCard: View {
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
                     .stroke(isSelected ? Theme.lagoon : Theme.glassBorder.opacity(0.6), lineWidth: isSelected ? 2 : 1)
             )
-            .opacity(isAvailable ? 1 : 0.7)
+            .shadow(
+                color: isSelected ? Theme.lagoon.opacity(reduceMotion ? 0 : 0.18) : .clear,
+                radius: 8,
+                x: 0,
+                y: 4
+            )
         }
         .buttonStyle(.plain)
+        .scaleEffect(cardScale)
+        .opacity(cardOpacity)
+        .animation(reduceMotion ? .none : Theme.quickSpring, value: isSelected)
     }
 }
 

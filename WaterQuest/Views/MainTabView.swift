@@ -31,6 +31,7 @@ struct MainTabView: View {
     @State private var selectedTab: AppTab = .dashboard
     @State private var showAddIntake = false
     @Environment(\.deepLinkAddIntake) private var deepLinkAddIntake
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         tabContent
@@ -74,6 +75,7 @@ struct MainTabView: View {
                     DashboardView()
                 }
                 .toolbarBackground(.hidden, for: .navigationBar)
+                .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
             }
 
             Tab(AppTab.insights.title, systemImage: AppTab.insights.symbol, value: .insights) {
@@ -81,6 +83,7 @@ struct MainTabView: View {
                     InsightsView()
                 }
                 .toolbarBackground(.hidden, for: .navigationBar)
+                .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
             }
 
             Tab(AppTab.diary.title, systemImage: AppTab.diary.symbol, value: .diary) {
@@ -88,6 +91,7 @@ struct MainTabView: View {
                     DiaryView()
                 }
                 .toolbarBackground(.hidden, for: .navigationBar)
+                .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
             }
 
             Tab(AppTab.settings.title, systemImage: AppTab.settings.symbol, value: .settings) {
@@ -95,6 +99,7 @@ struct MainTabView: View {
                     SettingsView()
                 }
                 .toolbarBackground(.hidden, for: .navigationBar)
+                .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
             }
         }
         .tabViewStyle(.tabBarOnly)
@@ -109,6 +114,7 @@ struct MainTabView: View {
                 DashboardView()
             }
             .toolbarBackground(.hidden, for: .navigationBar)
+            .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
             .tabItem { Label(AppTab.dashboard.title, systemImage: AppTab.dashboard.symbol) }
             .tag(AppTab.dashboard)
 
@@ -116,6 +122,7 @@ struct MainTabView: View {
                 InsightsView()
             }
             .toolbarBackground(.hidden, for: .navigationBar)
+            .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
             .tabItem { Label(AppTab.insights.title, systemImage: AppTab.insights.symbol) }
             .tag(AppTab.insights)
 
@@ -123,6 +130,7 @@ struct MainTabView: View {
                 DiaryView()
             }
             .toolbarBackground(.hidden, for: .navigationBar)
+            .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
             .tabItem { Label(AppTab.diary.title, systemImage: AppTab.diary.symbol) }
             .tag(AppTab.diary)
 
@@ -130,6 +138,7 @@ struct MainTabView: View {
                 SettingsView()
             }
             .toolbarBackground(.hidden, for: .navigationBar)
+            .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
             .tabItem { Label(AppTab.settings.title, systemImage: AppTab.settings.symbol) }
             .tag(AppTab.settings)
         }
@@ -172,6 +181,26 @@ private struct GlassFABStyle: ViewModifier {
         content
             .background(Theme.lagoon, in: Circle())
             .shadow(color: Theme.lagoon.opacity(0.4), radius: 12, x: 0, y: 6)
+    }
+}
+
+// MARK: - Tab Content Transition
+
+/// Applies a cross-fade + subtle scale on tab switches.
+/// The scale collapses to pure opacity when `reduceMotion` is true.
+private struct TabContentTransition: ViewModifier {
+    let tabID: Int
+    let reduceMotion: Bool
+
+    func body(content: Content) -> some View {
+        if reduceMotion {
+            content
+                .animation(Theme.gentleSpring, value: tabID)
+        } else {
+            content
+                .transition(.opacity.combined(with: .scale(scale: 0.98, anchor: .center)))
+                .animation(Theme.gentleSpring, value: tabID)
+        }
     }
 }
 

@@ -24,6 +24,9 @@ struct DashboardView: View {
     /// Gate for the App Store review prompt. We fire at most once per foreground
     /// session; iOS itself additionally throttles to 3 prompts/user/year.
     @State private var hasRequestedReviewThisSession = false
+    /// Fires the goal-reached celebration once per session when progress crosses 1.0.
+    @State private var hasShownGoalCelebrationThisSession = false
+    @State private var showGoalCelebration = false
 
     private var goal: GoalBreakdown { store.dailyGoal }
     private var progress: Double { min(1, store.todayTotalML / max(1, goal.totalML)) }
@@ -91,6 +94,13 @@ struct DashboardView: View {
             // can safely ask on every subsequent qualifying day.
             guard newValue > oldValue else { return }
             maybeRequestReview()
+        }
+        .onChange(of: progress) { oldValue, newValue in
+            guard oldValue < 1.0, newValue >= 1.0,
+                  !hasShownGoalCelebrationThisSession else { return }
+            hasShownGoalCelebrationThisSession = true
+            Haptics.splash()
+            showGoalCelebration = true
         }
     }
 
@@ -306,15 +316,22 @@ struct DashboardView: View {
     }
 
     private var summarySection: some View {
-        HydrationSummaryCard(
-            greeting: greeting,
-            progress: progress,
-            todayTotalML: store.todayTotalML,
-            goalTotalML: goal.totalML,
-            compositions: store.todayCompositions,
-            unitSystem: store.profile.unitSystem,
-            showsFluidBreakdown: subscriptionManager.hasAccess(to: .fluidTypes)
-        )
+        ZStack {
+            HydrationSummaryCard(
+                greeting: greeting,
+                progress: progress,
+                todayTotalML: store.todayTotalML,
+                goalTotalML: goal.totalML,
+                compositions: store.todayCompositions,
+                unitSystem: store.profile.unitSystem,
+                showsFluidBreakdown: subscriptionManager.hasAccess(to: .fluidTypes)
+            )
+
+            if showGoalCelebration {
+                GoalCelebrationOverlay(isShowing: $showGoalCelebration)
+                    .allowsHitTesting(false)
+            }
+        }
     }
 
     private var premiumSoftSell: some View {
@@ -1226,3 +1243,63 @@ struct DetailedLogRow: View {
     }
 }
 #endif
+
+// MARK: - Goal Celebration Overlay
+
+private struct CelebrationDroplet: View {
+    let angle: Double
+    let delay: Double
+    @State private var isAnimating = false
+
+    private let distance: CGFloat = CGFloat.random(in: 55...90)
+
+    var body: some View {
+        Circle()
+            .fill(
+                LinearGradient(
+                    colors: [Theme.lagoon, Theme.mint],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            )
+            .frame(width: CGFloat.random(in: 6...12), height: CGFloat.random(in: 6...12))
+            .offset(
+                x: isAnimating ? distance * cos(angle * .pi / 180) : 0,
+                y: isAnimating ? distance * sin(angle * .pi / 180) : 0
+            )
+            .opacity(isAnimating ? 0 : 0.9)
+            .scaleEffect(isAnimating ? 0.4 : 1.0)
+            .onAppear {
+                withAnimation(
+                    .easeOut(duration: 0.9).delay(delay)
+                ) {
+                    isAnimating = true
+                }
+            }
+    }
+}
+
+private struct GoalCelebrationOverlay: View {
+    @Binding var isShowing: Bool
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    private let dropletAngles: [Double] = stride(from: -90.0, through: 270.0, by: 45.0).map { $0 }
+
+    var body: some View {
+        ZStack {
+            if !reduceMotion {
+                ForEach(Array(dropletAngles.enumerated()), id: \.offset) { index, angle in
+                    CelebrationDroplet(
+                        angle: angle,
+                        delay: Double(index) * 0.04
+                    )
+                }
+            }
+        }
+        .onAppear {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.1) {
+                isShowing = false
+            }
+        }
+    }
+}

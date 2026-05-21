@@ -18,6 +18,7 @@ struct SettingsView: View {
     @State private var sleepTime: Date = Date()
     @State private var isPremiumPromptDismissed = false
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.horizontalSizeClass) private var sizeClass
     private var isRegular: Bool { sizeClass == .regular }
     private var loggedDayCount: Int {
@@ -227,6 +228,8 @@ struct SettingsView: View {
                 }
 
                 if customGoalEnabled {
+                    // Stagger-fade each row in; reduce-motion collapses all
+                    // delays to zero for simultaneous appearance.
                     VStack(alignment: .leading, spacing: 8) {
                         HStack {
                             Text("Target")
@@ -238,6 +241,14 @@ struct SettingsView: View {
                                 .foregroundStyle(Theme.sun)
                                 .contentTransition(.numericText())
                         }
+                        .transition(
+                            .opacity.animation(
+                                reduceMotion
+                                    ? Theme.quickSpring
+                                    : Theme.quickSpring.delay(0.0)
+                            )
+                        )
+
                         Slider(
                             value: $customGoalValue,
                             in: store.profile.unitSystem == .metric ? 1500...4500 : 50...150,
@@ -249,6 +260,13 @@ struct SettingsView: View {
                                 profile.customGoalML = profile.unitSystem.ml(from: value)
                             }
                         }
+                        .transition(
+                            .opacity.animation(
+                                reduceMotion
+                                    ? Theme.quickSpring
+                                    : Theme.quickSpring.delay(0.06)
+                            )
+                        )
                     }
                     .transition(.move(edge: .top).combined(with: .opacity))
                 }

@@ -28,6 +28,8 @@ struct InsightsView: View {
     @State private var aiInsight: String?
     @State private var isGeneratingInsight = false
     @State private var viewModel = InsightsViewModel()
+    @State private var streakPopScale: Double = 1.0
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var chartData: [WeeklyDay] { viewModel.chartData }
     private var heatmapData: [HeatmapDay] { viewModel.heatmapData }
@@ -491,6 +493,14 @@ struct InsightsView: View {
                     color: Theme.coral,
                     isRegular: isRegular
                 )
+                .scaleEffect(streakPopScale)
+                .onChange(of: data.currentStreak) { oldValue, newValue in
+                    guard !reduceMotion, newValue > oldValue else { return }
+                    streakPopScale = 1.18
+                    withAnimation(Theme.quickSpring) {
+                        streakPopScale = 1.0
+                    }
+                }
                 TrendTile(
                     title: "Longest streak",
                     value: "\(data.longestStreak) days",
