@@ -46,6 +46,7 @@ final class PersistenceService {
     }
 
     func load<T: Decodable>(_ type: T.Type, fallback: T) -> T {
+        // boundary: synchronous load is acceptable here, called once at scene init
         let localData = try? Data(contentsOf: url)
         let data = resolveNewestStateData(localData: localData) ?? localData
         guard let data else { return fallback }
@@ -53,6 +54,36 @@ final class PersistenceService {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601
         return (try? decoder.decode(T.self, from: data)) ?? fallback
+    }
+
+    /// Async variant that reads the file off the calling actor.
+    /// Prefer this at non-init call sites where blocking is not acceptable.
+    func loadAsync<T: Decodable>(_ type: T.Type, fallback: T) async -> T {
+        let fileURL = url
+        let iCloudKey = iCloudStateKey
+        let kvStore = keyValueStore
+
+        return await Task.detached(priority: .userInitiated) {
+            let localData = try? Data(contentsOf: fileURL)
+
+            // Resolve against iCloud KVS without touching MainActor state.
+            var resolved: Data? = localData
+            if let payloadData = kvStore.data(forKey: iCloudKey) {
+                let decoder = JSONDecoder()
+                decoder.dateDecodingStrategy = .iso8601
+                if let payload = try? decoder.decode(SyncedPayload.self, from: payloadData) {
+                    let localTimestamp = UserDefaults.standard.object(forKey: "WaterQuestStateLocalUpdatedAt") as? Date ?? .distantPast
+                    if payload.updatedAt > localTimestamp {
+                        resolved = payload.blob
+                    }
+                }
+            }
+
+            guard let data = resolved else { return fallback }
+            let decoder = JSONDecoder()
+            decoder.dateDecodingStrategy = .iso8601
+            return (try? decoder.decode(T.self, from: data)) ?? fallback
+        }.value
     }
 
     func save<T: Encodable>(_ value: T) {

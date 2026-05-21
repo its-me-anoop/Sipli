@@ -1,5 +1,5 @@
 import Foundation
-import UserNotifications
+@preconcurrency import UserNotifications
 
 /// Forwarding target for notification default-taps. The app sets this on
 /// `NotificationHandler.shared` so default taps can surface the deep-link

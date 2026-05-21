@@ -27,24 +27,11 @@ struct InsightsView: View {
     @State private var heatmapMonthOffset = 0
     @State private var aiInsight: String?
     @State private var isGeneratingInsight = false
+    @State private var viewModel = InsightsViewModel()
 
-    private var chartData: [WeeklyDay] {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-        let limit = timeframe.daysCount
-
-        return (0..<limit).compactMap { offset in
-            guard let day = calendar.date(byAdding: .day, value: -(limit - 1 - offset), to: today) else {
-                return nil
-            }
-
-            let total = store.entries
-                .filter { calendar.isDate($0.date, inSameDayAs: day) }
-                .reduce(0) { $0 + $1.effectiveML }
-
-            return WeeklyDay(date: day, totalML: total)
-        }
-    }
+    private var chartData: [WeeklyDay] { viewModel.chartData }
+    private var heatmapData: [HeatmapDay] { viewModel.heatmapData }
+    private var trendData: TrendData { viewModel.trendData }
 
     private var averageML: Double {
         let totals = chartData.map(\.totalML)
@@ -62,26 +49,6 @@ struct InsightsView: View {
         return chartData.first(where: { Calendar.current.isDate($0.date, inSameDayAs: selectedDate) })
     }
 
-    // MARK: - Heatmap Data
-
-    private var heatmapData: [HeatmapDay] {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-        guard let monthRef = calendar.date(byAdding: .month, value: -heatmapMonthOffset, to: today) else { return [] }
-        let comps = calendar.dateComponents([.year, .month], from: monthRef)
-        guard let startOfMonth = calendar.date(from: comps),
-              let range = calendar.range(of: .day, in: .month, for: startOfMonth) else { return [] }
-        let goal = max(1, store.dailyGoal.totalML)
-
-        return range.compactMap { day -> HeatmapDay? in
-            guard let date = calendar.date(byAdding: .day, value: day - 1, to: startOfMonth) else { return nil }
-            let total = store.entries
-                .filter { calendar.isDate($0.date, inSameDayAs: date) }
-                .reduce(0) { $0 + $1.effectiveML }
-            return HeatmapDay(date: date, totalML: total, ratio: min(1, total / goal))
-        }
-    }
-
     private func heatmapColor(for day: HeatmapDay) -> Color {
         if day.totalML == 0 { return Theme.cardElevated }
         if day.ratio >= 1.0 { return Theme.mint }
@@ -89,74 +56,6 @@ struct InsightsView: View {
         if day.ratio >= 0.6 { return Theme.lagoon.opacity(0.6) }
         if day.ratio >= 0.4 { return Theme.lagoon.opacity(0.4) }
         return Theme.lagoon.opacity(0.2)
-    }
-
-    // MARK: - Trend Data
-
-    private var trendData: TrendData {
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-        let goal = max(1, store.dailyGoal.totalML)
-
-        // Build daily totals for last 90 days (index 0 = today)
-        var dailyTotals: [(date: Date, total: Double)] = []
-        for offset in 0..<90 {
-            guard let day = calendar.date(byAdding: .day, value: -offset, to: today) else { continue }
-            let total = store.entries
-                .filter { calendar.isDate($0.date, inSameDayAs: day) }
-                .reduce(0) { $0 + $1.effectiveML }
-            dailyTotals.append((day, total))
-        }
-
-        // Current streak: skip today if goal not yet met
-        var currentStreak = 0
-        let startIdx = (dailyTotals.first?.total ?? 0) >= goal ? 0 : 1
-        for i in startIdx..<dailyTotals.count {
-            if dailyTotals[i].total >= goal {
-                currentStreak += 1
-            } else {
-                break
-            }
-        }
-
-        // Longest streak in 90-day window (chronological order)
-        var longestStreak = 0
-        var tempStreak = 0
-        for dt in dailyTotals.reversed() {
-            if dt.total >= goal {
-                tempStreak += 1
-                longestStreak = max(longestStreak, tempStreak)
-            } else {
-                tempStreak = 0
-            }
-        }
-
-        // Week-over-week change
-        let thisWeek = dailyTotals.prefix(7).map(\.total)
-        let lastWeek = Array(dailyTotals.dropFirst(7).prefix(7)).map(\.total)
-        let thisWeekAvg = thisWeek.isEmpty ? 0 : thisWeek.reduce(0, +) / Double(thisWeek.count)
-        let lastWeekAvg = lastWeek.isEmpty ? 0 : lastWeek.reduce(0, +) / Double(lastWeek.count)
-        let wow: Double? = lastWeekAvg > 0 ? ((thisWeekAvg - lastWeekAvg) / lastWeekAvg) * 100 : nil
-
-        // Consistency (last 30 days)
-        let last30 = Array(dailyTotals.prefix(30))
-        let daysWithIntake = last30.filter { $0.total > 0 }.count
-        let consistency = last30.isEmpty ? 0 : Double(daysWithIntake) / Double(last30.count)
-
-        // Best / Lowest day (last 30)
-        let last30Totals = last30.map(\.total)
-        let bestDay = last30Totals.max() ?? 0
-        let nonZero = last30Totals.filter { $0 > 0 }
-        let lowestDay = nonZero.min()
-
-        return TrendData(
-            currentStreak: currentStreak,
-            longestStreak: longestStreak,
-            weekOverWeekChange: wow,
-            consistency: consistency,
-            bestDay: bestDay,
-            lowestDay: lowestDay
-        )
     }
 
     // MARK: - Body
@@ -231,6 +130,38 @@ struct InsightsView: View {
         }
         .background { AppWaterBackground().ignoresSafeArea() }
         .navigationTitle("Insights")
+        .task {
+            viewModel.recompute(
+                entries: store.entries,
+                dailyGoalML: store.dailyGoal.totalML,
+                timeframe: timeframe,
+                heatmapMonthOffset: heatmapMonthOffset
+            )
+        }
+        .onChange(of: store.entries.count) {
+            viewModel.recompute(
+                entries: store.entries,
+                dailyGoalML: store.dailyGoal.totalML,
+                timeframe: timeframe,
+                heatmapMonthOffset: heatmapMonthOffset
+            )
+        }
+        .onChange(of: timeframe) {
+            viewModel.recompute(
+                entries: store.entries,
+                dailyGoalML: store.dailyGoal.totalML,
+                timeframe: timeframe,
+                heatmapMonthOffset: heatmapMonthOffset
+            )
+        }
+        .onChange(of: heatmapMonthOffset) {
+            viewModel.recompute(
+                entries: store.entries,
+                dailyGoalML: store.dailyGoal.totalML,
+                timeframe: timeframe,
+                heatmapMonthOffset: heatmapMonthOffset
+            )
+        }
     }
 
     private var isRegular: Bool { sizeClass == .regular }
@@ -741,26 +672,35 @@ struct InsightsView: View {
 
 // MARK: - Supporting Types
 
-private struct WeeklyDay: Identifiable {
+struct WeeklyDay: Identifiable {
     let id = UUID()
     let date: Date
     let totalML: Double
 }
 
-private struct HeatmapDay: Identifiable {
+struct HeatmapDay: Identifiable {
     let id = UUID()
     let date: Date
     let totalML: Double
     let ratio: Double
 }
 
-private struct TrendData {
+struct TrendData {
     let currentStreak: Int
     let longestStreak: Int
     let weekOverWeekChange: Double?
     let consistency: Double
     let bestDay: Double
     let lowestDay: Double?
+
+    static let empty = TrendData(
+        currentStreak: 0,
+        longestStreak: 0,
+        weekOverWeekChange: nil,
+        consistency: 0,
+        bestDay: 0,
+        lowestDay: nil
+    )
 }
 
 private struct MetricTile: View {
