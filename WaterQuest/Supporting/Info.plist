@@ -41,6 +41,8 @@
     <string>UIInterfaceOrientationLandscapeLeft</string>
     <string>UIInterfaceOrientationLandscapeRight</string>
   </array>
+  <key>NSSiriUsageDescription</key>
+  <string>Sipli uses Siri so you can log water hands-free.</string>
   <key>NSHealthShareUsageDescription</key>
   <string>Sipli reads workout and activity data (exercise minutes and calories burned) to personalize your hydration goal.</string>
   <key>NSHealthUpdateUsageDescription</key>

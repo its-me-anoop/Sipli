@@ -152,6 +152,7 @@ final class HydrationStore: ObservableObject {
         notificationScheduler?.onIntakeLogged(entry: entry, context: buildNotificationContext())
         checkGoalCompletion()
         persist()
+        IntentDonationService.donateLogWater(amount: entry.volumeML, fluidType: entry.fluidType)
         return entry
     }
 

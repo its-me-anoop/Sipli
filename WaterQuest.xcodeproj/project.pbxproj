@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AI001000000000000000001 /* SipliAppIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI001000000000000000002 /* SipliAppIntents.swift */; };
+		AI002000000000000000001 /* SipliAppShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI002000000000000000002 /* SipliAppShortcuts.swift */; };
+		AI003000000000000000001 /* IntentDonationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI003000000000000000002 /* IntentDonationService.swift */; };
 		00E5359EB56D89B045DDBDF1 /* AddIntakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBC0C7A2F89C0FD52822D48 /* AddIntakeView.swift */; };
 		0252DDA30195EA614A439A3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9FC934C6863AFC8E01D302CE /* Assets.xcassets */; };
 		0A6AF1AF6B3D3222F30C3E85 /* WeatherSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */; };
@@ -24,6 +27,8 @@
 		30FBAE8C1E7C2BD70CE4F8B0 /* PremiumBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F187D398A7F2E287751F39F /* PremiumBadge.swift */; };
 		33176B4699DA09CE6DE815DE /* TargetStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226D661FFE4695FDE7BF0C2F /* TargetStep.swift */; };
 		3599E158C34156D35BBEDDAB /* SubscriptionDisplayFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CF3A93D59223C4765C1FE4A7 /* SubscriptionDisplayFormatterTests.swift */; };
+		A1C2D3E4F5061728394A5B6C /* SubscriptionManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C2D3E4F5061728394A5B6C /* SubscriptionManagerTests.swift */; };
+		A2D3E4F5061728394A5B6C7D /* PaywallContextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D3E4F5061728394A5B6C7D /* PaywallContextTests.swift */; };
 		35CC573F0348943EF21D693D /* HealthKitManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 63F661B4016F8BE1E8DDA5B5 /* HealthKitManager.swift */; };
 		368738D16B3E40D6E50CF1D8 /* StatPill.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3ABC282C313B061E1E34EDF7 /* StatPill.swift */; };
 		371AD185C88F6CB932BDEF79 /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = B26785D44340E5C0A267B325 /* SubscriptionManager.swift */; };
@@ -221,6 +226,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AI001000000000000000002 /* SipliAppIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SipliAppIntents.swift; sourceTree = "<group>"; };
+		AI002000000000000000002 /* SipliAppShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SipliAppShortcuts.swift; sourceTree = "<group>"; };
+		AI003000000000000000002 /* IntentDonationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentDonationService.swift; sourceTree = "<group>"; };
 		032684376DE05B0CC4838664 /* UnitSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitSystem.swift; sourceTree = "<group>"; };
 		048A92B8C02660676EB65482 /* WelcomeStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WelcomeStep.swift; sourceTree = "<group>"; };
 		161A82CD61225A1F302ECA9D /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensions.swift; sourceTree = "<group>"; };
@@ -298,6 +306,8 @@
 		BD7043107E62B2C04F4C58EB /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		C5DD4230940B25D30C9598B4 /* Gemini_Generated_Image_15xog715xog715xo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Gemini_Generated_Image_15xog715xog715xo.png; sourceTree = "<group>"; };
 		CF3A93D59223C4765C1FE4A7 /* SubscriptionDisplayFormatterTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubscriptionDisplayFormatterTests.swift; sourceTree = "<group>"; };
+		B1C2D3E4F5061728394A5B6C /* SubscriptionManagerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubscriptionManagerTests.swift; sourceTree = "<group>"; };
+		B2D3E4F5061728394A5B6C7D /* PaywallContextTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PaywallContextTests.swift; sourceTree = "<group>"; };
 		DA294C8DAE1E1B8B16805C2F /* OnboardingState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingState.swift; sourceTree = "<group>"; };
 		E2B3C4D5F6071829A3B4C5D6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E4A8068B4418852446BD78E6 /* MotionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MotionManager.swift; sourceTree = "<group>"; };
@@ -411,6 +421,15 @@
 			);
 			sourceTree = "<group>";
 		};
+		AI000000000000000000001 /* AppIntents */ = {
+			isa = PBXGroup;
+			children = (
+				AI001000000000000000002 /* SipliAppIntents.swift */,
+				AI002000000000000000002 /* SipliAppShortcuts.swift */,
+			);
+			path = AppIntents;
+			sourceTree = "<group>";
+		};
 		120E9D2B9013FCD931926A20 /* WaterQuest */ = {
 			isa = PBXGroup;
 			children = (
@@ -418,6 +437,7 @@
 				9FC934C6863AFC8E01D302CE /* Assets.xcassets */,
 				B34C79C5F2BC714D04DBDF95 /* App */,
 				6676ED6B664E8F56F653FFFF /* AppIcon.icon */,
+				AI000000000000000000001 /* AppIntents */,
 				8314F97AB0A474B5CB47AF27 /* Components */,
 				44EAA4E4ABDD288F8271E4DF /* Models */,
 				FFB2F05A9B4A3597CB9CEBB3 /* Services */,
@@ -529,6 +549,8 @@
 				FE11AA0011AA22BB33CC44DD /* FluidTypeRankingTests.swift */,
 				A29B76655AD8F5DD3EE3B27E /* OnboardingStateTests.swift */,
 				CF3A93D59223C4765C1FE4A7 /* SubscriptionDisplayFormatterTests.swift */,
+				B1C2D3E4F5061728394A5B6C /* SubscriptionManagerTests.swift */,
+				B2D3E4F5061728394A5B6C7D /* PaywallContextTests.swift */,
 			);
 			name = WaterQuestTests;
 			path = WaterQuestTests;
@@ -629,6 +651,7 @@
 		FFB2F05A9B4A3597CB9CEBB3 /* Services */ = {
 			isa = PBXGroup;
 			children = (
+				AI003000000000000000002 /* IntentDonationService.swift */,
 				161A82CD61225A1F302ECA9D /* DateExtensions.swift */,
 				F021A59BB7CB33328B5ABBC4 /* Formatters.swift */,
 				F38731A03D043511C9AAD4C2 /* GoalCalculator.swift */,
@@ -921,6 +944,9 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AI001000000000000000001 /* SipliAppIntents.swift in Sources */,
+				AI002000000000000000001 /* SipliAppShortcuts.swift in Sources */,
+				AI003000000000000000001 /* IntentDonationService.swift in Sources */,
 				00E5359EB56D89B045DDBDF1 /* AddIntakeView.swift in Sources */,
 				1DCE9DE6A19E823BA1E5079B /* DashboardCard.swift in Sources */,
 				F9760161C65BFA2368DB8094 /* DashboardView.swift in Sources */,
@@ -998,6 +1024,8 @@
 				FB22770022DD00FC11FA22B3 /* FluidTypeRankingTests.swift in Sources */,
 				3EE732F838BF314BAEB04DEB /* OnboardingStateTests.swift in Sources */,
 				3599E158C34156D35BBEDDAB /* SubscriptionDisplayFormatterTests.swift in Sources */,
+				A1C2D3E4F5061728394A5B6C /* SubscriptionManagerTests.swift in Sources */,
+				A2D3E4F5061728394A5B6C7D /* PaywallContextTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
