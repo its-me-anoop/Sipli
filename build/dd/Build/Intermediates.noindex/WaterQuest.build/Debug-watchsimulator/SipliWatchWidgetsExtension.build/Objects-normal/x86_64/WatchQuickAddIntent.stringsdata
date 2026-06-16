@@ -1,0 +1,24 @@
+{
+  "source": "/Users/anoopjose/Projects/WaterQuest/SipliWatchWidgets/WatchQuickAddIntent.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Log Water",
+        "location": {
+          "startingColumn": 49,
+          "startingLine": 6
+        }
+      },
+      {
+        "comment": "",
+        "key": "Quickly log 250ml of water from the Watch.",
+        "location": {
+          "startingColumn": 48,
+          "startingLine": 7
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,40 @@
+{
+  "source": "/Users/anoopjose/Projects/WaterQuest/SipliWidget/Views/MediumWidgetView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "of %@",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 32
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld-day streak",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 37
+        }
+      },
+      {
+        "comment": "",
+        "key": "250",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 47
+        }
+      },
+      {
+        "comment": "",
+        "key": "500",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 54
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,30 @@
+{
+  "/Users/anoopjose/Projects/WaterQuest/SipliWatch/SipliWatchApp.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatchApp.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatchApp.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatchApp.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatchApp.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatchApp.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/FluidType.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/FluidType.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/FluidType.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/FluidType.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/FluidType.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/FluidType.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/HydrationEntry.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/HydrationEntry.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/HydrationEntry.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/HydrationEntry.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/HydrationEntry.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/HydrationEntry.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/UserProfile.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/UserProfile.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/UserProfile.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/UserProfile.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/UserProfile.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/UserProfile.swiftdeps"
+  }
+}

@@ -34,6 +34,7 @@
 		402032D37B9F543CBC410E2F /* OnboardingStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32666279C657FCC433303B6A /* OnboardingStep.swift */; };
 		4226DE4ED2EDCC1399B12C56 /* OnboardingPalette.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74CE0825C3B3CDF22BA05A4C /* OnboardingPalette.swift */; };
 		449C15C42674C41122CC02B6 /* ProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B8BDAA9F823F748DDAD26EB /* ProgressRing.swift */; };
+		4DCCF183142A9E5C162039A3 /* HydrationIntentCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67CD0AB04469C87B7D8FD4A1 /* HydrationIntentCore.swift */; };
 		4E93E1598D092FFCC6C6381F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C158CF127D3436999E3C2B /* RootView.swift */; };
 		524BE8DF8217231DA89BF9FE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CBD2C7DC27199FF61EB613 /* Theme.swift */; };
 		5315257190E860C18C6545B0 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6862392928A13FBD5E45D6E3 /* LocationManager.swift */; };
@@ -99,9 +100,11 @@
 		D1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift */; };
 		D4E5F6A7B8C9D0E1F2A3B4C5 /* RippleEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7B8C9D0E1F2A3 /* RippleEffect.swift */; };
 		D6E8A4F1B37C920E5D1A8F63 /* PreviewEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F3E9B2C4D61805FA93B1E2 /* PreviewEnvironment.swift */; };
+		D9B159F3F6641A2604E3BA34 /* SipliAppIntentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7978691325DF06C649CACAE7 /* SipliAppIntentsTests.swift */; };
 		DD40106D69AA7DD6CBF3F356 /* NameStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD8EC9497A17C7431EBD5DB /* NameStep.swift */; };
 		E054558C7B7CF349F6CDD709 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE848C59D9014D3ABE6E04BE /* SplashScreenView.swift */; };
 		E27FB3C46FDAA80AD7E43C6F /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F021A59BB7CB33328B5ABBC4 /* Formatters.swift */; };
+		E2C7AEE23434DB640ED8DE07 /* HydrationMerge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3834593BE0BDE1EF6B965E24 /* HydrationMerge.swift */; };
 		E31DC5693E50663B56EC315C /* SubscriptionDisplayFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = E9FF56BC52EB7ECE5A520179 /* SubscriptionDisplayFormatter.swift */; };
 		E367CAB1741850BAFCE4F3F9 /* PrimaryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B9CF2D397867B06457E11FA /* PrimaryButton.swift */; };
 		E4C51058218BC12CB9F566C8 /* NotificationsStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A662F7C3476A0C51044664F /* NotificationsStep.swift */; };
@@ -240,6 +243,7 @@
 		31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationEntry.swift; sourceTree = "<group>"; };
 		32666279C657FCC433303B6A /* OnboardingStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingStep.swift; sourceTree = "<group>"; };
 		32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationStore.swift; sourceTree = "<group>"; };
+		3834593BE0BDE1EF6B965E24 /* HydrationMerge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HydrationMerge.swift; sourceTree = "<group>"; };
 		39EF82B8B03A482B4BC8CBF9 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3ABC282C313B061E1E34EDF7 /* StatPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatPill.swift; sourceTree = "<group>"; };
 		3BE15D5810B84C7C96E0EA4C /* WorkoutSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSummary.swift; sourceTree = "<group>"; };
@@ -253,6 +257,7 @@
 		59DFB425E8198F6C001CB5A8 /* WaterQuestTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WaterQuestTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5E73BC8B42AADA53E70C6538 /* NotificationCategories.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationCategories.swift; sourceTree = "<group>"; };
 		63F661B4016F8BE1E8DDA5B5 /* HealthKitManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HealthKitManager.swift; sourceTree = "<group>"; };
+		67CD0AB04469C87B7D8FD4A1 /* HydrationIntentCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HydrationIntentCore.swift; sourceTree = "<group>"; };
 		6862392928A13FBD5E45D6E3 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
 		69F362557BEECECFAA26285A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6A662F7C3476A0C51044664F /* NotificationsStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationsStep.swift; sourceTree = "<group>"; };
@@ -264,6 +269,7 @@
 		732CBE184502476DC56921F8 /* icon.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = icon.json; sourceTree = "<group>"; };
 		74CE0825C3B3CDF22BA05A4C /* OnboardingPalette.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingPalette.swift; sourceTree = "<group>"; };
 		78D82D72BE04D7EA2959A3A0 /* ScheduleStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScheduleStep.swift; sourceTree = "<group>"; };
+		7978691325DF06C649CACAE7 /* SipliAppIntentsTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SipliAppIntentsTests.swift; sourceTree = "<group>"; };
 		7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSnapshot.swift; sourceTree = "<group>"; };
 		7B8BDAA9F823F748DDAD26EB /* ProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRing.swift; sourceTree = "<group>"; };
 		7C470DB38C8A43150913B8CE /* SipliBottle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SipliBottle.swift; sourceTree = "<group>"; };
@@ -530,6 +536,7 @@
 			children = (
 				AI001000000000000000002 /* SipliAppIntents.swift */,
 				AI002000000000000000002 /* SipliAppShortcuts.swift */,
+				67CD0AB04469C87B7D8FD4A1 /* HydrationIntentCore.swift */,
 			);
 			path = AppIntents;
 			sourceTree = "<group>";
@@ -554,6 +561,7 @@
 				CF3A93D59223C4765C1FE4A7 /* SubscriptionDisplayFormatterTests.swift */,
 				B1C2D3E4F5061728394A5B6C /* SubscriptionManagerTests.swift */,
 				B2D3E4F5061728394A5B6C7D /* PaywallContextTests.swift */,
+				7978691325DF06C649CACAE7 /* SipliAppIntentsTests.swift */,
 			);
 			name = WaterQuestTests;
 			path = WaterQuestTests;
@@ -681,6 +689,7 @@
 				5E73BC8B42AADA53E70C6538 /* NotificationCategories.swift */,
 				ADB248542D61873060DDABFF /* NotificationHandler.swift */,
 				E9FF56BC52EB7ECE5A520179 /* SubscriptionDisplayFormatter.swift */,
+				3834593BE0BDE1EF6B965E24 /* HydrationMerge.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -1025,6 +1034,8 @@
 				30FBAE8C1E7C2BD70CE4F8B0 /* PremiumBadge.swift in Sources */,
 				E31DC5693E50663B56EC315C /* SubscriptionDisplayFormatter.swift in Sources */,
 				2AF9FFFF48921B933CD53585 /* InsightsViewModel.swift in Sources */,
+				4DCCF183142A9E5C162039A3 /* HydrationIntentCore.swift in Sources */,
+				E2C7AEE23434DB640ED8DE07 /* HydrationMerge.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1041,6 +1052,7 @@
 				3599E158C34156D35BBEDDAB /* SubscriptionDisplayFormatterTests.swift in Sources */,
 				A1C2D3E4F5061728394A5B6C /* SubscriptionManagerTests.swift in Sources */,
 				A2D3E4F5061728394A5B6C7D /* PaywallContextTests.swift in Sources */,
+				D9B159F3F6641A2604E3BA34 /* SipliAppIntentsTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

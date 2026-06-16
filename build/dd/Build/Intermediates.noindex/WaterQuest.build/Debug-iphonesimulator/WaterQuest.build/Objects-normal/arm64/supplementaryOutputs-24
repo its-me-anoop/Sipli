@@ -1,0 +1,65 @@
+{
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Components/LiquidGlassCard.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/LiquidGlassCard.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/LiquidGlassCard.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/LiquidGlassCard.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/LiquidGlassCard.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/LiquidGlassCard.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Components/LiquidProgressView.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/LiquidProgressView.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/LiquidProgressView.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/LiquidProgressView.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/LiquidProgressView.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/LiquidProgressView.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Components/MascotView.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/MascotView.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/MascotView.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/MascotView.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/MascotView.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/MascotView.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/PersistedState.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/PersistedState.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/PersistedState.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/PersistedState.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/PersistedState.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/PersistedState.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Services/LocationManager.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/LocationManager.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/LocationManager.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/LocationManager.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/LocationManager.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/LocationManager.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Services/MotionManager.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/MotionManager.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/MotionManager.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/MotionManager.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/MotionManager.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/MotionManager.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Services/NotificationScheduler.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/NotificationScheduler.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/NotificationScheduler.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/NotificationScheduler.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/NotificationScheduler.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/NotificationScheduler.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Services/PhoneSessionManager.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/PhoneSessionManager.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/PhoneSessionManager.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/PhoneSessionManager.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/PhoneSessionManager.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/PhoneSessionManager.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Views/MainTabView.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/MainTabView.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/MainTabView.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/MainTabView.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/MainTabView.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-iphonesimulator/WaterQuest.build/Objects-normal/arm64/MainTabView.swiftdeps"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "source": "/Users/anoopjose/Projects/WaterQuest/SipliWatch/Views/WatchDashboardView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Add Water",
+        "location": {
+          "startingColumn": 27,
+          "startingLine": 32
+        }
+      },
+      {
+        "comment": "",
+        "key": "Goal Reached!",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 55
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>colors</key>
+	<array>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/anoopjose/Projects/WaterQuest/WaterQuest/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACColorNamePaperBackground</string>
+			<key>relativePath</key>
+			<string>./PaperBackground.colorset</string>
+			<key>swiftSymbol</key>
+			<string>paperBackground</string>
+		</dict>
+	</array>
+	<key>images</key>
+	<array>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/anoopjose/Projects/WaterQuest/WaterQuest/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameMascot</string>
+			<key>relativePath</key>
+			<string>./Mascot.imageset</string>
+			<key>swiftSymbol</key>
+			<string>mascot</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/anoopjose/Projects/WaterQuest/WaterQuest/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameBottle</string>
+			<key>relativePath</key>
+			<string>./bottle.imageset</string>
+			<key>swiftSymbol</key>
+			<string>bottle</string>
+		</dict>
+		<dict>
+			<key>catalogPath</key>
+			<string>/Users/anoopjose/Projects/WaterQuest/WaterQuest/Assets.xcassets</string>
+			<key>objcSymbol</key>
+			<string>ACImageNameSipliIcon</string>
+			<key>relativePath</key>
+			<string>./sipliIcon.imageset</string>
+			<key>swiftSymbol</key>
+			<string>sipliIcon</string>
+		</dict>
+	</array>
+	<key>symbols</key>
+	<array/>
+</dict>
+</plist>

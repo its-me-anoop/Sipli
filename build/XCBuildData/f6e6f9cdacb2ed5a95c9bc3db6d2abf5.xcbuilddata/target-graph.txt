@@ -1,0 +1,8 @@
+Target dependency graph (4 targets)
+Target 'WaterQuest' in project 'WaterQuest'
+➜ Explicit dependency on target 'SipliWidget' in project 'WaterQuest'
+➜ Explicit dependency on target 'SipliWatch' in project 'WaterQuest'
+Target 'SipliWatch' in project 'WaterQuest'
+➜ Explicit dependency on target 'SipliWatchWidgetsExtension' in project 'WaterQuest'
+Target 'SipliWatchWidgetsExtension' in project 'WaterQuest' (no dependencies)
+Target 'SipliWidget' in project 'WaterQuest' (no dependencies)

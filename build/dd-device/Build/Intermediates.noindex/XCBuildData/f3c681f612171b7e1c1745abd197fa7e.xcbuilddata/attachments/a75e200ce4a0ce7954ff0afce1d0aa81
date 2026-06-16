@@ -1,0 +1,179 @@
+{
+  "" : {
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidgetsExtension-primary.dia",
+    "emit-module-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidgetsExtension-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidgetsExtension-primary-emit-module.dia",
+    "pch" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidgetsExtension-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidgetsExtension-primary.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/SipliWatchWidgets/SipliWatchWidget.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidget.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidget.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidget.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidget.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidget.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidget.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidget.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidget~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/SipliWatchWidgets/SipliWatchWidgetsBundle.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidgetsBundle.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidgetsBundle.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidgetsBundle.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidgetsBundle.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidgetsBundle.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidgetsBundle.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidgetsBundle.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/SipliWatchWidgetsBundle~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/SipliWatchWidgets/WatchQuickAddIntent.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WatchQuickAddIntent.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WatchQuickAddIntent.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WatchQuickAddIntent.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WatchQuickAddIntent.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WatchQuickAddIntent.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WatchQuickAddIntent.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WatchQuickAddIntent.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WatchQuickAddIntent~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Components/Theme.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/Theme.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/Theme.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/Theme.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/Theme.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/Theme.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/Theme.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/Theme.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/Theme~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/FluidType.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/FluidType.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/FluidType.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/FluidType.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/FluidType.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/FluidType.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/FluidType.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/FluidType.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/FluidType~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/GoalBreakdown.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GoalBreakdown.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GoalBreakdown.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GoalBreakdown.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GoalBreakdown.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GoalBreakdown.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GoalBreakdown.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GoalBreakdown.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GoalBreakdown~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/HydrationEntry.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/HydrationEntry.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/HydrationEntry.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/HydrationEntry.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/HydrationEntry.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/HydrationEntry.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/HydrationEntry.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/HydrationEntry.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/HydrationEntry~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/PersistedState.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/PersistedState.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/PersistedState.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/PersistedState.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/PersistedState.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/PersistedState.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/PersistedState.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/PersistedState.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/PersistedState~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/UnitSystem.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/UnitSystem.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/UnitSystem.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/UnitSystem.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/UnitSystem.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/UnitSystem.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/UnitSystem.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/UnitSystem.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/UnitSystem~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/UserProfile.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/UserProfile.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/UserProfile.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/UserProfile.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/UserProfile.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/UserProfile.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/UserProfile.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/UserProfile.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/UserProfile~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/WeatherSnapshot.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WeatherSnapshot.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WeatherSnapshot.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WeatherSnapshot.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WeatherSnapshot.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WeatherSnapshot.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WeatherSnapshot.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WeatherSnapshot.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WeatherSnapshot~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/WorkoutSummary.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WorkoutSummary.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WorkoutSummary.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WorkoutSummary.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WorkoutSummary.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WorkoutSummary.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WorkoutSummary.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WorkoutSummary.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/WorkoutSummary~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Services/DateExtensions.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/DateExtensions.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/DateExtensions.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/DateExtensions.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/DateExtensions.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/DateExtensions.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/DateExtensions.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/DateExtensions.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/DateExtensions~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Services/Formatters.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/Formatters.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/Formatters.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/Formatters.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/Formatters.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/Formatters.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/Formatters.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/Formatters.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/Formatters~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Services/GoalCalculator.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GoalCalculator.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GoalCalculator.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GoalCalculator.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GoalCalculator.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GoalCalculator.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GoalCalculator.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GoalCalculator.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GoalCalculator~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Services/PersistenceService.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/PersistenceService.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/PersistenceService.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/PersistenceService.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/PersistenceService.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/PersistenceService.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/PersistenceService.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/PersistenceService.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/PersistenceService~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/dd-device/Build/Intermediates.noindex/WaterQuest.build/Debug-watchos/SipliWatchWidgetsExtension.build/Objects-normal/arm64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}

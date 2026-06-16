@@ -1,0 +1,23 @@
+{
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/UnitSystem.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/UnitSystem.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/UnitSystem.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/UnitSystem.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/UnitSystem.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/UnitSystem.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/WorkoutSummary.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/WorkoutSummary.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/WorkoutSummary.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/WorkoutSummary.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/WorkoutSummary.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/WorkoutSummary.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Services/PersistenceService.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/PersistenceService.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/PersistenceService.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/PersistenceService.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/PersistenceService.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/x86_64/PersistenceService.swiftdeps"
+  }
+}

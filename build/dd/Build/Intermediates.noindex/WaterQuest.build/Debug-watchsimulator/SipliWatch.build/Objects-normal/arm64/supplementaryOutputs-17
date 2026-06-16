@@ -1,0 +1,23 @@
+{
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Services/DateExtensions.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/DateExtensions.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/DateExtensions.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/DateExtensions.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/DateExtensions.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/DateExtensions.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Services/Formatters.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/Formatters.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/Formatters.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/Formatters.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/Formatters.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/Formatters.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Services/GoalCalculator.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/GoalCalculator.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/GoalCalculator.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/GoalCalculator.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/GoalCalculator.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/GoalCalculator.swiftdeps"
+  }
+}

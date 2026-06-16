@@ -1,0 +1,80 @@
+{
+  "source": "/Users/anoopjose/Projects/WaterQuest/SipliWatchWidgets/SipliWatchWidget.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "%lld",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 65
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld%%",
+        "location": {
+          "startingColumn": 14,
+          "startingLine": 80
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hydration",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 85
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld%%",
+        "location": {
+          "startingColumn": 26,
+          "startingLine": 87
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sipli Hydration",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 120
+        }
+      },
+      {
+        "comment": "",
+        "key": "Track your daily hydration progress.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 121
+        }
+      },
+      {
+        "comment": "",
+        "key": "%lld%%",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 134
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sipli Quick Add",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 160
+        }
+      },
+      {
+        "comment": "",
+        "key": "Tap to log 250ml of water.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 161
+        }
+      }
+    ]
+  },
+  "version": 1
+}

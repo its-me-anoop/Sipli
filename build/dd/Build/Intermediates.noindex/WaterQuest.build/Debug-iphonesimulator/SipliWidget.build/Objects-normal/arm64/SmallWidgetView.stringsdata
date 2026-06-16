@@ -1,0 +1,16 @@
+{
+  "source": "/Users/anoopjose/Projects/WaterQuest/SipliWidget/Views/SmallWidgetView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "%@ / %@",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 28
+        }
+      }
+    ]
+  },
+  "version": 1
+}

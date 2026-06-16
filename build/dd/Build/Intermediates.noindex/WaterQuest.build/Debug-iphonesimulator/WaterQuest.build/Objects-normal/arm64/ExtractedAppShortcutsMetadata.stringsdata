@@ -1,0 +1,126 @@
+{
+  "version" : 2,
+  "source" : "\/Users\/anoopjose\/Projects\/WaterQuest\/WaterQuest\/AppIntents\/SipliAppShortcuts.swift",
+  "tables" : {
+    "AppShortcuts" : [
+      {
+        "key" : "Log water in ${applicationName}",
+        "appShortcutMetadata" : [
+          {
+            "parameterTypes" : {
+              "fluidType" : "FluidTypeAppEnum"
+            },
+            "parameterDisplayRepresentations" : {
+              "FluidTypeAppEnum" : [
+                "Water",
+                "Sparkling Water",
+                "Coconut Water",
+                "Herbal Tea",
+                "Green Tea",
+                "Black Tea",
+                "Earl Grey",
+                "Chamomile",
+                "Peppermint",
+                "Matcha",
+                "Oolong",
+                "Chai",
+                "Rooibos",
+                "Tea",
+                "Milk",
+                "Juice",
+                "Lemonade",
+                "Smoothie",
+                "Sports Drink",
+                "Espresso",
+                "Americano",
+                "Latte",
+                "Cappuccino",
+                "Flat White",
+                "Mocha",
+                "Iced Coffee",
+                "Cold Brew",
+                "Macchiato",
+                "Coffee",
+                "Soda",
+                "Energy Drink",
+                "Soup",
+                "Beer",
+                "Wine",
+                "Cocktail",
+                "Other"
+              ]
+            },
+            "title" : "Log Water",
+            "actionIdentifier" : "LogWaterIntent",
+            "index" : 0
+          }
+        ],
+        "location" : {
+          "startingColumn" : 0,
+          "startingLine" : 4
+        },
+        "values" : [
+          "Log water in ${applicationName}",
+          "Log a drink in ${applicationName}",
+          "Add water in ${applicationName}"
+        ]
+      },
+      {
+        "key" : "How much water have I had in ${applicationName}",
+        "appShortcutMetadata" : [
+          {
+            "parameterTypes" : {
+
+            },
+            "parameterDisplayRepresentations" : {
+
+            },
+            "title" : "Get Today's Hydration",
+            "actionIdentifier" : "GetTodaysHydrationIntent",
+            "index" : 1
+          }
+        ],
+        "location" : {
+          "startingColumn" : 0,
+          "startingLine" : 4
+        },
+        "values" : [
+          "How much water have I had in ${applicationName}",
+          "What's my hydration in ${applicationName}",
+          "Check my water in ${applicationName}"
+        ]
+      },
+      {
+        "key" : "Open ${applicationName}",
+        "appShortcutMetadata" : [
+          {
+            "parameterTypes" : {
+
+            },
+            "parameterDisplayRepresentations" : {
+
+            },
+            "title" : "Open Sipli",
+            "actionIdentifier" : "OpenSipliIntent",
+            "index" : 2
+          }
+        ],
+        "location" : {
+          "startingColumn" : 0,
+          "startingLine" : 4
+        },
+        "values" : [
+          "Open ${applicationName}"
+        ]
+      }
+    ],
+    "Localizable" : [
+      {
+        "key" : "Log ${amountInMilliliters} mL of ${fluidType}"
+      },
+      {
+        "key" : "Log ${amountInMilliliters} mL of water"
+      }
+    ]
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "source": "/Users/anoopjose/Projects/WaterQuest/SipliWidget/SipliWidget.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Hydration",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 56
+        }
+      },
+      {
+        "comment": "",
+        "key": "%@ / %@",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 60
+        }
+      },
+      {
+        "comment": "",
+        "key": "Hydration %@ • %@",
+        "location": {
+          "startingColumn": 14,
+          "startingLine": 81
+        }
+      },
+      {
+        "comment": "",
+        "key": "Sipli",
+        "location": {
+          "startingColumn": 35,
+          "startingLine": 92
+        }
+      },
+      {
+        "comment": "",
+        "key": "Track your daily hydration progress.",
+        "location": {
+          "startingColumn": 22,
+          "startingLine": 93
+        }
+      }
+    ]
+  },
+  "version": 1
+}

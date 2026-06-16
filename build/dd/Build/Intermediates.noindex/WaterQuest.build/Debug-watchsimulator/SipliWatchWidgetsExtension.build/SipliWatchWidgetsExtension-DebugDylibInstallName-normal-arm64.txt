@@ -1,0 +1,1 @@
+@rpath/SipliWatchWidgetsExtension.debug.dylib

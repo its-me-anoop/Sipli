@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "AE001TESTPLAN00000000001",
+      "name" : "WaterQuestTests",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverageEnabled" : false,
+    "testTimeoutsEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:WaterQuest.xcodeproj",
+        "identifier" : "274BAD7378B778D37EDBBFCF",
+        "name" : "WaterQuestTests"
+      }
+    }
+  ],
+  "version" : 1
+}

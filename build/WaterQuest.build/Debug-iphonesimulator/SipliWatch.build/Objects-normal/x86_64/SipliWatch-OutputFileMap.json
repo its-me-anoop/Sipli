@@ -1,0 +1,259 @@
+{
+  "" : {
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatch-primary.dia",
+    "emit-module-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatch-primary-emit-module.d",
+    "emit-module-diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatch-primary-emit-module.dia",
+    "pch" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatch-primary-Bridging-header.pch",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatch-primary.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/SipliWatch/SipliWatchApp.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatchApp.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatchApp.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatchApp.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatchApp.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatchApp.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatchApp.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatchApp.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/SipliWatchApp~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/SipliWatch/Views/WatchDashboardView.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchDashboardView.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchDashboardView.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchDashboardView.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchDashboardView.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchDashboardView.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchDashboardView.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchDashboardView.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchDashboardView~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/SipliWatch/Views/WatchFluidPickerView.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchFluidPickerView.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchFluidPickerView.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchFluidPickerView.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchFluidPickerView.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchFluidPickerView.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchFluidPickerView.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchFluidPickerView.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchFluidPickerView~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/SipliWatch/Views/WatchProgressRing.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchProgressRing.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchProgressRing.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchProgressRing.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchProgressRing.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchProgressRing.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchProgressRing.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchProgressRing.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchProgressRing~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/SipliWatch/Views/WatchQuickAddView.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchQuickAddView.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchQuickAddView.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchQuickAddView.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchQuickAddView.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchQuickAddView.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchQuickAddView.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchQuickAddView.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchQuickAddView~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/SipliWatch/Views/WatchTodayLogView.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchTodayLogView.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchTodayLogView.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchTodayLogView.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchTodayLogView.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchTodayLogView.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchTodayLogView.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchTodayLogView.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchTodayLogView~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/SipliWatch/WatchHaptics.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHaptics.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHaptics.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHaptics.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHaptics.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHaptics.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHaptics.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHaptics.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHaptics~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/SipliWatch/WatchHealthKitManager.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHealthKitManager.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHealthKitManager.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHealthKitManager.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHealthKitManager.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHealthKitManager.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHealthKitManager.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHealthKitManager.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHealthKitManager~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/SipliWatch/WatchHydrationStore.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHydrationStore.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHydrationStore.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHydrationStore.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHydrationStore.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHydrationStore.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHydrationStore.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHydrationStore.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchHydrationStore~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/SipliWatch/WatchNotificationHandler.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchNotificationHandler.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchNotificationHandler.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchNotificationHandler.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchNotificationHandler.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchNotificationHandler.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchNotificationHandler.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchNotificationHandler.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchNotificationHandler~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/SipliWatch/WatchSessionManager.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchSessionManager.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchSessionManager.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchSessionManager.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchSessionManager.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchSessionManager.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchSessionManager.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchSessionManager.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WatchSessionManager~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Components/Theme.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/Theme.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/Theme.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/Theme.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/Theme.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/Theme.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/Theme.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/Theme.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/Theme~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/FluidType.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/FluidType.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/FluidType.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/FluidType.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/FluidType.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/FluidType.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/FluidType.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/FluidType.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/FluidType~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/GoalBreakdown.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GoalBreakdown.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GoalBreakdown.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GoalBreakdown.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GoalBreakdown.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GoalBreakdown.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GoalBreakdown.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GoalBreakdown.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GoalBreakdown~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/HydrationEntry.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/HydrationEntry.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/HydrationEntry.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/HydrationEntry.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/HydrationEntry.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/HydrationEntry.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/HydrationEntry.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/HydrationEntry.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/HydrationEntry~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/PersistedState.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/PersistedState.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/PersistedState.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/PersistedState.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/PersistedState.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/PersistedState.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/PersistedState.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/PersistedState.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/PersistedState~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/UnitSystem.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/UnitSystem.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/UnitSystem.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/UnitSystem.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/UnitSystem.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/UnitSystem.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/UnitSystem.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/UnitSystem.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/UnitSystem~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/UserProfile.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/UserProfile.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/UserProfile.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/UserProfile.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/UserProfile.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/UserProfile.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/UserProfile.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/UserProfile.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/UserProfile~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/WeatherSnapshot.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WeatherSnapshot.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WeatherSnapshot.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WeatherSnapshot.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WeatherSnapshot.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WeatherSnapshot.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WeatherSnapshot.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WeatherSnapshot.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WeatherSnapshot~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Models/WorkoutSummary.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WorkoutSummary.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WorkoutSummary.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WorkoutSummary.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WorkoutSummary.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WorkoutSummary.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WorkoutSummary.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WorkoutSummary.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/WorkoutSummary~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Services/DateExtensions.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/DateExtensions.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/DateExtensions.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/DateExtensions.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/DateExtensions.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/DateExtensions.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/DateExtensions.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/DateExtensions.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/DateExtensions~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Services/Formatters.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/Formatters.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/Formatters.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/Formatters.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/Formatters.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/Formatters.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/Formatters.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/Formatters.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/Formatters~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Services/GoalCalculator.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GoalCalculator.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GoalCalculator.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GoalCalculator.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GoalCalculator.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GoalCalculator.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GoalCalculator.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GoalCalculator.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GoalCalculator~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/WaterQuest/Services/PersistenceService.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/PersistenceService.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/PersistenceService.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/PersistenceService.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/PersistenceService.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/PersistenceService.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/PersistenceService.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/PersistenceService.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/PersistenceService~partial.swiftmodule"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GeneratedAssetSymbols.dia",
+    "index-unit-output-path" : "/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GeneratedAssetSymbols.o",
+    "llvm-bc" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GeneratedAssetSymbols.bc",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GeneratedAssetSymbols.swiftdeps",
+    "swiftmodule" : "/Users/anoopjose/Projects/WaterQuest/build/WaterQuest.build/Debug-iphonesimulator/SipliWatch.build/Objects-normal/x86_64/GeneratedAssetSymbols~partial.swiftmodule"
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "/Users/anoopjose/Projects/WaterQuest/SipliWatch/Views/WatchFluidPickerView.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/WatchFluidPickerView.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/WatchFluidPickerView.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/WatchFluidPickerView.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/WatchFluidPickerView.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/WatchFluidPickerView.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/SipliWatch/Views/WatchQuickAddView.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/WatchQuickAddView.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/WatchQuickAddView.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/WatchQuickAddView.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/WatchQuickAddView.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/WatchQuickAddView.swiftdeps"
+  },
+  "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/DerivedSources/GeneratedAssetSymbols.swift" : {
+    "const-values" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftconstvalues",
+    "dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/GeneratedAssetSymbols.d",
+    "diagnostics" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/GeneratedAssetSymbols.dia",
+    "object" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/GeneratedAssetSymbols.o",
+    "swift-dependencies" : "/Users/anoopjose/Projects/WaterQuest/build/dd/Build/Intermediates.noindex/WaterQuest.build/Debug-watchsimulator/SipliWatch.build/Objects-normal/arm64/GeneratedAssetSymbols.swiftdeps"
+  }
+}
