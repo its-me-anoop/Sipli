@@ -5,6 +5,10 @@ appstore-screenshots/exports/
 **/xcuserdata/
 *.xcuserstate
 
+# Xcode build output / archives (regenerated; never commit)
+/build/
+*.xcarchive
+
 # Python venv used by screenshot tooling
 .venv/
 __pycache__/
