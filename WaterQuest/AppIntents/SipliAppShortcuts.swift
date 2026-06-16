@@ -25,6 +25,17 @@ struct SipliAppShortcuts: AppShortcutsProvider {
         )
 
         AppShortcut(
+            intent: UndoLastIntakeIntent(),
+            phrases: [
+                "Undo my last drink in \(.applicationName)",
+                "Undo last water in \(.applicationName)",
+                "Remove my last drink in \(.applicationName)",
+            ],
+            shortTitle: "Undo Last Drink",
+            systemImageName: "arrow.uturn.backward"
+        )
+
+        AppShortcut(
             intent: OpenSipliIntent(),
             phrases: [
                 "Open \(.applicationName)",

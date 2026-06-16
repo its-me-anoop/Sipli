@@ -338,16 +338,27 @@ final class HydrationStore: ObservableObject {
         PhoneSessionManager.shared.sendState(state)
     }
 
+    /// Reloads persisted state from disk and merges it into the in-memory store.
+    ///
+    /// Fixes a data-loss window: App Intents (Siri/Shortcuts) and widgets write
+    /// hydration entries directly to the shared store on disk. The in-memory
+    /// `HydrationStore` only loads at `init`, so without this the next in-app
+    /// `persist()` would overwrite those entries with its stale snapshot. Called
+    /// when the app returns to the foreground; merges by id so entries logged
+    /// in-app since the last save are preserved while external writes are picked
+    /// up, and re-runs goal-completion accounting.
+    func reloadFromDisk() {
+        let state = persistence.load(PersistedState.self, fallback: .default)
+        applyRemoteState(state)
+    }
+
     func applyRemoteState(_ state: PersistedState) {
-        // Merge entries by ID: add any remote entries the phone doesn't have yet,
-        // and keep any local entries the remote snapshot doesn't include (logged on
-        // phone since the Watch's last iCloud save).
-        var byID = Dictionary(uniqueKeysWithValues: state.entries.map { ($0.id, $0) })
-        for entry in entries where byID[entry.id] == nil {
-            byID[entry.id] = entry
-        }
-        let hadExtraLocal = byID.count > state.entries.count
-        entries = byID.values.sorted { $0.date < $1.date }
+        // Merge entries by ID: take the loaded snapshot as the source of truth,
+        // and keep any local entries it doesn't include (logged on this device
+        // since the snapshot was saved).
+        let merged = HydrationMerge.mergeByID(local: entries, incoming: state.entries)
+        let hadExtraLocal = merged.count > state.entries.count
+        entries = merged
 
         profile = state.profile
         lastWeather = state.lastWeather

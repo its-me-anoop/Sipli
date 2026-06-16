@@ -126,45 +126,25 @@ struct LogWaterIntent: AppIntent {
     }
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        let persistence = PersistenceService()
+        let persistence = PersistenceService.shared
         var state = persistence.load(PersistedState.self, fallback: .default)
-
-        let clampedML = min(max(Double(amountInMilliliters), 50), 2_000)
         let resolvedFluid = fluidType?.toFluidType() ?? .water
 
-        let entry = HydrationEntry(
-            date: Date(),
-            volumeML: clampedML,
-            source: .manual,
-            fluidType: resolvedFluid
+        let result = HydrationIntentCore.logWater(
+            into: &state,
+            amountInMilliliters: amountInMilliliters,
+            fluidType: resolvedFluid,
+            now: Date()
         )
 
-        state.entries.append(entry)
         persistence.save(state)
         WidgetCenter.shared.reloadAllTimelines()
-
         IntentDonationService.donateLogWater(
-            amount: clampedML,
+            amount: result.entry.volumeML,
             fluidType: resolvedFluid
         )
 
-        let goalML = GoalCalculator.dailyGoal(
-            profile: state.profile,
-            weather: state.lastWeather,
-            workout: nil
-        ).totalML
-
-        let todayML = state.entries
-            .filter { Calendar.current.isDateInToday($0.date) }
-            .reduce(0.0) { $0 + $1.effectiveML }
-
-        let percent = goalML > 0 ? Int((todayML / goalML) * 100) : 0
-        let formattedAmount = "\(Int(clampedML)) mL"
-        let fluidLabel = resolvedFluid == .water ? "water" : resolvedFluid.displayName.lowercased()
-
-        return .result(
-            dialog: "Logged \(formattedAmount) of \(fluidLabel). You're at \(percent)% of today's goal."
-        )
+        return .result(dialog: IntentDialog(stringLiteral: result.dialog))
     }
 }
 
@@ -176,26 +156,10 @@ struct GetTodaysHydrationIntent: AppIntent {
     static var openAppWhenRun: Bool = false
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        let persistence = PersistenceService()
+        let persistence = PersistenceService.shared
         let state = persistence.load(PersistedState.self, fallback: .default)
-
-        let goalML = GoalCalculator.dailyGoal(
-            profile: state.profile,
-            weather: state.lastWeather,
-            workout: nil
-        ).totalML
-
-        let todayML = state.entries
-            .filter { Calendar.current.isDateInToday($0.date) }
-            .reduce(0.0) { $0 + $1.effectiveML }
-
-        let percent = goalML > 0 ? Int((todayML / goalML) * 100) : 0
-        let todayFormatted = "\(Int(todayML)) mL"
-        let goalFormatted = "\(Int(goalML)) mL"
-
-        return .result(
-            dialog: "You've had \(todayFormatted) of water today — \(percent)% of your \(goalFormatted) goal."
-        )
+        let dialog = HydrationIntentCore.todaysHydrationDialog(state: state, now: Date())
+        return .result(dialog: IntentDialog(stringLiteral: dialog))
     }
 }
 
@@ -208,5 +172,26 @@ struct OpenSipliIntent: AppIntent {
 
     func perform() async throws -> some IntentResult {
         return .result()
+    }
+}
+
+// MARK: - UndoLastIntakeIntent
+
+struct UndoLastIntakeIntent: AppIntent {
+    static var title: LocalizedStringResource = "Undo Last Drink"
+    static var description = IntentDescription("Removes the most recent drink you logged today in Sipli.")
+    static var openAppWhenRun: Bool = false
+
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        let persistence = PersistenceService.shared
+        var state = persistence.load(PersistedState.self, fallback: .default)
+
+        let result = HydrationIntentCore.undoLastToday(from: &state, now: Date())
+        if result.removed != nil {
+            persistence.save(state)
+            WidgetCenter.shared.reloadAllTimelines()
+        }
+
+        return .result(dialog: IntentDialog(stringLiteral: result.dialog))
     }
 }

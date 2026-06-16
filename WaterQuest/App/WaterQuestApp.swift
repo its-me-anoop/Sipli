@@ -94,6 +94,10 @@ struct WaterQuestApp: App {
                 guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil else { return }
                 if phase == .active {
                     Task {
+                        // Pick up entries written by App Intents (Siri/Shortcuts)
+                        // and widgets while the app was backgrounded, before any
+                        // in-app write can overwrite them.
+                        store.reloadFromDisk()
                         await subscriptionManager.refreshStatus()
                         store.updatePremiumAccess(subscriptionManager.hasPremiumAccess)
                         await refreshHealthKitWaterEntries()
