@@ -1,0 +1,55 @@
+<h2>What does the rising water mean?</h2>
+<p class="subtitle">Both fill the bottle by the time you reach "Done." They differ in whether the water is just a progress bar in disguise, or a keepsake of what you told Sipli.</p>
+
+<style>
+  .pair { display:flex; gap:26px; flex-wrap:wrap; justify-content:center; margin-top:8px; }
+  .col { flex:1 1 300px; max-width:360px; }
+  .bottle2 { width:120px; height:172px; margin:0 auto; border:3px solid #0c7bb8; border-radius:14px 14px 20px 20px; position:relative; overflow:hidden; background:#f0f9fe; }
+  .neck { width:42px;height:14px;border:3px solid #0c7bb8;border-bottom:none;border-radius:6px 6px 0 0;margin:0 auto -1px; background:#f0f9fe; position:relative; z-index:2;}
+  .uniform { position:absolute; bottom:0; left:0; right:0; height:62%; background:linear-gradient(#bfe4f5,#1f9de0); }
+  .layer { position:absolute; left:0; right:0; display:flex; align-items:center; padding-left:8px; font:600 9px ui-monospace,monospace; color:#06384f; letter-spacing:.04em; }
+  .tag { text-align:center; font-size:12.5px; color:#3a525f; margin-top:14px; }
+  .tag b{ color:#15333f; }
+  ul.note{ font-size:13px; color:#4a6插; color:#46606c; margin-top:10px; padding-left:18px; line-height:1.6; }
+</style>
+
+<div class="pair">
+
+  <div class="col">
+    <div class="neck"></div>
+    <div class="bottle2"><div class="uniform"></div>
+      <div style="position:absolute;bottom:62%;left:0;right:0;height:2px;background:rgba(255,255,255,.7)"></div>
+    </div>
+    <div class="tag"><b>A · Pure momentum</b></div>
+    <ul class="note">
+      <li>One clear body of water. Each step you finish raises it ~1/7.</li>
+      <li>On every "Continue": a measure <b>pours in</b> — splash, ripple, a soft haptic.</li>
+      <li>At Done it's full and brims over. Simple, calm, unmistakable progress.</li>
+    </ul>
+  </div>
+
+  <div class="col">
+    <div class="neck"></div>
+    <div class="bottle2">
+      <div class="layer" style="bottom:0;height:18%;background:linear-gradient(#2b6cb0,#1f5e9e)">REMINDERS · steady</div>
+      <div class="layer" style="bottom:18%;height:14%;background:linear-gradient(#2f8fd0,#2477b8)">AWAKE · 7a–10p</div>
+      <div class="layer" style="bottom:32%;height:16%;background:linear-gradient(#34a0db,#2b8fcb)">TARGET · 2.4 L</div>
+      <div class="layer" style="bottom:48%;height:12%;background:linear-gradient(#52b3e4,#3fa0d6)">ACTIVE · steady</div>
+      <div class="layer" style="bottom:60%;height:12%;background:linear-gradient(#76c6ec,#5bb4e0)">70 kg</div>
+      <div class="layer" style="bottom:72%;height:12%;background:linear-gradient(#9bd8f2,#7cc6ea); color:#06384f">ALEX</div>
+    </div>
+    <div class="tag"><b>B · Layered keepsake</b></div>
+    <ul class="note">
+      <li>Each answer pours in as its own tinted band, briefly labeled.</li>
+      <li>The bottle becomes a stacked record of <b>your</b> setup — it reuses the answer-chip idea, but inside the vessel.</li>
+      <li>Distinctive and personal. More motion, more to get right visually.</li>
+    </ul>
+  </div>
+
+</div>
+
+<div class="options" style="margin-top:8px">
+  <div class="option" data-choice="a" onclick="toggleSelect(this)"><div class="letter">A</div><div class="content"><h3>Pure momentum</h3><p>Uniform water that rises with each step. Calm, legible, easy to nail.</p></div></div>
+  <div class="option" data-choice="b" onclick="toggleSelect(this)"><div class="letter">B</div><div class="content"><h3>Layered keepsake</h3><p>Each answer becomes a labeled band — the bottle records your choices.</p></div></div>
+</div>
+<p class="subtitle" style="margin-top:10px">A third path: do <b>A's</b> calm uniform fill for most steps, but let the <b>Target</b> step momentarily bind the waterline to your real goal. Say so if that hybrid appeals.</p>
