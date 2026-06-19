@@ -5,7 +5,6 @@ struct DoneStep: View {
     let onFinish: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
-    @State private var bobOffset: CGFloat = 0
     @State private var confettiSeed = UUID()
 
     private var firstName: String {
@@ -29,33 +28,27 @@ struct DoneStep: View {
             )
             .ignoresSafeArea()
 
-            // Confetti
             if !reduceMotion {
                 ConfettiLayer(seed: confettiSeed)
                     .allowsHitTesting(false)
             }
 
             VStack(spacing: 0) {
-                Spacer(minLength: 36)
+                Spacer(minLength: 12)
 
-                VStack(spacing: 0) {
-                    SipliBottle(fill: 0.85, size: 150)
-                        .offset(y: bobOffset)
+                (Text("You're set,\n").foregroundStyle(OnboardingPalette.ink)
+                    + Text("\(firstName).").italic().foregroundStyle(OnboardingPalette.water))
+                    .font(.editorialSerif(38, relativeTo: .largeTitle))
+                    .multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
 
-                    (Text("You're set,\n").foregroundStyle(OnboardingPalette.ink)
-                        + Text("\(firstName).").italic().foregroundStyle(OnboardingPalette.water))
-                        .font(.editorialSerif(38, relativeTo: .largeTitle))
-                        .multilineTextAlignment(.center)
-                        .padding(.top, 18)
-
-                    Text("Your daily target: \(Text(targetDisplay).fontWeight(.semibold).foregroundColor(OnboardingPalette.ink)). Let's start with a small sip.")
-                        .font(.system(size: 15))
-                        .foregroundStyle(OnboardingPalette.ink3)
-                        .multilineTextAlignment(.center)
-                        .padding(.horizontal, 32)
-                        .padding(.top, 18)
-                        .frame(maxWidth: 320)
-                }
+                Text("Your daily target: \(Text(targetDisplay).fontWeight(.semibold).foregroundColor(OnboardingPalette.ink)). Let's start with a small sip.")
+                    .font(.system(size: 15))
+                    .foregroundStyle(OnboardingPalette.ink3)
+                    .multilineTextAlignment(.center)
+                    .padding(.horizontal, 32)
+                    .padding(.top, 18)
+                    .frame(maxWidth: 320)
 
                 Spacer()
 
@@ -65,17 +58,7 @@ struct DoneStep: View {
             }
             .frame(maxWidth: .infinity)
         }
-        .onAppear {
-            startAnimations()
-            Haptics.success()
-        }
-    }
-
-    private func startAnimations() {
-        guard !reduceMotion else { return }
-        withAnimation(.easeInOut(duration: 2.5).repeatForever(autoreverses: true)) {
-            bobOffset = -8
-        }
+        .onAppear { Haptics.success() }
     }
 }
 
