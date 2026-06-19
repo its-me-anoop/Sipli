@@ -3,15 +3,23 @@ import SwiftUI
 /// The single persistent onboarding bottle. One instance is owned by
 /// `OnboardingView` and reused across every step so the water level animates
 /// continuously. Wraps `LiquidProgressView` (masked-bottle liquid renderer).
+///
+/// The bottle gently floats while idle (honouring Reduce Motion) so the screen
+/// feels alive, and its `size` can be driven dynamically by the coordinator so
+/// the bottle shrinks to fit smaller screens without ever overlapping content.
 struct OnboardingVessel: View {
     var fill: Double
     var placement: VesselPlacement
     var isComplete: Bool = false
+    /// Explicit bottle art width. When nil, falls back to a per-placement
+    /// default. Height always follows the asset's 1.36 ratio.
+    var size: CGFloat? = nil
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var bob: CGFloat = 0
 
-    /// Bottle art width per placement. Height follows the asset's 1.36 ratio.
     private var width: CGFloat {
+        if let size { return size }
         switch placement {
         case .hero: return 168
         case .compact: return 72
@@ -31,9 +39,19 @@ struct OnboardingVessel: View {
             )
         }
         .frame(width: width, height: width * 1.36)
-        .scaleEffect(isComplete && !reduceMotion ? 1.04 : 1.0)
+        .scaleEffect(isComplete && !reduceMotion ? 1.06 : 1.0)
+        .offset(y: bob)
         .animation(.spring(response: 0.5, dampingFraction: 0.6), value: isComplete)
         .accessibilityHidden(true)
+        .onAppear { startBob() }
+    }
+
+    /// Gentle perpetual float so the vessel feels alive between steps.
+    private func startBob() {
+        guard !reduceMotion, bob == 0 else { return }
+        withAnimation(.easeInOut(duration: 2.6).repeatForever(autoreverses: true)) {
+            bob = -7
+        }
     }
 
     /// A soft green halo behind the bottle at completion — the celebratory

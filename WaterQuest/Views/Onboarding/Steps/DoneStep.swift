@@ -2,6 +2,9 @@ import SwiftUI
 
 struct DoneStep: View {
     let state: OnboardingState
+    /// Top inset for the text block so it clears the coordinator-owned vessel.
+    /// The gradient and confetti stay full-bleed (they ignore this).
+    var topInset: CGFloat = 0
     let onFinish: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -34,7 +37,7 @@ struct DoneStep: View {
             }
 
             VStack(spacing: 0) {
-                Spacer(minLength: 12)
+                Spacer(minLength: 8)
 
                 (Text("You're set,\n").foregroundStyle(OnboardingPalette.ink)
                     + Text("\(firstName).").italic().foregroundStyle(OnboardingPalette.water))
@@ -56,6 +59,7 @@ struct DoneStep: View {
                     .padding(.horizontal, 24)
                     .padding(.bottom, 28)
             }
+            .padding(.top, topInset)
             .frame(maxWidth: .infinity)
         }
         .onAppear { Haptics.success() }
