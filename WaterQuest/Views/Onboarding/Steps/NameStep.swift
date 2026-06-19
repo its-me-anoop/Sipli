@@ -13,8 +13,6 @@ struct NameStep: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            SipliTopBar(stepIndex: 1, total: OnboardingStep.displayedTotal, canGoBack: true, onBack: onBack)
-
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     AnswerChipStack(chips: answers)
@@ -42,7 +40,6 @@ struct NameStep: View {
             .padding(.bottom, 28)
             .padding(.top, 12)
         }
-        .background(OnboardingPalette.paper)
         .onAppear {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
                 nameFieldFocused = true

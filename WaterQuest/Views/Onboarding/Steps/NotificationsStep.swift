@@ -24,8 +24,6 @@ struct NotificationsStep: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            SipliTopBar(stepIndex: 6, total: OnboardingStep.displayedTotal, canGoBack: true, onBack: onBack)
-
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
                     AnswerChipStack(chips: answers)
@@ -58,7 +56,6 @@ struct NotificationsStep: View {
             .padding(.bottom, 28)
             .padding(.top, 12)
         }
-        .background(OnboardingPalette.paper)
     }
 
     private var headline: some View {
