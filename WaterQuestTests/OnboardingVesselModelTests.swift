@@ -31,9 +31,9 @@ struct OnboardingVesselModelTests {
         #expect(OnboardingStep.target.vesselPlacement == .compact)
     }
 
-    @Test func everyOtherStepIsHero() {
-        let heroes: [OnboardingStep] = [.welcome, .name, .activity, .schedule, .notifications, .done]
-        for step in heroes {
+    @Test func everyNonCompactStepIsHero() {
+        let compactSteps: Set<OnboardingStep> = [.weight, .target]
+        for step in OnboardingStep.allCases where !compactSteps.contains(step) {
             #expect(step.vesselPlacement == .hero, "\(step) should be hero")
         }
     }
