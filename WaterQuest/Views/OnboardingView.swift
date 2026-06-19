@@ -50,7 +50,6 @@ struct OnboardingView: View {
                     isComplete: step.isComplete
                 )
                 .position(vesselPosition(in: proxy.size))
-                .animation(.spring(response: 0.55, dampingFraction: 0.84), value: step)
 
                 // Accessibility: the vessel is decorative/hidden, so expose
                 // setup progress here as a small, early-sorted element.
@@ -58,7 +57,7 @@ struct OnboardingView: View {
                     .frame(width: 1, height: 1)
                     .accessibilityElement()
                     .accessibilityLabel("Setup progress")
-                    .accessibilityValue("Step \(min(step.rawValue + 1, OnboardingStep.displayedTotal)) of \(OnboardingStep.displayedTotal)")
+                    .accessibilityValue(step == .done ? "Setup complete" : "Step \(step.rawValue + 1) of \(OnboardingStep.displayedTotal)")
                     .accessibilitySortPriority(1)
             }
         }
