@@ -21,15 +21,48 @@ struct OnboardingView: View {
     @State private var hasRequestedLocation = false
 
     var body: some View {
-        ZStack {
-            OnboardingPalette.paper.ignoresSafeArea()
+        GeometryReader { proxy in
+            ZStack(alignment: .top) {
+                OnboardingPalette.paper.ignoresSafeArea()
 
-            stepContainer
-                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                // Per-step content. Reserves space at the top for the vessel
+                // zone so content never underlaps the floating bottle.
+                stepContainer
+                    .padding(.top, contentTopInset)
+                    .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+
+                // Shared back button — persists across step changes (outside .id).
+                HStack {
+                    if canGoBack {
+                        SipliBackButton(action: retreat)
+                    } else {
+                        Color.clear.frame(width: 40, height: 40)
+                    }
+                    Spacer()
+                }
+                .padding(.horizontal, 24)
+                .padding(.top, 8)
+
+                // The single persistent vessel. Size + position animate by placement.
+                OnboardingVessel(
+                    fill: step.fillFraction,
+                    placement: step.vesselPlacement,
+                    isComplete: step.isComplete
+                )
+                .position(vesselPosition(in: proxy.size))
+                .animation(.spring(response: 0.55, dampingFraction: 0.84), value: step)
+
+                // Accessibility: the vessel is decorative/hidden, so expose
+                // setup progress here as a small, early-sorted element.
+                Color.clear
+                    .frame(width: 1, height: 1)
+                    .accessibilityElement()
+                    .accessibilityLabel("Setup progress")
+                    .accessibilityValue("Step \(min(step.rawValue + 1, OnboardingStep.displayedTotal)) of \(OnboardingStep.displayedTotal)")
+                    .accessibilitySortPriority(1)
+            }
         }
         .task { @MainActor in
-            // Sync the toggle with the system's actual HealthKit auth state —
-            // if the user previously granted, surface that as ON; otherwise OFF.
             state.prefersHealthKit = healthKit.isAuthorized
         }
         .onChange(of: state.prefersHealthKit) { oldValue, newValue in
@@ -37,6 +70,32 @@ struct OnboardingView: View {
         }
         .onChange(of: state.prefersWeatherGoal) { oldValue, newValue in
             handleWeatherToggle(was: oldValue, now: newValue)
+        }
+    }
+
+    /// Back button is shown on every step except the first and the celebration.
+    private var canGoBack: Bool {
+        step != .welcome && step != .done
+    }
+
+    /// Vertical space reserved above step content for the vessel zone.
+    /// Hero needs room for the tall bottle; compact only needs the header strip.
+    private var contentTopInset: CGFloat {
+        switch step.vesselPlacement {
+        case .hero: return 268      // back row (~60) + hero bottle (~228) minus overlap
+        case .compact: return 84    // back row + compact bottle sitting inline
+        }
+    }
+
+    /// Centre point for the persistent vessel given the current placement.
+    /// Hero: centred horizontally, upper third. Compact: tucked top-trailing
+    /// beside the back button.
+    private func vesselPosition(in size: CGSize) -> CGPoint {
+        switch step.vesselPlacement {
+        case .hero:
+            return CGPoint(x: size.width / 2, y: 188)
+        case .compact:
+            return CGPoint(x: size.width - 64, y: 52)
         }
     }
 
