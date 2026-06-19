@@ -22,7 +22,12 @@ struct OnboardingView: View {
 
     var body: some View {
         GeometryReader { proxy in
-            let geo = vesselGeometry(in: proxy.size)
+            // When vertical space is tight (keyboard up / very short screen),
+            // a hero bottle would crowd the text and clip the headline — so it
+            // collapses to the small top-right corner, freeing room for content.
+            let constrained = proxy.size.height < 560
+            let placement: VesselPlacement = (step.vesselPlacement == .hero && constrained) ? .compact : step.vesselPlacement
+            let geo = vesselGeometry(placement: placement, in: proxy.size)
             ZStack(alignment: .top) {
                 OnboardingPalette.paper.ignoresSafeArea()
 
@@ -51,11 +56,15 @@ struct OnboardingView: View {
                 // navigation `withAnimation` drives the interpolation).
                 OnboardingVessel(
                     fill: step.fillFraction,
-                    placement: step.vesselPlacement,
+                    placement: placement,
                     isComplete: step.isComplete,
                     size: geo.width
                 )
                 .position(geo.center)
+                // Bouncy respring whenever the bottle resizes or relocates
+                // (e.g. hero → top-right corner when the keyboard appears).
+                .animation(.bouncy(duration: 0.55, extraBounce: 0.3), value: placement)
+                .animation(.bouncy(duration: 0.5, extraBounce: 0.25), value: geo.width)
 
                 // Accessibility: the vessel is decorative/hidden, so expose
                 // setup progress here as a small, early-sorted element.
@@ -93,9 +102,9 @@ struct OnboardingView: View {
         var contentInset: CGFloat
     }
 
-    private func vesselGeometry(in size: CGSize) -> VesselGeometry {
+    private func vesselGeometry(placement: VesselPlacement, in size: CGSize) -> VesselGeometry {
         let backRowBottom: CGFloat = 52   // back button row height in proxy space
-        switch step.vesselPlacement {
+        switch placement {
         case .hero:
             let topGap: CGFloat = 14
             let bottomGap: CGFloat = 20
@@ -111,11 +120,11 @@ struct OnboardingView: View {
                 contentInset: inset
             )
         case .compact:
-            // Bottle tucks into the top-trailing corner; content sits below the
-            // header strip beside it, so it only needs the proven small inset.
+            // Small bottle tucked into the top-trailing corner; content sits
+            // below the header strip beside it, so it needs only a small inset.
             return VesselGeometry(
-                width: 72,
-                center: CGPoint(x: size.width - 64, y: 52),
+                width: 60,
+                center: CGPoint(x: size.width - 50, y: 50),
                 contentInset: 84
             )
         }
@@ -179,7 +188,7 @@ struct OnboardingView: View {
     private func advance() {
         guard let next = step.next() else { return }
         direction = .forward
-        withAnimation(.spring(response: 0.55, dampingFraction: 0.84)) {
+        withAnimation(.bouncy(duration: 0.5, extraBounce: 0.2)) {
             step = next
         }
     }
@@ -187,7 +196,7 @@ struct OnboardingView: View {
     private func retreat() {
         guard let prev = step.previous() else { return }
         direction = .backward
-        withAnimation(.spring(response: 0.55, dampingFraction: 0.84)) {
+        withAnimation(.bouncy(duration: 0.5, extraBounce: 0.2)) {
             step = prev
         }
     }
