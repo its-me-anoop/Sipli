@@ -2,7 +2,6 @@ import SwiftUI
 
 struct ScheduleStep: View {
     @Binding var state: OnboardingState
-    let answers: [OnboardingAnswerChip]
     let onContinue: () -> Void
 
     private enum ActiveHandle { case wake, sleep }
@@ -13,10 +12,6 @@ struct ScheduleStep: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    AnswerChipStack(chips: answers)
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 12)
-
                     headline
                         .padding(.horizontal, 24)
                         .padding(.bottom, 6)
@@ -25,14 +20,14 @@ struct ScheduleStep: View {
                         .font(.system(size: 15))
                         .foregroundStyle(OnboardingPalette.ink3)
                         .padding(.horizontal, 24)
-                        .padding(.bottom, 20)
+                        .padding(.bottom, 12)
 
                     dial
-                        .padding(.bottom, 12)
+                        .padding(.bottom, 8)
 
                     readout
                         .padding(.horizontal, 24)
-                        .padding(.bottom, 16)
+                        .padding(.bottom, 12)
                 }
             }
 
@@ -53,7 +48,7 @@ struct ScheduleStep: View {
     }
 
     private var dial: some View {
-        let dialSize: CGFloat = 280
+        let dialSize: CGFloat = 264
         return ZStack {
             // Night ring (background)
             Circle()

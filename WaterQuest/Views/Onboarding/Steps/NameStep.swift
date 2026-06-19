@@ -2,7 +2,6 @@ import SwiftUI
 
 struct NameStep: View {
     @Binding var state: OnboardingState
-    let answers: [OnboardingAnswerChip]
     let onContinue: () -> Void
 
     @FocusState private var nameFieldFocused: Bool
@@ -14,11 +13,6 @@ struct NameStep: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    AnswerChipStack(chips: answers)
-                        .padding(.horizontal, 24)
-                        .padding(.top, 4)
-                        .padding(.bottom, 12)
-
                     headline
                         .padding(.horizontal, 24)
                         .padding(.top, 4)

@@ -3,7 +3,6 @@ import SwiftUI
 struct ActivityStep: View {
     @Binding var state: OnboardingState
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
-    let answers: [OnboardingAnswerChip]
     let onContinue: () -> Void
 
     private var hasHealthKitPremium: Bool {
@@ -29,10 +28,6 @@ struct ActivityStep: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    AnswerChipStack(chips: answers)
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 12)
-
                     headline
                         .padding(.horizontal, 24)
                         .padding(.bottom, 24)

@@ -2,7 +2,6 @@ import SwiftUI
 
 struct NotificationsStep: View {
     @Binding var state: OnboardingState
-    let answers: [OnboardingAnswerChip]
     let onFinish: () -> Void
 
     @State private var msgIdx = 0
@@ -25,10 +24,6 @@ struct NotificationsStep: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    AnswerChipStack(chips: answers)
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 12)
-
                     headline
                         .padding(.horizontal, 24)
                         .padding(.bottom, 26)

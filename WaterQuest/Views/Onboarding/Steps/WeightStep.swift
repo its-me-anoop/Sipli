@@ -2,7 +2,6 @@ import SwiftUI
 
 struct WeightStep: View {
     @Binding var state: OnboardingState
-    let answers: [OnboardingAnswerChip]
     let onContinue: () -> Void
 
     @State private var weightDisplayKey = UUID()
@@ -24,32 +23,8 @@ struct WeightStep: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            // Header strip: thin progress meter. The compact vessel
-            // (coordinator-owned) floats at the trailing edge of this strip.
-            HStack {
-                Capsule()
-                    .fill(OnboardingPalette.ink.opacity(0.12))
-                    .frame(height: 4)
-                    .overlay(alignment: .leading) {
-                        GeometryReader { geo in
-                            Capsule()
-                                .fill(OnboardingPalette.water)
-                                .frame(width: geo.size.width * OnboardingStep.weight.fillFraction)
-                        }
-                    }
-                Spacer().frame(width: 96) // clearance for the compact vessel
-            }
-            .frame(height: 44)
-            .padding(.horizontal, 24)
-            .padding(.top, 50)
-            .padding(.bottom, 4)
-
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    AnswerChipStack(chips: answers)
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 12)
-
                     headline
                         .padding(.horizontal, 24)
                         .padding(.bottom, 6)

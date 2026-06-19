@@ -5,7 +5,6 @@ struct TargetStep: View {
     @EnvironmentObject private var weather: WeatherClient
     @EnvironmentObject private var locationManager: LocationManager
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
-    let answers: [OnboardingAnswerChip]
     let onContinue: () -> Void
 
     private var hasWeatherPremium: Bool {
@@ -52,30 +51,8 @@ struct TargetStep: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
-                Capsule()
-                    .fill(OnboardingPalette.ink.opacity(0.12))
-                    .frame(height: 4)
-                    .overlay(alignment: .leading) {
-                        GeometryReader { geo in
-                            Capsule()
-                                .fill(OnboardingPalette.water)
-                                .frame(width: geo.size.width * OnboardingStep.target.fillFraction)
-                        }
-                    }
-                Spacer().frame(width: 96)
-            }
-            .frame(height: 44)
-            .padding(.horizontal, 24)
-            .padding(.top, 50)
-            .padding(.bottom, 4)
-
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    AnswerChipStack(chips: answers)
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 12)
-
                     headline
                         .padding(.horizontal, 24)
                         .padding(.bottom, 14)

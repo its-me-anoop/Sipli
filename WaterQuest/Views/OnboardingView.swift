@@ -61,10 +61,10 @@ struct OnboardingView: View {
                     size: geo.width
                 )
                 .position(geo.center)
-                // Bouncy respring whenever the bottle resizes or relocates
+                // Smooth respring whenever the bottle resizes or relocates
                 // (e.g. hero → top-right corner when the keyboard appears).
-                .animation(.bouncy(duration: 0.55, extraBounce: 0.3), value: placement)
-                .animation(.bouncy(duration: 0.5, extraBounce: 0.25), value: geo.width)
+                .animation(.smooth(duration: 0.5), value: placement)
+                .animation(.smooth(duration: 0.45), value: geo.width)
 
                 // Accessibility: the vessel is decorative/hidden, so expose
                 // setup progress here as a small, early-sorted element.
@@ -109,8 +109,9 @@ struct OnboardingView: View {
             let topGap: CGFloat = 14
             let bottomGap: CGFloat = 20
             // Scale the bottle to the screen, clamped so it stays tasteful on
-            // both compact and large devices.
-            let width = min(170, max(116, size.height * 0.235))
+            // both compact and large devices. Kept modest so content-heavy
+            // steps (activity options, schedule dial) don't get pushed off.
+            let width = min(142, max(104, size.height * 0.17))
             let height = width * 1.36
             let centerY = backRowBottom + topGap + height / 2
             let inset = centerY + height / 2 + bottomGap
@@ -137,28 +138,17 @@ struct OnboardingView: View {
             case .welcome:
                 WelcomeStep(onContinue: advance)
             case .name:
-                NameStep(state: $state,
-                         answers: state.answerChips(upTo: .name),
-                         onContinue: advance)
+                NameStep(state: $state, onContinue: advance)
             case .weight:
-                WeightStep(state: $state,
-                           answers: state.answerChips(upTo: .weight),
-                           onContinue: advance)
+                WeightStep(state: $state, onContinue: advance)
             case .activity:
-                ActivityStep(state: $state,
-                             answers: state.answerChips(upTo: .activity),
-                             onContinue: advance)
+                ActivityStep(state: $state, onContinue: advance)
             case .target:
-                TargetStep(state: $state,
-                           answers: state.answerChips(upTo: .target),
-                           onContinue: advance)
+                TargetStep(state: $state, onContinue: advance)
             case .schedule:
-                ScheduleStep(state: $state,
-                             answers: state.answerChips(upTo: .schedule),
-                             onContinue: advance)
+                ScheduleStep(state: $state, onContinue: advance)
             case .notifications:
                 NotificationsStep(state: $state,
-                                  answers: state.answerChips(upTo: .notifications),
                                   onFinish: { Task { await finishToDone() } })
             case .done:
                 DoneStep(state: state, topInset: insetForDone, onFinish: completeAndExit)
@@ -169,16 +159,18 @@ struct OnboardingView: View {
     }
 
     private var slideTransition: AnyTransition {
+        // The whole content block glides + fades + subtly scales in, so every
+        // element on the step animates together with the same smooth feel.
         switch direction {
         case .forward:
             return .asymmetric(
-                insertion: .opacity.combined(with: .offset(y: 40)),
-                removal: .opacity.combined(with: .offset(y: -40))
+                insertion: .opacity.combined(with: .offset(y: 28)).combined(with: .scale(scale: 0.98, anchor: .top)),
+                removal: .opacity.combined(with: .offset(y: -28)).combined(with: .scale(scale: 0.98, anchor: .top))
             )
         case .backward:
             return .asymmetric(
-                insertion: .opacity.combined(with: .offset(y: -40)),
-                removal: .opacity.combined(with: .offset(y: 40))
+                insertion: .opacity.combined(with: .offset(y: -28)).combined(with: .scale(scale: 0.98, anchor: .bottom)),
+                removal: .opacity.combined(with: .offset(y: 28)).combined(with: .scale(scale: 0.98, anchor: .bottom))
             )
         }
     }
@@ -188,7 +180,7 @@ struct OnboardingView: View {
     private func advance() {
         guard let next = step.next() else { return }
         direction = .forward
-        withAnimation(.bouncy(duration: 0.5, extraBounce: 0.2)) {
+        withAnimation(.smooth(duration: 0.5)) {
             step = next
         }
     }
@@ -196,7 +188,7 @@ struct OnboardingView: View {
     private func retreat() {
         guard let prev = step.previous() else { return }
         direction = .backward
-        withAnimation(.bouncy(duration: 0.5, extraBounce: 0.2)) {
+        withAnimation(.smooth(duration: 0.5)) {
             step = prev
         }
     }
