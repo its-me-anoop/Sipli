@@ -1,5 +1,13 @@
 import SwiftUI
 
+/// Where the persistent onboarding vessel sits for a given step.
+/// `.hero` = tall and central (light steps); `.compact` = small, in the
+/// header strip so input-heavy steps keep their vertical space.
+enum VesselPlacement: Equatable {
+    case hero
+    case compact
+}
+
 enum OnboardingStep: Int, CaseIterable, Equatable {
     case welcome      // 0
     case name         // 1
@@ -35,6 +43,27 @@ struct OnboardingAnswerChip: Identifiable, Equatable {
     let id: String
     let label: String
     let value: String
+}
+
+extension OnboardingStep {
+    /// Fraction of the vessel filled while this step is on screen.
+    /// Welcome floors at a small non-zero level so the empty bottle reads as
+    /// "waiting"; each step pours one measure; Done brims full.
+    var fillFraction: Double {
+        if self == .welcome { return 0.04 }
+        return min(1.0, Double(rawValue) / Double(OnboardingStep.displayedTotal))
+    }
+
+    /// Placement of the persistent vessel for this step.
+    var vesselPlacement: VesselPlacement {
+        switch self {
+        case .weight, .target: return .compact
+        default: return .hero
+        }
+    }
+
+    /// True only on the celebration step — drives the vessel's completion accent.
+    var isComplete: Bool { self == .done }
 }
 
 extension OnboardingState {
