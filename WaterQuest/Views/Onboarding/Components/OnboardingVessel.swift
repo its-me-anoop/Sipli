@@ -11,7 +11,7 @@ struct OnboardingVessel: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     /// Bottle art width per placement. Height follows the asset's 1.36 ratio.
-    var width: CGFloat {
+    private var width: CGFloat {
         switch placement {
         case .hero: return 168
         case .compact: return 72
@@ -19,15 +19,18 @@ struct OnboardingVessel: View {
     }
 
     var body: some View {
-        LiquidProgressView(
-            progress: max(0, min(1, fill)),
-            compositions: [FluidComposition(type: .water, proportion: 1.0)],
-            isRegular: false,
-            bottleWidth: width,
-            bottleHeight: width * 1.36,
-            showProgressLabel: false
-        )
-        .background(completionGlow)
+        ZStack {
+            completionGlow
+            LiquidProgressView(
+                progress: max(0, min(1, fill)),
+                compositions: [FluidComposition(type: .water, proportion: 1.0)],
+                isRegular: false,
+                bottleWidth: width,
+                bottleHeight: width * 1.36,
+                showProgressLabel: false
+            )
+        }
+        .frame(width: width, height: width * 1.36)
         .scaleEffect(isComplete && !reduceMotion ? 1.04 : 1.0)
         .animation(.spring(response: 0.5, dampingFraction: 0.6), value: isComplete)
         .accessibilityHidden(true)
