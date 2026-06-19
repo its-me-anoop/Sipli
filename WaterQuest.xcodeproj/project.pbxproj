@@ -44,6 +44,8 @@
 		6B55F77C2F8F608C006CE606 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE1111111111111111111111 /* WidgetKit.framework */; };
 		6B55F77D2F8F608C006CE606 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE2222222222222222222222 /* SwiftUI.framework */; };
 		6B55F78A2F8F608F006CE606 /* SipliWatchWidgetsExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 6B55F77B2F8F608C006CE606 /* SipliWatchWidgetsExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		6BA043C42FE5DAB800FF4C45 /* OnboardingVesselModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA043C32FE5DAB800FF4C45 /* OnboardingVesselModelTests.swift */; };
+		6BA043C62FE5DC3300FF4C45 /* OnboardingVessel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA043C52FE5DC3300FF4C45 /* OnboardingVessel.swift */; };
 		6BBC3B922F4F6AC100F5525A /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 6BBC3B912F4F6AC100F5525A /* AppIcon.icon */; };
 		6BDAF0F22F6375DE009ADC09 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 6BDAF0F12F6375DE009ADC09 /* Products.storekit */; };
 		7077C5CF3469D64E94804983 /* FluidType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A139EF313607077443D4FCFE /* FluidType.swift */; };
@@ -263,6 +265,8 @@
 		6A662F7C3476A0C51044664F /* NotificationsStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationsStep.swift; sourceTree = "<group>"; };
 		6B3494CC2F5249E200D313C3 /* QuickAddWaterIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickAddWaterIntent.swift; sourceTree = "<group>"; };
 		6B55F77B2F8F608C006CE606 /* SipliWatchWidgetsExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SipliWatchWidgetsExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		6BA043C32FE5DAB800FF4C45 /* OnboardingVesselModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingVesselModelTests.swift; sourceTree = "<group>"; };
+		6BA043C52FE5DC3300FF4C45 /* OnboardingVessel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingVessel.swift; sourceTree = "<group>"; };
 		6BBC3B912F4F6AC100F5525A /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		6BDAF0F12F6375DE009ADC09 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		6D8C127CF4F113AB2D5DB40D /* NotificationMessageTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationMessageTests.swift; sourceTree = "<group>"; };
@@ -354,7 +358,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		6B55F78E2F8F608F006CE606 /* Exceptions for "SipliWatchWidgets" folder in "SipliWatchWidgetsExtension" target */ = {
+		6B55F78E2F8F608F006CE606 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -364,18 +368,7 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		6B55F77E2F8F608C006CE606 /* SipliWatchWidgets */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			exceptions = (
-				6B55F78E2F8F608F006CE606 /* Exceptions for "SipliWatchWidgets" folder in "SipliWatchWidgetsExtension" target */,
-			);
-			explicitFileTypes = {
-			};
-			explicitFolders = (
-			);
-			path = SipliWatchWidgets;
-			sourceTree = "<group>";
-		};
+		6B55F77E2F8F608C006CE606 /* SipliWatchWidgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6B55F78E2F8F608F006CE606 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = SipliWatchWidgets; sourceTree = "<group>"; };
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -456,7 +449,6 @@
 				BD6FDC6A5DD24EE7DF2CAF8E /* Components */,
 				5A3A920DC8845112221718EE /* Steps */,
 			);
-			name = Onboarding;
 			path = Onboarding;
 			sourceTree = "<group>";
 		};
@@ -488,7 +480,6 @@
 				78D82D72BE04D7EA2959A3A0 /* ScheduleStep.swift */,
 				226D661FFE4695FDE7BF0C2F /* TargetStep.swift */,
 			);
-			name = Steps;
 			path = Steps;
 			sourceTree = "<group>";
 		};
@@ -562,8 +553,8 @@
 				B1C2D3E4F5061728394A5B6C /* SubscriptionManagerTests.swift */,
 				B2D3E4F5061728394A5B6C7D /* PaywallContextTests.swift */,
 				7978691325DF06C649CACAE7 /* SipliAppIntentsTests.swift */,
+				6BA043C32FE5DAB800FF4C45 /* OnboardingVesselModelTests.swift */,
 			);
-			name = WaterQuestTests;
 			path = WaterQuestTests;
 			sourceTree = "<group>";
 		};
@@ -606,8 +597,8 @@
 				B778ABD25FE0AC8D415F3B6C /* AnswerChipStack.swift */,
 				E978A95F2A11281369173920 /* SipliCTA.swift */,
 				4F187D398A7F2E287751F39F /* PremiumBadge.swift */,
+				6BA043C52FE5DC3300FF4C45 /* OnboardingVessel.swift */,
 			);
-			name = Components;
 			path = Components;
 			sourceTree = "<group>";
 		};
@@ -646,7 +637,6 @@
 			children = (
 				E1D5A4B6598B2C78EB255CB4 /* InsightsViewModel.swift */,
 			);
-			name = Insights;
 			path = Insights;
 			sourceTree = "<group>";
 		};
@@ -993,6 +983,7 @@
 				94AF3267A3C90279716F2BE6 /* MotionManager.swift in Sources */,
 				747A7C4F8A906C71164AB9DE /* NotificationScheduler.swift in Sources */,
 				CCD4444444444444444444D4 /* PersistedState.swift in Sources */,
+				6BA043C62FE5DC3300FF4C45 /* OnboardingVessel.swift in Sources */,
 				PS001000000000000000002 /* PhoneSessionManager.swift in Sources */,
 				83C67F5F3E24629A72299C6E /* PersistenceService.swift in Sources */,
 				D6E8A4F1B37C920E5D1A8F63 /* PreviewEnvironment.swift in Sources */,
@@ -1048,6 +1039,7 @@
 				F61E51CCFB80BD3F264454D4 /* NotificationMessageTests.swift in Sources */,
 				AB92FFFB14A831BB3B5FB42A /* NotificationCategoriesTests.swift in Sources */,
 				FB22770022DD00FC11FA22B3 /* FluidTypeRankingTests.swift in Sources */,
+				6BA043C42FE5DAB800FF4C45 /* OnboardingVesselModelTests.swift in Sources */,
 				3EE732F838BF314BAEB04DEB /* OnboardingStateTests.swift in Sources */,
 				3599E158C34156D35BBEDDAB /* SubscriptionDisplayFormatterTests.swift in Sources */,
 				A1C2D3E4F5061728394A5B6C /* SubscriptionManagerTests.swift in Sources */,
