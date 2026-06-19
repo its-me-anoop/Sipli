@@ -41,11 +41,6 @@ struct TargetStep: View {
         return status == .authorizedWhenInUse || status == .authorizedAlways
     }
 
-    private var displayedFillFraction: Double {
-        let v = displayedML
-        return max(0.05, min(0.95, v / 4000.0))
-    }
-
     private var displayedTopLine: String {
         switch state.unitSystem {
         case .metric: return String(format: "%.1f", displayedML / 1000.0)
@@ -58,7 +53,23 @@ struct TargetStep: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            SipliTopBar(stepIndex: 4, total: OnboardingStep.displayedTotal, canGoBack: true, onBack: onBack)
+            HStack {
+                Capsule()
+                    .fill(OnboardingPalette.ink.opacity(0.12))
+                    .frame(height: 4)
+                    .overlay(alignment: .leading) {
+                        GeometryReader { geo in
+                            Capsule()
+                                .fill(OnboardingPalette.water)
+                                .frame(width: geo.size.width * OnboardingStep.target.fillFraction)
+                        }
+                    }
+                Spacer().frame(width: 96)
+            }
+            .frame(height: 44)
+            .padding(.horizontal, 24)
+            .padding(.top, 50)
+            .padding(.bottom, 4)
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
@@ -109,7 +120,6 @@ struct TargetStep: View {
             .padding(.bottom, 28)
             .padding(.top, 12)
         }
-        .background(OnboardingPalette.paper)
     }
 
     private var headline: some View {
@@ -120,19 +130,14 @@ struct TargetStep: View {
     }
 
     private var targetStage: some View {
-        HStack(alignment: .center, spacing: 12) {
-            SipliBottle(fill: displayedFillFraction, size: 110)
-
-            // Vertical custom-goal slider sits between the bottle and the
-            // numeric readout so its handle visually maps to the bottle's
-            // water level.
+        HStack(alignment: .center, spacing: 16) {
             if state.customGoalEnabled {
                 verticalGoalSlider
                     .frame(width: 28, height: 150)
                     .transition(.opacity)
             }
 
-            VStack(alignment: .trailing, spacing: 4) {
+            VStack(alignment: .leading, spacing: 4) {
                 HStack(alignment: .lastTextBaseline, spacing: 4) {
                     Text(displayedTopLine)
                         .font(.editorialSerif(64, weight: .regular, relativeTo: .largeTitle))
@@ -162,11 +167,11 @@ struct TargetStep: View {
                     .padding(.top, 4)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .trailing)
+            Spacer(minLength: 0)
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 14)
-        .frame(minHeight: 200)
+        .frame(minHeight: 160)
         .background(
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .fill(
