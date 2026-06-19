@@ -114,31 +114,6 @@ struct SipliBackButton: View {
     }
 }
 
-/// Top bar — back button only (the step indicator was removed at the
-/// designer's request so the screens lead with their headline). The
-/// `stepIndex` and `total` arguments are kept for API parity.
-struct SipliTopBar: View {
-    let stepIndex: Int
-    let total: Int
-    let canGoBack: Bool
-    let onBack: () -> Void
-
-    var body: some View {
-        HStack {
-            if canGoBack {
-                SipliBackButton(action: onBack)
-            } else {
-                Color.clear.frame(width: 40, height: 40)
-            }
-            Spacer()
-        }
-        .padding(.horizontal, 24)
-        .padding(.top, 8)
-        .padding(.bottom, 16)
-        .frame(height: 60)
-    }
-}
-
 /// Custom toggle styled like the design's `.switch` — water-coloured when on.
 struct SipliToggle: View {
     @Binding var isOn: Bool

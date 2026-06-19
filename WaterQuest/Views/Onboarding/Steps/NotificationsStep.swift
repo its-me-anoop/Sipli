@@ -4,7 +4,6 @@ struct NotificationsStep: View {
     @Binding var state: OnboardingState
     let answers: [OnboardingAnswerChip]
     let onFinish: () -> Void
-    let onBack: () -> Void
 
     @State private var msgIdx = 0
     private let msgTimer = Timer.publish(every: 2.8, on: .main, in: .common).autoconnect()

@@ -7,7 +7,6 @@ struct TargetStep: View {
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     let answers: [OnboardingAnswerChip]
     let onContinue: () -> Void
-    let onBack: () -> Void
 
     private var hasWeatherPremium: Bool {
         subscriptionManager.hasAccess(to: .weatherGoals)

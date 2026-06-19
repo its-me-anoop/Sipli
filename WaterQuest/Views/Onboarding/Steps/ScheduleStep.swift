@@ -4,7 +4,6 @@ struct ScheduleStep: View {
     @Binding var state: OnboardingState
     let answers: [OnboardingAnswerChip]
     let onContinue: () -> Void
-    let onBack: () -> Void
 
     private enum ActiveHandle { case wake, sleep }
 

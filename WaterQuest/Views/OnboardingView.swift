@@ -111,33 +111,27 @@ struct OnboardingView: View {
             case .name:
                 NameStep(state: $state,
                          answers: state.answerChips(upTo: .name),
-                         onContinue: advance,
-                         onBack: retreat)
+                         onContinue: advance)
             case .weight:
                 WeightStep(state: $state,
                            answers: state.answerChips(upTo: .weight),
-                           onContinue: advance,
-                           onBack: retreat)
+                           onContinue: advance)
             case .activity:
                 ActivityStep(state: $state,
                              answers: state.answerChips(upTo: .activity),
-                             onContinue: advance,
-                             onBack: retreat)
+                             onContinue: advance)
             case .target:
                 TargetStep(state: $state,
                            answers: state.answerChips(upTo: .target),
-                           onContinue: advance,
-                           onBack: retreat)
+                           onContinue: advance)
             case .schedule:
                 ScheduleStep(state: $state,
                              answers: state.answerChips(upTo: .schedule),
-                             onContinue: advance,
-                             onBack: retreat)
+                             onContinue: advance)
             case .notifications:
                 NotificationsStep(state: $state,
                                   answers: state.answerChips(upTo: .notifications),
-                                  onFinish: { Task { await finishToDone() } },
-                                  onBack: retreat)
+                                  onFinish: { Task { await finishToDone() } })
             case .done:
                 DoneStep(state: state, onFinish: completeAndExit)
             }

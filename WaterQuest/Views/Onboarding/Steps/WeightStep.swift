@@ -4,7 +4,6 @@ struct WeightStep: View {
     @Binding var state: OnboardingState
     let answers: [OnboardingAnswerChip]
     let onContinue: () -> Void
-    let onBack: () -> Void
 
     @State private var weightDisplayKey = UUID()
 
