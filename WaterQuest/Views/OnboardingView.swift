@@ -80,9 +80,13 @@ struct OnboardingView: View {
     /// Vertical space reserved above step content for the vessel zone.
     /// Hero needs room for the tall bottle; compact only needs the header strip.
     private var contentTopInset: CGFloat {
-        switch step.vesselPlacement {
-        case .hero: return 268      // back row (~60) + hero bottle (~228) minus overlap
-        case .compact: return 84    // back row + compact bottle sitting inline
+        switch step {
+        case .done: return 0
+        default:
+            switch step.vesselPlacement {
+            case .hero: return 268      // back row (~60) + hero bottle (~228) minus overlap
+            case .compact: return 84    // back row + compact bottle sitting inline
+            }
         }
     }
 
