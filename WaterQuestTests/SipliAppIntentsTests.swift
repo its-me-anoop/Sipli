@@ -165,6 +165,42 @@ final class SipliAppIntentsTests: XCTestCase {
         XCTAssertEqual(state.entries.count, 1) // untouched
     }
 
+    // MARK: - Compact dialogs (iOS 27 visual surfaces)
+
+    func test_logWater_compactDialog_containsAmountAndPercent_andIsShorter() {
+        var state = makeState(goalML: 2000)
+        let result = HydrationIntentCore.logWater(
+            into: &state, amountInMilliliters: 500, fluidType: .water, now: Date()
+        )
+        XCTAssertTrue(result.compactDialog.contains("500 mL"), "compact was: \(result.compactDialog)")
+        XCTAssertTrue(result.compactDialog.contains("25%"), "compact was: \(result.compactDialog)")
+        XCTAssertLessThan(result.compactDialog.count, result.dialog.count)
+    }
+
+    func test_todaysHydrationCompact_showsTotalGoalAndPercent() {
+        let now = Date()
+        let state = makeState(goalML: 2000, entries: [entry(500, .water, at: now)])
+        let compact = HydrationIntentCore.todaysHydrationCompact(state: state, now: now)
+        XCTAssertTrue(compact.contains("500"), "compact was: \(compact)")
+        XCTAssertTrue(compact.contains("2000"), "compact was: \(compact)")
+        XCTAssertTrue(compact.contains("25%"), "compact was: \(compact)")
+    }
+
+    func test_undoLastToday_compactDialog_reportsRemovedVolume() {
+        let now = Date()
+        var state = makeState(goalML: 2000, entries: [entry(500, .coffee, at: now)])
+        let result = HydrationIntentCore.undoLastToday(from: &state, now: now)
+        XCTAssertTrue(result.compactDialog.contains("500 mL"), "compact was: \(result.compactDialog)")
+        XCTAssertTrue(result.compactDialog.contains("0%"), "compact was: \(result.compactDialog)")
+    }
+
+    func test_undoLastToday_emptyDay_compactMatchesDialog() {
+        var state = makeState()
+        let result = HydrationIntentCore.undoLastToday(from: &state, now: Date())
+        XCTAssertNil(result.removed)
+        XCTAssertEqual(result.dialog, result.compactDialog)
+    }
+
     // MARK: - FluidTypeAppEnum bridge
 
     func test_everyFluidType_hasMatchingAppEnumCase() {

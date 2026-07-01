@@ -125,26 +125,40 @@ struct LogWaterIntent: AppIntent {
         }
     }
 
+    /// iOS 27: this intent only ever executes in the app process; declaring
+    /// that lets the system skip probing extension targets.
+    @available(iOS 27.0, *)
+    static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
+
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        let persistence = PersistenceService.shared
-        var state = persistence.load(PersistedState.self, fallback: .default)
         let resolvedFluid = fluidType?.toFluidType() ?? .water
+        let amount = amountInMilliliters
 
-        let result = HydrationIntentCore.logWater(
-            into: &state,
-            amountInMilliliters: amountInMilliliters,
-            fluidType: resolvedFluid,
-            now: Date()
-        )
+        // Coordinated read-modify-write: Siri/Shortcuts can run this while
+        // the widget or app writes the same shared state file.
+        var result: (entry: HydrationEntry, dialog: String, compactDialog: String)!
+        PersistenceService.shared.update(PersistedState.self, fallback: .default) { state in
+            result = HydrationIntentCore.logWater(
+                into: &state,
+                amountInMilliliters: amount,
+                fluidType: resolvedFluid,
+                now: Date()
+            )
+        }
 
-        persistence.save(state)
         WidgetCenter.shared.reloadAllTimelines()
         IntentDonationService.donateLogWater(
             amount: result.entry.volumeML,
             fluidType: resolvedFluid
         )
 
-        return .result(dialog: IntentDialog(stringLiteral: result.dialog))
+        // iOS 27 exposes whether the interaction is voice-only. Voice keeps
+        // the full spoken sentence; visual surfaces get the compact line.
+        var dialogText = result.dialog
+        if #available(iOS 27.0, *), !systemContext.isVoiceOnly {
+            dialogText = result.compactDialog
+        }
+        return .result(dialog: IntentDialog(stringLiteral: dialogText))
     }
 }
 
@@ -155,11 +169,18 @@ struct GetTodaysHydrationIntent: AppIntent {
     static var description = IntentDescription("Returns today's water intake and goal progress.")
     static var openAppWhenRun: Bool = false
 
+    @available(iOS 27.0, *)
+    static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
+
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let persistence = PersistenceService.shared
         let state = persistence.load(PersistedState.self, fallback: .default)
-        let dialog = HydrationIntentCore.todaysHydrationDialog(state: state, now: Date())
-        return .result(dialog: IntentDialog(stringLiteral: dialog))
+        let now = Date()
+        var dialogText = HydrationIntentCore.todaysHydrationDialog(state: state, now: now)
+        if #available(iOS 27.0, *), !systemContext.isVoiceOnly {
+            dialogText = HydrationIntentCore.todaysHydrationCompact(state: state, now: now)
+        }
+        return .result(dialog: IntentDialog(stringLiteral: dialogText))
     }
 }
 
@@ -169,6 +190,9 @@ struct OpenSipliIntent: AppIntent {
     static var title: LocalizedStringResource = "Open Sipli"
     static var description = IntentDescription("Opens the Sipli app.")
     static var openAppWhenRun: Bool = true
+
+    @available(iOS 27.0, *)
+    static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
 
     func perform() async throws -> some IntentResult {
         return .result()
@@ -182,16 +206,22 @@ struct UndoLastIntakeIntent: AppIntent {
     static var description = IntentDescription("Removes the most recent drink you logged today in Sipli.")
     static var openAppWhenRun: Bool = false
 
-    func perform() async throws -> some IntentResult & ProvidesDialog {
-        let persistence = PersistenceService.shared
-        var state = persistence.load(PersistedState.self, fallback: .default)
+    @available(iOS 27.0, *)
+    static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
 
-        let result = HydrationIntentCore.undoLastToday(from: &state, now: Date())
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        var result: (removed: HydrationEntry?, dialog: String, compactDialog: String)!
+        PersistenceService.shared.update(PersistedState.self, fallback: .default) { state in
+            result = HydrationIntentCore.undoLastToday(from: &state, now: Date())
+        }
         if result.removed != nil {
-            persistence.save(state)
             WidgetCenter.shared.reloadAllTimelines()
         }
 
-        return .result(dialog: IntentDialog(stringLiteral: result.dialog))
+        var dialogText = result.dialog
+        if #available(iOS 27.0, *), !systemContext.isVoiceOnly {
+            dialogText = result.compactDialog
+        }
+        return .result(dialog: IntentDialog(stringLiteral: dialogText))
     }
 }

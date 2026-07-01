@@ -46,14 +46,15 @@ enum HydrationIntentCore {
         amountInMilliliters: Int,
         fluidType: FluidType,
         now: Date
-    ) -> (entry: HydrationEntry, dialog: String) {
+    ) -> (entry: HydrationEntry, dialog: String, compactDialog: String) {
         let clampedML = clampAmount(amountInMilliliters)
         let entry = HydrationEntry(date: now, volumeML: clampedML, source: .manual, fluidType: fluidType)
         state.entries.append(entry)
 
         let pct = percent(total: todayTotalML(state, now: now), goal: goalML(for: state))
         let dialog = "Logged \(Int(clampedML)) mL of \(label(for: fluidType)). You're at \(pct)% of today's goal."
-        return (entry, dialog)
+        let compact = "\(Int(clampedML)) mL \(label(for: fluidType)) logged — \(pct)% of goal"
+        return (entry, dialog, compact)
     }
 
     static func todaysHydrationDialog(state: PersistedState, now: Date) -> String {
@@ -63,21 +64,33 @@ enum HydrationIntentCore {
         return "You've had \(Int(total)) mL of water today — \(pct)% of your \(Int(goal)) mL goal."
     }
 
+    /// Short variant for visual surfaces (Shortcuts banners, Spotlight) on
+    /// iOS 27, where `systemContext.isVoiceOnly` distinguishes spoken from
+    /// on-screen delivery. Voice always gets the full-sentence dialog.
+    static func todaysHydrationCompact(state: PersistedState, now: Date) -> String {
+        let goal = goalML(for: state)
+        let total = todayTotalML(state, now: now)
+        let pct = percent(total: total, goal: goal)
+        return "\(Int(total)) / \(Int(goal)) mL — \(pct)%"
+    }
+
     @discardableResult
     static func undoLastToday(
         from state: inout PersistedState,
         now: Date
-    ) -> (removed: HydrationEntry?, dialog: String) {
+    ) -> (removed: HydrationEntry?, dialog: String, compactDialog: String) {
         let todayIndices = state.entries.indices.filter {
             Calendar.current.isDate(state.entries[$0].date, inSameDayAs: now)
         }
         guard let idx = todayIndices.max(by: { state.entries[$0].date < state.entries[$1].date }) else {
-            return (nil, "There's nothing logged today to undo.")
+            let nothing = "There's nothing logged today to undo."
+            return (nil, nothing, nothing)
         }
         let removed = state.entries.remove(at: idx)
         let pct = percent(total: todayTotalML(state, now: now), goal: goalML(for: state))
         let dialog = "Removed your last \(label(for: removed.fluidType)) (\(Int(removed.volumeML)) mL). You're now at \(pct)% of today's goal."
-        return (removed, dialog)
+        let compact = "Removed \(Int(removed.volumeML)) mL \(label(for: removed.fluidType)) — \(pct)% of goal"
+        return (removed, dialog, compact)
     }
 
     // MARK: - Helpers

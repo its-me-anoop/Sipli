@@ -103,6 +103,8 @@
 		D4E5F6A7B8C9D0E1F2A3B4C5 /* RippleEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7B8C9D0E1F2A3 /* RippleEffect.swift */; };
 		D6E8A4F1B37C920E5D1A8F63 /* PreviewEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F3E9B2C4D61805FA93B1E2 /* PreviewEnvironment.swift */; };
 		D9B159F3F6641A2604E3BA34 /* SipliAppIntentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7978691325DF06C649CACAE7 /* SipliAppIntentsTests.swift */; };
+		A1B2C3D4E5F60718293A4B02 /* PersistenceServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B01 /* PersistenceServiceTests.swift */; };
+		A1B2C3D4E5F60718293A4B04 /* SipliAppIntentsSystemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B03 /* SipliAppIntentsSystemTests.swift */; };
 		DD40106D69AA7DD6CBF3F356 /* NameStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD8EC9497A17C7431EBD5DB /* NameStep.swift */; };
 		E054558C7B7CF349F6CDD709 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE848C59D9014D3ABE6E04BE /* SplashScreenView.swift */; };
 		E27FB3C46FDAA80AD7E43C6F /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F021A59BB7CB33328B5ABBC4 /* Formatters.swift */; };
@@ -274,6 +276,8 @@
 		74CE0825C3B3CDF22BA05A4C /* OnboardingPalette.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingPalette.swift; sourceTree = "<group>"; };
 		78D82D72BE04D7EA2959A3A0 /* ScheduleStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScheduleStep.swift; sourceTree = "<group>"; };
 		7978691325DF06C649CACAE7 /* SipliAppIntentsTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SipliAppIntentsTests.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B01 /* PersistenceServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PersistenceServiceTests.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B03 /* SipliAppIntentsSystemTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SipliAppIntentsSystemTests.swift; sourceTree = "<group>"; };
 		7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSnapshot.swift; sourceTree = "<group>"; };
 		7B8BDAA9F823F748DDAD26EB /* ProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRing.swift; sourceTree = "<group>"; };
 		7C470DB38C8A43150913B8CE /* SipliBottle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SipliBottle.swift; sourceTree = "<group>"; };
@@ -553,6 +557,8 @@
 				B1C2D3E4F5061728394A5B6C /* SubscriptionManagerTests.swift */,
 				B2D3E4F5061728394A5B6C7D /* PaywallContextTests.swift */,
 				7978691325DF06C649CACAE7 /* SipliAppIntentsTests.swift */,
+				A1B2C3D4E5F60718293A4B01 /* PersistenceServiceTests.swift */,
+				A1B2C3D4E5F60718293A4B03 /* SipliAppIntentsSystemTests.swift */,
 				6BA043C32FE5DAB800FF4C45 /* OnboardingVesselModelTests.swift */,
 			);
 			path = WaterQuestTests;
@@ -1045,6 +1051,8 @@
 				A1C2D3E4F5061728394A5B6C /* SubscriptionManagerTests.swift in Sources */,
 				A2D3E4F5061728394A5B6C7D /* PaywallContextTests.swift in Sources */,
 				D9B159F3F6641A2604E3BA34 /* SipliAppIntentsTests.swift in Sources */,
+				A1B2C3D4E5F60718293A4B02 /* PersistenceServiceTests.swift in Sources */,
+				A1B2C3D4E5F60718293A4B04 /* SipliAppIntentsSystemTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

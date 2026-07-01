@@ -18,20 +18,26 @@ struct QuickAddWaterIntent: AppIntent {
         self.amountML = amountML
     }
 
+    /// iOS 27: interactive widget buttons execute this in the widget
+    /// extension process — declare that so the system doesn't probe others.
+    @available(iOS 27.0, *)
+    static var allowedExecutionTargets: IntentExecutionTargets { [.widgetKitExtension] }
+
     func perform() async throws -> some IntentResult {
-        let persistence = PersistenceService()
-        var state = persistence.load(PersistedState.self, fallback: .default)
-
         let clampedAmount = min(max(amountML, 50), 2_000)
-        let entry = HydrationEntry(
-            date: Date(),
-            volumeML: clampedAmount,
-            source: .manual,
-            fluidType: .water
-        )
 
-        state.entries.append(entry)
-        persistence.save(state)
+        // Coordinated read-modify-write: the widget process and the app (or
+        // Siri) can log at the same moment on the same shared file.
+        PersistenceService().update(PersistedState.self, fallback: .default) { state in
+            state.entries.append(
+                HydrationEntry(
+                    date: Date(),
+                    volumeML: clampedAmount,
+                    source: .manual,
+                    fluidType: .water
+                )
+            )
+        }
         WidgetCenter.shared.reloadAllTimelines()
 
         return .result()

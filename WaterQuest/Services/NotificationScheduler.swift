@@ -49,6 +49,10 @@ final class NotificationScheduler: ObservableObject {
     private var currentContext: NotificationContext?
     /// Monotonic batch identifier so smart request IDs are never reused.
     private var smartBatchID: Int = 0
+    /// Monotonic pass identifier. A `scheduleReminders` pass only schedules
+    /// if no newer pass started while its async cleanup was in flight, so
+    /// rapid foreground/background cycles replace instead of stack.
+    private var scheduleGeneration: Int = 0
 
     // MARK: - Authorization
 
@@ -70,13 +74,45 @@ final class NotificationScheduler: ObservableObject {
 
     /// Call this whenever the profile, entries, or app lifecycle change.
     /// Tears down previous notifications and schedules fresh ones.
+    ///
+    /// The teardown is asynchronous, so scheduling waits for it: firing both
+    /// independently let a second call's stale cleanup interleave with the
+    /// first call's fresh batch, accumulating pending requests until iOS's
+    /// 64-request cap silently dropped new ones.
     func scheduleReminders(context: NotificationContext) {
-        // Clear only scheduler-owned pending requests. `sipli.snooze.*` and
-        // other out-of-band notifications (e.g. future workout anchors in
-        // Phase 3) survive this call.
-        // removeAllDeliveredNotifications() is also deliberately NOT called —
-        // wiping the user's Notification Center on every foreground destroys
-        // their history. Task 11 drops that stale call entirely.
+        currentContext = context
+        lastKnownEntries = context.entries.map { DateEntry(date: $0.date, volumeML: $0.effectiveML) }
+        didFireEscalation = false
+
+        scheduleGeneration += 1
+        let generation = scheduleGeneration
+
+        clearPendingSchedulerReminders { [weak self] in
+            guard let self else { return }
+            // A newer pass superseded this one while the cleanup ran; it
+            // will do its own clear+schedule. Bail so batches never stack.
+            guard generation == self.scheduleGeneration else { return }
+
+            guard context.profile.remindersEnabled else { return }
+
+            if context.profile.smartRemindersEnabled {
+                self.scheduleSmartReminders(context: context)
+            } else {
+                self.scheduleClassicReminders(context: context)
+            }
+
+            // Anchor reminders (morning wake, pre-bedtime) fire regardless of
+            // smart/classic mode. Available to free and premium users.
+            self.scheduleAnchorReminders(context: context)
+        }
+    }
+
+    /// Clears scheduler-owned pending requests (`sipli.smart.*` and
+    /// `sipli.classic.*`), then calls `completion` on the main actor.
+    /// `sipli.snooze.*` and other out-of-band notifications survive.
+    /// removeAllDeliveredNotifications() is deliberately NOT called — wiping
+    /// the user's Notification Center on every foreground destroys history.
+    private func clearPendingSchedulerReminders(completion: @escaping @MainActor () -> Void) {
         let center = UNUserNotificationCenter.current()
         center.getPendingNotificationRequests { requests in
             let schedulerIDs = requests
@@ -85,23 +121,10 @@ final class NotificationScheduler: ObservableObject {
             if !schedulerIDs.isEmpty {
                 center.removePendingNotificationRequests(withIdentifiers: schedulerIDs)
             }
+            Task { @MainActor in
+                completion()
+            }
         }
-
-        currentContext = context
-        lastKnownEntries = context.entries.map { DateEntry(date: $0.date, volumeML: $0.effectiveML) }
-        didFireEscalation = false
-
-        guard context.profile.remindersEnabled else { return }
-
-        if context.profile.smartRemindersEnabled {
-            scheduleSmartReminders(context: context)
-        } else {
-            scheduleClassicReminders(context: context)
-        }
-
-        // Anchor reminders (morning wake, pre-bedtime) fire regardless of
-        // smart/classic mode. Available to free and premium users.
-        scheduleAnchorReminders(context: context)
     }
 
     /// Call this when a new intake is logged so smart reminders reschedule
