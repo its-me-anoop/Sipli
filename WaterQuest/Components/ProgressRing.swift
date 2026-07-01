@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 struct ProgressRing: View {
     var progress: Double
