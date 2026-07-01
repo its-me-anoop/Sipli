@@ -38,6 +38,7 @@
 		4E93E1598D092FFCC6C6381F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C158CF127D3436999E3C2B /* RootView.swift */; };
 		524BE8DF8217231DA89BF9FE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CBD2C7DC27199FF61EB613 /* Theme.swift */; };
 		5315257190E860C18C6545B0 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6862392928A13FBD5E45D6E3 /* LocationManager.swift */; };
+		542451A569CDAF41B48E7741 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = D142439756BACDA7A9B15313 /* PrivacyInfo.xcprivacy */; };
 		57F94F846C1A4A60E68FF4E3 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5162AEA3445DA53E4A567A99 /* OnboardingView.swift */; };
 		5D5BF32CEAF21645C51E5442 /* GoalCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F38731A03D043511C9AAD4C2 /* GoalCalculator.swift */; };
 		6B3494CD2F5249E200D313C3 /* QuickAddWaterIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6B3494CC2F5249E200D313C3 /* QuickAddWaterIntent.swift */; };
@@ -57,10 +58,13 @@
 		7C578D3D8C788EDEDD9F383C /* HydrationAIService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55B57443B7032DDCF70ACB8C /* HydrationAIService.swift */; };
 		80C8743328574E8AC32F38EA /* SipliCTA.swift in Sources */ = {isa = PBXBuildFile; fileRef = E978A95F2A11281369173920 /* SipliCTA.swift */; };
 		83C67F5F3E24629A72299C6E /* PersistenceService.swift in Sources */ = {isa = PBXBuildFile; fileRef = A37EBA9FC9F1233C2BC105DD /* PersistenceService.swift */; };
+		86E0EF9B0C7D565F515D88CC /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 1C6ADE0C7DEA702624720CCF /* PrivacyInfo.xcprivacy */; };
 		8CE43E783BB223277701CF7E /* UnitSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032684376DE05B0CC4838664 /* UnitSystem.swift */; };
 		94AF3267A3C90279716F2BE6 /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A8068B4418852446BD78E6 /* MotionManager.swift */; };
 		979E86A905E1BA27F04E7E13 /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB248542D61873060DDABFF /* NotificationHandler.swift */; };
 		A1B2326FF853A75236509F2C /* icon.json in Resources */ = {isa = PBXBuildFile; fileRef = 732CBE184502476DC56921F8 /* icon.json */; };
+		A1B2C3D4E5F60718293A4B02 /* PersistenceServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B01 /* PersistenceServiceTests.swift */; };
+		A1B2C3D4E5F60718293A4B04 /* SipliAppIntentsSystemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B03 /* SipliAppIntentsSystemTests.swift */; };
 		A1C2D3E4F5061728394A5B6C /* SubscriptionManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C2D3E4F5061728394A5B6C /* SubscriptionManagerTests.swift */; };
 		A2D3E4F5061728394A5B6C7D /* PaywallContextTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2D3E4F5061728394A5B6C7D /* PaywallContextTests.swift */; };
 		A543E5598AAD6E7D7CD5164C /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 161A82CD61225A1F302ECA9D /* DateExtensions.swift */; };
@@ -103,8 +107,6 @@
 		D4E5F6A7B8C9D0E1F2A3B4C5 /* RippleEffect.swift in Sources */ = {isa = PBXBuildFile; fileRef = B2C3D4E5F6A7B8C9D0E1F2A3 /* RippleEffect.swift */; };
 		D6E8A4F1B37C920E5D1A8F63 /* PreviewEnvironment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A7F3E9B2C4D61805FA93B1E2 /* PreviewEnvironment.swift */; };
 		D9B159F3F6641A2604E3BA34 /* SipliAppIntentsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7978691325DF06C649CACAE7 /* SipliAppIntentsTests.swift */; };
-		A1B2C3D4E5F60718293A4B02 /* PersistenceServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B01 /* PersistenceServiceTests.swift */; };
-		A1B2C3D4E5F60718293A4B04 /* SipliAppIntentsSystemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B03 /* SipliAppIntentsSystemTests.swift */; };
 		DD40106D69AA7DD6CBF3F356 /* NameStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1FD8EC9497A17C7431EBD5DB /* NameStep.swift */; };
 		E054558C7B7CF349F6CDD709 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE848C59D9014D3ABE6E04BE /* SplashScreenView.swift */; };
 		E27FB3C46FDAA80AD7E43C6F /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F021A59BB7CB33328B5ABBC4 /* Formatters.swift */; };
@@ -240,6 +242,7 @@
 		161A82CD61225A1F302ECA9D /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensions.swift; sourceTree = "<group>"; };
 		1BD898210B2BA8EE347F72F4 /* Sipli.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Sipli.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1C049D1800E773480DC7E47B /* NotificationContextTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationContextTests.swift; sourceTree = "<group>"; };
+		1C6ADE0C7DEA702624720CCF /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		1FD8EC9497A17C7431EBD5DB /* NameStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NameStep.swift; sourceTree = "<group>"; };
 		226D661FFE4695FDE7BF0C2F /* TargetStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TargetStep.swift; sourceTree = "<group>"; };
 		22C158CF127D3436999E3C2B /* RootView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RootView.swift; sourceTree = "<group>"; };
@@ -276,8 +279,6 @@
 		74CE0825C3B3CDF22BA05A4C /* OnboardingPalette.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingPalette.swift; sourceTree = "<group>"; };
 		78D82D72BE04D7EA2959A3A0 /* ScheduleStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ScheduleStep.swift; sourceTree = "<group>"; };
 		7978691325DF06C649CACAE7 /* SipliAppIntentsTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SipliAppIntentsTests.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60718293A4B01 /* PersistenceServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PersistenceServiceTests.swift; sourceTree = "<group>"; };
-		A1B2C3D4E5F60718293A4B03 /* SipliAppIntentsSystemTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SipliAppIntentsSystemTests.swift; sourceTree = "<group>"; };
 		7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherSnapshot.swift; sourceTree = "<group>"; };
 		7B8BDAA9F823F748DDAD26EB /* ProgressRing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProgressRing.swift; sourceTree = "<group>"; };
 		7C470DB38C8A43150913B8CE /* SipliBottle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SipliBottle.swift; sourceTree = "<group>"; };
@@ -292,6 +293,8 @@
 		A0A71028244F753823101D35 /* WaterQuestTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WaterQuestTests.swift; sourceTree = "<group>"; };
 		A124A12B05E971BF67DE82E5 /* NotificationContext.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationContext.swift; sourceTree = "<group>"; };
 		A139EF313607077443D4FCFE /* FluidType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FluidType.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B01 /* PersistenceServiceTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PersistenceServiceTests.swift; sourceTree = "<group>"; };
+		A1B2C3D4E5F60718293A4B03 /* SipliAppIntentsSystemTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SipliAppIntentsSystemTests.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryView.swift; sourceTree = "<group>"; };
 		A1B2C3D4E5F6A7B8C9D0E1F2 /* Ripple.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = Ripple.metal; sourceTree = "<group>"; };
 		A29B76655AD8F5DD3EE3B27E /* OnboardingStateTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingStateTests.swift; sourceTree = "<group>"; };
@@ -324,6 +327,7 @@
 		BD7043107E62B2C04F4C58EB /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
 		C5DD4230940B25D30C9598B4 /* Gemini_Generated_Image_15xog715xog715xo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Gemini_Generated_Image_15xog715xog715xo.png; sourceTree = "<group>"; };
 		CF3A93D59223C4765C1FE4A7 /* SubscriptionDisplayFormatterTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubscriptionDisplayFormatterTests.swift; sourceTree = "<group>"; };
+		D142439756BACDA7A9B15313 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		DA294C8DAE1E1B8B16805C2F /* OnboardingState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingState.swift; sourceTree = "<group>"; };
 		E1D5A4B6598B2C78EB255CB4 /* InsightsViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = InsightsViewModel.swift; sourceTree = "<group>"; };
 		E2B3C4D5F6071829A3B4C5D6 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -362,7 +366,7 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		6B55F78E2F8F608F006CE606 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
+		6B55F78E2F8F608F006CE606 /* Exceptions for "SipliWatchWidgets" folder in "SipliWatchWidgetsExtension" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
@@ -372,7 +376,18 @@
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		6B55F77E2F8F608C006CE606 /* SipliWatchWidgets */ = {isa = PBXFileSystemSynchronizedRootGroup; exceptions = (6B55F78E2F8F608F006CE606 /* PBXFileSystemSynchronizedBuildFileExceptionSet */, ); explicitFileTypes = {}; explicitFolders = (); path = SipliWatchWidgets; sourceTree = "<group>"; };
+		6B55F77E2F8F608C006CE606 /* SipliWatchWidgets */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6B55F78E2F8F608F006CE606 /* Exceptions for "SipliWatchWidgets" folder in "SipliWatchWidgetsExtension" target */,
+			);
+			explicitFileTypes = {
+			};
+			explicitFolders = (
+			);
+			path = SipliWatchWidgets;
+			sourceTree = "<group>";
+		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -573,6 +588,7 @@
 				AA4444444444444444444444 /* SipliTimelineProvider.swift */,
 				BB2222222222222222222222 /* Views */,
 				6B3494CC2F5249E200D313C3 /* QuickAddWaterIntent.swift */,
+				D142439756BACDA7A9B15313 /* PrivacyInfo.xcprivacy */,
 			);
 			path = SipliWidget;
 			sourceTree = "<group>";
@@ -704,6 +720,7 @@
 				WA0002000000000000000002 /* Assets.xcassets */,
 				WA000E000000000000000001 /* SipliWatch.entitlements */,
 				WA000F000000000000000001 /* Info.plist */,
+				1C6ADE0C7DEA702624720CCF /* PrivacyInfo.xcprivacy */,
 			);
 			path = SipliWatch;
 			sourceTree = "<group>";
@@ -898,6 +915,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				542451A569CDAF41B48E7741 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -907,6 +925,7 @@
 			files = (
 				WA0002000000000000000001 /* Assets.xcassets in Resources */,
 				WWICON00000000000000001 /* AppIcon.icon in Resources */,
+				86E0EF9B0C7D565F515D88CC /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1120,7 +1139,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = WaterQuest/Supporting/WaterQuest.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				INFOPLIST_FILE = WaterQuest/Supporting/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1217,7 +1236,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = WaterQuest/Supporting/WaterQuest.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				INFOPLIST_FILE = WaterQuest/Supporting/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1240,7 +1259,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = SipliWatchWidgets/SipliWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1282,7 +1301,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = SipliWatchWidgets/SipliWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1403,7 +1422,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = SipliWidget/SipliWidgetEntitlements.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SipliWidget/Info.plist;
@@ -1431,7 +1450,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = SipliWidget/SipliWidgetEntitlements.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SipliWidget/Info.plist;
@@ -1458,7 +1477,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = SipliWatch/SipliWatch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SipliWatch/Info.plist;
@@ -1486,7 +1505,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = SipliWatch/SipliWatch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 8;
+				CURRENT_PROJECT_VERSION = 9;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SipliWatch/Info.plist;
