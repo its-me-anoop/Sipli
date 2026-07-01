@@ -125,10 +125,16 @@ struct LogWaterIntent: AppIntent {
         }
     }
 
+    // The iOS 27 App Intents surface (allowedExecutionTargets, isVoiceOnly)
+    // exists only in the iOS 27 SDK, so it is fenced with compiler(>=6.4):
+    // Xcode 27 beta ships Swift 6.4, the public Xcode 26.6 App Store
+    // toolchain ships 6.3. The gates dissolve when Xcode 27 goes GM.
+    #if compiler(>=6.4)
     /// iOS 27: this intent only ever executes in the app process; declaring
     /// that lets the system skip probing extension targets.
     @available(iOS 27.0, *)
     static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
+    #endif
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let resolvedFluid = fluidType?.toFluidType() ?? .water
@@ -155,9 +161,11 @@ struct LogWaterIntent: AppIntent {
         // iOS 27 exposes whether the interaction is voice-only. Voice keeps
         // the full spoken sentence; visual surfaces get the compact line.
         var dialogText = result.dialog
+        #if compiler(>=6.4)
         if #available(iOS 27.0, *), !systemContext.isVoiceOnly {
             dialogText = result.compactDialog
         }
+        #endif
         return .result(dialog: IntentDialog(stringLiteral: dialogText))
     }
 }
@@ -169,17 +177,21 @@ struct GetTodaysHydrationIntent: AppIntent {
     static var description = IntentDescription("Returns today's water intake and goal progress.")
     static var openAppWhenRun: Bool = false
 
+    #if compiler(>=6.4)
     @available(iOS 27.0, *)
     static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
+    #endif
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let persistence = PersistenceService.shared
         let state = persistence.load(PersistedState.self, fallback: .default)
         let now = Date()
         var dialogText = HydrationIntentCore.todaysHydrationDialog(state: state, now: now)
+        #if compiler(>=6.4)
         if #available(iOS 27.0, *), !systemContext.isVoiceOnly {
             dialogText = HydrationIntentCore.todaysHydrationCompact(state: state, now: now)
         }
+        #endif
         return .result(dialog: IntentDialog(stringLiteral: dialogText))
     }
 }
@@ -191,8 +203,10 @@ struct OpenSipliIntent: AppIntent {
     static var description = IntentDescription("Opens the Sipli app.")
     static var openAppWhenRun: Bool = true
 
+    #if compiler(>=6.4)
     @available(iOS 27.0, *)
     static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
+    #endif
 
     func perform() async throws -> some IntentResult {
         return .result()
@@ -206,8 +220,10 @@ struct UndoLastIntakeIntent: AppIntent {
     static var description = IntentDescription("Removes the most recent drink you logged today in Sipli.")
     static var openAppWhenRun: Bool = false
 
+    #if compiler(>=6.4)
     @available(iOS 27.0, *)
     static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
+    #endif
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
         var result: (removed: HydrationEntry?, dialog: String, compactDialog: String)!
@@ -219,9 +235,11 @@ struct UndoLastIntakeIntent: AppIntent {
         }
 
         var dialogText = result.dialog
+        #if compiler(>=6.4)
         if #available(iOS 27.0, *), !systemContext.isVoiceOnly {
             dialogText = result.compactDialog
         }
+        #endif
         return .result(dialog: IntentDialog(stringLiteral: dialogText))
     }
 }
