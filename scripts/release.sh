@@ -77,12 +77,14 @@ else
   echo "  (set ASC_KEY_ID / ASC_ISSUER_ID and place AuthKey_<id>.p8 for CI-style upload)"
 fi
 
+# ${AUTH_ARGS[@]+...} keeps `set -u` happy on bash 3.2, where expanding an
+# empty array is treated as an unbound variable and aborts the upload step.
 xcodebuild -exportArchive \
   -archivePath "${ARCHIVE_PATH}" \
   -exportPath "${EXPORT_DIR}" \
   -exportOptionsPlist "${EXPORT_OPTS}" \
   -allowProvisioningUpdates \
-  "${AUTH_ARGS[@]}"
+  ${AUTH_ARGS[@]+"${AUTH_ARGS[@]}"}
 
 echo "✓ Upload submitted. The build appears under TestFlight once App Store"
 echo "  Connect finishes processing (a few minutes up to ~1 hour)."
