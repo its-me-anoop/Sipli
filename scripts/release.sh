@@ -40,11 +40,15 @@ echo "▸ Project : ${PROJECT}"
 echo "▸ Scheme  : ${SCHEME} (${CONFIG})"
 echo "▸ Archive : ${ARCHIVE_PATH}"
 
-# --- Preflight: distribution identity must exist -----------------------------
+# --- Preflight: local distribution identity (informational) ------------------
+# Not fatal: with Xcode 27+ automatic signing and a signed-in account,
+# -exportArchive uses Apple's cloud-managed distribution signing even when no
+# local Apple Distribution cert exists (verified on the 4.0 build 7 upload).
+# The one hard server-side gate is the Program License Agreement — if export
+# fails with "PLA Update available", accept it at developer.apple.com.
 if ! security find-identity -v -p codesigning | grep -q "Apple Distribution"; then
-  echo "✗ No 'Apple Distribution' signing identity in the keychain." >&2
-  echo "  Sign in to the K6623R3GP5 Apple ID in Xcode ▸ Settings ▸ Accounts first." >&2
-  exit 1
+  echo "▸ Note    : no local 'Apple Distribution' identity — relying on cloud signing"
+  echo "  via the Xcode-signed-in account (requires an up-to-date PLA acceptance)."
 fi
 
 # --- (1) Archive app + all embedded targets ----------------------------------
