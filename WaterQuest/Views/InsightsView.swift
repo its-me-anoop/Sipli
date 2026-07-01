@@ -27,6 +27,8 @@ struct InsightsView: View {
     @State private var heatmapMonthOffset = 0
     @State private var aiInsight: String?
     @State private var isGeneratingInsight = false
+    @State private var weeklyDigest: WeeklyDigestDisplay?
+    @State private var isGeneratingDigest = false
     @State private var viewModel = InsightsViewModel()
     @State private var streakPopScale: Double = 1.0
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -110,6 +112,7 @@ struct InsightsView: View {
 
                     // Full-width AI Insights below columns
                     if subscriptionManager.hasAccess(to: .aiInsights) {
+                        DashboardCard(title: "Weekly Digest", icon: "calendar.badge.clock") { weeklyDigestSection }
                         DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
                     }
                 } else {
@@ -123,6 +126,7 @@ struct InsightsView: View {
                         DashboardCard(title: "Hydration Heatmap", icon: "square.grid.3x3.fill") { heatmapSection }
                         DashboardCard(title: "Trends & Streaks", icon: "chart.line.uptrend.xyaxis") { trendsSection }
                         if subscriptionManager.hasAccess(to: .aiInsights) {
+                            DashboardCard(title: "Weekly Digest", icon: "calendar.badge.clock") { weeklyDigestSection }
                             DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
                         }
                     }
@@ -133,11 +137,17 @@ struct InsightsView: View {
         .background { AppWaterBackground().ignoresSafeArea() }
         .navigationTitle("Insights")
         .task {
+            #if canImport(FoundationModels)
+            if #available(iOS 26.0, *), subscriptionManager.hasAccess(to: .aiInsights) {
+                SipliIntelligence.shared.prewarm(.insights)
+            }
+            #endif
             viewModel.recompute(
                 entries: store.entries,
                 dailyGoalML: store.dailyGoal.totalML,
                 timeframe: timeframe,
-                heatmapMonthOffset: heatmapMonthOffset
+                heatmapMonthOffset: heatmapMonthOffset,
+                streakFreezeDates: store.streakFreezeDates
             )
         }
         .onChange(of: store.entries.count) {
@@ -145,7 +155,8 @@ struct InsightsView: View {
                 entries: store.entries,
                 dailyGoalML: store.dailyGoal.totalML,
                 timeframe: timeframe,
-                heatmapMonthOffset: heatmapMonthOffset
+                heatmapMonthOffset: heatmapMonthOffset,
+                streakFreezeDates: store.streakFreezeDates
             )
         }
         .onChange(of: timeframe) {
@@ -153,7 +164,8 @@ struct InsightsView: View {
                 entries: store.entries,
                 dailyGoalML: store.dailyGoal.totalML,
                 timeframe: timeframe,
-                heatmapMonthOffset: heatmapMonthOffset
+                heatmapMonthOffset: heatmapMonthOffset,
+                streakFreezeDates: store.streakFreezeDates
             )
         }
         .onChange(of: heatmapMonthOffset) {
@@ -161,7 +173,8 @@ struct InsightsView: View {
                 entries: store.entries,
                 dailyGoalML: store.dailyGoal.totalML,
                 timeframe: timeframe,
-                heatmapMonthOffset: heatmapMonthOffset
+                heatmapMonthOffset: heatmapMonthOffset,
+                streakFreezeDates: store.streakFreezeDates
             )
         }
     }
@@ -562,8 +575,110 @@ struct InsightsView: View {
                         .fill(Theme.cardSurface)
                 )
             }
+
+            // Streak freezes: earned every 7-day streak, spent automatically
+            // when a single missed day would otherwise break the run.
+            HStack(spacing: 8) {
+                Image(systemName: "snowflake")
+                    .foregroundStyle(Theme.lagoon)
+                if store.streakFreezeTokens > 0 {
+                    Text("\(store.streakFreezeTokens) streak freeze\(store.streakFreezeTokens == 1 ? "" : "s") banked — a missed day won't end your run.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                } else {
+                    Text("Hit your goal 7 days in a row to bank a streak freeze.")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+                Spacer()
+            }
+            .accessibilityElement(children: .combine)
         }
         .padding(.vertical, 6)
+    }
+
+    // MARK: - Weekly Digest Section
+
+    /// Display model for the digest card: either AI-generated (headline +
+    /// narrative + encouragement) or the deterministic fallback narrative.
+    struct WeeklyDigestDisplay: Equatable {
+        var headline: String
+        var narrative: String
+        var encouragement: String?
+        var isCloudGenerated: Bool
+    }
+
+    private var weeklyDigestSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            if isGeneratingDigest {
+                HStack(spacing: 8) {
+                    ProgressView()
+                    Text("Writing your week in water...")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                }
+            } else if let digest = weeklyDigest {
+                VStack(alignment: .leading, spacing: 8) {
+                    Text(digest.headline)
+                        .font(Theme.editorialSerif(22, weight: .semibold, relativeTo: .title3))
+                    Text(digest.narrative)
+                        .font(.subheadline)
+                    if let encouragement = digest.encouragement {
+                        Text(encouragement)
+                            .font(.subheadline.weight(.medium))
+                            .foregroundStyle(Theme.lagoon)
+                    }
+                    if digest.isCloudGenerated {
+                        Label("Written with Private Cloud Compute", systemImage: "lock.icloud")
+                            .font(.caption2)
+                            .foregroundStyle(.secondary)
+                    }
+                }
+            }
+
+            Button {
+                Task { await generateWeeklyDigest(force: true) }
+            } label: {
+                Label("Refresh digest", systemImage: "arrow.clockwise")
+                    .font(.subheadline.weight(.medium))
+            }
+            .disabled(isGeneratingDigest)
+        }
+        .padding(.vertical, 6)
+        .task {
+            guard subscriptionManager.hasAccess(to: .aiInsights), weeklyDigest == nil else { return }
+            await generateWeeklyDigest(force: false)
+        }
+    }
+
+    private func generateWeeklyDigest(force: Bool) async {
+        guard subscriptionManager.hasAccess(to: .aiInsights) else { return }
+        if weeklyDigest != nil && !force { return }
+        isGeneratingDigest = true
+        defer { isGeneratingDigest = false }
+
+        let stats = WeeklyStats.compute(entries: store.entries, goalML: store.dailyGoal.totalML)
+
+        #if canImport(FoundationModels)
+        if #available(iOS 26.0, *), SipliIntelligence.shared.isReady {
+            if let payload = await SipliIntelligence.shared.weeklyDigest(stats: stats) {
+                weeklyDigest = WeeklyDigestDisplay(
+                    headline: payload.headline,
+                    narrative: payload.narrative,
+                    encouragement: payload.encouragement,
+                    isCloudGenerated: SipliIntelligence.shared.lastDigestUsedCloudModel
+                )
+                return
+            }
+        }
+        #endif
+
+        weeklyDigest = WeeklyDigestDisplay(
+            headline: "Your week in water",
+            narrative: stats.staticDigest,
+            encouragement: nil,
+            isCloudGenerated: false
+        )
     }
 
     // MARK: - AI Insights Section
@@ -638,21 +753,8 @@ struct InsightsView: View {
     #if canImport(FoundationModels)
     @available(iOS 26.0, *)
     private func _generateInsightWithFoundationModels(prompt: String) async -> String? {
-        guard SystemLanguageModel.default.isAvailable else { return nil }
-
-        let session = LanguageModelSession(instructions: """
-            You are a hydration coach inside Sipli, a mobile hydration tracking app.
-            Provide brief, personalized, encouraging insights about the user's hydration habits.
-            Keep responses to 2-3 sentences. Be specific about their data. No emojis.
-            """)
-
-        do {
-            let response = try await session.respond(to: prompt)
-            let text = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
-            return text.isEmpty ? nil : text
-        } catch {
-            return nil
-        }
+        guard SipliIntelligence.shared.isReady else { return nil }
+        return await SipliIntelligence.shared.insight(context: prompt)
     }
     #endif
 

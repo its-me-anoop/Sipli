@@ -106,6 +106,9 @@ struct SipliWidget: Widget {
 struct SipliWidgetBundle: WidgetBundle {
     var body: some Widget {
         SipliWidget()
+        if #available(iOS 18.0, *) {
+            SipliQuickLogControl()
+        }
     }
 }
 

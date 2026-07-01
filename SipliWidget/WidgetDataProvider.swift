@@ -29,7 +29,12 @@ enum WidgetDataProvider {
             workout: effectiveProfile.prefersHealthKit ? state.lastWorkout : nil
         )
 
-        let streak = calculateStreak(entries: state.entries, goalML: goal.totalML)
+        // Shared, freeze-aware streak — identical math to the app and Insights.
+        let streak = StreakCalculator.currentStreak(
+            entries: state.entries,
+            goalML: goal.totalML,
+            freezeDates: state.streakFreezeDates
+        )
 
         return WidgetData(
             todayEntries: todayEntries,
@@ -38,37 +43,5 @@ enum WidgetDataProvider {
             streak: streak,
             unitSystem: effectiveProfile.unitSystem
         )
-    }
-
-    private static func calculateStreak(entries: [HydrationEntry], goalML: Double) -> Int {
-        let calendar = Calendar.current
-        var streak = 0
-        var checkDate = calendar.startOfDay(for: Date())
-
-        let todayTotal = entries
-            .filter { calendar.isDate($0.date, inSameDayAs: checkDate) }
-            .reduce(0) { $0 + $1.effectiveML }
-
-        if todayTotal < goalML {
-            guard let yesterday = calendar.date(byAdding: .day, value: -1, to: checkDate) else {
-                return 0
-            }
-            checkDate = yesterday
-        }
-
-        for dayOffset in 0..<90 {
-            guard let day = calendar.date(byAdding: .day, value: -dayOffset, to: checkDate) else { break }
-            let dayTotal = entries
-                .filter { calendar.isDate($0.date, inSameDayAs: day) }
-                .reduce(0) { $0 + $1.effectiveML }
-
-            if dayTotal >= goalML {
-                streak += 1
-            } else {
-                break
-            }
-        }
-
-        return streak
     }
 }

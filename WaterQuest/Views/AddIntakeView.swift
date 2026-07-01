@@ -18,6 +18,14 @@ struct AddIntakeView: View {
 
     private var isRegular: Bool { sizeClass == .regular }
 
+    /// One-tap presets learned from the user's recent logging habits.
+    private var quickLogPresets: [QuickLogPresets.Preset] {
+        QuickLogPresets.presets(
+            from: store.entries,
+            allowAllFluids: subscriptionManager.hasAccess(to: .fluidTypes)
+        )
+    }
+
     var body: some View {
         Form {
             Section {
@@ -29,6 +37,34 @@ struct AddIntakeView: View {
                         .foregroundStyle(.secondary)
                 }
                 .padding(.vertical, isRegular ? 10 : 6)
+
+                // Quick Log: your usual drinks, one tap, no slider.
+                HStack(spacing: isRegular ? 12 : 8) {
+                    ForEach(quickLogPresets) { preset in
+                        Button {
+                            logPreset(preset)
+                        } label: {
+                            HStack(spacing: 6) {
+                                Image(systemName: preset.fluidType.iconName)
+                                    .font(.caption)
+                                Text("\(Int(store.profile.unitSystem.amount(fromML: preset.amountML))) \(store.profile.unitSystem.volumeUnit)")
+                                    .font(.subheadline.weight(.semibold))
+                            }
+                            .padding(.horizontal, 14)
+                            .padding(.vertical, 9)
+                            .background(
+                                Capsule(style: .continuous)
+                                    .fill(preset.fluidType.color.opacity(0.14))
+                            )
+                            .foregroundStyle(preset.fluidType.color)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Quick log \(Int(preset.amountML)) millilitres of \(preset.fluidType.displayName)")
+                        .accessibilityHint("Logs immediately")
+                    }
+                    Spacer(minLength: 0)
+                }
+                .padding(.vertical, 2)
 
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Text("\(Int(amount))")
@@ -199,6 +235,39 @@ struct AddIntakeView: View {
 
     private var amountStep: Double {
         store.profile.unitSystem == .metric ? 10 : 1
+    }
+
+    /// One-tap logging for a learned preset: bypasses the slider entirely.
+    private func logPreset(_ preset: QuickLogPresets.Preset) {
+        Haptics.splash()
+
+        // Reflect the preset in the visible controls so the banner and any
+        // follow-up slider adjustments start from what was just logged.
+        selectedFluidType = preset.fluidType
+        amount = min(
+            max(store.profile.unitSystem.amount(fromML: preset.amountML), amountRange.lowerBound),
+            amountRange.upperBound
+        )
+
+        let entry = store.addIntake(
+            amount: preset.amountML,
+            unitSystem: .metric,
+            source: .manual,
+            fluidType: preset.fluidType,
+            note: nil
+        )
+
+        Task {
+            guard subscriptionManager.hasAccess(to: .healthKitSync), store.effectiveProfile.prefersHealthKit else { return }
+            await healthKit.saveWaterIntake(ml: entry.volumeML, date: entry.date, entryID: entry.id)
+        }
+
+        withAnimation {
+            showSavedBanner = true
+        }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+            dismiss()
+        }
     }
 
     private func addIntake() {

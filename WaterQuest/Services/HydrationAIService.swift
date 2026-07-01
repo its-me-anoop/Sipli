@@ -191,11 +191,10 @@ final class HydrationAIService: ObservableObject {
         timeOfDay: TimeOfDay,
         category: HydrationTip.Category
     ) async -> HydrationTip? {
-        // Re-verify model availability right before use to avoid EXC_BAD_ACCESS
-        // on simulators where the model reports available but isn't actually loaded
-        guard SystemLanguageModel.default.availability == .available else {
-            return nil
-        }
+        // Re-verify readiness right before use to avoid EXC_BAD_ACCESS on
+        // simulators where the model reports available but isn't actually
+        // loaded; also skips unsupported locales so static tips win instantly.
+        guard SipliIntelligence.shared.isReady else { return nil }
 
         let prompt = buildPrompt(
             progress: progress,
@@ -207,31 +206,32 @@ final class HydrationAIService: ObservableObject {
             category: category
         )
 
-        do {
-            let session = LanguageModelSession {
-                """
-                You are a friendly hydration coach inside a water tracking app called Sipli. \
-                Generate a single short motivational message (1-2 sentences, max 120 characters) \
-                about drinking water. Be warm, specific to the user's context, and varied. \
-                Never use hashtags, emojis, or markdown. Just plain text.
-                """
-            }
-
-            let response = try await session.respond(to: prompt)
-            let message = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
-
-            guard !message.isEmpty else { return nil }
-
-            return HydrationTip(
-                message: message,
-                category: category,
-                generatedAt: Date()
-            )
-        } catch {
+        guard let message = await SipliIntelligence.shared.coachTip(context: prompt) else {
             return nil
         }
+        return HydrationTip(
+            message: message,
+            category: category,
+            generatedAt: Date()
+        )
+    }
+
+    /// Loads the model + coach instructions before the first tip request so
+    /// the dashboard card fills without a visible generation delay.
+    @available(iOS 26.0, *)
+    private func _prewarmCoach() {
+        SipliIntelligence.shared.prewarm(.coach)
     }
     #endif
+
+    /// Availability-agnostic prewarm hook for views.
+    func prewarmCoach() {
+        #if canImport(FoundationModels)
+        if #available(iOS 26.0, *), isAvailable {
+            _prewarmCoach()
+        }
+        #endif
+    }
 
     private func buildPrompt(
         progress: Int,
@@ -279,24 +279,10 @@ final class HydrationAIService: ObservableObject {
     #if canImport(FoundationModels)
     @available(iOS 26.0, *)
     private func _generateMotivationWithFoundationModels(for achievement: String) async -> String? {
-        guard SystemLanguageModel.default.availability == .available else {
-            return nil
-        }
-
-        do {
-            let session = LanguageModelSession {
-                """
-                You are a friendly hydration coach. Generate a very short celebration message \
-                (1 sentence, max 80 characters) for a hydration achievement. \
-                Be warm and encouraging. No emojis, hashtags, or markdown.
-                """
-            }
-            let response = try await session.respond(to: "Achievement: \(achievement)")
-            let message = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
-            return message.isEmpty ? nil : message
-        } catch {
-            return nil
-        }
+        guard SipliIntelligence.shared.isReady else { return nil }
+        return await SipliIntelligence.shared.coachTip(
+            context: "Celebrate this hydration achievement in one very short sentence (max 80 characters): \(achievement)"
+        )
     }
     #endif
 

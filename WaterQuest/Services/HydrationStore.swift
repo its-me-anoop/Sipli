@@ -15,6 +15,14 @@ final class HydrationStore: ObservableObject {
     /// Start-of-day of the most recent day the user hit their goal.
     /// Used by ``checkGoalCompletion()`` to avoid double-counting same-day crossings.
     @Published private(set) var lastGoalCompletionDate: Date?
+    /// Match Day (football-summer challenge): match days won this season.
+    @Published private(set) var matchDayWins: Int
+    /// Start-of-day of the most recent match-day win (same-day dedupe).
+    @Published private(set) var lastMatchDayWinDate: Date?
+    /// Banked streak-freeze tokens.
+    @Published private(set) var streakFreezeTokens: Int
+    /// Days retroactively covered by a spent freeze token.
+    @Published private(set) var streakFreezeDates: [Date]
 
     private let persistence = PersistenceService.shared
 
@@ -32,6 +40,10 @@ final class HydrationStore: ObservableObject {
         self.premiumUpsellState = state.premiumUpsellState
         self.goalCompletionCount = state.goalCompletionCount
         self.lastGoalCompletionDate = state.lastGoalCompletionDate
+        self.matchDayWins = state.matchDayWins
+        self.lastMatchDayWinDate = state.lastMatchDayWinDate
+        self.streakFreezeTokens = state.streakFreezeTokens
+        self.streakFreezeDates = state.streakFreezeDates
 
         persistence.setRemoteDataChangeHandler { [weak self] data in
             guard let self else { return }
@@ -52,6 +64,9 @@ final class HydrationStore: ObservableObject {
         // so the review prompt fires when they next open the app, not only
         // after three future completions.
         backfillGoalCompletionCountIfNeeded()
+
+        // Spend a banked freeze if yesterday broke an otherwise-live streak.
+        applyStreakFreezeIfNeeded()
     }
 
     var dailyGoal: GoalBreakdown {
@@ -103,44 +118,25 @@ final class HydrationStore: ObservableObject {
 
     /// Assemble an immutable snapshot of everything the notification scheduler
     /// needs. Called from every site that reschedules reminders.
-    ///
-    /// `currentStreak` replicates the algorithm in `InsightsView.swift` — a run
-    /// of consecutive goal-met days ending either today (if today is met) or
-    /// yesterday (if not). We inline rather than extract for Phase 1 because
-    /// Phase 4 will pull out a proper `StreakCalculator` alongside the
-    /// histogram work.
     func buildNotificationContext() -> NotificationContext {
         NotificationContext(
             profile: effectiveProfile,
             entries: entries,
             goalML: dailyGoal.totalML,
-            currentStreak: computeCurrentStreak(goalML: dailyGoal.totalML),
+            currentStreak: currentStreak,
             hasPremiumAccess: hasPremiumAccess,
             capturedAt: Date()
         )
     }
 
-    private func computeCurrentStreak(goalML: Double) -> Int {
-        guard goalML > 0 else { return 0 }
-        let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
-
-        // Totals for last 90 days, index 0 = today.
-        var totals: [Double] = []
-        for offset in 0..<90 {
-            guard let day = calendar.date(byAdding: .day, value: -offset, to: today) else { break }
-            let total = entries
-                .filter { calendar.isDate($0.date, inSameDayAs: day) }
-                .reduce(0.0) { $0 + $1.effectiveML }
-            totals.append(total)
-        }
-
-        let startIdx = (totals.first ?? 0) >= goalML ? 0 : 1
-        var streak = 0
-        for i in startIdx..<totals.count {
-            if totals[i] >= goalML { streak += 1 } else { break }
-        }
-        return streak
+    /// Freeze-aware goal streak, shared with Insights and the widget via
+    /// ``StreakCalculator``.
+    var currentStreak: Int {
+        StreakCalculator.currentStreak(
+            entries: entries,
+            goalML: dailyGoal.totalML,
+            freezeDates: streakFreezeDates
+        )
     }
 
     @discardableResult
@@ -168,6 +164,8 @@ final class HydrationStore: ObservableObject {
         guard goalML > 0, todayTotalML >= goalML else { return }
 
         let today = Calendar.current.startOfDay(for: Date())
+        registerMatchDayWinIfNeeded(today: today)
+
         if let last = lastGoalCompletionDate,
            Calendar.current.isDate(last, inSameDayAs: today) {
             return // already counted today
@@ -175,6 +173,41 @@ final class HydrationStore: ObservableObject {
 
         goalCompletionCount += 1
         lastGoalCompletionDate = today
+
+        // Every 7th consecutive goal day banks a streak freeze (capped).
+        let streak = currentStreak
+        if streak > 0, streak % StreakCalculator.freezeEarnInterval == 0 {
+            streakFreezeTokens = min(StreakCalculator.maxFreezeTokens, streakFreezeTokens + 1)
+        }
+    }
+
+    /// Match Day: hitting the daily goal during the football-summer window
+    /// wins the day's match. Deduped per day; monotonic like the review counter.
+    private func registerMatchDayWinIfNeeded(today: Date) {
+        guard MatchDay.isActive() else { return }
+        if let last = lastMatchDayWinDate,
+           Calendar.current.isDate(last, inSameDayAs: today) {
+            return
+        }
+        matchDayWins += 1
+        lastMatchDayWinDate = today
+    }
+
+    /// Spends one banked freeze token to cover yesterday when it broke an
+    /// otherwise-live streak. Deterministic and idempotent — the consumed day
+    /// is recorded in ``streakFreezeDates`` so every process (widget, watch)
+    /// computes the same streak from persisted state.
+    private func applyStreakFreezeIfNeeded() {
+        guard let day = StreakCalculator.freezeConsumableDate(
+            entries: entries,
+            goalML: dailyGoal.totalML,
+            freezeDates: streakFreezeDates,
+            tokens: streakFreezeTokens
+        ) else { return }
+
+        streakFreezeTokens -= 1
+        streakFreezeDates.append(day)
+        persist()
     }
 
     /// One-time backfill for users upgrading from a build that predates the
@@ -299,7 +332,11 @@ final class HydrationStore: ObservableObject {
             hasPremiumAccess: hasPremiumAccess,
             premiumUpsellState: premiumUpsellState,
             goalCompletionCount: goalCompletionCount,
-            lastGoalCompletionDate: lastGoalCompletionDate
+            lastGoalCompletionDate: lastGoalCompletionDate,
+            matchDayWins: matchDayWins,
+            lastMatchDayWinDate: lastMatchDayWinDate,
+            streakFreezeTokens: streakFreezeTokens,
+            streakFreezeDates: streakFreezeDates
         )
         persistence.save(state)
         PhoneSessionManager.shared.sendState(state)
@@ -333,7 +370,11 @@ final class HydrationStore: ObservableObject {
             hasPremiumAccess: hasPremiumAccess,
             premiumUpsellState: premiumUpsellState,
             goalCompletionCount: goalCompletionCount,
-            lastGoalCompletionDate: lastGoalCompletionDate
+            lastGoalCompletionDate: lastGoalCompletionDate,
+            matchDayWins: matchDayWins,
+            lastMatchDayWinDate: lastMatchDayWinDate,
+            streakFreezeTokens: streakFreezeTokens,
+            streakFreezeDates: streakFreezeDates
         )
         PhoneSessionManager.shared.sendState(state)
     }
@@ -376,9 +417,27 @@ final class HydrationStore: ObservableObject {
                 lastGoalCompletionDate = remote
             }
         }
+
+        // Match Day wins merge monotonically like the review counter.
+        matchDayWins = max(matchDayWins, state.matchDayWins)
+        if let remote = state.lastMatchDayWinDate {
+            lastMatchDayWinDate = lastMatchDayWinDate.map { max($0, remote) } ?? remote
+        }
+
+        // Freeze dates union (a freeze recorded anywhere really happened);
+        // tokens take the larger side — capped, so a rare double-credit from a
+        // multi-device race is bounded and harmless.
+        let mergedFreezes = Set(streakFreezeDates).union(state.streakFreezeDates)
+        streakFreezeDates = mergedFreezes.sorted()
+        streakFreezeTokens = min(
+            StreakCalculator.maxFreezeTokens,
+            max(streakFreezeTokens, state.streakFreezeTokens)
+        )
+
         // In case the merged entries bring today above goal but the remote
         // state didn't reflect that yet (e.g., an old snapshot).
         checkGoalCompletion()
+        applyStreakFreezeIfNeeded()
 
         WidgetCenter.shared.reloadAllTimelines()
 

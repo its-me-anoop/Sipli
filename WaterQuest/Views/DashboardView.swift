@@ -60,6 +60,7 @@ struct DashboardView: View {
         .task {
             await refreshSignals()
             if subscriptionManager.hasAccess(to: .aiInsights) {
+                aiService.prewarmCoach()
                 await generateAITip()
             }
         }
@@ -120,6 +121,12 @@ struct DashboardView: View {
             VStack(spacing: 16) {
                 summarySection
                     .padding(.top, 8)
+
+                if MatchDay.isActive() {
+                    DashboardCard(title: "Match Day", icon: "soccerball") {
+                        matchDaySection
+                    }
+                }
 
                 if subscriptionManager.hasAccess(to: .aiInsights), let tip = aiService.currentTip {
                     DashboardCard(title: "Hydration Coach", icon: "sparkles", backgroundGradient: Theme.coachCard) {
@@ -213,6 +220,12 @@ struct DashboardView: View {
                     unitSystem: store.profile.unitSystem,
                     showsFluidBreakdown: subscriptionManager.hasAccess(to: .fluidTypes)
                 )
+
+                if MatchDay.isActive() {
+                    DashboardCard(title: "Match Day", icon: "soccerball") {
+                        matchDaySection
+                    }
+                }
 
                 if shouldShowPremiumPrompt {
                     premiumSoftSell
@@ -328,10 +341,28 @@ struct DashboardView: View {
             )
 
             if showGoalCelebration {
-                GoalCelebrationOverlay(isShowing: $showGoalCelebration)
-                    .allowsHitTesting(false)
+                // Football summer: goal completions during the Match Day
+                // window celebrate with the ball-and-net animation instead
+                // of the droplet burst.
+                if MatchDay.isActive() {
+                    FootballCelebrationOverlay(isShowing: $showGoalCelebration)
+                        .allowsHitTesting(false)
+                } else {
+                    GoalCelebrationOverlay(isShowing: $showGoalCelebration)
+                        .allowsHitTesting(false)
+                }
             }
         }
+    }
+
+    /// Match Day dashboard section content.
+    private var matchDaySection: some View {
+        MatchDayCard(
+            progress: progress,
+            score: store.todayEntries.count,
+            wins: store.matchDayWins,
+            phase: MatchDay.phase(progress: progress)
+        )
     }
 
     private var premiumSoftSell: some View {

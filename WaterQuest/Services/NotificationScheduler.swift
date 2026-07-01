@@ -96,6 +96,13 @@ final class NotificationScheduler: ObservableObject {
             guard context.profile.remindersEnabled else { return }
 
             if context.profile.smartRemindersEnabled {
+                #if canImport(FoundationModels)
+                // Warm the model before the AI first-fire replacement races
+                // its 2-second budget (premium smart reminders only).
+                if #available(iOS 26.0, *), context.hasPremiumAccess {
+                    self._prewarmNotificationModel()
+                }
+                #endif
                 self.scheduleSmartReminders(context: context)
             } else {
                 self.scheduleClassicReminders(context: context)
@@ -259,7 +266,7 @@ final class NotificationScheduler: ObservableObject {
     #if canImport(FoundationModels)
     @available(iOS 26.0, *)
     private func _generateAIMessageWithFoundationModels(context: NotificationContext) async -> String? {
-        guard SystemLanguageModel.default.isAvailable else { return nil }
+        guard SipliIntelligence.shared.isReady else { return nil }
 
         let percentText = String(format: "%.0f", context.progress * 100)
         let streakLine = context.currentStreak > 0
@@ -267,24 +274,20 @@ final class NotificationScheduler: ObservableObject {
             : ""
 
         let prompt = """
-            Generate a single short (max 12 words), friendly, motivational hydration reminder.
             The user has completed \(percentText)% of their daily water goal (\(Int(context.todayTotalML)) of \(Int(context.goalML)) ml).\(streakLine)
-            Reply with ONLY the reminder text. No quotes, no punctuation beyond one exclamation mark.
+            Write their next hydration nudge.
             """
 
-        let session = LanguageModelSession(instructions: """
-            You are a cheerful hydration coach inside a mobile app called Sipli.
-            You write short, warm, motivational nudges to help people drink more water.
-            Keep every response under 12 words. Be encouraging, never guilt-tripping.
-            """)
+        // Guided generation with a tight token cap so the response reliably
+        // lands inside the 2-second race in scheduleAIReplacementForFirstFire.
+        return await SipliIntelligence.shared.notificationNudge(context: prompt)
+    }
 
-        do {
-            let response = try await session.respond(to: prompt)
-            let text = response.content.trimmingCharacters(in: .whitespacesAndNewlines)
-            return text.isEmpty ? nil : text
-        } catch {
-            return nil
-        }
+    /// Warms the notification session ahead of the AI-replacement attempt so
+    /// model load doesn't eat the 2-second generation budget.
+    @available(iOS 26.0, *)
+    private func _prewarmNotificationModel() {
+        SipliIntelligence.shared.prewarm(.notifications)
     }
     #endif
 

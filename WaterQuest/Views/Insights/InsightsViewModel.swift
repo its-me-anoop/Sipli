@@ -30,7 +30,8 @@ final class InsightsViewModel {
         entries: [HydrationEntry],
         dailyGoalML: Double,
         timeframe: Timeframe,
-        heatmapMonthOffset: Int
+        heatmapMonthOffset: Int,
+        streakFreezeDates: [Date] = []
     ) {
         let entriesChanged = entries.count != lastEntriesCount || dailyGoalML != lastDailyGoalML
         let timeframeChanged = timeframe != lastTimeframe
@@ -38,7 +39,7 @@ final class InsightsViewModel {
 
         if entriesChanged || timeframeChanged {
             chartData = Self.buildChartData(entries: entries, timeframe: timeframe)
-            trendData = Self.buildTrendData(entries: entries, goalML: dailyGoalML)
+            trendData = Self.buildTrendData(entries: entries, goalML: dailyGoalML, streakFreezeDates: streakFreezeDates)
         }
 
         if entriesChanged || heatmapOffsetChanged {
@@ -87,7 +88,7 @@ final class InsightsViewModel {
         }
     }
 
-    static func buildTrendData(entries: [HydrationEntry], goalML: Double) -> TrendData {
+    static func buildTrendData(entries: [HydrationEntry], goalML: Double, streakFreezeDates: [Date] = []) -> TrendData {
         let calendar = Calendar.current
         let today = calendar.startOfDay(for: Date())
         let goal = max(1, goalML)
@@ -101,16 +102,18 @@ final class InsightsViewModel {
             dailyTotals.append((day, total))
         }
 
-        var currentStreak = 0
-        let startIdx = (dailyTotals.first?.total ?? 0) >= goal ? 0 : 1
-        for i in startIdx..<dailyTotals.count {
-            if dailyTotals[i].total >= goal { currentStreak += 1 } else { break }
-        }
+        // Shared, freeze-aware streak — identical math to the store and widget.
+        let currentStreak = StreakCalculator.currentStreak(
+            entries: entries,
+            goalML: goal,
+            freezeDates: streakFreezeDates
+        )
 
+        let frozen = Set(streakFreezeDates.map { calendar.startOfDay(for: $0) })
         var longestStreak = 0
         var tempStreak = 0
         for dt in dailyTotals.reversed() {
-            if dt.total >= goal {
+            if dt.total >= goal || frozen.contains(dt.date) {
                 tempStreak += 1
                 longestStreak = max(longestStreak, tempStreak)
             } else {
