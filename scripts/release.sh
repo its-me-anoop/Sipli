@@ -27,6 +27,30 @@
 
 set -euo pipefail
 
+# --- Toolchain pinning + beta guards -----------------------------------------
+# App Store validation auto-rejects binaries built with beta Xcode OR on beta
+# macOS ("Invalid Binary" ~100s after review submission; TestFlight accepts
+# the same builds, which makes this easy to miss — it cost builds 7/8/9 on
+# 2026-07-01). The build-machine stamp (BuildMachineOSBuild) is sealed into
+# every bundle at archive time and cannot be scrubbed afterwards, so refuse
+# to start on a beta machine at all.
+export DEVELOPER_DIR="${DEVELOPER_DIR:-/Applications/Xcode.app/Contents/Developer}"
+
+# Beta *seed* builds carry a >=5000 build segment + trailing lowercase letter
+# (26A5368g, 27A5209h); GM builds may end in a short letter (23F81a) and pass.
+if [[ "$(sw_vers -buildVersion)" =~ [5-9][0-9]{3}[a-z]$ ]]; then
+  echo "✗ This Mac runs BETA macOS ($(sw_vers -buildVersion)) — App Store" >&2
+  echo "  validation rejects archives stamped with a beta BuildMachineOSBuild." >&2
+  echo "  Archive on released macOS (CI runner or another Mac) instead." >&2
+  exit 1
+fi
+
+if xcodebuild -version | grep -qi beta || [[ "$(xcodebuild -version | sed -n 2p | awk '{print $NF}')" =~ [5-9][0-9]{3}[a-z]$ ]]; then
+  echo "✗ xcodebuild resolves to a beta Xcode ($(xcodebuild -version | tr '\n' ' '))." >&2
+  echo "  Point DEVELOPER_DIR at the released Xcode before archiving." >&2
+  exit 1
+fi
+
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 PROJECT="${REPO_ROOT}/WaterQuest.xcodeproj"
 SCHEME="WaterQuest"
@@ -51,18 +75,7 @@ if ! security find-identity -v -p codesigning | grep -q "Apple Distribution"; th
   echo "  via the Xcode-signed-in account (requires an up-to-date PLA acceptance)."
 fi
 
-# --- (1) Archive app + all embedded targets ----------------------------------
-xcodebuild \
-  -project "${PROJECT}" \
-  -scheme "${SCHEME}" \
-  -configuration "${CONFIG}" \
-  -destination 'generic/platform=iOS' \
-  -archivePath "${ARCHIVE_PATH}" \
-  -allowProvisioningUpdates \
-  clean archive
-
-# --- (2) Export + upload to TestFlight ---------------------------------------
-# ExportOptions.plist sets destination=upload, so -exportArchive uploads directly.
+# --- Auth: ASC API key enables headless provisioning + upload (CI) -----------
 AUTH_ARGS=()
 ASC_KEY_PATH="${ASC_KEY_PATH:-${HOME}/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID:-}.p8}"
 if [[ -n "${ASC_KEY_ID:-}" && -n "${ASC_ISSUER_ID:-}" && -f "${ASC_KEY_PATH}" ]]; then
@@ -77,12 +90,31 @@ else
   echo "  (set ASC_KEY_ID / ASC_ISSUER_ID and place AuthKey_<id>.p8 for CI-style upload)"
 fi
 
+# --- (1) Archive app + all embedded targets ----------------------------------
+# Auth args are passed here too: on a fresh CI runner there is no signed-in
+# Xcode account, and automatic signing needs the API key to fetch profiles.
+xcodebuild \
+  -project "${PROJECT}" \
+  -scheme "${SCHEME}" \
+  -configuration "${CONFIG}" \
+  -destination 'generic/platform=iOS' \
+  -archivePath "${ARCHIVE_PATH}" \
+  -allowProvisioningUpdates \
+  ${AUTH_ARGS[@]+"${AUTH_ARGS[@]}"} \
+  clean archive
+
+# --- (2) Export + upload to TestFlight ---------------------------------------
+# ExportOptions.plist sets destination=upload, so -exportArchive uploads directly.
+
+# --- Preflight the archive before it goes anywhere near Apple ----------------
+"${REPO_ROOT}/scripts/preflight-archive.sh" "${ARCHIVE_PATH}"
+
 xcodebuild -exportArchive \
   -archivePath "${ARCHIVE_PATH}" \
   -exportPath "${EXPORT_DIR}" \
   -exportOptionsPlist "${EXPORT_OPTS}" \
   -allowProvisioningUpdates \
-  "${AUTH_ARGS[@]}"
+  ${AUTH_ARGS[@]+"${AUTH_ARGS[@]}"}
 
 echo "✓ Upload submitted. The build appears under TestFlight once App Store"
 echo "  Connect finishes processing (a few minutes up to ~1 hour)."

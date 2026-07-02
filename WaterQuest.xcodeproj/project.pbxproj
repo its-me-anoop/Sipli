@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AE001STOREKIT00000000001 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 6BDAF0F12F6375DE009ADC09 /* Products.storekit */; };
 		00E5359EB56D89B045DDBDF1 /* AddIntakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBC0C7A2F89C0FD52822D48 /* AddIntakeView.swift */; };
 		0252DDA30195EA614A439A3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9FC934C6863AFC8E01D302CE /* Assets.xcassets */; };
 		0A6AF1AF6B3D3222F30C3E85 /* WeatherSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */; };
@@ -19,7 +20,6 @@
 		1DCE9DE6A19E823BA1E5079B /* DashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97414883E4C0F357148B7EC7 /* DashboardCard.swift */; };
 		2478B6682ECF9BC073380F5D /* WeightStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCAC93043D1BF833574E34AC /* WeightStep.swift */; };
 		289CD9C4C7D7FC94DDA3DEB7 /* GoalBreakdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */; };
-		2935FCF5A46AC8630A581FE4 /* Gemini_Generated_Image_15xog715xog715xo.png in Resources */ = {isa = PBXBuildFile; fileRef = C5DD4230940B25D30C9598B4 /* Gemini_Generated_Image_15xog715xog715xo.png */; };
 		2AF9FFFF48921B933CD53585 /* InsightsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D5A4B6598B2C78EB255CB4 /* InsightsViewModel.swift */; };
 		2CA08ED2F08EB233538DC4D5 /* LiquidGlassCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E0244F70DCB30BB868A196 /* LiquidGlassCard.swift */; };
 		30FBAE8C1E7C2BD70CE4F8B0 /* PremiumBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F187D398A7F2E287751F39F /* PremiumBadge.swift */; };
@@ -49,7 +49,6 @@
 		6BA043C42FE5DAB800FF4C45 /* OnboardingVesselModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA043C32FE5DAB800FF4C45 /* OnboardingVesselModelTests.swift */; };
 		6BA043C62FE5DC3300FF4C45 /* OnboardingVessel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA043C52FE5DC3300FF4C45 /* OnboardingVessel.swift */; };
 		6BBC3B922F4F6AC100F5525A /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 6BBC3B912F4F6AC100F5525A /* AppIcon.icon */; };
-		6BDAF0F22F6375DE009ADC09 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 6BDAF0F12F6375DE009ADC09 /* Products.storekit */; };
 		7077C5CF3469D64E94804983 /* FluidType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A139EF313607077443D4FCFE /* FluidType.swift */; };
 		71068784F139C3C926C0B903 /* DoneStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = B71BF6FC4700645993778AA0 /* DoneStep.swift */; };
 		747A7C4F8A906C71164AB9DE /* NotificationScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */; };
@@ -62,7 +61,6 @@
 		8CE43E783BB223277701CF7E /* UnitSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032684376DE05B0CC4838664 /* UnitSystem.swift */; };
 		94AF3267A3C90279716F2BE6 /* MotionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = E4A8068B4418852446BD78E6 /* MotionManager.swift */; };
 		979E86A905E1BA27F04E7E13 /* NotificationHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADB248542D61873060DDABFF /* NotificationHandler.swift */; };
-		A1B2326FF853A75236509F2C /* icon.json in Resources */ = {isa = PBXBuildFile; fileRef = 732CBE184502476DC56921F8 /* icon.json */; };
 		A1B2C3D4E5F60718293A4B02 /* PersistenceServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B01 /* PersistenceServiceTests.swift */; };
 		A1B2C3D4E5F60718293A4B04 /* SipliAppIntentsSystemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1B2C3D4E5F60718293A4B03 /* SipliAppIntentsSystemTests.swift */; };
 		A1C2D3E4F5061728394A5B6C /* SubscriptionManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B1C2D3E4F5061728394A5B6C /* SubscriptionManagerTests.swift */; };
@@ -70,7 +68,6 @@
 		A543E5598AAD6E7D7CD5164C /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 161A82CD61225A1F302ECA9D /* DateExtensions.swift */; };
 		AB92FFFB14A831BB3B5FB42A /* NotificationCategoriesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B4A8703E51FB5E078BD00AB /* NotificationCategoriesTests.swift */; };
 		ADB3F54617F84087FCD95972 /* AnswerChipStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = B778ABD25FE0AC8D415F3B6C /* AnswerChipStack.swift */; };
-		AE001STOREKIT00000000001 /* Products.storekit in Resources */ = {isa = PBXBuildFile; fileRef = 6BDAF0F12F6375DE009ADC09 /* Products.storekit */; };
 		AI001000000000000000001 /* SipliAppIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI001000000000000000002 /* SipliAppIntents.swift */; };
 		AI002000000000000000001 /* SipliAppShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI002000000000000000002 /* SipliAppShortcuts.swift */; };
 		AI003000000000000000001 /* IntentDonationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = AI003000000000000000002 /* IntentDonationService.swift */; };
@@ -924,9 +921,6 @@
 				B67E99532D94983258FFDC94 /* LaunchScreen.storyboard in Resources */,
 				D1A2B3C4E5F60718293A4B5C /* PrivacyInfo.xcprivacy in Resources */,
 				6BBC3B922F4F6AC100F5525A /* AppIcon.icon in Resources */,
-				2935FCF5A46AC8630A581FE4 /* Gemini_Generated_Image_15xog715xog715xo.png in Resources */,
-				6BDAF0F22F6375DE009ADC09 /* Products.storekit in Resources */,
-				A1B2326FF853A75236509F2C /* icon.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1185,7 +1179,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = WaterQuest/Supporting/WaterQuest.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				INFOPLIST_FILE = WaterQuest/Supporting/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1282,7 +1276,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = WaterQuest/Supporting/WaterQuest.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				INFOPLIST_FILE = WaterQuest/Supporting/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -1305,7 +1299,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = SipliWatchWidgets/SipliWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1347,7 +1341,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = SipliWatchWidgets/SipliWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1468,7 +1462,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = SipliWidget/SipliWidgetEntitlements.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SipliWidget/Info.plist;
@@ -1496,7 +1490,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = SipliWidget/SipliWidgetEntitlements.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SipliWidget/Info.plist;
@@ -1523,7 +1517,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = SipliWatch/SipliWatch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SipliWatch/Info.plist;
@@ -1551,7 +1545,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = SipliWatch/SipliWatch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 9;
+				CURRENT_PROJECT_VERSION = 10;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SipliWatch/Info.plist;
