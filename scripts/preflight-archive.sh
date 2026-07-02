@@ -41,12 +41,15 @@ for B in "${BUNDLES[@]}"; do
 done
 [[ $FAIL == 0 ]] && ok "no beta toolchain/OS stamps"
 
-# 1. No Siri entitlement (AppIntents needs none; a stray claim trips
-#    the Invalid Siri Support check).
+# 1. No Siri entitlement AND no SiriKit usage string (AppIntents needs
+#    neither; either one alone is a capability cross-check mismatch —
+#    the thread-676166 class of silent Invalid Binary).
 if codesign -d --entitlements :- "$APP" 2>/dev/null | grep -q "com.apple.developer.siri"; then
   err "com.apple.developer.siri entitlement present on Sipli.app"
+elif /usr/libexec/PlistBuddy -c "Print :NSSiriUsageDescription" "$APP/Info.plist" >/dev/null 2>&1; then
+  err "NSSiriUsageDescription present without SiriKit — remove it (AppIntents needs no Siri config)"
 else
-  ok "no Siri entitlement"
+  ok "no Siri entitlement, no Siri usage string"
 fi
 
 # 2. No dev artifacts in the shipping bundle.
