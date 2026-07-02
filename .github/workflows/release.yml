@@ -38,6 +38,11 @@ jobs:
           xcodebuild -version | grep -qi beta && { echo "beta Xcode"; exit 1; }
           exit 0
 
+      - name: Install Metal Toolchain
+        # Ships uninstalled with Xcode 26.x; device/archive builds compile
+        # WaterQuest/Shaders/Ripple.metal and fail without it.
+        run: xcodebuild -downloadComponent MetalToolchain
+
       - name: Install ASC API key
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
