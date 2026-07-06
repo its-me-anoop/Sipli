@@ -61,7 +61,15 @@ struct MainTabView: View {
                 }
             }
             .onChange(of: deepLinkTrophyRoom) {
-                if deepLinkTrophyRoom {
+                guard deepLinkTrophyRoom else { return }
+                if showAddIntake {
+                    // Sibling sheets can't stack — retire the add-intake sheet
+                    // first, then present once its dismissal settles.
+                    showAddIntake = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.6) {
+                        showTrophyRoom = true
+                    }
+                } else {
                     showTrophyRoom = true
                 }
             }

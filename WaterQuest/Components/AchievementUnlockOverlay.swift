@@ -11,6 +11,7 @@ struct AchievementUnlockOverlay: View {
     @State private var appeared = false
     @State private var confettiTrigger = 0
     @State private var sharePayload: ShareCardPayload?
+    @State private var isDismissing = false
 
     var body: some View {
         ZStack {
@@ -55,7 +56,7 @@ struct AchievementUnlockOverlay: View {
                 Image(systemName: achievement.symbol)
                     .font(.system(size: 44, weight: .semibold))
                     .foregroundStyle(.white)
-                    .symbolEffect(.bounce, value: appeared)
+                    .symbolEffect(.bounce, value: reduceMotion ? false : appeared)
             }
 
             VStack(spacing: 6) {
@@ -108,6 +109,10 @@ struct AchievementUnlockOverlay: View {
     }
 
     private func dismiss() {
+        // Scrim tap + button tap (or a double-tap) must not pop the queue
+        // twice and swallow the next celebration.
+        guard !isDismissing else { return }
+        isDismissing = true
         withAnimation(reduceMotion ? .easeOut(duration: 0.15) : Theme.quickSpring) {
             appeared = false
         }

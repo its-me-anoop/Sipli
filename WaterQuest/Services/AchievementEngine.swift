@@ -56,7 +56,10 @@ enum AchievementEngine {
         for threshold in [3, 7, 14, 30, 60, 100] where longest >= threshold {
             ids.insert("streak.\(threshold)")
         }
-        if hasPerfectWeek(metDays: metDays, calendar: calendar) {
+        // Perfect Week/Weekend promise "hit your goal", so frozen days don't
+        // count — unlike streak milestones, where a freeze preserving the run
+        // is the whole point of the token.
+        if hasPerfectWeek(metDays: metDaysUnfrozen, calendar: calendar) {
             ids.insert("week.perfect")
         }
 
@@ -82,7 +85,7 @@ enum AchievementEngine {
         }
         if hasEarlyBird { ids.insert("earlybird") }
         if hasNightOwl { ids.insert("nightowl") }
-        if hasPerfectWeekend(metDays: metDays, calendar: calendar) {
+        if hasPerfectWeekend(metDays: metDaysUnfrozen, calendar: calendar) {
             ids.insert("weekend.perfect")
         }
         if state.streakFreezeTokens >= StreakCalculator.maxFreezeTokens {

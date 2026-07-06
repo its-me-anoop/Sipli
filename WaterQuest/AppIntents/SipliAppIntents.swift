@@ -315,6 +315,12 @@ struct OpenTrophyRoomIntent: AppIntent {
     /// so a NotificationCenter post reaches the live SwiftUI scene.
     static var openAppWhenRun: Bool = true
 
+    /// Cold-launch latch: on a fresh launch triggered by this intent the
+    /// notification can fire before the scene's `.onReceive` subscriber is
+    /// installed, so the request is also parked in UserDefaults and consumed
+    /// when the scene becomes active.
+    static let pendingOpenDefaultsKey = "pendingTrophyRoomOpen"
+
     #if compiler(>=6.4)
     @available(iOS 27.0, *)
     static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
@@ -322,6 +328,7 @@ struct OpenTrophyRoomIntent: AppIntent {
 
     @MainActor
     func perform() async throws -> some IntentResult {
+        UserDefaults.standard.set(true, forKey: Self.pendingOpenDefaultsKey)
         NotificationCenter.default.post(name: .sipliOpenTrophyRoom, object: nil)
         return .result()
     }

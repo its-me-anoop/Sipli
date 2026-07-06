@@ -10,8 +10,10 @@ import Foundation
 /// The streak is the run of consecutive counting days ending today (if today
 /// counts) or yesterday (if today doesn't count yet — the user still has time).
 enum StreakCalculator {
-    /// Maximum days scanned backwards; mirrors the historical 90-day window.
-    static let lookbackDays = 90
+    /// Maximum days scanned backwards. Raised from the historical 90 in v5.0
+    /// so the displayed streak can actually reach the 100-day "Century
+    /// Stream" badge instead of pinning at 90 forever.
+    static let lookbackDays = 366
 
     /// Maximum freeze tokens a user can bank.
     static let maxFreezeTokens = 3

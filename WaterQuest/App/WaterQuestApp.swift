@@ -135,6 +135,17 @@ struct WaterQuestApp: App {
                 }
             }
             .onReceive(NotificationCenter.default.publisher(for: .sipliOpenTrophyRoom)) { _ in
+                UserDefaults.standard.removeObject(forKey: OpenTrophyRoomIntent.pendingOpenDefaultsKey)
+                deepLinkTrophyRoom = true
+            }
+            .onChange(of: scenePhase) { _, phase in
+                // Consume a Trophy Room request parked by OpenTrophyRoomIntent
+                // during a cold launch, where the notification fired before
+                // this scene's subscriber existed.
+                guard phase == .active,
+                      UserDefaults.standard.bool(forKey: OpenTrophyRoomIntent.pendingOpenDefaultsKey)
+                else { return }
+                UserDefaults.standard.removeObject(forKey: OpenTrophyRoomIntent.pendingOpenDefaultsKey)
                 deepLinkTrophyRoom = true
             }
             .onChange(of: deepLinkForwarder.shouldOpenAddIntake) { _, shouldOpen in

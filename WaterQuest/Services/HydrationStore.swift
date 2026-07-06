@@ -84,8 +84,13 @@ final class HydrationStore: ObservableObject {
         applyStreakFreezeIfNeeded()
 
         // Retro-credit achievements earned before this build (or via Siri /
-        // widget writes while the app was closed) — silently.
+        // widget writes while the app was closed) — silently, and persisted
+        // immediately so a force-quit doesn't reset the earned dates.
+        let unlocksAtLoad = unlockedAchievements.count
         refreshAchievements()
+        if unlockedAchievements.count != unlocksAtLoad {
+            persist()
+        }
         celebratesUnlocks = true
     }
 
@@ -272,6 +277,8 @@ final class HydrationStore: ObservableObject {
     /// anything newly earned. Called from ``persist()`` so every mutation path
     /// (in-app log, watch sync, remote merge) is covered.
     private func refreshAchievements(now: Date = Date()) {
+        // Nothing left to earn — skip the full-history evaluation.
+        guard unlockedAchievements.count < AchievementCatalog.all.count else { return }
         let state = snapshotState()
         let earnedNow = AchievementEngine.earned(state: state, goalML: dailyGoal.totalML, now: now)
         let newIDs = earnedNow.subtracting(unlockedAchievements.keys)
@@ -347,6 +354,7 @@ final class HydrationStore: ObservableObject {
     }
 
     func syncHealthKitEntries(_ healthKitEntries: [HydrationEntry], for date: Date = Date()) {
+        reloadFromDisk() // HealthKit background delivery — see addWatchEntry
         entries.removeAll { $0.source == .healthKit && $0.date.isSameDay(as: date) }
         entries.append(contentsOf: healthKitEntries)
         entries.sort { $0.date < $1.date }
@@ -355,6 +363,7 @@ final class HydrationStore: ObservableObject {
     }
 
     func syncHealthKitEntriesRange(_ healthKitEntries: [HydrationEntry], days: Int) {
+        reloadFromDisk() // HealthKit background delivery — see addWatchEntry
         let cappedDays = max(1, min(30, days))
         guard let start = Calendar.current.date(byAdding: .day, value: -cappedDays + 1, to: Calendar.current.startOfDay(for: Date())) else { return }
         entries.removeAll { $0.source == .healthKit && $0.date >= start }
@@ -391,14 +400,31 @@ final class HydrationStore: ObservableObject {
 
     private func persist() {
         refreshAchievements()
-        let state = snapshotState()
-        persistence.save(state)
-        PhoneSessionManager.shared.sendState(state)
+        var snapshot = snapshotState()
+        // Coordinated read-modify-write instead of a blind save: another
+        // process (Siri intent, widget) may have bumped the monotonic fields
+        // on disk while this in-memory copy was stale. Entries stay
+        // snapshot-authoritative (deletes must stick); counters and badge
+        // unlocks only ever grow, so they merge losslessly.
+        let merged = persistence.update(PersistedState.self, fallback: snapshot) { disk in
+            snapshot.counters = snapshot.counters.merged(with: disk.counters)
+            snapshot.unlockedAchievements = snapshot.unlockedAchievements
+                .merging(disk.unlockedAchievements) { min($0, $1) }
+            disk = snapshot
+        }
+        counters = merged.counters
+        unlockedAchievements = merged.unlockedAchievements
+        PhoneSessionManager.shared.sendState(merged)
         WidgetCenter.shared.reloadAllTimelines()
     }
 
     /// Called by PhoneSessionManager when Watch sends a new entry via WCSession.
     func addWatchEntry(_ entry: HydrationEntry) {
+        // WCSession can wake the suspended app in the background, where the
+        // in-memory store may be stale relative to disk (Siri/widget intents
+        // write the shared file directly). Merge from disk first so the
+        // subsequent persist() doesn't clobber those external entries.
+        reloadFromDisk()
         guard !entries.contains(where: { $0.id == entry.id }) else { return }
         entries.append(entry)
         entries.sort { $0.date < $1.date }
@@ -409,6 +435,7 @@ final class HydrationStore: ObservableObject {
 
     /// Called by PhoneSessionManager when Watch deletes an entry via WCSession.
     func deleteEntry(byID id: UUID) {
+        reloadFromDisk() // background wake-up — see addWatchEntry
         guard entries.contains(where: { $0.id == id }) else { return }
         entries.removeAll { $0.id == id }
         counters.undoCount += 1
@@ -477,8 +504,16 @@ final class HydrationStore: ObservableObject {
 
         // Achievements union — a badge earned anywhere stays earned; the
         // earliest recorded date wins. Counters merge per-field maximum.
-        unlockedAchievements = unlockedAchievements.merging(state.unlockedAchievements) { min($0, $1) }
-        counters = counters.merged(with: state.counters)
+        // If this device holds progress the incoming snapshot lacks, the
+        // merge must be written back: the KVS remote-change path has already
+        // overwritten the local file with the incoming blob, so without a
+        // persist the local-only badges/counters die with the process.
+        let mergedUnlocks = unlockedAchievements.merging(state.unlockedAchievements) { min($0, $1) }
+        let mergedCounters = counters.merged(with: state.counters)
+        let holdsMoreThanIncoming = mergedUnlocks != state.unlockedAchievements
+            || mergedCounters != state.counters
+        unlockedAchievements = mergedUnlocks
+        counters = mergedCounters
 
         // In case the merged entries bring today above goal but the remote
         // state didn't reflect that yet (e.g., an old snapshot).
@@ -488,13 +523,16 @@ final class HydrationStore: ObservableObject {
         // Evaluate achievements against the merged state so drinks logged
         // externally (Siri, widget, watch) latch — and celebrate — the moment
         // the app foregrounds, not at some later in-app persist.
-        let unlocksBefore = unlockedAchievements.count
+        let unlocksAfterMerge = unlockedAchievements.count
         refreshAchievements()
 
         WidgetCenter.shared.reloadAllTimelines()
 
         // Push back to disk/iCloud when this device contributed anything the
-        // snapshot lacked: extra entries or freshly latched achievements.
-        if hadExtraLocal || unlockedAchievements.count > unlocksBefore { persist() }
+        // snapshot lacked: extra entries, locally-held badges/counters the
+        // incoming state was missing, or freshly latched unlocks.
+        if hadExtraLocal || holdsMoreThanIncoming || unlockedAchievements.count > unlocksAfterMerge {
+            persist()
+        }
     }
 }

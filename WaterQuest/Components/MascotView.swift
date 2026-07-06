@@ -18,6 +18,7 @@ struct MascotView: View {
     @State private var eyeBlink: Bool = false
     @State private var mouthWidth: CGFloat = 18
     @State private var sparkleRotation: Double = 0
+    @State private var blinkTimer: Timer?
 
     private var hasAura: Bool { streak >= 7 }
     private var hasSparkles: Bool { streak >= 30 }
@@ -136,6 +137,10 @@ struct MascotView: View {
             // Blink loop
             startBlinking()
         }
+        .onDisappear {
+            blinkTimer?.invalidate()
+            blinkTimer = nil
+        }
     }
 
     private var mascotAccessibilityLabel: String {
@@ -163,7 +168,10 @@ struct MascotView: View {
     }
 
     private func startBlinking() {
-        Timer.scheduledTimer(withTimeInterval: 3.5, repeats: true) { _ in
+        // Invalidate any previous loop — onAppear can fire again for the same
+        // view identity, and an unreferenced repeating timer lives forever.
+        blinkTimer?.invalidate()
+        blinkTimer = Timer.scheduledTimer(withTimeInterval: 3.5, repeats: true) { _ in
             eyeBlink = true
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.15) {
                 eyeBlink = false

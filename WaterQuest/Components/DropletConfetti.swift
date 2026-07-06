@@ -13,6 +13,9 @@ struct DropletConfetti: View {
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var burstStart: Date?
+    /// Increments per burst; the delayed cleanup only clears `burstStart`
+    /// when no newer burst has started since it was scheduled.
+    @State private var burstGeneration = 0
 
     private static let colors: [Color] = [Theme.lagoon, Theme.mint, Theme.sun, Theme.coral, Theme.lavender]
     private static let lifetime: TimeInterval = 2.0
@@ -34,10 +37,13 @@ struct DropletConfetti: View {
         }
         .onChange(of: trigger) { _, _ in
             burstStart = Date()
-            // Release the timeline once the burst has played out.
-            let expected = trigger
+            burstGeneration += 1
+            // Release the timeline once the burst has played out. @State is
+            // read through its storage, so this sees the *current* generation
+            // even though the closure captured an older view value.
+            let generation = burstGeneration
             DispatchQueue.main.asyncAfter(deadline: .now() + Self.lifetime + 0.1) {
-                if trigger == expected { burstStart = nil }
+                if burstGeneration == generation { burstStart = nil }
             }
         }
     }

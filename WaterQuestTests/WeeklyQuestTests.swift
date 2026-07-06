@@ -27,6 +27,7 @@ final class WeeklyQuestTests: XCTestCase {
         XCTAssertEqual(a.map(\.id), b.map(\.id))
         XCTAssertEqual(a.count, 3)
         XCTAssertEqual(Set(a.map(\.id)).count, 3, "the three active quests must be distinct")
+        XCTAssertEqual(Set(a.map(\.kind)).count, 3, "quests of the same kind subsume each other — kinds must be distinct")
     }
 
     func test_activeQuests_sameWithinWeek_differAcrossWeeks() {

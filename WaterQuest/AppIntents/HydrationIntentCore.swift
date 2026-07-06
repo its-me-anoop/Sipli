@@ -21,10 +21,15 @@ enum HydrationIntentCore {
     }
 
     static func goalML(for state: PersistedState) -> Double {
-        GoalCalculator.dailyGoal(
-            profile: state.profile,
-            weather: state.lastWeather,
-            workout: nil
+        // Mirror HydrationStore.dailyGoal exactly: premium gating decides
+        // whether weather/workout adjustments apply, and both use the cached
+        // snapshots persisted in state — otherwise Siri speaks a different
+        // goal (and streak/remaining numbers) than the app and widget show.
+        let profile = state.profile.applyingPremiumAccess(state.hasPremiumAccess)
+        return GoalCalculator.dailyGoal(
+            profile: profile,
+            weather: profile.prefersWeatherGoal ? state.lastWeather : nil,
+            workout: profile.prefersHealthKit ? state.lastWorkout : nil
         ).totalML
     }
 
@@ -132,16 +137,19 @@ enum HydrationIntentCore {
         let goal = goalML(for: state)
         let total = todayTotalML(state, now: now)
         let remaining = goal - total
-        guard remaining > 0 else {
+        // Sub-millilitre remainders round *up*, and anything under 1 mL counts
+        // as done — never speak "You need 0 mL more".
+        guard remaining >= 1 else {
             return (
                 "You've already reached today's goal — anything more is a bonus.",
                 "Goal reached ✓"
             )
         }
+        let remainingML = Int(remaining.rounded(.up))
         let pct = percent(total: total, goal: goal)
         return (
-            "You need \(Int(remaining)) mL more to reach today's goal. You're at \(pct)%.",
-            "\(Int(remaining)) mL to go — \(pct)%"
+            "You need \(remainingML) mL more to reach today's goal. You're at \(pct)%.",
+            "\(remainingML) mL to go — \(pct)%"
         )
     }
 

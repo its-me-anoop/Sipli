@@ -14,6 +14,7 @@ struct DashboardView: View {
     @EnvironmentObject private var locationManager: LocationManager
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @Environment(\.requestReview) private var requestReview
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     @StateObject private var aiService = HydrationAIService()
 
@@ -429,7 +430,7 @@ struct DashboardView: View {
             HStack(spacing: 8) {
                 Image(systemName: "flame.fill")
                     .foregroundStyle(streak > 0 ? Theme.sun : Theme.textTertiary)
-                    .symbolEffect(.bounce, value: streak)
+                    .symbolEffect(.bounce, value: reduceMotion ? 0 : streak)
                 Text(streak == 1 ? "1-day streak" : "\(streak)-day streak")
                     .font(Theme.sipliMono(13, weight: .semibold, relativeTo: .subheadline))
                     .foregroundStyle(Theme.ink)

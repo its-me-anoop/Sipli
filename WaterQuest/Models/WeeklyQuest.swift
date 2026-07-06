@@ -45,22 +45,46 @@ enum WeeklyQuests {
         WeeklyQuest(id: "quest.logging5", title: "Show Up",        detail: "Log at least once on 5 days",          symbol: "hand.wave",           kind: .loggingDays,  target: 5),
     ]
 
+    /// Fixed ISO-8601 calendar for the rotation *seed* so devices with
+    /// different region settings (first weekday, week numbering) still pick
+    /// the same three quests. Progress windows use the caller's calendar —
+    /// the user's own week is the fair scoring period.
+    private static let rotationCalendar = Calendar(identifier: .iso8601)
+
     /// The three quests active for the week containing `date`. Deterministic:
-    /// a seeded Fisher–Yates shuffle keyed on (yearForWeekOfYear, weekOfYear),
-    /// so every device — and every call — agrees without a backend.
+    /// a seeded Fisher–Yates shuffle keyed on the ISO (year, week), with the
+    /// LCG output run through a SplitMix64 finalizer — the raw LCG's low bits
+    /// are far too regular for small moduli and visibly bias the draw.
+    /// The draw skips duplicate kinds so one week never contains two quests
+    /// that measure the same thing (one would subsume the other).
     static func active(for date: Date = Date(), calendar: Calendar = .current) -> [WeeklyQuest] {
-        let comps = calendar.dateComponents([.weekOfYear, .yearForWeekOfYear], from: date)
+        let comps = rotationCalendar.dateComponents([.weekOfYear, .yearForWeekOfYear], from: date)
         let week = comps.weekOfYear ?? 1
         let year = comps.yearForWeekOfYear ?? 2026
 
-        var seed = UInt64(year) &* 521 &+ UInt64(week)
+        var seed = UInt64(bitPattern: Int64(year)) &* 521 &+ UInt64(week)
+        func nextRandom() -> UInt64 {
+            seed &+= 0x9E3779B97F4A7C15
+            var z = seed
+            z = (z ^ (z >> 30)) &* 0xBF58476D1CE4E5B9
+            z = (z ^ (z >> 27)) &* 0x94D049BB133111EB
+            return z ^ (z >> 31)
+        }
+
         var indices = Array(pool.indices)
         for i in indices.indices.reversed() where i > 0 {
-            seed = seed &* 6364136223846793005 &+ 1442695040888963407
-            let j = Int(seed % UInt64(i + 1))
+            let j = Int(nextRandom() % UInt64(i + 1))
             indices.swapAt(i, j)
         }
-        return indices.prefix(3).map { pool[$0] }
+
+        var picked: [WeeklyQuest] = []
+        for index in indices {
+            let quest = pool[index]
+            guard !picked.contains(where: { $0.kind == quest.kind }) else { continue }
+            picked.append(quest)
+            if picked.count == 3 { break }
+        }
+        return picked
     }
 
     /// Whole days left in the current week after today (0 on the last day).
