@@ -1,0 +1,40 @@
+name: Publish to App Store
+
+# Metadata + review submission via the App Store Connect API. The ASC secrets
+# live here (the dev machine has only the .p8, not the issuer id), so this
+# runs in CI. `fetch` is read-only reconnaissance; `publish` sets the What's
+# New (+ optional docs/appstore-description.txt), attaches the build, and
+# submits for review. See scripts/asc_publish.py.
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "fetch (read-only dump) or publish (submit for review)"
+        required: true
+        default: fetch
+        type: choice
+        options: [fetch, publish]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install ASC API key
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_KEY_P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          mkdir -p ~/.appstoreconnect/private_keys
+          printf '%s' "$ASC_KEY_P8" > ~/.appstoreconnect/private_keys/AuthKey_${ASC_KEY_ID}.p8
+
+      - name: Run
+        env:
+          ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
+          ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          pip3 install --quiet PyJWT cryptography requests
+          python3 scripts/asc_publish.py "${{ inputs.mode }}"
