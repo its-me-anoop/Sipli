@@ -95,6 +95,69 @@ enum HydrationIntentCore {
         return (removed, dialog, compact)
     }
 
+    // MARK: - v5.0 intents
+
+    /// Freeze-aware goal streak, same math as the app and widget.
+    static func currentStreak(state: PersistedState, now: Date) -> Int {
+        StreakCalculator.currentStreak(
+            entries: state.entries,
+            goalML: goalML(for: state),
+            freezeDates: state.streakFreezeDates,
+            now: now
+        )
+    }
+
+    static func streakDialog(state: PersistedState, now: Date) -> (dialog: String, compactDialog: String) {
+        let streak = currentStreak(state: state, now: now)
+        switch streak {
+        case 0:
+            return (
+                "No active streak yet — hit today's goal to start one.",
+                "No active streak"
+            )
+        case 1:
+            return (
+                "Your streak is 1 day. Hit today's goal to keep it going.",
+                "1-day streak"
+            )
+        default:
+            return (
+                "Your streak is \(streak) days. Keep it flowing.",
+                "\(streak)-day streak"
+            )
+        }
+    }
+
+    static func remainingDialog(state: PersistedState, now: Date) -> (dialog: String, compactDialog: String) {
+        let goal = goalML(for: state)
+        let total = todayTotalML(state, now: now)
+        let remaining = goal - total
+        guard remaining > 0 else {
+            return (
+                "You've already reached today's goal — anything more is a bonus.",
+                "Goal reached ✓"
+            )
+        }
+        let pct = percent(total: total, goal: goal)
+        return (
+            "You need \(Int(remaining)) mL more to reach today's goal. You're at \(pct)%.",
+            "\(Int(remaining)) mL to go — \(pct)%"
+        )
+    }
+
+    /// Logs the same drink as the user's most recent entry ("my usual").
+    /// Falls back to 250 mL of water when there's no history.
+    @discardableResult
+    static func repeatLastDrink(
+        into state: inout PersistedState,
+        now: Date
+    ) -> (entry: HydrationEntry, dialog: String, compactDialog: String) {
+        let last = state.entries.max(by: { $0.date < $1.date })
+        let amount = last.map { Int($0.volumeML) } ?? 250
+        let fluid = last?.fluidType ?? .water
+        return logWater(into: &state, amountInMilliliters: amount, fluidType: fluid, now: now)
+    }
+
     // MARK: - Helpers
 
     private static func label(for fluidType: FluidType) -> String {

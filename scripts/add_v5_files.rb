@@ -16,6 +16,13 @@ additions = {
   'AchievementEngine.swift'      => ['StreakCalculator.swift',    app],
   'AchievementEngineTests.swift' => ['StreakCalculatorTests.swift', tests],
   'WeeklyQuestTests.swift'       => ['StreakCalculatorTests.swift', tests],
+  'SipliV5IntentsTests.swift'    => ['StreakCalculatorTests.swift', tests],
+  'DropletConfetti.swift'        => ['Haptics.swift',             app],
+  'ShareCardView.swift'          => ['Haptics.swift',             app],
+  'AchievementUnlockOverlay.swift' => ['Haptics.swift',           app],
+  'WeeklyQuestCard.swift'        => ['Haptics.swift',             app],
+  'StaggeredAppear.swift'        => ['Haptics.swift',             app],
+  'TrophyRoomView.swift'         => ['DashboardView.swift',       app],
 }
 
 additions.each do |basename, (sibling_name, target)|

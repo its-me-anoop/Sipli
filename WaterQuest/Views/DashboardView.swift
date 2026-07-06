@@ -27,6 +27,10 @@ struct DashboardView: View {
     /// Fires the goal-reached celebration once per session when progress crosses 1.0.
     @State private var hasShownGoalCelebrationThisSession = false
     @State private var showGoalCelebration = false
+    /// Rendered on demand when the share toolbar button is tapped.
+    @State private var sharePayload: ShareCardPayload?
+    /// Bumped on every new log so the bottle gets a droplet splash.
+    @State private var logSplashTrigger = 0
 
     private var goal: GoalBreakdown { store.dailyGoal }
     private var progress: Double { min(1, store.todayTotalML / max(1, goal.totalML)) }
@@ -54,6 +58,29 @@ struct DashboardView: View {
             }
         }
         .navigationTitle("Today")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    Haptics.selection()
+                    sharePayload = ShareCardRenderer.render(
+                        .daily(
+                            totalML: store.todayTotalML,
+                            goalML: goal.totalML,
+                            streak: store.currentStreak,
+                            unitSystem: store.profile.unitSystem,
+                            date: Date()
+                        )
+                    )
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                }
+                .accessibilityLabel("Share today's progress")
+            }
+        }
+        .sheet(item: $sharePayload) { payload in
+            ActivityShareSheet(payload: payload)
+                .presentationDetents([.medium, .large])
+        }
         .refreshable {
             await refreshSignals()
         }
@@ -103,6 +130,12 @@ struct DashboardView: View {
             Haptics.splash()
             showGoalCelebration = true
         }
+        .onChange(of: store.todayEntries.count) { oldValue, newValue in
+            // A small splash for every fresh log; the full celebration is
+            // reserved for the goal crossing above.
+            guard newValue > oldValue, !showGoalCelebration else { return }
+            logSplashTrigger += 1
+        }
     }
 
     /// Fires the SwiftUI review-request action if the user qualifies and we
@@ -121,12 +154,22 @@ struct DashboardView: View {
             VStack(spacing: 16) {
                 summarySection
                     .padding(.top, 8)
+                    .staggeredAppear(0)
+
+                gamificationChips
+                    .staggeredAppear(1)
 
                 if MatchDay.isActive() {
                     DashboardCard(title: "Match Day", icon: "soccerball") {
                         matchDaySection
                     }
+                    .staggeredAppear(2)
                 }
+
+                DashboardCard(title: "Weekly Quests", icon: "flag.checkered") {
+                    WeeklyQuestCard(quests: activeQuests, daysRemaining: WeeklyQuests.daysRemaining())
+                }
+                .staggeredAppear(3)
 
                 if subscriptionManager.hasAccess(to: .aiInsights), let tip = aiService.currentTip {
                     DashboardCard(title: "Hydration Coach", icon: "sparkles", backgroundGradient: Theme.coachCard) {
@@ -221,10 +264,16 @@ struct DashboardView: View {
                     showsFluidBreakdown: subscriptionManager.hasAccess(to: .fluidTypes)
                 )
 
+                gamificationChips
+
                 if MatchDay.isActive() {
                     DashboardCard(title: "Match Day", icon: "soccerball") {
                         matchDaySection
                     }
+                }
+
+                DashboardCard(title: "Weekly Quests", icon: "flag.checkered") {
+                    WeeklyQuestCard(quests: activeQuests, daysRemaining: WeeklyQuests.daysRemaining())
                 }
 
                 if shouldShowPremiumPrompt {
@@ -352,7 +401,85 @@ struct DashboardView: View {
                         .allowsHitTesting(false)
                 }
             }
+
+            DropletConfetti(trigger: logSplashTrigger, particleCount: 14)
+                .allowsHitTesting(false)
         }
+    }
+
+    /// This week's rotating quests with live progress.
+    private var activeQuests: [(quest: WeeklyQuest, progress: QuestProgress)] {
+        WeeklyQuests.active().map { quest in
+            (
+                quest,
+                WeeklyQuests.progress(
+                    for: quest,
+                    entries: store.entries,
+                    goalML: goal.totalML,
+                    freezeDates: store.streakFreezeDates
+                )
+            )
+        }
+    }
+
+    /// Streak flame + Trophy Room entry, side by side under the hero card.
+    private var gamificationChips: some View {
+        HStack(spacing: 12) {
+            let streak = store.currentStreak
+            HStack(spacing: 8) {
+                Image(systemName: "flame.fill")
+                    .foregroundStyle(streak > 0 ? Theme.sun : Theme.textTertiary)
+                    .symbolEffect(.bounce, value: streak)
+                Text(streak == 1 ? "1-day streak" : "\(streak)-day streak")
+                    .font(Theme.sipliMono(13, weight: .semibold, relativeTo: .subheadline))
+                    .foregroundStyle(Theme.ink)
+                    .contentTransition(.numericText())
+                if store.streakFreezeTokens > 0 {
+                    HStack(spacing: 2) {
+                        Image(systemName: "snowflake")
+                            .font(.system(size: 11, weight: .semibold))
+                        Text("\(store.streakFreezeTokens)")
+                            .font(Theme.sipliMono(11, weight: .semibold, relativeTo: .caption))
+                    }
+                    .foregroundStyle(Theme.lagoon)
+                    .accessibilityLabel("\(store.streakFreezeTokens) streak freezes banked")
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+            .frame(maxWidth: .infinity)
+            .background(chipBackground)
+            .accessibilityElement(children: .combine)
+
+            NavigationLink {
+                TrophyRoomView()
+            } label: {
+                HStack(spacing: 8) {
+                    Image(systemName: "trophy.fill")
+                        .foregroundStyle(Theme.lagoon)
+                    Text("\(store.unlockedAchievements.count) badges")
+                        .font(Theme.sipliMono(13, weight: .semibold, relativeTo: .subheadline))
+                        .foregroundStyle(Theme.ink)
+                        .contentTransition(.numericText())
+                    Image(systemName: "chevron.right")
+                        .font(.system(size: 11, weight: .semibold))
+                        .foregroundStyle(Theme.textTertiary)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .frame(maxWidth: .infinity)
+                .background(chipBackground)
+            }
+            .buttonStyle(.plain)
+            .accessibilityLabel("Trophy Room, \(store.unlockedAchievements.count) badges earned")
+        }
+    }
+
+    private var chipBackground: some View {
+        Capsule()
+            .fill(Theme.cardSurface)
+            .overlay(Capsule().stroke(Theme.glassBorder, lineWidth: 1))
+            .shadow(color: Theme.shadowColor.opacity(0.5), radius: 6, x: 0, y: 3)
     }
 
     /// Match Day dashboard section content.

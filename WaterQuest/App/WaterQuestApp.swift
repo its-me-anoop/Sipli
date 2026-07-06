@@ -7,6 +7,7 @@ struct WaterQuestApp: App {
     @AppStorage("hasOnboarded") private var hasOnboarded: Bool = false
     @Environment(\.scenePhase) private var scenePhase
     @State private var deepLinkAddIntake = false
+    @State private var deepLinkTrophyRoom = false
 
     @StateObject private var store = HydrationStore()
     @StateObject private var healthKit = HealthKitManager()
@@ -111,17 +112,30 @@ struct WaterQuestApp: App {
                 switch url.host {
                 case "add-intake":
                     deepLinkAddIntake = true
+                case "trophy-room":
+                    deepLinkTrophyRoom = true
                 default:
                     break
                 }
             }
             .environment(\.deepLinkAddIntake, deepLinkAddIntake)
+            .environment(\.deepLinkTrophyRoom, deepLinkTrophyRoom)
             .onChange(of: deepLinkAddIntake) {
                 if deepLinkAddIntake {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                         deepLinkAddIntake = false
                     }
                 }
+            }
+            .onChange(of: deepLinkTrophyRoom) {
+                if deepLinkTrophyRoom {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        deepLinkTrophyRoom = false
+                    }
+                }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .sipliOpenTrophyRoom)) { _ in
+                deepLinkTrophyRoom = true
             }
             .onChange(of: deepLinkForwarder.shouldOpenAddIntake) { _, shouldOpen in
                 if shouldOpen {
@@ -166,9 +180,18 @@ private struct DeepLinkAddIntakeKey: EnvironmentKey {
     static let defaultValue = false
 }
 
+private struct DeepLinkTrophyRoomKey: EnvironmentKey {
+    static let defaultValue = false
+}
+
 extension EnvironmentValues {
     var deepLinkAddIntake: Bool {
         get { self[DeepLinkAddIntakeKey.self] }
         set { self[DeepLinkAddIntakeKey.self] = newValue }
+    }
+
+    var deepLinkTrophyRoom: Bool {
+        get { self[DeepLinkTrophyRoomKey.self] }
+        set { self[DeepLinkTrophyRoomKey.self] = newValue }
     }
 }

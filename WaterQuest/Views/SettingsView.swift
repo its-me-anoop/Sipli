@@ -40,6 +40,7 @@ struct SettingsView: View {
         ScrollView {
             VStack(spacing: 16) {
                 profileCard
+                trophyRoomCard
                 appearanceCard
                 premiumGoalCard
                 goalCard
@@ -95,6 +96,54 @@ struct SettingsView: View {
         Haptics.selection()
         isPremiumPromptDismissed = true
         store.dismissPremiumUpsell()
+    }
+
+    // MARK: - Trophy Room
+
+    private var trophyRoomCard: some View {
+        NavigationLink {
+            TrophyRoomView()
+        } label: {
+            HStack(spacing: 14) {
+                Image(systemName: "trophy.fill")
+                    .font(.title3)
+                    .foregroundStyle(Theme.sun)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Trophy Room")
+                        .font(Theme.titleFont())
+                        .foregroundStyle(Theme.ink)
+                    Text("\(store.unlockedAchievements.count) of \(AchievementCatalog.all.count) badges earned")
+                        .font(Theme.captionFont())
+                        .foregroundStyle(Theme.textSecondary)
+                }
+
+                Spacer()
+
+                if store.streakFreezeTokens > 0 {
+                    HStack(spacing: 3) {
+                        Image(systemName: "snowflake")
+                            .font(.system(size: 12, weight: .semibold))
+                        Text("\(store.streakFreezeTokens)")
+                            .font(Theme.sipliMono(12, weight: .semibold, relativeTo: .caption))
+                    }
+                    .foregroundStyle(Theme.lagoon)
+                    .accessibilityLabel("\(store.streakFreezeTokens) streak freezes banked")
+                }
+
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 13, weight: .semibold))
+                    .foregroundStyle(Theme.textTertiary)
+            }
+            .padding(18)
+            .background {
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .fill(Theme.card)
+                    .shadow(color: Theme.shadowColor, radius: 10, x: 0, y: 4)
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("Trophy Room, \(store.unlockedAchievements.count) of \(AchievementCatalog.all.count) badges earned")
     }
 
     // MARK: - Profile

@@ -160,16 +160,29 @@ struct DiaryView: View {
         )
     }
 
+    private var isSelectedDateToday: Bool {
+        selectedDate.isSameDay(as: Date())
+    }
+
     @ViewBuilder
     private var entryList: some View {
         if entriesForSelectedDate.isEmpty {
+            // Gentler-Streak-style tone: an off day is information, not a
+            // failure. Past days get a shrug; today gets a nudge with the how.
             VStack(spacing: 12) {
-                Image(systemName: "drop")
+                Image(systemName: isSelectedDateToday ? "drop" : "moon.zzz")
                     .font(.largeTitle)
                     .foregroundStyle(.tertiary)
-                Text("No entries for this day")
+                Text(isSelectedDateToday ? "Nothing logged yet today" : "A quiet day — they happen")
                     .font(.subheadline)
                     .foregroundStyle(.secondary)
+                if isSelectedDateToday {
+                    Text("Tap + to log your first drink, or just say \u{201C}Log water in Sipli\u{201D} to Siri.")
+                        .font(.caption)
+                        .foregroundStyle(.tertiary)
+                        .multilineTextAlignment(.center)
+                        .padding(.horizontal, 24)
+                }
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 40)

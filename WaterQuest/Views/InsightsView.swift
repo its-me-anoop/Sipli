@@ -31,11 +31,40 @@ struct InsightsView: View {
     @State private var isGeneratingDigest = false
     @State private var viewModel = InsightsViewModel()
     @State private var streakPopScale: Double = 1.0
+    @State private var weeklySharePayload: ShareCardPayload?
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var chartData: [WeeklyDay] { viewModel.chartData }
     private var heatmapData: [HeatmapDay] { viewModel.heatmapData }
     private var trendData: TrendData { viewModel.trendData }
+
+    /// Weekly recap card content from the last 7 elapsed days — independent of
+    /// the on-screen timeframe toggle so the share is always "this week".
+    private var weeklyShareContent: ShareCardContent {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: Date())
+        let goal = max(1, store.dailyGoal.totalML)
+
+        var fractions: [Double] = []
+        var total = 0.0
+        for offset in (0..<7).reversed() {
+            guard let day = calendar.date(byAdding: .day, value: -offset, to: today) else { continue }
+            let dayTotal = store.entries
+                .filter { calendar.isDate($0.date, inSameDayAs: day) }
+                .reduce(0) { $0 + $1.effectiveML }
+            fractions.append(dayTotal / goal)
+            total += dayTotal
+        }
+        let goalDays = fractions.filter { $0 >= 1 }.count
+
+        return .weekly(
+            dayFractions: fractions,
+            goalDays: goalDays,
+            totalML: total,
+            unitSystem: store.profile.unitSystem,
+            weekEnding: today
+        )
+    }
 
     private var averageML: Double {
         let totals = chartData.map(\.totalML)
@@ -136,6 +165,21 @@ struct InsightsView: View {
         }
         .background { AppWaterBackground().ignoresSafeArea() }
         .navigationTitle("Insights")
+        .toolbar {
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    Haptics.selection()
+                    weeklySharePayload = ShareCardRenderer.render(weeklyShareContent)
+                } label: {
+                    Image(systemName: "square.and.arrow.up")
+                }
+                .accessibilityLabel("Share this week's recap")
+            }
+        }
+        .sheet(item: $weeklySharePayload) { payload in
+            ActivityShareSheet(payload: payload)
+                .presentationDetents([.medium, .large])
+        }
         .task {
             #if canImport(FoundationModels)
             if #available(iOS 26.0, *), subscriptionManager.hasAccess(to: .aiInsights) {

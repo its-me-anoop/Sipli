@@ -27,7 +27,8 @@ enum ShareCardContent {
 
 /// PNG payload for `ShareLink`. The image is rendered up front (cards are
 /// tiny — a few ms at 3×) so the share sheet opens instantly.
-struct ShareCardPayload: Transferable {
+struct ShareCardPayload: Transferable, Identifiable {
+    let id = UUID()
     let pngData: Data
     let caption: String
 
@@ -53,6 +54,24 @@ enum ShareCardRenderer {
         guard let data = renderer.uiImage?.pngData() else { return nil }
         return ShareCardPayload(pngData: data, caption: content.caption)
     }
+}
+
+// MARK: - One-tap share sheet
+
+/// UIKit share sheet for surfaces where `ShareLink`'s eager-payload model
+/// doesn't fit (toolbar buttons that render the card on demand).
+struct ActivityShareSheet: UIViewControllerRepresentable {
+    let payload: ShareCardPayload
+
+    func makeUIViewController(context: Context) -> UIActivityViewController {
+        var items: [Any] = [payload.caption]
+        if let image = UIImage(data: payload.pngData) {
+            items.insert(image, at: 0)
+        }
+        return UIActivityViewController(activityItems: items, applicationActivities: nil)
+    }
+
+    func updateUIViewController(_ controller: UIActivityViewController, context: Context) {}
 }
 
 // MARK: - Card view

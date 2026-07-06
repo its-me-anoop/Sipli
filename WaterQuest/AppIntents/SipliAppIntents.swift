@@ -213,6 +213,120 @@ struct OpenSipliIntent: AppIntent {
     }
 }
 
+// MARK: - GetStreakIntent
+
+struct GetStreakIntent: AppIntent {
+    static var title: LocalizedStringResource = "Get My Streak"
+    static var description = IntentDescription("Returns your current hydration goal streak.")
+    static var openAppWhenRun: Bool = false
+
+    #if compiler(>=6.4)
+    @available(iOS 27.0, *)
+    static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
+    #endif
+
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        let state = PersistenceService.shared.load(PersistedState.self, fallback: .default)
+        let result = HydrationIntentCore.streakDialog(state: state, now: Date())
+
+        var dialogText = result.dialog
+        #if compiler(>=6.4)
+        if #available(iOS 27.0, *), !systemContext.isVoiceOnly {
+            dialogText = result.compactDialog
+        }
+        #endif
+        return .result(dialog: IntentDialog(stringLiteral: dialogText))
+    }
+}
+
+// MARK: - GetRemainingIntent
+
+struct GetRemainingIntent: AppIntent {
+    static var title: LocalizedStringResource = "How Much More Do I Need"
+    static var description = IntentDescription("Tells you how much more you need to drink to reach today's goal.")
+    static var openAppWhenRun: Bool = false
+
+    #if compiler(>=6.4)
+    @available(iOS 27.0, *)
+    static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
+    #endif
+
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        let state = PersistenceService.shared.load(PersistedState.self, fallback: .default)
+        let result = HydrationIntentCore.remainingDialog(state: state, now: Date())
+
+        var dialogText = result.dialog
+        #if compiler(>=6.4)
+        if #available(iOS 27.0, *), !systemContext.isVoiceOnly {
+            dialogText = result.compactDialog
+        }
+        #endif
+        return .result(dialog: IntentDialog(stringLiteral: dialogText))
+    }
+}
+
+// MARK: - RepeatLastDrinkIntent
+
+struct RepeatLastDrinkIntent: AppIntent {
+    static var title: LocalizedStringResource = "Log My Usual"
+    static var description = IntentDescription("Logs the same drink as your most recent entry.")
+    static var openAppWhenRun: Bool = false
+
+    #if compiler(>=6.4)
+    @available(iOS 27.0, *)
+    static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
+    #endif
+
+    func perform() async throws -> some IntentResult & ProvidesDialog {
+        var result: (entry: HydrationEntry, dialog: String, compactDialog: String)!
+        PersistenceService.shared.update(PersistedState.self, fallback: .default) { state in
+            result = HydrationIntentCore.repeatLastDrink(into: &state, now: Date())
+        }
+
+        WidgetCenter.shared.reloadAllTimelines()
+        IntentDonationService.donateLogWater(
+            amount: result.entry.volumeML,
+            fluidType: result.entry.fluidType
+        )
+
+        var dialogText = result.dialog
+        #if compiler(>=6.4)
+        if #available(iOS 27.0, *), !systemContext.isVoiceOnly {
+            dialogText = result.compactDialog
+        }
+        #endif
+        return .result(dialog: IntentDialog(stringLiteral: dialogText))
+    }
+}
+
+// MARK: - OpenTrophyRoomIntent
+
+extension Notification.Name {
+    /// Posted by `OpenTrophyRoomIntent` after the system foregrounds the app;
+    /// `WaterQuestApp` routes it into the same deep-link plumbing as
+    /// `sipli://trophy-room`.
+    static let sipliOpenTrophyRoom = Notification.Name("sipliOpenTrophyRoom")
+}
+
+struct OpenTrophyRoomIntent: AppIntent {
+    static var title: LocalizedStringResource = "Show My Achievements"
+    static var description = IntentDescription("Opens Sipli's Trophy Room with your earned badges.")
+    /// Foregrounds the app first; perform() then runs in the app process,
+    /// so a NotificationCenter post reaches the live SwiftUI scene.
+    static var openAppWhenRun: Bool = true
+
+    #if compiler(>=6.4)
+    @available(iOS 27.0, *)
+    static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
+    #endif
+
+    @MainActor
+    func perform() async throws -> some IntentResult {
+        NotificationCenter.default.post(name: .sipliOpenTrophyRoom, object: nil)
+        return .result()
+    }
+}
+
 // MARK: - UndoLastIntakeIntent
 
 struct UndoLastIntakeIntent: AppIntent {

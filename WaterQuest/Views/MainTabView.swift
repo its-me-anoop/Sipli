@@ -30,12 +30,28 @@ struct MainTabView: View {
 
     @State private var selectedTab: AppTab = .dashboard
     @State private var showAddIntake = false
+    @State private var showTrophyRoom = false
+    @EnvironmentObject private var store: HydrationStore
     @Environment(\.deepLinkAddIntake) private var deepLinkAddIntake
+    @Environment(\.deepLinkTrophyRoom) private var deepLinkTrophyRoom
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     var body: some View {
         tabContent
             .tint(Theme.lagoon)
+            .overlay {
+                // Badge celebrations sit above the tabs so they present no
+                // matter where the unlock happened (log, sync, watch entry).
+                if let pending = store.pendingAchievementUnlocks.first {
+                    AchievementUnlockOverlay(achievement: pending) {
+                        store.dismissPendingAchievement()
+                    }
+                    .id(pending.id)
+                    .zIndex(10)
+                    .transition(.opacity)
+                }
+            }
+            .animation(Theme.gentleSpring, value: store.pendingAchievementUnlocks.first?.id)
             .onChange(of: selectedTab) {
                 Haptics.selection()
             }
@@ -44,12 +60,27 @@ struct MainTabView: View {
                     showAddIntake = true
                 }
             }
+            .onChange(of: deepLinkTrophyRoom) {
+                if deepLinkTrophyRoom {
+                    showTrophyRoom = true
+                }
+            }
             .sheet(isPresented: $showAddIntake) {
                 NavigationStack {
                     AddIntakeView()
                         .toolbar {
                             ToolbarItem(placement: .cancellationAction) {
                                 Button("Cancel") { showAddIntake = false }
+                            }
+                        }
+                }
+            }
+            .sheet(isPresented: $showTrophyRoom) {
+                NavigationStack {
+                    TrophyRoomView()
+                        .toolbar {
+                            ToolbarItem(placement: .confirmationAction) {
+                                Button("Done") { showTrophyRoom = false }
                             }
                         }
                 }
