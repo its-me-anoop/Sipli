@@ -23,6 +23,19 @@ final class HydrationStore: ObservableObject {
     @Published private(set) var streakFreezeTokens: Int
     /// Days retroactively covered by a spent freeze token.
     @Published private(set) var streakFreezeDates: [Date]
+    /// Achievement id → date first earned. Latched — never revoked.
+    @Published private(set) var unlockedAchievements: [String: Date]
+    /// Unlocks earned during live use, waiting for the celebration overlay.
+    /// Presented one at a time; the overlay pops the head via
+    /// ``dismissPendingAchievement()``.
+    @Published private(set) var pendingAchievementUnlocks: [Achievement] = []
+    /// Monotonic engagement counters (Siri/widget logs, undos).
+    private(set) var counters: EngagementCounters
+
+    /// Unlock celebrations are suppressed during init so a v4.1 → v5.0 upgrade
+    /// retro-credits badges silently (they appear in the Trophy Room) instead
+    /// of queueing a dozen overlays on first launch.
+    private var celebratesUnlocks = false
 
     private let persistence = PersistenceService.shared
 
@@ -44,6 +57,8 @@ final class HydrationStore: ObservableObject {
         self.lastMatchDayWinDate = state.lastMatchDayWinDate
         self.streakFreezeTokens = state.streakFreezeTokens
         self.streakFreezeDates = state.streakFreezeDates
+        self.unlockedAchievements = state.unlockedAchievements
+        self.counters = state.counters
 
         persistence.setRemoteDataChangeHandler { [weak self] data in
             guard let self else { return }
@@ -67,6 +82,11 @@ final class HydrationStore: ObservableObject {
 
         // Spend a banked freeze if yesterday broke an otherwise-live streak.
         applyStreakFreezeIfNeeded()
+
+        // Retro-credit achievements earned before this build (or via Siri /
+        // widget writes while the app was closed) — silently.
+        refreshAchievements()
+        celebratesUnlocks = true
     }
 
     var dailyGoal: GoalBreakdown {
@@ -248,8 +268,34 @@ final class HydrationStore: ObservableObject {
         persist()
     }
 
+    /// Re-evaluates the achievement catalog against current state and latches
+    /// anything newly earned. Called from ``persist()`` so every mutation path
+    /// (in-app log, watch sync, remote merge) is covered.
+    private func refreshAchievements(now: Date = Date()) {
+        let state = snapshotState()
+        let earnedNow = AchievementEngine.earned(state: state, goalML: dailyGoal.totalML, now: now)
+        let newIDs = earnedNow.subtracting(unlockedAchievements.keys)
+        guard !newIDs.isEmpty else { return }
+
+        for id in newIDs {
+            unlockedAchievements[id] = now
+        }
+        if celebratesUnlocks {
+            // Queue in catalog order so multi-unlocks present deterministically.
+            let newlyEarned = AchievementCatalog.all.filter { newIDs.contains($0.id) }
+            pendingAchievementUnlocks.append(contentsOf: newlyEarned)
+        }
+    }
+
+    /// Pops the currently presented unlock so the next one (if any) shows.
+    func dismissPendingAchievement() {
+        guard !pendingAchievementUnlocks.isEmpty else { return }
+        pendingAchievementUnlocks.removeFirst()
+    }
+
     func deleteEntry(_ entry: HydrationEntry) {
         entries.removeAll { $0.id == entry.id }
+        counters.undoCount += 1
         persist()
     }
 
@@ -323,8 +369,9 @@ final class HydrationStore: ObservableObject {
         persist()
     }
 
-    private func persist() {
-        let state = PersistedState(
+    /// Assembles a `PersistedState` snapshot from the store's current fields.
+    private func snapshotState() -> PersistedState {
+        PersistedState(
             entries: entries,
             profile: profile,
             lastWeather: lastWeather,
@@ -336,8 +383,15 @@ final class HydrationStore: ObservableObject {
             matchDayWins: matchDayWins,
             lastMatchDayWinDate: lastMatchDayWinDate,
             streakFreezeTokens: streakFreezeTokens,
-            streakFreezeDates: streakFreezeDates
+            streakFreezeDates: streakFreezeDates,
+            unlockedAchievements: unlockedAchievements,
+            counters: counters
         )
+    }
+
+    private func persist() {
+        refreshAchievements()
+        let state = snapshotState()
         persistence.save(state)
         PhoneSessionManager.shared.sendState(state)
         WidgetCenter.shared.reloadAllTimelines()
@@ -357,26 +411,13 @@ final class HydrationStore: ObservableObject {
     func deleteEntry(byID id: UUID) {
         guard entries.contains(where: { $0.id == id }) else { return }
         entries.removeAll { $0.id == id }
+        counters.undoCount += 1
         persist()
     }
 
     /// Push current state to Watch — used when Watch requests a sync on foreground.
     func pushStateToWatch() {
-        let state = PersistedState(
-            entries: entries,
-            profile: profile,
-            lastWeather: lastWeather,
-            lastWorkout: lastWorkout,
-            hasPremiumAccess: hasPremiumAccess,
-            premiumUpsellState: premiumUpsellState,
-            goalCompletionCount: goalCompletionCount,
-            lastGoalCompletionDate: lastGoalCompletionDate,
-            matchDayWins: matchDayWins,
-            lastMatchDayWinDate: lastMatchDayWinDate,
-            streakFreezeTokens: streakFreezeTokens,
-            streakFreezeDates: streakFreezeDates
-        )
-        PhoneSessionManager.shared.sendState(state)
+        PhoneSessionManager.shared.sendState(snapshotState())
     }
 
     /// Reloads persisted state from disk and merges it into the in-memory store.
@@ -433,6 +474,11 @@ final class HydrationStore: ObservableObject {
             StreakCalculator.maxFreezeTokens,
             max(streakFreezeTokens, state.streakFreezeTokens)
         )
+
+        // Achievements union — a badge earned anywhere stays earned; the
+        // earliest recorded date wins. Counters merge per-field maximum.
+        unlockedAchievements = unlockedAchievements.merging(state.unlockedAchievements) { min($0, $1) }
+        counters = counters.merged(with: state.counters)
 
         // In case the merged entries bring today above goal but the remote
         // state didn't reflect that yet (e.g., an old snapshot).

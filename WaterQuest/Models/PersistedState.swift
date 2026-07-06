@@ -12,6 +12,32 @@ struct PremiumUpsellState: Codable {
     static let `default` = PremiumUpsellState()
 }
 
+/// Monotonic counters for engagement events that can't be derived from
+/// entries (which surface logged/undid a drink). Feed secret achievements.
+struct EngagementCounters: Codable, Equatable {
+    var siriLogCount: Int
+    var widgetLogCount: Int
+    var undoCount: Int
+
+    init(siriLogCount: Int = 0, widgetLogCount: Int = 0, undoCount: Int = 0) {
+        self.siriLogCount = siriLogCount
+        self.widgetLogCount = widgetLogCount
+        self.undoCount = undoCount
+    }
+
+    static let zero = EngagementCounters()
+
+    /// Per-field maximum — counters only ever grow, so the larger side of a
+    /// multi-device merge is always the more complete one.
+    func merged(with other: EngagementCounters) -> EngagementCounters {
+        EngagementCounters(
+            siriLogCount: max(siriLogCount, other.siriLogCount),
+            widgetLogCount: max(widgetLogCount, other.widgetLogCount),
+            undoCount: max(undoCount, other.undoCount)
+        )
+    }
+}
+
 struct PersistedState: Codable {
     var entries: [HydrationEntry]
     var profile: UserProfile
@@ -34,6 +60,10 @@ struct PersistedState: Codable {
     /// Start-of-day dates that a freeze token retroactively covered.
     /// StreakCalculator treats these days as goal-met.
     var streakFreezeDates: [Date]
+    /// Achievement id → date first earned. Latched: ids are only ever added.
+    var unlockedAchievements: [String: Date]
+    /// Monotonic engagement counters (Siri/widget logs, undos) for secret badges.
+    var counters: EngagementCounters
 
     // `gameState`, `manualWeather`, and the legacy Earth Day 2026 keys are kept
     // in CodingKeys so old persisted JSON decodes without error — we just
@@ -44,6 +74,7 @@ struct PersistedState: Codable {
         case goalCompletionCount, lastGoalCompletionDate
         case matchDayWins, lastMatchDayWinDate
         case streakFreezeTokens, streakFreezeDates
+        case unlockedAchievements, counters
     }
 
     init(
@@ -58,7 +89,9 @@ struct PersistedState: Codable {
         matchDayWins: Int = 0,
         lastMatchDayWinDate: Date? = nil,
         streakFreezeTokens: Int = 0,
-        streakFreezeDates: [Date] = []
+        streakFreezeDates: [Date] = [],
+        unlockedAchievements: [String: Date] = [:],
+        counters: EngagementCounters = .zero
     ) {
         self.entries = entries
         self.profile = profile
@@ -72,6 +105,8 @@ struct PersistedState: Codable {
         self.lastMatchDayWinDate = lastMatchDayWinDate
         self.streakFreezeTokens = streakFreezeTokens
         self.streakFreezeDates = streakFreezeDates
+        self.unlockedAchievements = unlockedAchievements
+        self.counters = counters
     }
 
     init(from decoder: Decoder) throws {
@@ -88,6 +123,8 @@ struct PersistedState: Codable {
         lastMatchDayWinDate    = try c.decodeIfPresent(Date.self, forKey: .lastMatchDayWinDate)
         streakFreezeTokens     = try c.decodeIfPresent(Int.self,  forKey: .streakFreezeTokens) ?? 0
         streakFreezeDates      = try c.decodeIfPresent([Date].self, forKey: .streakFreezeDates) ?? []
+        unlockedAchievements   = try c.decodeIfPresent([String: Date].self, forKey: .unlockedAchievements) ?? [:]
+        counters               = try c.decodeIfPresent(EngagementCounters.self, forKey: .counters) ?? .zero
         // .gameState, .manualWeather, .earthDay2026* silently ignored if
         // present in old persisted JSON.
     }
@@ -106,6 +143,8 @@ struct PersistedState: Codable {
         try c.encodeIfPresent(lastMatchDayWinDate, forKey: .lastMatchDayWinDate)
         try c.encode(streakFreezeTokens,          forKey: .streakFreezeTokens)
         try c.encode(streakFreezeDates,           forKey: .streakFreezeDates)
+        try c.encode(unlockedAchievements,        forKey: .unlockedAchievements)
+        try c.encode(counters,                    forKey: .counters)
     }
 
     static let `default` = PersistedState(

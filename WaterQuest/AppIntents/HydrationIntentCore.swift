@@ -50,6 +50,7 @@ enum HydrationIntentCore {
         let clampedML = clampAmount(amountInMilliliters)
         let entry = HydrationEntry(date: now, volumeML: clampedML, source: .manual, fluidType: fluidType)
         state.entries.append(entry)
+        state.counters.siriLogCount += 1 // feeds the "Voice Activated" badge
 
         let pct = percent(total: todayTotalML(state, now: now), goal: goalML(for: state))
         let dialog = "Logged \(Int(clampedML)) mL of \(label(for: fluidType)). You're at \(pct)% of today's goal."
@@ -87,6 +88,7 @@ enum HydrationIntentCore {
             return (nil, nothing, nothing)
         }
         let removed = state.entries.remove(at: idx)
+        state.counters.undoCount += 1 // feeds the "Second Thoughts" badge
         let pct = percent(total: todayTotalML(state, now: now), goal: goalML(for: state))
         let dialog = "Removed your last \(label(for: removed.fluidType)) (\(Int(removed.volumeML)) mL). You're now at \(pct)% of today's goal."
         let compact = "Removed \(Int(removed.volumeML)) mL \(label(for: removed.fluidType)) — \(pct)% of goal"

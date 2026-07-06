@@ -41,6 +41,7 @@ struct QuickAddWaterIntent: AppIntent {
                     fluidType: .water
                 )
             )
+            state.counters.widgetLogCount += 1 // feeds the "Speed Sipper" badge
         }
         WidgetCenter.shared.reloadAllTimelines()
 
