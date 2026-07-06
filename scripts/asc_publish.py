@@ -248,7 +248,7 @@ def cmd_publish():
                 "type": "reviewSubmissionItems",
                 "relationships": {
                     "reviewSubmission": {"data": {"type": "reviewSubmissions", "id": submission["id"]}},
-                    "appStoreVersionForReview": {"data": {"type": "appStoreVersions", "id": version_id}},
+                    "appStoreVersion": {"data": {"type": "appStoreVersions", "id": version_id}},
                 },
             }
         },
