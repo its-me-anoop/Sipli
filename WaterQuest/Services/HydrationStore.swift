@@ -485,10 +485,16 @@ final class HydrationStore: ObservableObject {
         checkGoalCompletion()
         applyStreakFreezeIfNeeded()
 
+        // Evaluate achievements against the merged state so drinks logged
+        // externally (Siri, widget, watch) latch — and celebrate — the moment
+        // the app foregrounds, not at some later in-app persist.
+        let unlocksBefore = unlockedAchievements.count
+        refreshAchievements()
+
         WidgetCenter.shared.reloadAllTimelines()
 
-        // If the phone had entries the remote didn't know about, push them back to
-        // iCloud so the Watch picks them up on its next sync.
-        if hadExtraLocal { persist() }
+        // Push back to disk/iCloud when this device contributed anything the
+        // snapshot lacked: extra entries or freshly latched achievements.
+        if hadExtraLocal || unlockedAchievements.count > unlocksBefore { persist() }
     }
 }
