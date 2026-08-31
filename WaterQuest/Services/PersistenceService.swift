@@ -10,8 +10,18 @@ final class PersistenceService {
     private let keyValueStore = NSUbiquitousKeyValueStore.default
     private let iCloudStateKey = "WaterQuestPersistedStatePayload"
     private let localUpdatedAtKey = "WaterQuestStateLocalUpdatedAt"
+    /// Shared across app, widget, and App Intent processes so a write in one
+    /// process is visible to the others. `UserDefaults.standard` is
+    /// process-local — using it here made widget/Siri loads treat any iCloud
+    /// payload as newer than "never" and overwrite a fresher local file.
+    private let defaults: UserDefaults
     private var onRemoteDataChanged: ((Data) -> Void)?
     private var kvStoreObserver: NSObjectProtocol?
+
+    /// App-group suite used for the local-updated timestamp. Exposed for tests.
+    static func appGroupDefaults() -> UserDefaults {
+        UserDefaults(suiteName: appGroupID) ?? .standard
+    }
 
     private struct SyncedPayload: Codable {
         let updatedAt: Date
@@ -19,6 +29,7 @@ final class PersistenceService {
     }
 
     init(filename: String = "WaterQuestState.json") {
+        self.defaults = Self.appGroupDefaults()
         let groupURL = FileManager.default.containerURL(
             forSecurityApplicationGroupIdentifier: PersistenceService.appGroupID
         )
@@ -70,7 +81,10 @@ final class PersistenceService {
                 let decoder = JSONDecoder()
                 decoder.dateDecodingStrategy = .iso8601
                 if let payload = try? decoder.decode(SyncedPayload.self, from: payloadData) {
-                    let localTimestamp = UserDefaults.standard.object(forKey: "WaterQuestStateLocalUpdatedAt") as? Date ?? .distantPast
+                    let suite = UserDefaults(suiteName: PersistenceService.appGroupID) ?? .standard
+                    let localTimestamp = suite.object(forKey: "WaterQuestStateLocalUpdatedAt") as? Date
+                        ?? UserDefaults.standard.object(forKey: "WaterQuestStateLocalUpdatedAt") as? Date
+                        ?? .distantPast
                     if payload.updatedAt > localTimestamp {
                         resolved = payload.blob
                     }
@@ -257,11 +271,20 @@ final class PersistenceService {
     }
 
     private var localUpdatedAt: Date {
-        UserDefaults.standard.object(forKey: localUpdatedAtKey) as? Date ?? .distantPast
+        if let date = defaults.object(forKey: localUpdatedAtKey) as? Date {
+            return date
+        }
+        // Pre-fix builds stored the clock in the process-local standard suite.
+        // Promote it so widget/Siri see the same timestamp as the app.
+        if let legacy = UserDefaults.standard.object(forKey: localUpdatedAtKey) as? Date {
+            defaults.set(legacy, forKey: localUpdatedAtKey)
+            return legacy
+        }
+        return .distantPast
     }
 
     private func setLocalUpdatedAt(_ date: Date) {
-        UserDefaults.standard.set(date, forKey: localUpdatedAtKey)
+        defaults.set(date, forKey: localUpdatedAtKey)
     }
 
     private func syncToICloud(_ data: Data?) {

@@ -142,7 +142,7 @@ struct LogWaterIntent: AppIntent {
 
         // Coordinated read-modify-write: Siri/Shortcuts can run this while
         // the widget or app writes the same shared state file.
-        var result: (entry: HydrationEntry, dialog: String, compactDialog: String)!
+        var result: (entry: HydrationEntry, dialog: String, compactDialog: String)?
         PersistenceService.shared.update(PersistedState.self, fallback: .default) { state in
             result = HydrationIntentCore.logWater(
                 into: &state,
@@ -150,6 +150,9 @@ struct LogWaterIntent: AppIntent {
                 fluidType: resolvedFluid,
                 now: Date()
             )
+        }
+        guard let result else {
+            return .result(dialog: IntentDialog(stringLiteral: "Couldn't log that drink. Try again."))
         }
 
         WidgetCenter.shared.reloadAllTimelines()
@@ -278,9 +281,12 @@ struct RepeatLastDrinkIntent: AppIntent {
     #endif
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        var result: (entry: HydrationEntry, dialog: String, compactDialog: String)!
+        var result: (entry: HydrationEntry, dialog: String, compactDialog: String)?
         PersistenceService.shared.update(PersistedState.self, fallback: .default) { state in
             result = HydrationIntentCore.repeatLastDrink(into: &state, now: Date())
+        }
+        guard let result else {
+            return .result(dialog: IntentDialog(stringLiteral: "Couldn't log that drink. Try again."))
         }
 
         WidgetCenter.shared.reloadAllTimelines()
@@ -347,9 +353,12 @@ struct UndoLastIntakeIntent: AppIntent {
     #endif
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
-        var result: (removed: HydrationEntry?, dialog: String, compactDialog: String)!
+        var result: (removed: HydrationEntry?, dialog: String, compactDialog: String)?
         PersistenceService.shared.update(PersistedState.self, fallback: .default) { state in
             result = HydrationIntentCore.undoLastToday(from: &state, now: Date())
+        }
+        guard let result else {
+            return .result(dialog: IntentDialog(stringLiteral: "Couldn't undo that drink. Try again."))
         }
         if result.removed != nil {
             WidgetCenter.shared.reloadAllTimelines()

@@ -15,6 +15,7 @@ struct OnboardingView: View {
 
     var onComplete: () -> Void
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var step: OnboardingStep = .welcome
     @State private var direction: OnboardingNavDirection = .forward
     @State private var state = OnboardingState()
@@ -63,8 +64,8 @@ struct OnboardingView: View {
                 .position(geo.center)
                 // Smooth respring whenever the bottle resizes or relocates
                 // (e.g. hero → top-right corner when the keyboard appears).
-                .animation(.smooth(duration: 0.5), value: placement)
-                .animation(.smooth(duration: 0.45), value: geo.width)
+                .animation(reduceMotion ? nil : .smooth(duration: 0.5), value: placement)
+                .animation(reduceMotion ? nil : .smooth(duration: 0.45), value: geo.width)
 
                 // Accessibility: the vessel is decorative/hidden, so expose
                 // setup progress here as a small, early-sorted element.
@@ -159,6 +160,7 @@ struct OnboardingView: View {
     }
 
     private var slideTransition: AnyTransition {
+        if reduceMotion { return .opacity }
         // The whole content block glides + fades + subtly scales in, so every
         // element on the step animates together with the same smooth feel.
         switch direction {
@@ -180,7 +182,7 @@ struct OnboardingView: View {
     private func advance() {
         guard let next = step.next() else { return }
         direction = .forward
-        withAnimation(.smooth(duration: 0.5)) {
+        withAnimation(reduceMotion ? .easeOut(duration: 0.15) : .smooth(duration: 0.5)) {
             step = next
         }
     }
@@ -188,7 +190,7 @@ struct OnboardingView: View {
     private func retreat() {
         guard let prev = step.previous() else { return }
         direction = .backward
-        withAnimation(.smooth(duration: 0.5)) {
+        withAnimation(reduceMotion ? .easeOut(duration: 0.15) : .smooth(duration: 0.5)) {
             step = prev
         }
     }

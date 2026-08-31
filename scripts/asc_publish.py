@@ -22,10 +22,10 @@ import requests
 
 API = "https://api.appstoreconnect.apple.com"
 BUNDLE_ID = "com.waterquest.hydration"
-VERSION = os.environ.get("PUBLISH_VERSION", "5.0")
-BUILD_NUMBER = os.environ.get("PUBLISH_BUILD", "12")
+VERSION = os.environ.get("PUBLISH_VERSION", "5.0.1")
+BUILD_NUMBER = os.environ.get("PUBLISH_BUILD", "13")
 REPO_ROOT = Path(__file__).resolve().parent.parent
-WHATS_NEW_FILE = REPO_ROOT / "docs" / "release-notes-5.0.md"
+WHATS_NEW_FILE = REPO_ROOT / "docs" / "release-notes-5.0.1.md"
 DESCRIPTION_FILE = REPO_ROOT / "docs" / "appstore-description.txt"  # optional
 
 

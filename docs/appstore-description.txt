@@ -1,0 +1,72 @@
+Build a hydration habit that actually sticks — adaptive goals, Apple Watch quick-logging, and reminders that think with you, not at you.
+
+
+WHAT MAKES SIPLI DIFFERENT
+
+• Adaptive daily goals that flex with your body weight, today's weather, and your workouts — not a fixed number you'll ignore by Tuesday
+• Smart reminders that pause when you're ahead and nudge when you drift — no 2 a.m. buzzes, no pestering
+• Log anywhere — one tap on Apple Watch, a word to Siri, quick-add buttons on widgets, or straight from Control Center
+• 35+ beverages with science-backed hydration factors, so coffee (≈80%) doesn't count the same as water (100%)
+• Private by default — no account to create, no Sipli servers for your data to live on
+
+
+NEW IN 5.0: TROPHY ROOM
+
+• Earn 31 badges across Consistency, Volume, Explorer, Dedication and Season — plus a few secret ones to discover
+• Celebrations when you unlock a badge or hit your daily goal
+• Share cards for daily, weekly and badge recaps, posted from the share button
+• Weekly quests — three fresh challenges every week between streaks
+• Your droplet grows with your streak — aura, sparkles and a crown as you keep going
+• Ask Siri more: "What's my streak", "How much more water do I need", "Log my usual" and "Show my achievements"
+• Streaks now count past 90 days, so the 100-day Century Stream badge is within reach
+
+
+TRACK EVERYTHING YOU DRINK
+
+• 35+ beverages — water, sparkling, teas, specialty coffees, matcha, kombucha, plant milks, juices, sports drinks, and more
+• Hydration factors that actually account for caffeine and alcohol — cold brew doesn't count like water, and a glass of wine doesn't get a free pass
+• One-tap quick-add cups, learned presets of your usual drinks, or fine-tune with a slider
+• Edit, backfill, and delete past entries any time
+
+
+STAY ON TRACK
+
+• Streaks, streak freezes, and a monthly heatmap that show where you drift
+• Widgets for Home Screen and Lock Screen — plus quick-add buttons that skip opening the app
+• Apple Health integration: water writes to Health, workouts read back for smarter goals
+• Insights that are actually useful — 7- and 30-day trends, goal-met rate, average intake, and a weekly digest written on-device
+• Seasonal Match Day challenges when they're on — your day as a match
+
+
+SIPLI PREMIUM
+
+A single subscription unlocks the features that make hydration genuinely effortless:
+
+• All 35+ beverage types with hydration factors
+• AI-generated hydration tips, written on-device with Apple Intelligence on supported iPhones
+• Apple Health workout + active-energy sync for dynamic goals
+• Weather-adjusted goals that rise on hot, humid days
+• Workout-adjusted goals that rise after long sessions
+• Smart, adaptive reminders that read your schedule and your progress
+
+Monthly or annual subscription. The annual plan includes a one-month free trial.
+
+
+PRIVATE BY DEFAULT
+
+No account. No Sipli servers. Your hydration data lives on your device, and in your iCloud if you've turned that on. No ad tracking. No data sale. Writes to Apple Health only if you opt in.
+
+
+THE REFILL PLEDGE
+
+Every April, Sipli joins Earth Week with the Refill Pledge — a simple idea: refill, not rebuy. Track each refill and watch a quiet daily habit keep plastic bottles out of your hand.
+
+Sipli is made by one person and improved week by week. If the app helps you build the habit, a short review is the single biggest thing you can do to support continued development — thank you.
+
+
+SUBSCRIPTION DETAILS
+
+Sipli Premium is an auto-renewable subscription (monthly or annual). Payment is charged to your Apple Account at confirmation of purchase, and the subscription renews automatically unless cancelled at least 24 hours before the end of the current period. You can manage or cancel your subscription anytime in your Apple Account settings.
+
+Terms of Use: https://its-me-anoop.github.io/Sipli/terms
+Privacy Policy: https://its-me-anoop.github.io/Sipli/privacy

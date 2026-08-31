@@ -136,6 +136,16 @@ struct LiquidProgressView: View {
                 phase = 0
             }
         }
+        .onAppear { syncMotionTracking() }
+        .onChange(of: reduceMotion) { _, _ in syncMotionTracking() }
+    }
+
+    private func syncMotionTracking() {
+        if reduceMotion {
+            motionManager.stopTracking()
+        } else {
+            motionManager.startTracking()
+        }
     }
 }
 

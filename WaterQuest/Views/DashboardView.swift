@@ -59,6 +59,24 @@ struct DashboardView: View {
             }
         }
         .navigationTitle("Today")
+        .confirmationDialog(
+            "Delete this entry?",
+            isPresented: Binding(
+                get: { entryToDelete != nil },
+                set: { if !$0 { entryToDelete = nil } }
+            ),
+            titleVisibility: .visible
+        ) {
+            Button("Delete", role: .destructive) {
+                if let entry = entryToDelete {
+                    deleteEntry(entry)
+                }
+                entryToDelete = nil
+            }
+            Button("Cancel", role: .cancel) {
+                entryToDelete = nil
+            }
+        }
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
@@ -205,6 +223,7 @@ struct DashboardView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 20)
+                        .accessibilityElement(children: .combine)
                     } else {
                         VStack(spacing: 12) {
                             ForEach(todayEntries) { entry in
@@ -228,15 +247,6 @@ struct DashboardView: View {
                                         entryToDelete = entry
                                     } label: {
                                         Label("Delete", systemImage: "trash")
-                                    }
-                                }
-                                .confirmationDialog("Delete this entry?", isPresented: deleteDialogBinding(for: entry), titleVisibility: .visible) {
-                                    Button("Delete", role: .destructive) {
-                                        deleteEntry(entry)
-                                        entryToDelete = nil
-                                    }
-                                    Button("Cancel", role: .cancel) {
-                                        entryToDelete = nil
                                     }
                                 }
                             }
@@ -322,6 +332,7 @@ struct DashboardView: View {
                         }
                         .frame(maxWidth: .infinity)
                         .padding(.vertical, 30)
+                        .accessibilityElement(children: .combine)
                     } else {
                         iPadLogGrid
                     }
@@ -363,15 +374,6 @@ struct DashboardView: View {
                         entryToDelete = entry
                     } label: {
                         Label("Delete", systemImage: "trash")
-                    }
-                }
-                .confirmationDialog("Delete this entry?", isPresented: deleteDialogBinding(for: entry), titleVisibility: .visible) {
-                    Button("Delete", role: .destructive) {
-                        deleteEntry(entry)
-                        entryToDelete = nil
-                    }
-                    Button("Cancel", role: .cancel) {
-                        entryToDelete = nil
                     }
                 }
             }
@@ -779,19 +781,6 @@ struct DashboardView: View {
 
     private var todayEntries: [HydrationEntry] {
         store.todayEntries.sorted { $0.date > $1.date }
-    }
-
-    private func deleteDialogBinding(for entry: HydrationEntry) -> Binding<Bool> {
-        Binding(
-            get: { entryToDelete?.id == entry.id },
-            set: { isPresented in
-                if isPresented {
-                    entryToDelete = entry
-                } else if entryToDelete?.id == entry.id {
-                    entryToDelete = nil
-                }
-            }
-        )
     }
 
     private func weatherIcon(_ snapshot: WeatherSnapshot) -> String {

@@ -8,17 +8,16 @@ class MotionManager: ObservableObject {
     @Published var pitch: Double = 0.0
     @Published var roll: Double = 0.0
     
-    init() {
-        startTracking()
-    }
-    
+    init() {}
+
     deinit {
         motionManager.stopDeviceMotionUpdates()
     }
     
     func startTracking() {
         guard motionManager.isDeviceMotionAvailable else { return }
-        
+        guard !motionManager.isDeviceMotionActive else { return }
+
         motionManager.deviceMotionUpdateInterval = 1.0 / 60.0 // 60 Hz for smooth animation
         motionManager.startDeviceMotionUpdates(to: .main) { [weak self] (data, error) in
             guard let data = data, error == nil else { return }

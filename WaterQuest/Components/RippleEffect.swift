@@ -13,7 +13,19 @@ struct RippleEffect<T: Equatable>: ViewModifier {
         self.trigger = trigger
     }
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
+    @ViewBuilder
     func body(content: Content) -> some View {
+        if reduceMotion {
+            content
+        } else {
+            animatedBody(content: content)
+        }
+    }
+
+    @ViewBuilder
+    private func animatedBody(content: Content) -> some View {
         let origin = origin
         let duration = duration
 

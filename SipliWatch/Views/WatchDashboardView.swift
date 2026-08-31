@@ -2,6 +2,7 @@ import SwiftUI
 
 struct WatchDashboardView: View {
     @EnvironmentObject private var store: WatchHydrationStore
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var showQuickAdd = false
 
     var body: some View {
@@ -59,7 +60,7 @@ struct WatchDashboardView: View {
                 .background(.ultraThinMaterial)
                 .onAppear {
                     DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        withAnimation {
+                        withAnimation(reduceMotion ? .easeOut(duration: 0.15) : .easeInOut) {
                             store.justReachedGoal = false
                         }
                     }
@@ -67,7 +68,7 @@ struct WatchDashboardView: View {
                 .transition(.opacity)
             }
         }
-        .animation(.easeInOut, value: store.justReachedGoal)
+        .animation(reduceMotion ? .easeOut(duration: 0.15) : .easeInOut, value: store.justReachedGoal)
     }
 }
 

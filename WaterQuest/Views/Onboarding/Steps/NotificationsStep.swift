@@ -5,6 +5,7 @@ struct NotificationsStep: View {
     @Binding var state: OnboardingState
     let onFinish: () -> Void
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var msgIdx = 0
     private let msgTimer = Timer.publish(every: 2.8, on: .main, in: .common).autoconnect()
 
@@ -39,6 +40,7 @@ struct NotificationsStep: View {
                 }
             }
             .onReceive(msgTimer) { _ in
+                guard !reduceMotion else { return }
                 withAnimation(.spring(response: 0.45, dampingFraction: 0.78)) {
                     msgIdx = (msgIdx + 1) % sampleMessages.count
                 }

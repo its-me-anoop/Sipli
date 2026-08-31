@@ -252,6 +252,11 @@ enum Theme {
     static let fluidSpring = Animation.spring(response: 0.5, dampingFraction: 0.86)
     static let gentleSpring = Animation.easeInOut(duration: 0.35)
 
+    /// Short fade when Reduce Motion is on; otherwise the decorative spring.
+    static func motion(_ animation: Animation, reduceMotion: Bool) -> Animation {
+        reduceMotion ? .easeOut(duration: 0.15) : animation
+    }
+
     // MARK: Typography (Dynamic Type)
     /// Editorial serif (SF Serif italic-friendly) — used for headlines and
     /// numerical readouts in the onboarding aesthetic. Falls back gracefully
@@ -333,6 +338,7 @@ enum AppTheme: Int, Codable, CaseIterable, Identifiable {
 }
 
 struct ShimmerModifier: ViewModifier {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var phase: CGFloat = -220
 
     func body(content: Content) -> some View {
@@ -344,10 +350,11 @@ struct ShimmerModifier: ViewModifier {
                     endPoint: .trailing
                 )
                 .rotationEffect(.degrees(16))
-                .offset(x: phase)
+                .offset(x: reduceMotion ? 0 : phase)
                 .mask(content)
             )
             .onAppear {
+                guard !reduceMotion else { return }
                 withAnimation(.linear(duration: 2.1).repeatForever(autoreverses: false)) {
                     phase = 260
                 }
@@ -366,6 +373,7 @@ struct FloatingBubble: View {
     let color: Color
     let delay: Double
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var yOffset: CGFloat = 0
     @State private var opacity = 0.0
 
@@ -375,8 +383,12 @@ struct FloatingBubble: View {
             .frame(width: size, height: size)
             .blur(radius: size * 0.4)
             .offset(y: yOffset)
-            .opacity(opacity)
+            .opacity(reduceMotion ? 1 : opacity)
             .onAppear {
+                if reduceMotion {
+                    opacity = 1
+                    return
+                }
                 withAnimation(.easeInOut(duration: Double.random(in: 6...9)).repeatForever(autoreverses: true).delay(delay)) {
                     yOffset = CGFloat.random(in: -24...26)
                 }

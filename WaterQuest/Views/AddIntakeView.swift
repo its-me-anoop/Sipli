@@ -212,11 +212,11 @@ struct AddIntakeView: View {
         .overlay(alignment: .top) {
             if showSavedBanner {
                 SavedBanner(amount: Int(amount), unit: store.profile.unitSystem.volumeUnit, fluidType: selectedFluidType)
-                    .transition(.move(edge: .top).combined(with: .opacity))
+                    .transition(reduceMotion ? .opacity : .move(edge: .top).combined(with: .opacity))
                     .padding(.top, 8)
             }
         }
-        .animation(.spring(response: 0.35, dampingFraction: 0.85), value: showSavedBanner)
+        .animation(Theme.motion(.spring(response: 0.35, dampingFraction: 0.85), reduceMotion: reduceMotion), value: showSavedBanner)
         .onAppear {
             if !subscriptionManager.hasAccess(to: .fluidTypes) {
                 selectedFluidType = .water

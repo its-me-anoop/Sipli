@@ -45,6 +45,7 @@ struct LiquidGlassButton: View {
     var style: ButtonStyle = .primary
     var size: ButtonSize = .medium
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isPressed = false
 
     enum ButtonStyle {
@@ -147,10 +148,10 @@ struct LiquidGlassButton: View {
         .simultaneousGesture(
             DragGesture(minimumDistance: 0)
                 .onChanged { _ in
-                    withAnimation(Theme.quickSpring) { isPressed = true }
+                    withAnimation(Theme.motion(Theme.quickSpring, reduceMotion: reduceMotion)) { isPressed = true }
                 }
                 .onEnded { _ in
-                    withAnimation(Theme.quickSpring) { isPressed = false }
+                    withAnimation(Theme.motion(Theme.quickSpring, reduceMotion: reduceMotion)) { isPressed = false }
                 }
         )
     }
@@ -164,6 +165,7 @@ struct FluidStatCard: View {
     let icon: String
     var accentColor: Color = Theme.lagoon
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var animatedValue: String = ""
     @State private var iconRotation: Double = 0
     @State private var glowPulse: CGFloat = 0
@@ -203,14 +205,16 @@ struct FluidStatCard: View {
         }
         .onAppear {
             animatedValue = value
+            guard !reduceMotion else { return }
             withAnimation(.easeInOut(duration: 2.3).repeatForever(autoreverses: true)) {
                 glowPulse = 1
             }
         }
         .onChange(of: value) { _, newValue in
-            withAnimation(Theme.fluidSpring) {
+            withAnimation(Theme.motion(Theme.fluidSpring, reduceMotion: reduceMotion)) {
                 animatedValue = newValue
             }
+            guard !reduceMotion else { return }
             withAnimation(Theme.quickSpring) {
                 iconRotation += 15
             }
@@ -225,6 +229,7 @@ struct QuickAddPill: View {
     let unit: String
     let action: () -> Void
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var isPressed = false
     @State private var rippleScale: CGFloat = 0
     @State private var rippleOpacity: CGFloat = 0
@@ -270,6 +275,7 @@ struct QuickAddPill: View {
     }
 
     private func triggerRipple() {
+        guard !reduceMotion else { return }
         rippleScale = 0.5
         rippleOpacity = 0.4
         withAnimation(.easeOut(duration: 0.5)) {
@@ -281,11 +287,12 @@ struct QuickAddPill: View {
 
 // MARK: - Animated Wave Divider
 struct WaveDivider: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var phase: CGFloat = 0
 
     var body: some View {
         // Uses WaveShape from WaveView.swift
-        WaveShape(phase: phase, strength: 3)
+        WaveShape(phase: phase, strength: reduceMotion ? 0 : 3)
             .fill(
                 LinearGradient(
                     colors: [Theme.lagoon.opacity(0.3), Theme.mint.opacity(0.2)],
@@ -295,6 +302,7 @@ struct WaveDivider: View {
             )
             .frame(height: 20)
             .onAppear {
+                guard !reduceMotion else { return }
                 withAnimation(.linear(duration: 3).repeatForever(autoreverses: false)) {
                     phase = .pi * 2
                 }

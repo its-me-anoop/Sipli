@@ -5,6 +5,7 @@ Sipli helps you build a healthy hydration habit with free water logging, beautif
 ## Features
 
 - **Free Water Logging** — Log water manually, set a custom goal, review your diary history, and track daily progress at no cost.
+- **Trophy Room & weekly quests** — Earn badges, keep a streak (with optional freezes), and take on three rotating quests each week. Share cards stay on-device.
 - **Premium Adaptive Goals** — Unlock weather-based and activity-based goal adjustments.
 - **Premium Beverage Types** — Track water, coffee, tea, juice, smoothies, and more with realistic hydration factors.
 - **Premium Apple Health Integration** — Sync workouts, calories, and water intake with Apple Health.

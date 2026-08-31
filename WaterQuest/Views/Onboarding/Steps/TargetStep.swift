@@ -126,7 +126,7 @@ struct TargetStep: View {
                 .animation(.spring(response: 0.25, dampingFraction: 0.55), value: displayedML)
 
                 Text(state.customGoalEnabled ? "Custom goal" : "Suggested for you")
-                    .font(.system(size: 13))
+                    .font(.caption)
                     .foregroundStyle(OnboardingPalette.ink3)
 
                 if !state.customGoalEnabled {
