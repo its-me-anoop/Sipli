@@ -31,10 +31,11 @@ struct WaveShape: Shape {
 }
 
 struct WaveView: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var phase: CGFloat = 0
 
     var body: some View {
-        WaveShape(phase: phase, strength: 12)
+        WaveShape(phase: phase, strength: reduceMotion ? 0 : 12)
             .fill(
                 LinearGradient(
                     colors: [Theme.lagoon.opacity(0.52), Theme.mint.opacity(0.42)],
@@ -43,6 +44,7 @@ struct WaveView: View {
                 )
             )
             .onAppear {
+                guard !reduceMotion else { return }
                 withAnimation(.linear(duration: 3.6).repeatForever(autoreverses: false)) {
                     phase = .pi * 2
                 }

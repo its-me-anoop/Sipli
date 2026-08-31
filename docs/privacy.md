@@ -1,7 +1,7 @@
 # Privacy Policy
 
 **Sipli**
-**Last updated: March 12, 2026**
+**Last updated: August 31, 2026**
 
 Sipli ("we", "our", or "the app") is a hydration tracking app developed by Anoop Jose. This policy explains what information Sipli processes, where it is stored, and the choices you have when using the app.
 
@@ -18,8 +18,9 @@ During onboarding and in Settings, you may provide:
 
 ### Hydration Data
 
-- **Water intake entries** — Each entry includes the volume consumed, timestamp, beverage type, source (manual or HealthKit), and an optional note you provide.
+- **Water intake entries** — Each entry includes the volume consumed, timestamp, beverage type, source (manual, Watch, widget, Siri, or HealthKit), and an optional note you provide.
 - **App preferences** — Settings such as theme, unit system, custom goal, reminder schedule, and premium upsell state are stored so the app can keep your experience consistent.
+- **Engagement state** — Streak freeze tokens, earned achievement badges (Trophy Room), weekly quest progress derived from your logs, and seasonal Match Day wins. These stay on-device and in your iCloud key-value store if iCloud sync is on.
 
 ### Health Data (Apple HealthKit)
 
@@ -36,12 +37,12 @@ HealthKit data is stored securely by Apple and is never sent to external servers
 If you grant permission, Sipli uses location to retrieve local weather conditions via Apple WeatherKit. Sipli requests nearby, city-level weather using approximately 1 kilometer accuracy. Depending on your iPhone settings, Apple may still provide approximate or precise location data to the app. Your location is:
 
 - Used only to fetch weather data (temperature and humidity).
-- Held temporarily in memory while the app is open.
-- **Not stored in Sipli's local app data, not logged, and not sent to any service other than Apple's location and weather services needed to return weather data.**
+- **Not stored as coordinates.** Sipli does not keep a latitude/longitude history.
+- Not sent to any service other than Apple's location and weather services needed to return weather data.
 
 ### Weather Data
 
-Temperature, humidity, and weather conditions are fetched from Apple WeatherKit and cached locally on your device to adjust your hydration goal for hot or humid conditions.
+Temperature, humidity, and weather conditions are fetched from Apple WeatherKit. A short weather snapshot (temperature, humidity, condition — not your coordinates) is cached in Sipli's on-device state so your goal can still adjust when the app reopens without a fresh fetch. That snapshot may sync via Apple's iCloud key-value store with your other devices.
 
 ### Device Motion
 
@@ -55,8 +56,9 @@ Sipli also uses Apple's iCloud key-value store to keep your app state in sync be
 
 - profile and settings
 - hydration entries
-- recent weather and workout summaries
+- recent weather snapshot and workout summaries
 - premium access state and premium upsell state
+- streak freezes, achievement unlocks, and seasonal challenge progress
 
 We do **not** operate or access this infrastructure ourselves. Sync and backup availability are controlled by Apple and your device/account settings.
 

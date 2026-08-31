@@ -49,6 +49,10 @@ final class AchievementEngineTests: XCTestCase {
         XCTAssertEqual(ids.count, Set(ids).count)
     }
 
+    func test_catalog_countMatchesStoreCopy() {
+        XCTAssertEqual(AchievementCatalog.all.count, 31, "listing and Trophy Room copy say 31 badges")
+    }
+
     func test_freshState_earnsNothing() {
         XCTAssertTrue(earned(state()).isEmpty)
     }

@@ -46,7 +46,7 @@ struct DoneStep: View {
                     .frame(maxWidth: .infinity)
 
                 Text("Your daily target: \(Text(targetDisplay).fontWeight(.semibold).foregroundColor(OnboardingPalette.ink)). Let's start with a small sip.")
-                    .font(.system(size: 15))
+                    .font(.subheadline)
                     .foregroundStyle(OnboardingPalette.ink3)
                     .multilineTextAlignment(.center)
                     .padding(.horizontal, 32)

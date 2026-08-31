@@ -388,7 +388,7 @@ struct SettingsView: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .animation(Theme.fluidSpring, value: customGoalEnabled)
+            .animation(Theme.motion(Theme.fluidSpring, reduceMotion: reduceMotion), value: customGoalEnabled)
         }
     }
 

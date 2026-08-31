@@ -10,6 +10,7 @@ struct MatchDayCard: View {
     let score: Int
     let wins: Int
     let phase: MatchDay.Phase
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var pitchGreen: Color { Color(red: 0.18, green: 0.55, blue: 0.34) }
 
@@ -82,7 +83,7 @@ struct MatchDayCard: View {
                     }
             }
             .clipShape(Capsule())
-            .animation(Theme.fluidSpring, value: progress)
+            .animation(Theme.motion(Theme.fluidSpring, reduceMotion: reduceMotion), value: progress)
         }
         .frame(height: 12)
         .accessibilityHidden(true)

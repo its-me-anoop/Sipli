@@ -5,6 +5,7 @@ import SwiftUI
 struct WeeklyQuestCard: View {
     let quests: [(quest: WeeklyQuest, progress: QuestProgress)]
     let daysRemaining: Int
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var completedCount: Int {
         quests.filter(\.progress.isComplete).count
@@ -73,7 +74,7 @@ struct WeeklyQuestCard: View {
                         Capsule()
                             .fill(progress.isComplete ? AnyShapeStyle(Theme.mintText) : AnyShapeStyle(Theme.lagoon))
                             .frame(width: max(6, geo.size.width * progress.fraction))
-                            .animation(Theme.fluidSpring, value: progress.fraction)
+                            .animation(Theme.motion(Theme.fluidSpring, reduceMotion: reduceMotion), value: progress.fraction)
                     }
                 }
                 .frame(height: 5)

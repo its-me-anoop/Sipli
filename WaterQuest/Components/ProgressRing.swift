@@ -6,6 +6,7 @@ struct ProgressRing: View {
     var lineWidth: CGFloat = 14
     var showRippleEffect: Bool = true
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var animationTime: CGFloat = 0
     @State private var pulseScale: CGFloat = 1.0
     @State private var glowOpacity: CGFloat = 0.0
@@ -51,7 +52,7 @@ struct ProgressRing: View {
                 )
                 .rotationEffect(.degrees(-90))
                 .shadow(color: Theme.lagoon.opacity(0.32), radius: 6, x: 0, y: 0)
-                .animation(Theme.fluidSpring, value: progress)
+                .animation(Theme.motion(Theme.fluidSpring, reduceMotion: reduceMotion), value: progress)
 
             if progress > 0.05 {
                 Circle()
@@ -64,13 +65,15 @@ struct ProgressRing: View {
             }
         }
         .onReceive(timer) { _ in
+            guard !reduceMotion else { return }
             animationTime += 0.016
             if animationTime > 1000 { animationTime = 0 }
         }
         .onAppear {
-            withAnimation(.easeInOut(duration: 0.8)) {
+            withAnimation(Theme.motion(.easeInOut(duration: 0.8), reduceMotion: reduceMotion)) {
                 glowOpacity = 0.42
             }
+            guard !reduceMotion else { return }
             withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
                 pulseScale = 1.1
             }

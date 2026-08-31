@@ -165,4 +165,20 @@ final class PersistenceServiceTests: XCTestCase {
         XCTAssertEqual(final.entries.count, perWriter * 2,
                        "coordinated updates must not lose concurrent writes")
     }
+
+    // MARK: - App-group timestamp
+
+    func test_save_writesTimestampToAppGroupDefaults() {
+        let defaults = PersistenceService.appGroupDefaults()
+        let key = "WaterQuestStateLocalUpdatedAt"
+        defaults.removeObject(forKey: key)
+
+        let service = makeService()
+        service.save(makeState(entryCount: 1))
+
+        XCTAssertNotNil(
+            defaults.object(forKey: key) as? Date,
+            "save() must stamp the shared app-group suite so widget/Siri see the same clock"
+        )
+    }
 }

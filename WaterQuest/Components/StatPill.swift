@@ -6,6 +6,7 @@ struct StatPill: View {
     var icon: String? = nil
     var accentColor: Color = Theme.lagoon
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @State private var animatedValue: String = ""
 
     var body: some View {
@@ -38,7 +39,7 @@ struct StatPill: View {
             animatedValue = value
         }
         .onChange(of: value) { _, newValue in
-            withAnimation(Theme.fluidSpring) {
+            withAnimation(Theme.motion(Theme.fluidSpring, reduceMotion: reduceMotion)) {
                 animatedValue = newValue
             }
         }

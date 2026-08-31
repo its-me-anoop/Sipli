@@ -6,6 +6,8 @@ struct WatchProgressRing: View {
     let goalML: Double
     let unitSystem: UnitSystem
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+
     var body: some View {
         ZStack {
             Circle()
@@ -23,7 +25,7 @@ struct WatchProgressRing: View {
                     style: StrokeStyle(lineWidth: 10, lineCap: .round)
                 )
                 .rotationEffect(.degrees(-90))
-                .animation(.spring(response: 0.5, dampingFraction: 0.86), value: progress)
+                .animation(Theme.motion(.spring(response: 0.5, dampingFraction: 0.86), reduceMotion: reduceMotion), value: progress)
 
             VStack(spacing: 2) {
                 Text("\(Int(progress * 100))%")
