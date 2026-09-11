@@ -17,11 +17,13 @@
 		130C730FC298C86A95B83F02 /* NotificationContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = A124A12B05E971BF67DE82E5 /* NotificationContext.swift */; };
 		13ACB4C25781C589681A49D9 /* WeeklyQuest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19D18B651B6C71F301C911D /* WeeklyQuest.swift */; };
 		145E47AF20C5FE4874944743 /* WaterQuestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0A71028244F753823101D35 /* WaterQuestTests.swift */; };
+		18CBB0D62D19FE8B95C041B0 /* BottleWaterModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A8E333B2651E91E651308D /* BottleWaterModelTests.swift */; };
 		1DCE9DE6A19E823BA1E5079B /* DashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97414883E4C0F357148B7EC7 /* DashboardCard.swift */; };
 		2478B6682ECF9BC073380F5D /* WeightStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCAC93043D1BF833574E34AC /* WeightStep.swift */; };
 		289CD9C4C7D7FC94DDA3DEB7 /* GoalBreakdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */; };
 		2AF9FFFF48921B933CD53585 /* InsightsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1D5A4B6598B2C78EB255CB4 /* InsightsViewModel.swift */; };
 		2CA08ED2F08EB233538DC4D5 /* LiquidGlassCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42E0244F70DCB30BB868A196 /* LiquidGlassCard.swift */; };
+		2CE48CE32199F64B52765625 /* RemainingWaterBottle.swift in Sources */ = {isa = PBXBuildFile; fileRef = AEC2AB470BEDAC5BE39690F2 /* RemainingWaterBottle.swift */; };
 		30FBAE8C1E7C2BD70CE4F8B0 /* PremiumBadge.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4F187D398A7F2E287751F39F /* PremiumBadge.swift */; };
 		33176B4699DA09CE6DE815DE /* TargetStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 226D661FFE4695FDE7BF0C2F /* TargetStep.swift */; };
 		342229A71BB2678A2FB14D9B /* WeeklyQuestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 82F04F63618B8784AE3A769E /* WeeklyQuestTests.swift */; };
@@ -100,6 +102,7 @@
 		C50105226C74517BD8EB057C /* Achievement.swift in Sources */ = {isa = PBXBuildFile; fileRef = D10AD593536965231246CE32 /* Achievement.swift */; };
 		C517CAF66856A9661171AF89 /* ScheduleStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78D82D72BE04D7EA2959A3A0 /* ScheduleStep.swift */; };
 		C5B7F7922B231598B6FED729 /* SipliBottle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C470DB38C8A43150913B8CE /* SipliBottle.swift */; };
+		C7C4BC1BB0A8DE10A83EC914 /* BottleWaterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 462CF8CF369E2C254B131709 /* BottleWaterModel.swift */; };
 		CAA880E64AF96B5C0988D2A3 /* WorkoutSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE15D5810B84C7C96E0EA4C /* WorkoutSummary.swift */; };
 		CC1111111111111111111111 /* SipliWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1111111111111111111111 /* SipliWidget.swift */; };
 		CC2222222222222222222222 /* WidgetDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3333333333333333333333 /* WidgetDataProvider.swift */; };
@@ -138,6 +141,7 @@
 		EDBE22FF0F30A88A5820362A /* NotificationCategories.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E73BC8B42AADA53E70C6538 /* NotificationCategories.swift */; };
 		EE3333333333333333333333 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE1111111111111111111111 /* WidgetKit.framework */; };
 		EE4444444444444444444444 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE2222222222222222222222 /* SwiftUI.framework */; };
+		F3097543BEB1A10A01727658 /* BottleFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD30C6F35167265A33C9555 /* BottleFlowTests.swift */; };
 		F61E51CCFB80BD3F264454D4 /* NotificationMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D8C127CF4F113AB2D5DB40D /* NotificationMessageTests.swift */; };
 		F8BC9F1B5CFFC00EAAA8C2AE /* WeeklyQuestCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A552B26A312377BBDBA2B1 /* WeeklyQuestCard.swift */; };
 		F9645386F9E847E3933BD025 /* OnboardingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA294C8DAE1E1B8B16805C2F /* OnboardingState.swift */; };
@@ -191,6 +195,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		00DE37883CF2F497959BCD3C /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = D67A7263546728AB364FF765 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8696EFE2052B0D0EA16BCADF;
+			remoteInfo = WaterQuest;
+		};
 		6B55F7882F8F608F006CE606 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = D67A7263546728AB364FF765 /* Project object */;
@@ -259,6 +270,7 @@
 
 /* Begin PBXFileReference section */
 		027694A88893F168D4648666 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		02A8E333B2651E91E651308D /* BottleWaterModelTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BottleWaterModelTests.swift; sourceTree = "<group>"; };
 		032684376DE05B0CC4838664 /* UnitSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitSystem.swift; sourceTree = "<group>"; };
 		048A92B8C02660676EB65482 /* WelcomeStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WelcomeStep.swift; sourceTree = "<group>"; };
 		161A82CD61225A1F302ECA9D /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensions.swift; sourceTree = "<group>"; };
@@ -279,6 +291,7 @@
 		3BE15D5810B84C7C96E0EA4C /* WorkoutSummary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WorkoutSummary.swift; sourceTree = "<group>"; };
 		3D58355784786E63DFFB9EC4 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		42E0244F70DCB30BB868A196 /* LiquidGlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassCard.swift; sourceTree = "<group>"; };
+		462CF8CF369E2C254B131709 /* BottleWaterModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BottleWaterModel.swift; sourceTree = "<group>"; };
 		4B013DED6E9276AA1DBE33BC /* WaterQuest.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WaterQuest.entitlements; sourceTree = "<group>"; };
 		4E1C527AF0BCC9ABC2C35DEB /* SipliV5IntentsTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SipliV5IntentsTests.swift; sourceTree = "<group>"; };
 		4F187D398A7F2E287751F39F /* PremiumBadge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PremiumBadge.swift; sourceTree = "<group>"; };
@@ -339,6 +352,7 @@
 		AA9999999999999999999999 /* SipliWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = SipliWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		ACD53555ACD00A8A78268A7F /* MascotView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MascotView.swift; sourceTree = "<group>"; };
 		ADB248542D61873060DDABFF /* NotificationHandler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationHandler.swift; sourceTree = "<group>"; };
+		AEC2AB470BEDAC5BE39690F2 /* RemainingWaterBottle.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = RemainingWaterBottle.swift; sourceTree = "<group>"; };
 		AI001000000000000000002 /* SipliAppIntents.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SipliAppIntents.swift; sourceTree = "<group>"; };
 		AI002000000000000000002 /* SipliAppShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SipliAppShortcuts.swift; sourceTree = "<group>"; };
 		AI003000000000000000002 /* IntentDonationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntentDonationService.swift; sourceTree = "<group>"; };
@@ -359,6 +373,7 @@
 		C5DD4230940B25D30C9598B4 /* Gemini_Generated_Image_15xog715xog715xo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Gemini_Generated_Image_15xog715xog715xo.png; sourceTree = "<group>"; };
 		CF3A93D59223C4765C1FE4A7 /* SubscriptionDisplayFormatterTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubscriptionDisplayFormatterTests.swift; sourceTree = "<group>"; };
 		D10AD593536965231246CE32 /* Achievement.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = Achievement.swift; sourceTree = "<group>"; };
+		D379AE03460EFBEE80884918 /* WaterQuestBottleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WaterQuestBottleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		DA294C8DAE1E1B8B16805C2F /* OnboardingState.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingState.swift; sourceTree = "<group>"; };
 		DE0A6C15329968E42AECACB8 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		E1D5A4B6598B2C78EB255CB4 /* InsightsViewModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = InsightsViewModel.swift; sourceTree = "<group>"; };
@@ -367,6 +382,7 @@
 		E978A95F2A11281369173920 /* SipliCTA.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SipliCTA.swift; sourceTree = "<group>"; };
 		E9FF56BC52EB7ECE5A520179 /* SubscriptionDisplayFormatter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubscriptionDisplayFormatter.swift; sourceTree = "<group>"; };
 		EB90E806138FFE1C09E7187A /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
+		ECD30C6F35167265A33C9555 /* BottleFlowTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BottleFlowTests.swift; sourceTree = "<group>"; };
 		EE1111111111111111111111 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		EE2222222222222222222222 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		F021A59BB7CB33328B5ABBC4 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
@@ -435,6 +451,13 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		4CC43B3BCFCEC12E50F7BD1C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		6B55F7782F8F608C006CE606 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -472,6 +495,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		09D70531E90E903449DDD869 /* WaterQuestUITests */ = {
+			isa = PBXGroup;
+			children = (
+				ECD30C6F35167265A33C9555 /* BottleFlowTests.swift */,
+			);
+			name = WaterQuestUITests;
+			path = WaterQuestUITests;
+			sourceTree = "<group>";
+		};
 		0EBBC986DBD277FF7074538D = {
 			isa = PBXGroup;
 			children = (
@@ -483,6 +515,7 @@
 				DA0C73A8FD8A545CB27D2691 /* Products */,
 				EE5555555555555555555555 /* Frameworks */,
 				B8448B27DB729B6EE2A846DE /* WaterQuestTests */,
+				09D70531E90E903449DDD869 /* WaterQuestUITests */,
 			);
 			sourceTree = "<group>";
 		};
@@ -580,6 +613,8 @@
 				F9DA85D981AD7C5F25BC8F2F /* AchievementUnlockOverlay.swift */,
 				C2A552B26A312377BBDBA2B1 /* WeeklyQuestCard.swift */,
 				56340858D08A7CDCCC537E96 /* StaggeredAppear.swift */,
+				462CF8CF369E2C254B131709 /* BottleWaterModel.swift */,
+				AEC2AB470BEDAC5BE39690F2 /* RemainingWaterBottle.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -636,6 +671,7 @@
 				1637425EBEC5BF5B60C618EC /* AchievementEngineTests.swift */,
 				82F04F63618B8784AE3A769E /* WeeklyQuestTests.swift */,
 				4E1C527AF0BCC9ABC2C35DEB /* SipliV5IntentsTests.swift */,
+				02A8E333B2651E91E651308D /* BottleWaterModelTests.swift */,
 			);
 			path = WaterQuestTests;
 			sourceTree = "<group>";
@@ -713,6 +749,7 @@
 				WA0006000000000000000001 /* SipliWatch.app */,
 				6B55F77B2F8F608C006CE606 /* SipliWatchWidgetsExtension.appex */,
 				59DFB425E8198F6C001CB5A8 /* WaterQuestTests.xctest */,
+				D379AE03460EFBEE80884918 /* WaterQuestBottleUITests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -865,6 +902,24 @@
 			productReference = 1BD898210B2BA8EE347F72F4 /* Sipli.app */;
 			productType = "com.apple.product-type.application";
 		};
+		ABE8FEE95B353668B148B62B /* WaterQuestBottleUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 117D7F33F5AA7A35491F6827 /* Build configuration list for PBXNativeTarget "WaterQuestBottleUITests" */;
+			buildPhases = (
+				B65039DAEACDBF1B6571CD5B /* Sources */,
+				4CC43B3BCFCEC12E50F7BD1C /* Frameworks */,
+				B0E3FCE97E24DB860C6AC1C5 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				D8BB443C99B92AFAF0DFC0C6 /* PBXTargetDependency */,
+			);
+			name = WaterQuestBottleUITests;
+			productName = WaterQuestBottleUITests;
+			productReference = D379AE03460EFBEE80884918 /* WaterQuestBottleUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
 		FF1111111111111111111111 /* SipliWidget */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = FF4444444444444444444444 /* Build configuration list for PBXNativeTarget "SipliWidget" */;
@@ -944,6 +999,7 @@
 				WA0008000000000000000001 /* SipliWatch */,
 				6B55F77A2F8F608C006CE606 /* SipliWatchWidgetsExtension */,
 				274BAD7378B778D37EDBBFCF /* WaterQuestTests */,
+				ABE8FEE95B353668B148B62B /* WaterQuestBottleUITests */,
 			);
 		};
 /* End PBXProject section */
@@ -972,6 +1028,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				AE001STOREKIT00000000001 /* Products.storekit in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B0E3FCE97E24DB860C6AC1C5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1013,6 +1076,14 @@
 				WWEXT011000000000000001 /* WorkoutSummary.swift in Sources */,
 				WWEXT012000000000000001 /* PersistedState.swift in Sources */,
 				WWEXT013000000000000001 /* Theme.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B65039DAEACDBF1B6571CD5B /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F3097543BEB1A10A01727658 /* BottleFlowTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1133,6 +1204,8 @@
 				F8BC9F1B5CFFC00EAAA8C2AE /* WeeklyQuestCard.swift in Sources */,
 				E33BC9885952E4B5344F73F4 /* StaggeredAppear.swift in Sources */,
 				FB23E41130341D3276BAC490 /* TrophyRoomView.swift in Sources */,
+				C7C4BC1BB0A8DE10A83EC914 /* BottleWaterModel.swift in Sources */,
+				2CE48CE32199F64B52765625 /* RemainingWaterBottle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1160,6 +1233,7 @@
 				C3D6367F61D9D8E68A6E21BF /* AchievementEngineTests.swift in Sources */,
 				342229A71BB2678A2FB14D9B /* WeeklyQuestTests.swift in Sources */,
 				87E6869DA83072CDD47ED555 /* SipliV5IntentsTests.swift in Sources */,
+				18CBB0D62D19FE8B95C041B0 /* BottleWaterModelTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1208,6 +1282,12 @@
 			target = 6B55F77A2F8F608C006CE606 /* SipliWatchWidgetsExtension */;
 			targetProxy = 6B55F7882F8F608F006CE606 /* PBXContainerItemProxy */;
 		};
+		D8BB443C99B92AFAF0DFC0C6 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = WaterQuest;
+			target = 8696EFE2052B0D0EA16BCADF /* WaterQuest */;
+			targetProxy = 00DE37883CF2F497959BCD3C /* PBXContainerItemProxy */;
+		};
 		FF2222222222222222222222 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = FF1111111111111111111111 /* SipliWidget */;
@@ -1227,14 +1307,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = WaterQuest/Supporting/WaterQuest.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				INFOPLIST_FILE = WaterQuest/Supporting/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0;
+				MARKETING_VERSION = 5.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration;
 				PRODUCT_NAME = Sipli;
 				SDKROOT = iphoneos;
@@ -1303,6 +1383,37 @@
 			};
 			name = Release;
 		};
+		26F5161074A8A0DE603B44EB /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.bottleuitests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = WaterQuest;
+			};
+			name = Debug;
+		};
+		29D274DD2A65CBE6D13CB3FB /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CLANG_ENABLE_OBJC_WEAK = NO;
+				CODE_SIGNING_ALLOWED = NO;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.bottleuitests;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.9;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = WaterQuest;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
 		348828D7E75E5D4A717526FF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1324,14 +1435,14 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = WaterQuest/Supporting/WaterQuest.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				INFOPLIST_FILE = WaterQuest/Supporting/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0;
+				MARKETING_VERSION = 5.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration;
 				PRODUCT_NAME = Sipli;
 				SDKROOT = iphoneos;
@@ -1347,7 +1458,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = SipliWatchWidgets/SipliWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1365,7 +1476,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 5.0;
+				MARKETING_VERSION = 5.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.watchapp.SipliWatchWidgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -1389,7 +1500,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = SipliWatchWidgets/SipliWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1403,7 +1514,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 5.0;
+				MARKETING_VERSION = 5.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.watchapp.SipliWatchWidgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -1510,7 +1621,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = SipliWidget/SipliWidgetEntitlements.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SipliWidget/Info.plist;
@@ -1520,7 +1631,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 5.0;
+				MARKETING_VERSION = 5.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1538,7 +1649,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = SipliWidget/SipliWidgetEntitlements.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SipliWidget/Info.plist;
@@ -1548,7 +1659,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 5.0;
+				MARKETING_VERSION = 5.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1565,7 +1676,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = SipliWatch/SipliWatch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SipliWatch/Info.plist;
@@ -1575,7 +1686,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0;
+				MARKETING_VERSION = 5.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.watchapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -1593,7 +1704,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = SipliWatch/SipliWatch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 12;
+				CURRENT_PROJECT_VERSION = 14;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SipliWatch/Info.plist;
@@ -1603,7 +1714,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 5.0;
+				MARKETING_VERSION = 5.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.watchapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -1618,6 +1729,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		117D7F33F5AA7A35491F6827 /* Build configuration list for PBXNativeTarget "WaterQuestBottleUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				29D274DD2A65CBE6D13CB3FB /* Release */,
+				26F5161074A8A0DE603B44EB /* Debug */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		1ECB648CD9328926DE997BD7 /* Build configuration list for PBXNativeTarget "WaterQuest" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

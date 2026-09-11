@@ -920,9 +920,8 @@ private struct HydrationSummaryCard: View {
             }
             .frame(maxWidth: .infinity, alignment: .leading)
 
-            LiquidProgressView(
+            RemainingWaterBottle(
                 progress: progress,
-                compositions: compositions,
                 isRegular: isRegular,
                 bottleWidth: isRegular ? 230 : 165,
                 bottleHeight: isRegular ? 340 : 260
