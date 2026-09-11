@@ -95,9 +95,14 @@ class ReleaseSafetyTests(unittest.TestCase):
             upload.assert_not_called()
 
     def test_completed_upload_with_wrong_checksum_cannot_pass(self):
-        with patch.object(asc, "req", return_value={"data": shot("new", "incorrect")}):
+        clock = [0.0]
+        with patch.object(asc, "req", return_value={"data": shot("new", "incorrect")}) as api, \
+             patch.object(asc.time, "monotonic", side_effect=lambda: clock[0]), \
+             patch.object(asc.time, "sleep", side_effect=lambda seconds: clock.__setitem__(0, clock[0] + seconds)):
             with self.assertRaisesRegex(asc.ReleaseError, "checksum"):
                 asc.wait_for_screenshot("new", "expected")
+        self.assertGreater(api.call_count, 1)
+        self.assertLessEqual(clock[0], 30)
 
     def test_reuses_matching_screenshots_and_orders_without_reupload(self):
         first, second = self.asset("first.png", b"a"), self.asset("second.png", b"b")
@@ -205,7 +210,8 @@ class ReleaseSafetyTests(unittest.TestCase):
 
     def test_reordered_provider_readback_is_rejected(self):
         first, second = self.asset("first", b"a"), self.asset("second", b"b")
-        with patch.object(asc, "screenshots", return_value=[shot("second", second.checksum), shot("first", first.checksum)]):
+        with patch.object(asc, "screenshots", return_value=[shot("second", second.checksum), shot("first", first.checksum)]), \
+             patch.object(asc, "wait_for_screenshot", side_effect=asc.ReleaseError("checksum mismatch")):
             with self.assertRaisesRegex(asc.ReleaseError, "order"):
                 asc.verify_screenshot_set("set", [first, second])
 
@@ -268,6 +274,23 @@ class ReleaseSafetyTests(unittest.TestCase):
                     with self.assertRaisesRegex(asc.ReleaseError, "upload failed"):
                         asc.sync_screenshot_set("set", [asset])
                     api.assert_called_once_with("DELETE", "/v1/appScreenshots/retry-reservation")
+
+    def test_complete_state_can_arrive_before_exact_checksum_readback(self):
+        responses = [{"data": shot("new", None)}, {"data": shot("new", "stale")}, {"data": shot("new", "expected")}]
+        with patch.object(asc, "req", side_effect=responses) as api, patch.object(asc.time, "sleep"):
+            result = asc.wait_for_screenshot("new", "expected")
+        self.assertEqual(result["attributes"]["sourceFileChecksum"], "expected")
+        self.assertEqual(api.call_count, 3)
+
+    def test_bulk_screenshot_readback_resolves_lagging_individual_checksums(self):
+        asset = self.asset()
+        resolved = shot("new", asset.checksum)
+        for stale_checksum in (None, "old-checksum"):
+            with self.subTest(stale_checksum=stale_checksum):
+                with patch.object(asc, "screenshots", return_value=[shot("new", stale_checksum)]), \
+                     patch.object(asc, "wait_for_screenshot", return_value=resolved) as refresh:
+                    self.assertEqual(asc.verify_screenshot_set("set", [asset]), [resolved])
+                    refresh.assert_called_once_with("new", asset.checksum, timeout=30)
 
 
 if __name__ == "__main__":

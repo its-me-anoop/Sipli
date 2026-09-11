@@ -311,16 +311,24 @@ def ensure_version(app, version_string):
 
 def wait_for_screenshot(screenshot_id, checksum, timeout=600):
     deadline = time.monotonic() + timeout
+    checksum_deadline = None
     while time.monotonic() < deadline:
         screenshot = req("GET", f"/v1/appScreenshots/{screenshot_id}")["data"]
         state = screenshot_state(screenshot)
         if state == "COMPLETE":
-            if (screenshot["attributes"].get("sourceFileChecksum") or "").lower() != checksum.lower():
-                raise ReleaseError(f"Screenshot {screenshot_id} checksum differs from the local asset")
-            return screenshot
+            if (screenshot["attributes"].get("sourceFileChecksum") or "").lower() == checksum.lower():
+                return screenshot
+            # Apple can expose COMPLETE before its checksum field settles.
+            # Keep the exact-match requirement, with a bounded read-only retry.
+            if checksum_deadline is None:
+                checksum_deadline = min(deadline, time.monotonic() + 30)
         if state == "FAILED":
             raise ReleaseError(f"Screenshot {screenshot_id} processing FAILED")
+        if checksum_deadline is not None and time.monotonic() >= checksum_deadline:
+            raise ReleaseError(f"Screenshot {screenshot_id} checksum differs from the local asset after readback retries")
         time.sleep(5)
+    if checksum_deadline is not None:
+        raise ReleaseError(f"Screenshot {screenshot_id} checksum differs from the local asset after readback retries")
     raise ReleaseError(f"Screenshot {screenshot_id} processing did not complete")
 
 
@@ -374,7 +382,13 @@ def verify_screenshot_set(set_id, assets):
     actual = screenshots(set_id)
     if len(actual) != len(assets):
         raise ReleaseError(f"Screenshot set {set_id} count does not match the manifest")
-    for screenshot, asset in zip(actual, assets):
+    for index, (screenshot, asset) in enumerate(zip(actual, assets)):
+        if screenshot_state(screenshot) == "COMPLETE" and (screenshot["attributes"].get("sourceFileChecksum") or "").lower() != asset.checksum:
+            try:
+                screenshot = wait_for_screenshot(screenshot["id"], asset.checksum, timeout=30)
+                actual[index] = screenshot
+            except ReleaseError as error:
+                raise ReleaseError(f"Screenshot set {set_id} order, processing state, or checksum mismatch") from error
         if screenshot_state(screenshot) != "COMPLETE" or (screenshot["attributes"].get("sourceFileChecksum") or "").lower() != asset.checksum:
             raise ReleaseError(f"Screenshot set {set_id} order, processing state, or checksum mismatch")
     return actual
