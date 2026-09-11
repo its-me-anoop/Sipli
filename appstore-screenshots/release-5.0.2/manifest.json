@@ -1,0 +1,24 @@
+{
+  "version": "5.0.2",
+  "locales": {
+    "en-US": {
+      "APP_IPHONE_67": [
+        "appstore-screenshots/release-5.0.2/iphone/01-see-whats-left-1320x2868.png",
+        "appstore-screenshots/release-5.0.2/iphone/02-every-drink-counts-1320x2868.png",
+        "appstore-screenshots/release-5.0.2/iphone/03-moves-with-you-1320x2868.png",
+        "appstore-screenshots/release-5.0.2/iphone/04-log-a-drink-1320x2868.png",
+        "appstore-screenshots/release-5.0.2/iphone/05-your-daily-diary-1320x2868.png"
+      ],
+      "APP_IPAD_PRO_3GEN_129": [
+        "appstore-screenshots/release-5.0.2/ipad13/01-see-whats-left-2048x2732.png",
+        "appstore-screenshots/release-5.0.2/ipad13/02-every-drink-counts-2048x2732.png",
+        "appstore-screenshots/release-5.0.2/ipad13/03-your-daily-diary-2048x2732.png"
+      ],
+      "APP_IPAD_PRO_3GEN_11": [
+        "appstore-screenshots/release-5.0.2/ipad11/01-see-whats-left-1668x2388.png",
+        "appstore-screenshots/release-5.0.2/ipad11/02-every-drink-counts-1668x2388.png",
+        "appstore-screenshots/release-5.0.2/ipad11/03-your-daily-diary-1668x2388.png"
+      ]
+    }
+  }
+}

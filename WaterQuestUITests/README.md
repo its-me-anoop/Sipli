@@ -66,3 +66,14 @@ Debug simulator launches accept `SIPLI_BOTTLE_GRAVITY_X/Y` and
 `simctl launch`; the UI test sets them directly through `launchEnvironment`.
 These exercise the renderer with injected inputs. **Physical-device motion
 sensing is not verified by simulator results.**
+
+## Storefront captures
+
+Seed 1,000 ml without preunlocking achievements, then run the same UI scheme with
+`-only-testing:WaterQuestBottleUITests`
+`-skip-testing:WaterQuestBottleUITests/BottleFlowTests/testRemainingWaterBottleFlow`.
+The storefront test captures current Home, Diary, Insights, and Log Intake on
+iPhone or iPad. Both device layouts were captured successfully for version 5.0.2.
+Use a fresh result path and export attachments with `xcrun xcresulttool export
+attachments`. The dedicated iPad used here is
+`81D6DF2F-256C-4D10-9E84-AC44E769CC0C`, also named `Sipli Bottle QA`.

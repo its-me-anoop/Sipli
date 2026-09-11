@@ -8,6 +8,28 @@ final class BottleFlowTests: XCTestCase {
         continueAfterFailure = false
     }
 
+    /// Storefront captures use a separately seeded day with 1,000 ml logged.
+    @MainActor
+    func testStorefrontScreenshots() throws {
+        let app = XCUIApplication()
+        launch(app)
+        assertRemaining(50, in: app)
+        capture(app, "store-home-half")
+
+        app.buttons["Diary"].firstMatch.tap()
+        XCTAssertTrue(app.navigationBars["Diary"].waitForExistence(timeout: 10), app.debugDescription)
+        capture(app, "store-diary")
+
+        app.buttons["Insights"].firstMatch.tap()
+        XCTAssertTrue(app.navigationBars["Insights"].waitForExistence(timeout: 10), app.debugDescription)
+        capture(app, "store-insights")
+
+        goHome(app)
+        app.buttons["Log water intake"].tap()
+        XCTAssertTrue(app.navigationBars["Log Intake"].waitForExistence(timeout: 10), app.debugDescription)
+        capture(app, "store-log")
+    }
+
     @MainActor
     func testRemainingWaterBottleFlow() throws {
         let app = XCUIApplication()
@@ -180,7 +202,7 @@ final class BottleFlowTests: XCTestCase {
 
     @MainActor
     private func goHome(_ app: XCUIApplication) {
-        let home = app.tabBars.buttons["Home"]
+        let home = app.buttons["Home"].firstMatch
         XCTAssertTrue(home.waitForExistence(timeout: 10))
         let ready = XCTNSPredicateExpectation(
             predicate: NSPredicate(format: "hittable == true"), object: home

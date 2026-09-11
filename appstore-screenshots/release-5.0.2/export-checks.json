@@ -1,0 +1,251 @@
+[
+  {
+    "device": "iphone",
+    "width": 1320,
+    "height": 2868,
+    "name": "01-see-whats-left",
+    "heading": {
+      "left": 96,
+      "right": 1236,
+      "top": 262,
+      "bottom": 555.9375
+    },
+    "screens": [
+      {
+        "file": "source/iphone-full.png",
+        "naturalWidth": 1206,
+        "naturalHeight": 2622,
+        "renderedWidth": 882,
+        "renderedHeight": 1917.578125
+      }
+    ],
+    "filename": "01-see-whats-left-1320x2868.png"
+  },
+  {
+    "device": "iphone",
+    "width": 1320,
+    "height": 2868,
+    "name": "02-every-drink-counts",
+    "heading": {
+      "left": 96,
+      "right": 1224,
+      "top": 264,
+      "bottom": 557.9375
+    },
+    "screens": [
+      {
+        "file": "source/iphone-full.png",
+        "naturalWidth": 1206,
+        "naturalHeight": 2622,
+        "renderedWidth": 529,
+        "renderedHeight": 1150.109375
+      },
+      {
+        "file": "source/iphone-half.png",
+        "naturalWidth": 1206,
+        "naturalHeight": 2622,
+        "renderedWidth": 569,
+        "renderedHeight": 1237.078125
+      }
+    ],
+    "filename": "02-every-drink-counts-1320x2868.png"
+  },
+  {
+    "device": "iphone",
+    "width": 1320,
+    "height": 2868,
+    "name": "03-moves-with-you",
+    "heading": {
+      "left": 96,
+      "right": 1224,
+      "top": 274,
+      "bottom": 566.9375
+    },
+    "screens": [
+      {
+        "file": "source/iphone-tilt.png",
+        "naturalWidth": 1206,
+        "naturalHeight": 2622,
+        "renderedWidth": 1008,
+        "renderedHeight": 2191.515625
+      }
+    ],
+    "filename": "03-moves-with-you-1320x2868.png"
+  },
+  {
+    "device": "iphone",
+    "width": 1320,
+    "height": 2868,
+    "name": "04-log-a-drink",
+    "heading": {
+      "left": 96,
+      "right": 1224,
+      "top": 267,
+      "bottom": 560.9375
+    },
+    "screens": [
+      {
+        "file": "source/iphone-log.png",
+        "naturalWidth": 1206,
+        "naturalHeight": 2622,
+        "renderedWidth": 949,
+        "renderedHeight": 2063.234375
+      }
+    ],
+    "filename": "04-log-a-drink-1320x2868.png"
+  },
+  {
+    "device": "iphone",
+    "width": 1320,
+    "height": 2868,
+    "name": "05-your-daily-diary",
+    "heading": {
+      "left": 96,
+      "right": 1224,
+      "top": 270,
+      "bottom": 562.9375
+    },
+    "screens": [
+      {
+        "file": "source/iphone-diary.png",
+        "naturalWidth": 1206,
+        "naturalHeight": 2622,
+        "renderedWidth": 904,
+        "renderedHeight": 1965.40625
+      }
+    ],
+    "filename": "05-your-daily-diary-1320x2868.png"
+  },
+  {
+    "device": "ipad13",
+    "width": 2048,
+    "height": 2732,
+    "name": "01-see-whats-left",
+    "heading": {
+      "left": 116,
+      "right": 1932,
+      "top": 251,
+      "bottom": 412
+    },
+    "screens": [
+      {
+        "file": "source/ipad-full.png",
+        "naturalWidth": 2064,
+        "naturalHeight": 2752,
+        "renderedWidth": 1400,
+        "renderedHeight": 1866.65625
+      }
+    ],
+    "filename": "01-see-whats-left-2048x2732.png"
+  },
+  {
+    "device": "ipad13",
+    "width": 2048,
+    "height": 2732,
+    "name": "02-every-drink-counts",
+    "heading": {
+      "left": 116,
+      "right": 1932,
+      "top": 251,
+      "bottom": 412
+    },
+    "screens": [
+      {
+        "file": "source/ipad-half.png",
+        "naturalWidth": 2064,
+        "naturalHeight": 2752,
+        "renderedWidth": 1470,
+        "renderedHeight": 1960
+      }
+    ],
+    "filename": "02-every-drink-counts-2048x2732.png"
+  },
+  {
+    "device": "ipad13",
+    "width": 2048,
+    "height": 2732,
+    "name": "03-your-daily-diary",
+    "heading": {
+      "left": 116,
+      "right": 1932,
+      "top": 251,
+      "bottom": 412
+    },
+    "screens": [
+      {
+        "file": "source/ipad-diary.png",
+        "naturalWidth": 2064,
+        "naturalHeight": 2752,
+        "renderedWidth": 1470,
+        "renderedHeight": 1960
+      }
+    ],
+    "filename": "03-your-daily-diary-2048x2732.png"
+  },
+  {
+    "device": "ipad11",
+    "width": 1668,
+    "height": 2388,
+    "name": "01-see-whats-left",
+    "heading": {
+      "left": 92,
+      "right": 1576,
+      "top": 250,
+      "bottom": 384
+    },
+    "screens": [
+      {
+        "file": "source/ipad-full.png",
+        "naturalWidth": 2064,
+        "naturalHeight": 2752,
+        "renderedWidth": 1172,
+        "renderedHeight": 1562.65625
+      }
+    ],
+    "filename": "01-see-whats-left-1668x2388.png"
+  },
+  {
+    "device": "ipad11",
+    "width": 1668,
+    "height": 2388,
+    "name": "02-every-drink-counts",
+    "heading": {
+      "left": 92,
+      "right": 1576,
+      "top": 250,
+      "bottom": 384
+    },
+    "screens": [
+      {
+        "file": "source/ipad-half.png",
+        "naturalWidth": 2064,
+        "naturalHeight": 2752,
+        "renderedWidth": 1220,
+        "renderedHeight": 1626.65625
+      }
+    ],
+    "filename": "02-every-drink-counts-1668x2388.png"
+  },
+  {
+    "device": "ipad11",
+    "width": 1668,
+    "height": 2388,
+    "name": "03-your-daily-diary",
+    "heading": {
+      "left": 92,
+      "right": 1576,
+      "top": 250,
+      "bottom": 384
+    },
+    "screens": [
+      {
+        "file": "source/ipad-diary.png",
+        "naturalWidth": 2064,
+        "naturalHeight": 2752,
+        "renderedWidth": 1280,
+        "renderedHeight": 1706.65625
+      }
+    ],
+    "filename": "03-your-daily-diary-1668x2388.png"
+  }
+]

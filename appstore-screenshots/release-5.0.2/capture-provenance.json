@@ -1,0 +1,68 @@
+[
+  {
+    "source": "source/ipad-diary.png",
+    "width": 2064,
+    "height": 2752,
+    "sha256": "63d73ff53d782b15dee8ed3074def9a3fa6f33c51e1486d27da27e61288498e2"
+  },
+  {
+    "source": "source/ipad-full.png",
+    "width": 2064,
+    "height": 2752,
+    "sha256": "07290b2b32ece5afae0a6b6d6da9f320833644d438ac2b28c93525aa1cb5b58a"
+  },
+  {
+    "source": "source/ipad-half.png",
+    "width": 2064,
+    "height": 2752,
+    "sha256": "7a7214f336f2c0d577c387007e235d0b374d25a62b09d193a96188494ba0a6de"
+  },
+  {
+    "source": "source/ipad-log.png",
+    "width": 2064,
+    "height": 2752,
+    "sha256": "25fef6bef9a31a0f7c579d2079de1483c4bec4d237a2b1a384071003b1b3ac2c"
+  },
+  {
+    "source": "source/iphone-dark.png",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "9a92d8e8e99f8017abea749ed6fa73b7647eda1008bfdc310efb9952ea5823ab"
+  },
+  {
+    "source": "source/iphone-diary.png",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "9c904ea36fd92dbb41348c4916e5373eebdeedc15416cd862586f1d8246101b8"
+  },
+  {
+    "source": "source/iphone-empty.png",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "69a685d6ac148c2f8b1fa2e42034254c53fb479c66cbd1e1be11fc8430a7c8d6"
+  },
+  {
+    "source": "source/iphone-full.png",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "c0b5ce974174d0c088eadf09f5cac8c05103a2cb79cf29a0f11f14e3893740ae"
+  },
+  {
+    "source": "source/iphone-half.png",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "d1cf83d1498710d5dcc30249e097b1c1838d8150c178d6fac39de756e240f152"
+  },
+  {
+    "source": "source/iphone-log.png",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "177095ea3ff3de117bedf8ca1893d7109d7e5c596bb058fd165b210df78955e6"
+  },
+  {
+    "source": "source/iphone-tilt.png",
+    "width": 1206,
+    "height": 2622,
+    "sha256": "a531f90245722c3fcbd0cc8d20ea481d6505b2b6ad727053a3acf9229ff01620"
+  }
+]

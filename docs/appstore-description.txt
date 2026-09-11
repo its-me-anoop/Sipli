@@ -1,0 +1,42 @@
+See how much is left to reach your daily water goal. Sipli makes logging a drink quick and your progress easy to read.
+
+A BOTTLE THAT FOLLOWS YOUR DAY
+
+The Home bottle starts full and drains as you log drinks. Its percentage shows how much of your daily goal is left. Tilt your phone and the water moves with it, then settles. With Reduce Motion enabled, the level updates without the motion effects.
+
+QUICK TO LOG, EASY TO CORRECT
+
+• Add water with quick amounts or choose your own serving size.
+• Set a daily goal and use reminders that fit your waking hours.
+• Keep a drink diary, add a missed entry, or edit and delete a previous log.
+• Check daily progress, streaks, a monthly heatmap, and 7- and 30-day trends.
+• Log water from Apple Watch and keep progress nearby with Home Screen and Lock Screen widgets.
+
+SMALL REASONS TO KEEP GOING
+
+Build a streak, take on weekly quests, and discover 31 badges in the Trophy Room. Share a daily summary, a week of progress, or a badge you've earned. Siri shortcuts help you log water and check your progress without opening the app.
+
+FREE TO START
+
+Basic water logging, custom daily goals, diary history, and standard reminders are available without a subscription.
+
+SIPLI PREMIUM
+
+An optional subscription adds:
+
+• More than 35 beverage types, including coffee, tea, juice, and smoothies, with drink-specific hydration estimates.
+• Apple Health sync for water intake, workouts, and active energy, with your permission.
+• Daily goal adjustments for local temperature, humidity, workouts, and active days.
+• Smart reminders that respond to your schedule and progress.
+• Hydration tips and insight summaries, with on-device Apple Intelligence on supported devices. Built-in guidance is available when on-device AI is unavailable.
+
+Monthly and annual plans are available. Prices, billing periods, and any eligible trial offers are shown before purchase. Subscriptions renew automatically unless canceled at least 24 hours before the current period ends. Payment is charged to your Apple Account. Manage or cancel your subscription in your App Store account settings.
+
+PRIVATE BY DEFAULT
+
+No account to create. No ad tracking. No developer-operated servers. Sipli stores your data on your device and uses Apple-managed iCloud sync when available. Apple Health and location access are optional. On-device AI does not send your data to external AI services.
+
+Hydration goals and beverage factors are estimates for general wellness, not medical advice.
+
+Privacy Policy: https://its-me-anoop.github.io/Sipli/privacy
+Terms of Use: https://its-me-anoop.github.io/Sipli/terms

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Sipli 5.0.2 · App Store</title>
+  <style>
+    :root { --paper:oklch(96.6% .009 84); --ink:oklch(21% .028 253); --blue:oklch(46% .18 262); --mist:oklch(92.5% .018 253); --navy:oklch(25% .043 253); --muted:oklch(43% .03 253); }
+    * { box-sizing:border-box; }
+    html,body { margin:0; background:var(--paper); color:var(--ink); font-family:"Avenir Next",Avenir,sans-serif; }
+    .slide { position:relative; width:1320px; height:2868px; overflow:hidden; background:var(--paper); }
+    .brand { position:absolute; left:96px; top:92px; display:flex; align-items:center; gap:24px; font-size:48px; font-weight:600; letter-spacing:-1.7px; }
+    .brand img { width:78px; height:78px; border-radius:19px; }
+    .category { position:absolute; right:96px; top:123px; font-size:25px; letter-spacing:.09em; font-weight:600; text-transform:uppercase; }
+    .copy { position:absolute; left:96px; top:262px; width:1128px; z-index:2; }
+    h1 { font-family:Baskerville,"Palatino Linotype",serif; font-weight:400; font-size:151px; line-height:.97; letter-spacing:-5px; margin:0; }
+    p { font-size:42px; line-height:1.5; max-width:1000px; margin:36px 0 0; color:var(--muted); }
+    em { font-style:italic; color:var(--blue); }
+    .device { position:absolute; padding:13px; background:var(--ink); border-radius:83px; overflow:hidden; line-height:0; }
+    .device img { width:100%; height:auto; display:block; border-radius:70px; }
+    .device.flat { padding:0; border-radius:56px; }
+    .device.flat img { border-radius:56px; }
+    .hero .device { left:206px; top:755px; width:908px; }
+    .hero .copy { width:1140px; }
+    .progress { background:var(--mist); }
+    .progress .copy { top:264px; }
+    .progress .device.start { left:80px; top:900px; width:547px; border-radius:54px; padding:9px; }
+    .progress .device.start img { border-radius:45px; }
+    .progress .device.half { left:653px; top:1190px; width:587px; border-radius:57px; padding:9px; }
+    .progress .device.half img { border-radius:48px; }
+    .stage { position:absolute; font-size:33px; line-height:1.5; font-weight:600; }
+    .stage.start { left:82px; top:826px; }
+    .stage.half { left:656px; top:1116px; }
+    .closing { position:absolute; left:96px; bottom:106px; font-family:Baskerville,serif; font-size:62px; line-height:1.18; max-width:1000px; }
+    .tilt { background:var(--blue); color:var(--paper); }
+    .tilt .brand img { outline:1px solid oklch(90% .02 253 / .15); }
+    .tilt .copy { top:274px; }
+    .tilt p { color:var(--paper); }
+    .tilt .device { left:143px; top:850px; width:1034px; }
+    .logging .copy { top:267px; }
+    .logging .device { left:78px; top:910px; width:975px; }
+    .logging .rail { position:absolute; right:107px; top:981px; writing-mode:vertical-rl; font-size:28px; letter-spacing:.06em; text-transform:uppercase; color:var(--blue); }
+    .diary { background:var(--navy); color:var(--paper); }
+    .diary p { color:var(--paper); }
+    .diary em { color:var(--paper); }
+    .diary .device { left:238px; top:823px; width:930px; background:oklch(13% .025 253); }
+    .diary .copy { top:270px; }
+    .ipad { width:2048px; height:2732px; }
+    .ipad .brand { left:116px; top:86px; font-size:49px; }
+    .ipad .category { right:116px; top:113px; font-size:29px; }
+    .ipad .copy { left:116px; top:251px; width:1816px; }
+    .ipad h1 { font-size:160px; letter-spacing:-5.5px; line-height:1; }
+    .ipad p { font-size:46px; max-width:1590px; margin-top:26px; }
+    .ipad .device { padding:20px; border-radius:59px; }
+    .ipad .device img { border-radius:39px; }
+    .ipad.hero .device { left:304px; top:694px; width:1440px; }
+    .ipad.progress .device { left:420px; top:815px; width:1510px; }
+    .ipad.progress .closing { left:116px; bottom:120px; font-size:56px; max-width:280px; }
+    .ipad.logging .device { left:130px; top:749px; width:1480px; }
+    .ipad.logging .rail { right:208px; top:922px; font-size:34px; }
+    .ipad.diary .device { left:236px; top:755px; width:1510px; }
+    .ipad11 { width:1668px; height:2388px; }
+    .ipad11 .brand { left:92px; top:72px; }
+    .ipad11 .category { right:92px; top:101px; font-size:25px; }
+    .ipad11 .copy { left:92px; top:250px; width:1484px; }
+    .ipad11 h1 { font-size:133px; letter-spacing:-4.8px; }
+    .ipad11 p { font-size:39px; max-width:1400px; }
+    .ipad11.hero .device { left:228px; top:640px; width:1212px; }
+    .ipad11.progress .device { left:330px; top:694px; width:1260px; }
+    .ipad11.progress .closing { left:92px; bottom:96px; font-size:44px; max-width:210px; }
+    .ipad11.diary .device { left:151px; top:660px; width:1320px; }
+    @media(prefers-reduced-motion:reduce) { * { animation:none!important; transition:none!important; } }
+  </style>
+</head>
+<body>
+  <main id="slide" class="slide" aria-label="Sipli App Store screenshot"></main>
+  <script>
+    const params=new URLSearchParams(location.search);
+    const device=params.get('device')?.startsWith('ipad')?'ipad':'iphone';
+    const smallPad=params.get('device')==='ipad11';
+    const number=Number(params.get('slide')||1);
+    const series={
+      iphone:[
+        {name:'01-see-whats-left',class:'hero',category:'Daily water tracker',title:'See what’s<br><em>left to drink.</em>',body:'Your daily goal, in a bottle.',screens:[['iphone-full.png','Full bottle before logging any water','']]},
+        {name:'02-every-drink-counts',class:'progress',category:'Your progress',title:'Every drink.<br><em>A little less.</em>',body:'Log your water. Watch the bottle empty.',screens:[['iphone-full.png','Full bottle at the start of the day','start'],['iphone-half.png','Half a bottle left after logging 1000 millilitres','half']],extras:'<div class="stage start">Start full.</div><div class="stage half">Keep sipping.</div><div class="closing">An empty bottle.<br>A goal reached.</div>'},
+        {name:'03-moves-with-you',class:'tilt',category:'A bottle that moves',title:'Water with<br>a little life.',body:'A gentle tilt sets the water in motion.',screens:[['iphone-tilt.png','Bottle water responding to a left tilt','']]},
+        {name:'04-log-a-drink',class:'logging',category:'Simple logging',title:'Had a drink?<br><em>Make it count.</em>',body:'Choose your amount. Save your sip.',screens:[['iphone-log.png','The Sipli Log Intake screen','']],extras:'<div class="rail">A small moment for yourself</div>'},
+        {name:'05-your-daily-diary',class:'diary',category:'Your water diary',title:'Every sip has<br>a place.',body:'See your daily log. Keep it up to date.',screens:[['iphone-diary.png','The Sipli Diary screen with logged water','']]},
+      ],
+      ipad:[
+        {name:'01-see-whats-left',class:'hero',category:'Daily water tracker',title:'See what’s <em>left to drink.</em>',body:'Your daily goal, in a bottle.',screens:[['ipad-full.png','Sipli Home on iPad with a full bottle','']]},
+        {name:'02-every-drink-counts',class:'progress',category:'Your progress',title:'Every drink. <em>A little less.</em>',body:'Log your water. Watch the bottle empty.',screens:[['ipad-half.png','Sipli Home on iPad with half a bottle left','']],extras:'<div class="closing">One sip<br>at a time.</div>'},
+        {name:'03-your-daily-diary',class:'diary',category:'Your water diary',title:'Every sip <em>has a place.</em>',body:'See your daily log. Keep it up to date.',screens:[['ipad-diary.png','Sipli Diary on iPad with logged water','']]},
+      ]
+    };
+    const item=series[device][number-1];
+    if(!item) throw new Error('Unknown screenshot');
+    const main=document.querySelector('main');
+    main.className=`slide ${device} ${smallPad?'ipad11':''} ${item.class}`;
+    main.dataset.filename=item.name;
+    main.innerHTML=`<div class="brand"><img src="../public/app-icon.png" alt="">Sipli</div><div class="category">${item.category}</div><header class="copy"><h1>${item.title}</h1><p>${item.body}</p></header>${item.screens.map(([file,alt,cls])=>`<div class="device ${cls}"><img src="source/${file}" alt="${alt}"></div>`).join('')}${item.extras||''}`;
+    document.title=`Sipli · ${item.name}`;
+    window.releaseReady=Promise.all([...document.images].map(image=>image.decode())).then(()=>document.fonts.ready);
+  </script>
+</body>
+</html>

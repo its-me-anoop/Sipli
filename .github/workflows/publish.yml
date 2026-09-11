@@ -2,19 +2,33 @@ name: Publish to App Store
 
 # Metadata + review submission via the App Store Connect API. The ASC secrets
 # live here (the dev machine has only the .p8, not the issuer id), so this
-# runs in CI. `fetch` is read-only reconnaissance; `publish` sets the What's
-# New (+ optional docs/appstore-description.txt), attaches the build, and
-# submits for review. See scripts/asc_publish.py.
+# runs in CI. `fetch` is read-only; `prepare` uploads and verifies the listing;
+# `publish` submits the verified version for automatic release after approval.
+# See scripts/asc_publish.py and the versioned screenshot manifest.
 
 on:
   workflow_dispatch:
     inputs:
       mode:
-        description: "fetch (read-only dump) or publish (submit for review)"
+        description: "fetch (read-only), prepare (draft listing), or publish (submit for review)"
         required: true
         default: fetch
         type: choice
-        options: [fetch, publish]
+        options: [fetch, prepare, publish]
+      version:
+        description: "App Store version"
+        required: true
+        default: "5.0.2"
+        type: string
+      build:
+        description: "Processed TestFlight build number"
+        required: true
+        default: "14"
+        type: string
+
+concurrency:
+  group: sipli-app-store-ios
+  cancel-in-progress: false
 
 jobs:
   publish:
@@ -35,6 +49,9 @@ jobs:
         env:
           ASC_KEY_ID: ${{ secrets.ASC_KEY_ID }}
           ASC_ISSUER_ID: ${{ secrets.ASC_ISSUER_ID }}
+          PUBLISH_VERSION: ${{ inputs.version }}
+          PUBLISH_BUILD: ${{ inputs.build }}
         run: |
           pip3 install --quiet PyJWT cryptography requests
-          python3 scripts/asc_publish.py "${{ inputs.mode }}"
+          python3 -m unittest discover -s scripts/tests -p 'test_asc_publish.py'
+          python3 -u scripts/asc_publish.py "${{ inputs.mode }}"
