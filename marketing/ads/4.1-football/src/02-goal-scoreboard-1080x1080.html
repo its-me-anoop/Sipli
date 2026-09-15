@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sipli 4.1 — GOAL scoreboard (1080x1080)</title>
+<style>
+  html,body{margin:0;padding:0;width:1080px;height:1080px;overflow:hidden;
+    font-family:'Liberation Sans',-apple-system,"SF Pro Display","Helvetica Neue",Arial,sans-serif;}
+  #ad{position:relative;width:1080px;height:1080px;overflow:hidden;color:#fff;
+    background:radial-gradient(120% 90% at 50% 8%,#0A3D91 0%,#062A66 55%,#041B45 100%);}
+
+  .brand{position:absolute;top:56px;left:64px;font-weight:700;font-size:56px;letter-spacing:-1.5px;}
+  .brand .dot{display:inline-block;width:16px;height:16px;border-radius:50%;background:#30C2A3;margin-left:8px;vertical-align:middle;transform:translateY(-6px);}
+  .newchip{position:absolute;top:62px;right:64px;height:56px;padding:0 26px;border-radius:999px;
+    background:#30C2A3;color:#04314F;font-weight:700;font-size:24px;letter-spacing:1.5px;
+    display:flex;align-items:center;box-shadow:0 10px 24px rgba(4,49,79,.35);}
+
+  .cf{position:absolute;border-radius:3px;opacity:.9;}
+
+  .goal{position:absolute;top:180px;left:0;right:0;text-align:center;
+    font-size:230px;font-weight:700;font-style:italic;letter-spacing:-6px;color:#fff;
+    text-shadow:0 0 60px rgba(48,194,163,.55),0 10px 30px rgba(2,16,42,.6);}
+  .goal .teal{color:#30C2A3;}
+
+  .board{position:absolute;top:470px;left:120px;right:120px;height:210px;border-radius:28px;
+    background:#041531;border:3px solid rgba(48,194,163,.5);
+    box-shadow:0 24px 60px rgba(2,12,32,.6),inset 0 0 40px rgba(28,120,245,.18);
+    display:flex;align-items:center;justify-content:center;gap:44px;}
+  .board .team{font-size:44px;font-weight:700;letter-spacing:4px;color:rgba(255,255,255,.92);width:250px;text-align:center;}
+  .board .score{font-family:'Liberation Mono','DejaVu Sans Mono',monospace;font-size:104px;font-weight:700;color:#5EE6C6;
+    text-shadow:0 0 26px rgba(48,194,163,.75);letter-spacing:2px;white-space:nowrap;}
+  .board .label{position:absolute;top:-24px;left:50%;transform:translateX(-50%);height:48px;padding:0 26px;border-radius:999px;
+    background:#1C78F5;color:#fff;font-size:22px;font-weight:700;letter-spacing:3px;display:flex;align-items:center;}
+
+  .quote{position:absolute;top:748px;left:120px;right:120px;text-align:center;
+    font-size:38px;line-height:1.35;font-weight:500;color:rgba(255,255,255,.9);}
+  .quote em{font-style:normal;color:#5EE6C6;font-weight:700;}
+
+  .cta{position:absolute;bottom:64px;left:50%;transform:translateX(-50%);height:84px;padding:0 52px;border-radius:999px;
+    background:#fff;color:#0A3D91;display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:32px;box-shadow:0 16px 34px rgba(2,12,32,.6);white-space:nowrap;}
+  .cta .arrow{margin-left:14px;color:#30C2A3;}
+</style>
+</head>
+<body>
+<div id="ad">
+  <!-- confetti -->
+  <div class="cf" style="top:120px;left:180px;width:18px;height:34px;background:#30C2A3;transform:rotate(24deg);"></div>
+  <div class="cf" style="top:210px;left:90px;width:14px;height:26px;background:#F5C542;transform:rotate(-32deg);"></div>
+  <div class="cf" style="top:330px;left:150px;width:16px;height:28px;background:#fff;transform:rotate(58deg);opacity:.7;"></div>
+  <div class="cf" style="top:150px;right:220px;width:18px;height:32px;background:#F5C542;transform:rotate(-18deg);"></div>
+  <div class="cf" style="top:260px;right:110px;width:14px;height:28px;background:#30C2A3;transform:rotate(40deg);"></div>
+  <div class="cf" style="top:380px;right:170px;width:16px;height:26px;background:#fff;transform:rotate(-52deg);opacity:.7;"></div>
+  <div class="cf" style="top:430px;left:300px;width:12px;height:24px;background:#F5C542;transform:rotate(12deg);"></div>
+  <div class="cf" style="top:120px;left:520px;width:14px;height:24px;background:#5EE6C6;transform:rotate(-40deg);"></div>
+  <div class="cf" style="top:90px;right:420px;width:12px;height:26px;background:#fff;transform:rotate(30deg);opacity:.65;"></div>
+  <div class="cf" style="top:420px;right:320px;width:14px;height:24px;background:#1C78F5;transform:rotate(66deg);"></div>
+  <div class="cf" style="top:700px;left:70px;width:14px;height:26px;background:#30C2A3;transform:rotate(-24deg);"></div>
+  <div class="cf" style="top:760px;right:70px;width:14px;height:26px;background:#F5C542;transform:rotate(36deg);"></div>
+
+  <div class="brand">Sipli<span class="dot"></span></div>
+  <div class="newchip">NEW IN 4.1</div>
+
+  <div class="goal">GOAL<span class="teal">!</span></div>
+
+  <div class="board">
+    <div class="label">MATCH DAY</div>
+    <div class="team">YOU</div>
+    <div class="score">3&nbsp;&ndash;&nbsp;0</div>
+    <div class="team">THIRST</div>
+  </div>
+
+  <div class="quote">&ldquo;Full time. Goal reached &mdash; <em>that&rsquo;s a win</em> for today&rsquo;s match.&rdquo;<br>Every drink you log is a goal.</div>
+
+  <div class="cta">Get Sipli free <span class="arrow">&rsaquo;</span></div>
+</div>
+</body>
+</html>
