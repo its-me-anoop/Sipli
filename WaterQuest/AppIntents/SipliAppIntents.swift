@@ -97,6 +97,103 @@ enum FluidTypeAppEnum: String, AppEnum {
     }
 }
 
+
+// MARK: - DrinkAmountAppEnum
+
+/// Closed set of speakable amounts for App Shortcut phrases.
+/// App Shortcuts can only interpolate AppEnum/AppEntity (not Int), so free-form
+/// "300" must match a case via DisplayRepresentation title/synonyms.
+enum DrinkAmountAppEnum: String, AppEnum {
+    case ml100 = "100"
+    case ml150 = "150"
+    case ml200 = "200"
+    case ml250 = "250"
+    case ml300 = "300"
+    case ml350 = "350"
+    case ml400 = "400"
+    case ml500 = "500"
+    case ml600 = "600"
+    case ml750 = "750"
+    case ml1000 = "1000"
+    case glass
+    case cup
+
+    static var typeDisplayRepresentation = TypeDisplayRepresentation(name: "Amount")
+
+    static var caseDisplayRepresentations: [DrinkAmountAppEnum: DisplayRepresentation] = [
+        .ml100: DisplayRepresentation(
+            title: "100 milliliters",
+            synonyms: ["100 ml", "100 mL", "100 millilitres", "100mls"]
+        ),
+        .ml150: DisplayRepresentation(
+            title: "150 milliliters",
+            synonyms: ["150 ml", "150 mL", "150 millilitres", "150mls"]
+        ),
+        .ml200: DisplayRepresentation(
+            title: "200 milliliters",
+            synonyms: ["200 ml", "200 mL", "200 millilitres", "200mls"]
+        ),
+        .ml250: DisplayRepresentation(
+            title: "250 milliliters",
+            synonyms: ["250 ml", "250 mL", "250 millilitres", "250mls"]
+        ),
+        .ml300: DisplayRepresentation(
+            title: "300 milliliters",
+            synonyms: ["300 ml", "300 mL", "300 millilitres", "300mls", "300ml"]
+        ),
+        .ml350: DisplayRepresentation(
+            title: "350 milliliters",
+            synonyms: ["350 ml", "350 mL", "350 millilitres", "350mls"]
+        ),
+        .ml400: DisplayRepresentation(
+            title: "400 milliliters",
+            synonyms: ["400 ml", "400 mL", "400 millilitres", "400mls"]
+        ),
+        .ml500: DisplayRepresentation(
+            title: "500 milliliters",
+            synonyms: ["500 ml", "500 mL", "500 millilitres", "500mls", "half a liter", "half a litre"]
+        ),
+        .ml600: DisplayRepresentation(
+            title: "600 milliliters",
+            synonyms: ["600 ml", "600 mL", "600 millilitres", "600mls"]
+        ),
+        .ml750: DisplayRepresentation(
+            title: "750 milliliters",
+            synonyms: ["750 ml", "750 mL", "750 millilitres", "750mls"]
+        ),
+        .ml1000: DisplayRepresentation(
+            title: "1000 milliliters",
+            synonyms: ["1000 ml", "1000 mL", "1 liter", "1 litre", "a liter", "a litre"]
+        ),
+        .glass: DisplayRepresentation(
+            title: "a glass",
+            synonyms: ["glass", "a glass of", "one glass"]
+        ),
+        .cup: DisplayRepresentation(
+            title: "a cup",
+            synonyms: ["cup", "a cup of", "one cup"]
+        ),
+    ]
+
+    var milliliters: Int {
+        switch self {
+        case .ml100: return 100
+        case .ml150: return 150
+        case .ml200: return 200
+        case .ml250: return 250
+        case .ml300: return 300
+        case .ml350: return 350
+        case .ml400: return 400
+        case .ml500: return 500
+        case .ml600: return 600
+        case .ml750: return 750
+        case .ml1000: return 1000
+        case .glass: return 250
+        case .cup: return 240
+        }
+    }
+}
+
 // MARK: - LogWaterIntent
 
 struct LogWaterIntent: AppIntent {
@@ -107,14 +204,20 @@ struct LogWaterIntent: AppIntent {
     @Parameter(title: "Amount (mL)", default: 250, inclusiveRange: (50, 2000))
     var amountInMilliliters: Int
 
+    /// Speakable preset for App Shortcut phrases (AppEnum). When set, wins over
+    /// `amountInMilliliters` so Siri-bound amounts are not stuck at the Int default.
+    @Parameter(title: "Preset Amount")
+    var presetAmount: DrinkAmountAppEnum?
+
     @Parameter(title: "Fluid Type")
     var fluidType: FluidTypeAppEnum?
 
     init() {}
 
-    init(amountInMilliliters: Int, fluidType: FluidTypeAppEnum? = nil) {
+    init(amountInMilliliters: Int, fluidType: FluidTypeAppEnum? = nil, presetAmount: DrinkAmountAppEnum? = nil) {
         self.amountInMilliliters = amountInMilliliters
         self.fluidType = fluidType
+        self.presetAmount = presetAmount
     }
 
     static var parameterSummary: some ParameterSummary {
@@ -138,7 +241,7 @@ struct LogWaterIntent: AppIntent {
 
     func perform() async throws -> some IntentResult & ProvidesDialog {
         let resolvedFluid = fluidType?.toFluidType() ?? .water
-        let amount = amountInMilliliters
+        let amount = presetAmount?.milliliters ?? amountInMilliliters
 
         // Coordinated read-modify-write: Siri/Shortcuts can run this while
         // the widget or app writes the same shared state file.
