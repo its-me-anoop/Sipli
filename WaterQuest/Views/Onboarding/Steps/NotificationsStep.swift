@@ -114,7 +114,7 @@ struct NotificationsStep: View {
             .frame(height: 110, alignment: .top)
             .background(
                 RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .fill(Color.white.opacity(0.95))
+                    .fill(OnboardingPalette.card.opacity(0.95))
             )
             .shadow(color: OnboardingPalette.ink.opacity(0.18), radius: 30, x: 0, y: 12)
             .padding(.horizontal, 0)
@@ -124,7 +124,7 @@ struct NotificationsStep: View {
 
     private func notifCardSurface() -> some View {
         RoundedRectangle(cornerRadius: 22, style: .continuous)
-            .fill(Color.white.opacity(0.7))
+            .fill(OnboardingPalette.card.opacity(0.7))
     }
 
     private var cadenceRow: some View {
@@ -159,7 +159,7 @@ struct NotificationsStep: View {
             .frame(maxWidth: .infinity)
             .background(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(selected ? OnboardingPalette.ink : Color.white)
+                    .fill(selected ? OnboardingPalette.ink : OnboardingPalette.card)
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)

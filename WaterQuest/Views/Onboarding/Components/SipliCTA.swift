@@ -80,40 +80,6 @@ struct SipliCTA: View {
     }
 }
 
-/// Compact circular back button.
-struct SipliBackButton: View {
-    let action: () -> Void
-    @State private var pressed = false
-
-    var body: some View {
-        Button(action: {
-            Haptics.selection()
-            action()
-        }) {
-            Image(systemName: "arrow.left")
-                .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(OnboardingPalette.ink)
-                .frame(width: 40, height: 40)
-                .background(
-                    Circle()
-                        .fill(OnboardingPalette.ink.opacity(pressed ? 0.10 : 0.06))
-                )
-                .scaleEffect(pressed ? 0.92 : 1)
-        }
-        .buttonStyle(.plain)
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { _ in
-                    if !pressed { withAnimation(.easeOut(duration: 0.12)) { pressed = true } }
-                }
-                .onEnded { _ in
-                    withAnimation(.easeOut(duration: 0.18)) { pressed = false }
-                }
-        )
-        .accessibilityLabel("Back")
-    }
-}
-
 /// Custom toggle styled like the design's `.switch` — water-coloured when on.
 struct SipliToggle: View {
     @Binding var isOn: Bool
@@ -143,12 +109,12 @@ struct SipliToggle: View {
 }
 
 #if DEBUG
-#Preview("CTA + Back + Toggle") {
+#Preview("CTA + Toggle") {
     VStack(spacing: 18) {
         SipliCTA(title: "Get started", action: {})
         SipliCTA(title: "Continue", variant: .ink, disabled: true, action: {})
         SipliCTA(title: "Start hydrating, friend", variant: .water, action: {})
-        HStack { SipliBackButton(action: {}); Spacer(); SipliToggle(isOn: .constant(true)) }
+        HStack { Spacer(); SipliToggle(isOn: .constant(true)) }
     }
     .padding(24)
     .background(OnboardingPalette.paper)

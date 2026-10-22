@@ -90,12 +90,12 @@ private struct ChipBubble: View {
             Text(chip.label)
                 .font(.sipliMono(10, weight: .medium, relativeTo: .caption2))
                 .tracking(1)
-                .foregroundStyle(isFront ? Color.white.opacity(0.55) : OnboardingPalette.ink3)
+                .foregroundStyle(isFront ? OnboardingPalette.paper.opacity(0.6) : OnboardingPalette.ink3)
 
             Text(chip.value)
                 .font(.editorialSerif(16, relativeTo: .body))
                 .italic()
-                .foregroundStyle(isFront ? Color.white : OnboardingPalette.ink)
+                .foregroundStyle(isFront ? OnboardingPalette.paper : OnboardingPalette.ink)
         }
         .lineLimit(1)
         .fixedSize(horizontal: true, vertical: false)

@@ -5,6 +5,8 @@ struct DoneStep: View {
     /// Top inset for the text block so it clears the coordinator-owned vessel.
     /// The gradient and confetti stay full-bleed (they ignore this).
     var topInset: CGFloat = 0
+    /// Leading inset when the vessel owns a side pane (fold / landscape).
+    var leadingInset: CGFloat = 0
     let onFinish: () -> Void
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -26,7 +28,7 @@ struct DoneStep: View {
     var body: some View {
         ZStack {
             LinearGradient(
-                colors: [Color(red: 0.863, green: 0.933, blue: 1.0), OnboardingPalette.paper],
+                colors: [OnboardingPalette.skyTop, OnboardingPalette.paper],
                 startPoint: .top, endPoint: .bottom
             )
             .ignoresSafeArea()
@@ -60,6 +62,7 @@ struct DoneStep: View {
                     .padding(.bottom, 28)
             }
             .padding(.top, topInset)
+            .padding(.leading, leadingInset)
             .frame(maxWidth: .infinity)
         }
         .onAppear { Haptics.success() }

@@ -98,70 +98,34 @@ struct InsightsView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                if !hasAnyEntries {
-                    VStack(spacing: 16) {
-                        Spacer(minLength: 40)
-                        Image(systemName: "chart.bar")
-                            .font(.system(.largeTitle))
-                            .foregroundStyle(.tertiary)
-                        Text("No data yet")
-                            .font(.title3.weight(.semibold))
-                        Text("Start logging water on the Home tab to see your hydration trends, streaks, and insights here.")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                            .multilineTextAlignment(.center)
-                            .padding(.horizontal, 32)
-                        Spacer(minLength: 40)
-                    }
-                    .frame(maxWidth: .infinity)
+        // Fold / landscape: trends on one side, breakdowns on the other.
+        FoldAwareSplit(allowsLandscapeSplit: !isRegular) {
+            ScrollView {
+                VStack(spacing: 20) {
+                    if !hasAnyEntries { emptyState }
+                    headerSummary
+                    DashboardCard(title: "Weekly Intake", icon: "chart.bar.fill") { chartSection }
+                    DashboardCard(title: "Hydration Heatmap", icon: "square.grid.3x3.fill") { heatmapSection }
                 }
-
-                headerSummary
-
-                if isRegular {
-                    // iPad Multi-column layout
-                    HStack(alignment: .top, spacing: 20) {
-                        // Left Column
-                        VStack(spacing: 20) {
-                            DashboardCard(title: "Weekly Intake", icon: "chart.bar.fill") { chartSection }
-                            DashboardCard(title: "Hydration Heatmap", icon: "square.grid.3x3.fill") { heatmapSection }
-                        }
-
-                        // Right Column
-                        VStack(spacing: 20) {
-                            DashboardCard(title: "Goal Breakdown", icon: "target") { breakdownSection }
-                            if subscriptionManager.hasAccess(to: .fluidTypes), !store.entries.isEmpty {
-                                DashboardCard(title: "Beverage Breakdown (Past \(timeframe.rawValue))", icon: "cup.and.saucer.fill") { beverageBreakdownSection }
-                            }
-                            DashboardCard(title: "Trends & Streaks", icon: "chart.line.uptrend.xyaxis") { trendsSection }
-                        }
+                .padding(16)
+            }
+        } secondary: {
+            ScrollView {
+                VStack(spacing: 20) {
+                    DashboardCard(title: "Goal Breakdown", icon: "target") { breakdownSection }
+                    if subscriptionManager.hasAccess(to: .fluidTypes), !store.entries.isEmpty {
+                        DashboardCard(title: "Beverage Breakdown (Past \(timeframe.rawValue))", icon: "cup.and.saucer.fill") { beverageBreakdownSection }
                     }
-
-                    // Full-width AI Insights below columns
+                    DashboardCard(title: "Trends & Streaks", icon: "chart.line.uptrend.xyaxis") { trendsSection }
                     if subscriptionManager.hasAccess(to: .aiInsights) {
                         DashboardCard(title: "Weekly Digest", icon: "calendar.badge.clock") { weeklyDigestSection }
                         DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
                     }
-                } else {
-                    // iPhone Stacked layout
-                    VStack(spacing: 20) {
-                        DashboardCard(title: "Weekly Intake", icon: "chart.bar.fill") { chartSection }
-                        DashboardCard(title: "Goal Breakdown", icon: "target") { breakdownSection }
-                        if subscriptionManager.hasAccess(to: .fluidTypes), !store.entries.isEmpty {
-                            DashboardCard(title: "Beverage Breakdown (Past \(timeframe.rawValue))", icon: "cup.and.saucer.fill") { beverageBreakdownSection }
-                        }
-                        DashboardCard(title: "Hydration Heatmap", icon: "square.grid.3x3.fill") { heatmapSection }
-                        DashboardCard(title: "Trends & Streaks", icon: "chart.line.uptrend.xyaxis") { trendsSection }
-                        if subscriptionManager.hasAccess(to: .aiInsights) {
-                            DashboardCard(title: "Weekly Digest", icon: "calendar.badge.clock") { weeklyDigestSection }
-                            DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
-                        }
-                    }
                 }
+                .padding(16)
             }
-            .padding(isRegular ? 24 : 16)
+        } single: {
+            singleLayout
         }
         .background { AppWaterBackground().ignoresSafeArea() }
         .navigationTitle("Insights")
@@ -220,6 +184,76 @@ struct InsightsView: View {
                 heatmapMonthOffset: heatmapMonthOffset,
                 streakFreezeDates: store.streakFreezeDates
             )
+        }
+    }
+
+    private var emptyState: some View {
+        VStack(spacing: 16) {
+            Spacer(minLength: 40)
+            Image(systemName: "chart.bar")
+                .font(.system(.largeTitle))
+                .foregroundStyle(.tertiary)
+            Text("No data yet")
+                .font(.title3.weight(.semibold))
+            Text("Start logging water on the Home tab to see your hydration trends, streaks, and insights here.")
+                .font(.subheadline)
+                .foregroundStyle(.secondary)
+                .multilineTextAlignment(.center)
+                .padding(.horizontal, 32)
+            Spacer(minLength: 40)
+        }
+        .frame(maxWidth: .infinity)
+    }
+
+    private var singleLayout: some View {
+        ScrollView {
+            VStack(spacing: 20) {
+                if !hasAnyEntries { emptyState }
+
+                headerSummary
+
+                if isRegular {
+                    // iPad Multi-column layout
+                    HStack(alignment: .top, spacing: 20) {
+                        // Left Column
+                        VStack(spacing: 20) {
+                            DashboardCard(title: "Weekly Intake", icon: "chart.bar.fill") { chartSection }
+                            DashboardCard(title: "Hydration Heatmap", icon: "square.grid.3x3.fill") { heatmapSection }
+                        }
+
+                        // Right Column
+                        VStack(spacing: 20) {
+                            DashboardCard(title: "Goal Breakdown", icon: "target") { breakdownSection }
+                            if subscriptionManager.hasAccess(to: .fluidTypes), !store.entries.isEmpty {
+                                DashboardCard(title: "Beverage Breakdown (Past \(timeframe.rawValue))", icon: "cup.and.saucer.fill") { beverageBreakdownSection }
+                            }
+                            DashboardCard(title: "Trends & Streaks", icon: "chart.line.uptrend.xyaxis") { trendsSection }
+                        }
+                    }
+
+                    // Full-width AI Insights below columns
+                    if subscriptionManager.hasAccess(to: .aiInsights) {
+                        DashboardCard(title: "Weekly Digest", icon: "calendar.badge.clock") { weeklyDigestSection }
+                        DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
+                    }
+                } else {
+                    // iPhone Stacked layout
+                    VStack(spacing: 20) {
+                        DashboardCard(title: "Weekly Intake", icon: "chart.bar.fill") { chartSection }
+                        DashboardCard(title: "Goal Breakdown", icon: "target") { breakdownSection }
+                        if subscriptionManager.hasAccess(to: .fluidTypes), !store.entries.isEmpty {
+                            DashboardCard(title: "Beverage Breakdown (Past \(timeframe.rawValue))", icon: "cup.and.saucer.fill") { beverageBreakdownSection }
+                        }
+                        DashboardCard(title: "Hydration Heatmap", icon: "square.grid.3x3.fill") { heatmapSection }
+                        DashboardCard(title: "Trends & Streaks", icon: "chart.line.uptrend.xyaxis") { trendsSection }
+                        if subscriptionManager.hasAccess(to: .aiInsights) {
+                            DashboardCard(title: "Weekly Digest", icon: "calendar.badge.clock") { weeklyDigestSection }
+                            DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
+                        }
+                    }
+                }
+            }
+            .padding(isRegular ? 24 : 16)
         }
     }
 

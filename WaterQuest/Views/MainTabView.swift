@@ -76,16 +76,22 @@ struct MainTabView: View {
             .sheet(isPresented: $showAddIntake) {
                 NavigationStack {
                     AddIntakeView()
+                        .avoidingFold()
+                        .navigationBarTitleDisplayMode(.inline)
                         .toolbar {
                             ToolbarItem(placement: .cancellationAction) {
                                 Button("Cancel") { showAddIntake = false }
                             }
                         }
                 }
+                // "Unlock" inside this sheet must present the paywall from here.
+                .presentsPaywall()
             }
             .sheet(isPresented: $showTrophyRoom) {
                 NavigationStack {
                     TrophyRoomView()
+                        .avoidingFold()
+                        .navigationBarTitleDisplayMode(.inline)
                         .toolbar {
                             ToolbarItem(placement: .confirmationAction) {
                                 Button("Done") { showTrophyRoom = false }
@@ -112,6 +118,7 @@ struct MainTabView: View {
             Tab(AppTab.dashboard.title, systemImage: AppTab.dashboard.symbol, value: .dashboard) {
                 NavigationStack {
                     DashboardView()
+                        .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
                 }
                 .toolbarBackground(.hidden, for: .navigationBar)
                 .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
@@ -120,6 +127,7 @@ struct MainTabView: View {
             Tab(AppTab.insights.title, systemImage: AppTab.insights.symbol, value: .insights) {
                 NavigationStack {
                     InsightsView()
+                        .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
                 }
                 .toolbarBackground(.hidden, for: .navigationBar)
                 .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
@@ -128,6 +136,7 @@ struct MainTabView: View {
             Tab(AppTab.diary.title, systemImage: AppTab.diary.symbol, value: .diary) {
                 NavigationStack {
                     DiaryView()
+                        .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
                 }
                 .toolbarBackground(.hidden, for: .navigationBar)
                 .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
@@ -136,13 +145,14 @@ struct MainTabView: View {
             Tab(AppTab.settings.title, systemImage: AppTab.settings.symbol, value: .settings) {
                 NavigationStack {
                     SettingsView()
+                        .avoidingFold()
+                        .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
                 }
                 .toolbarBackground(.hidden, for: .navigationBar)
                 .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
             }
         }
         .tabViewStyle(.tabBarOnly)
-        .modifier(FloatingAddButtonModifier(showAddIntake: $showAddIntake))
     }
 
     // MARK: - iOS 17 Fallback
@@ -151,6 +161,7 @@ struct MainTabView: View {
         TabView(selection: $selectedTab) {
             NavigationStack {
                 DashboardView()
+                    .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
             }
             .toolbarBackground(.hidden, for: .navigationBar)
             .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
@@ -159,6 +170,7 @@ struct MainTabView: View {
 
             NavigationStack {
                 InsightsView()
+                    .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
             }
             .toolbarBackground(.hidden, for: .navigationBar)
             .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
@@ -167,6 +179,7 @@ struct MainTabView: View {
 
             NavigationStack {
                 DiaryView()
+                    .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
             }
             .toolbarBackground(.hidden, for: .navigationBar)
             .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
@@ -175,51 +188,50 @@ struct MainTabView: View {
 
             NavigationStack {
                 SettingsView()
+                    .avoidingFold()
+                    .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
             }
             .toolbarBackground(.hidden, for: .navigationBar)
             .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
             .tabItem { Label(AppTab.settings.title, systemImage: AppTab.settings.symbol) }
             .tag(AppTab.settings)
         }
-        .modifier(FloatingAddButtonModifier(showAddIntake: $showAddIntake))
     }
 }
 
-// MARK: - Floating Action Button (Liquid Glass on iOS 26)
+// MARK: - Add Intake Toolbar Button
 
-private struct FloatingAddButtonModifier: ViewModifier {
+/// The native navigation-bar "+" for logging water. As a toolbar item it gets
+/// the system's Liquid Glass styling on iOS 26 and never overlaps content in
+/// landscape or on either side of a fold.
+private struct AddIntakeToolbarButton: ViewModifier {
     @Binding var showAddIntake: Bool
 
     func body(content: Content) -> some View {
         content
-            .overlay(alignment: .bottomTrailing) {
-                fab
-                    .padding(.trailing, 20)
-                    .padding(.bottom, 90)
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    addButton
+                }
             }
     }
 
-    private var fab: some View {
-        Button {
+    @ViewBuilder
+    private var addButton: some View {
+        let button = Button {
             Haptics.impact(.medium)
             showAddIntake = true
         } label: {
-            Image(systemName: "plus")
-                .font(.system(size: 24, weight: .semibold))
-                .foregroundStyle(.white)
-                .frame(width: 60, height: 60)
+            Label("Log water intake", systemImage: "plus")
         }
-        .modifier(GlassFABStyle())
-        .accessibilityLabel("Log water intake")
         .accessibilityHint("Opens the intake logging screen")
-    }
-}
 
-private struct GlassFABStyle: ViewModifier {
-    func body(content: Content) -> some View {
-        content
-            .background(Theme.lagoon, in: Circle())
-            .shadow(color: Theme.lagoon.opacity(0.4), radius: 12, x: 0, y: 6)
+        if #available(iOS 26.0, *) {
+            button.buttonStyle(.glassProminent)
+        } else {
+            button.buttonStyle(.borderedProminent)
+                .buttonBorderShape(.circle)
+        }
     }
 }
 

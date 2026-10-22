@@ -19,15 +19,58 @@ struct OnboardingView: View {
     @State private var direction: OnboardingNavDirection = .forward
     @State private var state = OnboardingState()
     @State private var hasRequestedLocation = false
+    @Environment(\.simulatedFoldGlobalFrame) private var simulatedFold
 
     var body: some View {
+        // Hosted in a NavigationStack so the back control is the system's own
+        // navigation-bar button (Liquid Glass on iOS 26).
+        NavigationStack {
+            content
+                .toolbar {
+                    if canGoBack {
+                        ToolbarItem(placement: .topBarLeading) {
+                            Button {
+                                Haptics.selection()
+                                retreat()
+                            } label: {
+                                Label("Back", systemImage: "chevron.backward")
+                            }
+                        }
+                    }
+                }
+                .toolbarBackground(.hidden, for: .navigationBar)
+                .navigationBarTitleDisplayMode(.inline)
+        }
+        .task { @MainActor in
+            state.prefersHealthKit = healthKit.isAuthorized
+        }
+        .onChange(of: state.prefersHealthKit) { oldValue, newValue in
+            handleHealthKitToggle(was: oldValue, now: newValue)
+        }
+        .onChange(of: state.prefersWeatherGoal) { oldValue, newValue in
+            handleWeatherToggle(was: oldValue, now: newValue)
+        }
+    }
+
+    private var content: some View {
         GeometryReader { proxy in
+            // Fold (book / tabletop) or wide landscape: the bottle gets a pane
+            // of its own and the step content gets the other.
+            let arrangement = FoldResolver.arrangement(
+                in: proxy,
+                simulatedGlobal: simulatedFold,
+                allowsLandscapeSplit: true,
+                landscapeLeadingFraction: 0.4
+            )
             // When vertical space is tight (keyboard up / very short screen),
             // a hero bottle would crowd the text and clip the headline — so it
             // collapses to the small top-right corner, freeing room for content.
+            // A split layout always has room for the hero bottle.
             let constrained = proxy.size.height < 560
-            let placement: VesselPlacement = (step.vesselPlacement == .hero && constrained) ? .compact : step.vesselPlacement
-            let geo = vesselGeometry(placement: placement, in: proxy.size)
+            let placement: VesselPlacement = arrangement.isSplit
+                ? .hero
+                : ((step.vesselPlacement == .hero && constrained) ? .compact : step.vesselPlacement)
+            let geo = vesselGeometry(placement: placement, in: proxy.size, arrangement: arrangement)
             ZStack(alignment: .top) {
                 OnboardingPalette.paper.ignoresSafeArea()
 
@@ -35,21 +78,10 @@ struct OnboardingView: View {
                 // bottom edge (+gap), so content can never overlap the vessel.
                 // Done paints a full-bleed gradient/confetti and handles its own
                 // text inset internally, so it isn't padded here.
-                stepContainer(insetForDone: geo.contentInset)
+                stepContainer(insetForDone: geo.contentInset, leadingInsetForDone: geo.contentLeading)
                     .padding(.top, step == .done ? 0 : geo.contentInset)
+                    .padding(.leading, step == .done ? 0 : geo.contentLeading)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-
-                // Shared back button — persists across step changes (outside .id).
-                HStack {
-                    if canGoBack {
-                        SipliBackButton(action: retreat)
-                    } else {
-                        Color.clear.frame(width: 40, height: 40)
-                    }
-                    Spacer()
-                }
-                .padding(.horizontal, 24)
-                .padding(.top, 8)
 
                 // The single persistent vessel. Size + position are derived from
                 // the screen, so they spring smoothly between steps (the
@@ -76,15 +108,6 @@ struct OnboardingView: View {
                     .accessibilitySortPriority(1)
             }
         }
-        .task { @MainActor in
-            state.prefersHealthKit = healthKit.isAuthorized
-        }
-        .onChange(of: state.prefersHealthKit) { oldValue, newValue in
-            handleHealthKitToggle(was: oldValue, now: newValue)
-        }
-        .onChange(of: state.prefersWeatherGoal) { oldValue, newValue in
-            handleWeatherToggle(was: oldValue, now: newValue)
-        }
     }
 
     /// Back button is shown on every step except the first and the celebration.
@@ -100,18 +123,48 @@ struct OnboardingView: View {
         var width: CGFloat
         var center: CGPoint
         var contentInset: CGFloat
+        /// Leading offset of the content column (non-zero in side-by-side).
+        var contentLeading: CGFloat = 0
     }
 
-    private func vesselGeometry(placement: VesselPlacement, in size: CGSize) -> VesselGeometry {
-        let backRowBottom: CGFloat = 52   // back button row height in proxy space
+    private func vesselGeometry(placement: VesselPlacement, in size: CGSize, arrangement: PaneArrangement) -> VesselGeometry {
+        // The navigation bar (with the back button) sits above this proxy, so
+        // only a small breathing gap is needed at the top.
+        let backRowBottom: CGFloat = 8
+        switch arrangement {
+        case let .sideBySide(leading, gap, _):
+            // Bottle centred in the leading pane, below the back button row.
+            let available = size.height - backRowBottom - 24
+            let width = max(72, min(184, leading * 0.55, available / 1.36))
+            let centerY = backRowBottom + (size.height - backRowBottom) / 2
+            return VesselGeometry(
+                width: width,
+                center: CGPoint(x: leading / 2, y: centerY),
+                contentInset: 8,
+                contentLeading: leading + gap
+            )
+        case let .stacked(top, gap, _):
+            // Tabletop: bottle stands in the upper half, content sits below the fold.
+            let available = top - backRowBottom - 12
+            let width = max(56, min(184, available / 1.36))
+            let height = width * 1.36
+            let centerY = max(backRowBottom + height / 2, top / 2 + backRowBottom / 4)
+            return VesselGeometry(
+                width: width,
+                center: CGPoint(x: size.width / 2, y: min(centerY, top - height / 2 - 6)),
+                contentInset: top + gap
+            )
+        case .single:
+            break
+        }
+
         switch placement {
         case .hero:
             let topGap: CGFloat = 14
             let bottomGap: CGFloat = 20
-            // Scale the bottle to the screen, clamped so it stays tasteful on
-            // both compact and large devices. Kept modest so content-heavy
-            // steps (activity options, schedule dial) don't get pushed off.
-            let width = min(142, max(104, size.height * 0.17))
+            // Give the bottle more presence while scaling it down on shorter
+            // screens. The content inset below follows its enlarged bounds.
+            let width = min(184, max(128, size.height * 0.22))
             let height = width * 1.36
             let centerY = backRowBottom + topGap + height / 2
             let inset = centerY + height / 2 + bottomGap
@@ -123,16 +176,17 @@ struct OnboardingView: View {
         case .compact:
             // Small bottle tucked into the top-trailing corner; content sits
             // below the header strip beside it, so it needs only a small inset.
+            // Sits up beside the back button in the (transparent) nav bar.
             return VesselGeometry(
                 width: 60,
-                center: CGPoint(x: size.width - 50, y: 50),
-                contentInset: 84
+                center: CGPoint(x: size.width - 50, y: 6),
+                contentInset: 40
             )
         }
     }
 
     @ViewBuilder
-    private func stepContainer(insetForDone: CGFloat) -> some View {
+    private func stepContainer(insetForDone: CGFloat, leadingInsetForDone: CGFloat) -> some View {
         Group {
             switch step {
             case .welcome:
@@ -151,7 +205,7 @@ struct OnboardingView: View {
                 NotificationsStep(state: $state,
                                   onFinish: { Task { await finishToDone() } })
             case .done:
-                DoneStep(state: state, topInset: insetForDone, onFinish: completeAndExit)
+                DoneStep(state: state, topInset: insetForDone, leadingInset: leadingInsetForDone, onFinish: completeAndExit)
             }
         }
         .id(step)

@@ -189,7 +189,7 @@ struct ScheduleStep: View {
         .padding(.vertical, 14)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color.white)
+                .fill(OnboardingPalette.card)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 18, style: .continuous)

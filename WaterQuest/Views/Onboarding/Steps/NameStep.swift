@@ -11,20 +11,33 @@ struct NameStep: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 0) {
-                    headline
-                        .padding(.horizontal, 24)
-                        .padding(.top, 4)
-                        .padding(.bottom, 28)
+            ScrollViewReader { scroller in
+                ScrollView {
+                    VStack(alignment: .leading, spacing: 0) {
+                        headline
+                            .padding(.horizontal, 24)
+                            .padding(.top, 4)
+                            .padding(.bottom, 28)
 
-                    chatStack
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 16)
+                        chatStack
+                            .padding(.horizontal, 24)
+                            .padding(.bottom, 16)
+
+                        Color.clear.frame(height: 1).id(Self.chatBottomID)
+                    }
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
                 }
-                .frame(maxWidth: .infinity, alignment: .topLeading)
+                .scrollDismissesKeyboard(.interactively)
+                // Keep the field being typed in (and the bottle's reply)
+                // visible above the keyboard on short screens.
+                .onChange(of: nameFieldFocused) { _, focused in
+                    guard focused else { return }
+                    scrollToChatBottom(scroller, delay: 0.35)
+                }
+                .onChange(of: trimmed.isEmpty) { _, _ in
+                    scrollToChatBottom(scroller, delay: 0.1)
+                }
             }
-            .scrollDismissesKeyboard(.interactively)
 
             VStack {
                 SipliCTA(title: "Continue", disabled: !state.canContinueFromName, action: onContinue)
@@ -41,6 +54,16 @@ struct NameStep: View {
         .onChange(of: trimmed.isEmpty) { _, isEmpty in
             withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
                 replyAppeared = !isEmpty
+            }
+        }
+    }
+
+    private static let chatBottomID = "name-chat-bottom"
+
+    private func scrollToChatBottom(_ scroller: ScrollViewProxy, delay: Double) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+            withAnimation(.smooth(duration: 0.3)) {
+                scroller.scrollTo(Self.chatBottomID, anchor: .bottom)
             }
         }
     }
@@ -83,11 +106,11 @@ struct NameStep: View {
     private var avatar: some View {
         ZStack {
             Circle()
-                .fill(Color.white)
+                .fill(OnboardingPalette.card)
                 .frame(width: 44, height: 44)
                 .overlay(
                     Circle()
-                        .stroke(Color(red: 0.894, green: 0.871, blue: 0.800), lineWidth: 1.5)
+                        .stroke(OnboardingPalette.cardStroke, lineWidth: 1.5)
                 )
                 .shadow(color: OnboardingPalette.ink.opacity(0.04), radius: 2, x: 0, y: 2)
             SipliMark(size: 30)
@@ -109,7 +132,7 @@ struct NameStep: View {
                     topTrailingRadius: 22,
                     style: .continuous
                 )
-                .fill(Color.white)
+                .fill(OnboardingPalette.card)
             )
             .overlay(
                 UnevenRoundedRectangle(
@@ -119,14 +142,14 @@ struct NameStep: View {
                     topTrailingRadius: 22,
                     style: .continuous
                 )
-                .stroke(Color(red: 0.894, green: 0.871, blue: 0.800), lineWidth: 1.5)
+                .stroke(OnboardingPalette.cardStroke, lineWidth: 1.5)
             )
             .frame(maxWidth: 280, alignment: .leading)
             .shadow(color: OnboardingPalette.ink.opacity(0.06), radius: 8, x: 0, y: 4)
     }
 
     private var userInputBubble: some View {
-        TextField("", text: $state.name, prompt: Text("Type your name…").foregroundColor(.white.opacity(0.45)))
+        TextField("", text: $state.name, prompt: Text("Type your name…").foregroundColor(OnboardingPalette.paper.opacity(0.55)))
             .focused($nameFieldFocused)
             .textInputAutocapitalization(.words)
             .disableAutocorrection(true)

@@ -103,6 +103,7 @@
 		C517CAF66856A9661171AF89 /* ScheduleStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 78D82D72BE04D7EA2959A3A0 /* ScheduleStep.swift */; };
 		C5B7F7922B231598B6FED729 /* SipliBottle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C470DB38C8A43150913B8CE /* SipliBottle.swift */; };
 		C7C4BC1BB0A8DE10A83EC914 /* BottleWaterModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 462CF8CF369E2C254B131709 /* BottleWaterModel.swift */; };
+		A1F0D0000000000000000001 /* FoldLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F0D0000000000000000002 /* FoldLayout.swift */; };
 		CAA880E64AF96B5C0988D2A3 /* WorkoutSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE15D5810B84C7C96E0EA4C /* WorkoutSummary.swift */; };
 		CC1111111111111111111111 /* SipliWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA1111111111111111111111 /* SipliWidget.swift */; };
 		CC2222222222222222222222 /* WidgetDataProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA3333333333333333333333 /* WidgetDataProvider.swift */; };
@@ -142,6 +143,7 @@
 		EE3333333333333333333333 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE1111111111111111111111 /* WidgetKit.framework */; };
 		EE4444444444444444444444 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE2222222222222222222222 /* SwiftUI.framework */; };
 		F3097543BEB1A10A01727658 /* BottleFlowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = ECD30C6F35167265A33C9555 /* BottleFlowTests.swift */; };
+		A1F0D0000000000000000003 /* DuoLayoutTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1F0D0000000000000000004 /* DuoLayoutTests.swift */; };
 		F61E51CCFB80BD3F264454D4 /* NotificationMessageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6D8C127CF4F113AB2D5DB40D /* NotificationMessageTests.swift */; };
 		F8BC9F1B5CFFC00EAAA8C2AE /* WeeklyQuestCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2A552B26A312377BBDBA2B1 /* WeeklyQuestCard.swift */; };
 		F9645386F9E847E3933BD025 /* OnboardingState.swift in Sources */ = {isa = PBXBuildFile; fileRef = DA294C8DAE1E1B8B16805C2F /* OnboardingState.swift */; };
@@ -292,6 +294,7 @@
 		3D58355784786E63DFFB9EC4 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
 		42E0244F70DCB30BB868A196 /* LiquidGlassCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiquidGlassCard.swift; sourceTree = "<group>"; };
 		462CF8CF369E2C254B131709 /* BottleWaterModel.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BottleWaterModel.swift; sourceTree = "<group>"; };
+		A1F0D0000000000000000002 /* FoldLayout.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = FoldLayout.swift; sourceTree = "<group>"; };
 		4B013DED6E9276AA1DBE33BC /* WaterQuest.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = WaterQuest.entitlements; sourceTree = "<group>"; };
 		4E1C527AF0BCC9ABC2C35DEB /* SipliV5IntentsTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SipliV5IntentsTests.swift; sourceTree = "<group>"; };
 		4F187D398A7F2E287751F39F /* PremiumBadge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PremiumBadge.swift; sourceTree = "<group>"; };
@@ -383,6 +386,7 @@
 		E9FF56BC52EB7ECE5A520179 /* SubscriptionDisplayFormatter.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SubscriptionDisplayFormatter.swift; sourceTree = "<group>"; };
 		EB90E806138FFE1C09E7187A /* InsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InsightsView.swift; sourceTree = "<group>"; };
 		ECD30C6F35167265A33C9555 /* BottleFlowTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BottleFlowTests.swift; sourceTree = "<group>"; };
+		A1F0D0000000000000000004 /* DuoLayoutTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DuoLayoutTests.swift; sourceTree = "<group>"; };
 		EE1111111111111111111111 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = System/Library/Frameworks/WidgetKit.framework; sourceTree = SDKROOT; };
 		EE2222222222222222222222 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = System/Library/Frameworks/SwiftUI.framework; sourceTree = SDKROOT; };
 		F021A59BB7CB33328B5ABBC4 /* Formatters.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Formatters.swift; sourceTree = "<group>"; };
@@ -499,6 +503,7 @@
 			isa = PBXGroup;
 			children = (
 				ECD30C6F35167265A33C9555 /* BottleFlowTests.swift */,
+				A1F0D0000000000000000004 /* DuoLayoutTests.swift */,
 			);
 			name = WaterQuestUITests;
 			path = WaterQuestUITests;
@@ -614,6 +619,7 @@
 				C2A552B26A312377BBDBA2B1 /* WeeklyQuestCard.swift */,
 				56340858D08A7CDCCC537E96 /* StaggeredAppear.swift */,
 				462CF8CF369E2C254B131709 /* BottleWaterModel.swift */,
+				A1F0D0000000000000000002 /* FoldLayout.swift */,
 				AEC2AB470BEDAC5BE39690F2 /* RemainingWaterBottle.swift */,
 			);
 			path = Components;
@@ -1084,6 +1090,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3097543BEB1A10A01727658 /* BottleFlowTests.swift in Sources */,
+				A1F0D0000000000000000003 /* DuoLayoutTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1205,6 +1212,7 @@
 				E33BC9885952E4B5344F73F4 /* StaggeredAppear.swift in Sources */,
 				FB23E41130341D3276BAC490 /* TrophyRoomView.swift in Sources */,
 				C7C4BC1BB0A8DE10A83EC914 /* BottleWaterModel.swift in Sources */,
+				A1F0D0000000000000000001 /* FoldLayout.swift in Sources */,
 				2CE48CE32199F64B52765625 /* RemainingWaterBottle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

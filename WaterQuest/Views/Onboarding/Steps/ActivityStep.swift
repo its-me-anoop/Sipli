@@ -117,7 +117,7 @@ struct ActivityStep: View {
             .background(
                 ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .fill(Color.white)
+                        .fill(OnboardingPalette.card)
                     if isSelected {
                         Rectangle()
                             .fill(opt.color)

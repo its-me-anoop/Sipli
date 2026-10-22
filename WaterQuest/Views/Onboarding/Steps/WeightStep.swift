@@ -106,7 +106,7 @@ struct WeightStep: View {
                     .fill(OnboardingPalette.ink.opacity(0.07))
                 GeometryReader { proxy in
                     Capsule(style: .continuous)
-                        .fill(Color.white)
+                        .fill(OnboardingPalette.card)
                         .frame(width: proxy.size.width / 2, height: proxy.size.height)
                         .offset(x: state.unitSystem == .metric ? 0 : proxy.size.width / 2)
                         .shadow(color: OnboardingPalette.ink.opacity(0.10), radius: 4, x: 0, y: 2)

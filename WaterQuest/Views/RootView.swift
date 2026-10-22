@@ -11,13 +11,6 @@ struct RootView: View {
         FileManager.default.ubiquityIdentityToken != nil
     }
 
-    private var paywallBinding: Binding<PaywallContext?> {
-        Binding(
-            get: { subscriptionManager.presentedPaywall },
-            set: { subscriptionManager.presentedPaywall = $0 }
-        )
-    }
-
     var body: some View {
         ZStack {
             if hasOnboarded || shouldSkipOnboardingForICloud {
@@ -40,9 +33,9 @@ struct RootView: View {
         .task {
             await bootstrapAppFlow()
         }
-        .fullScreenCover(item: paywallBinding) { context in
-            PremiumPaywallView(context: context)
-        }
+        .presentsPaywall()
+        // Publishes the foldable hinge state to every screen below.
+        .foldTracking()
     }
 
     private func bootstrapAppFlow() async {
@@ -60,6 +53,29 @@ struct RootView: View {
             }
         }
     }
+}
+
+/// Presents the shared paywall from this point in the hierarchy. The root
+/// installs one; sheets that can trigger the paywall install their own, since
+/// iOS can't present the root's cover while a sheet is already up.
+private struct PaywallPresenter: ViewModifier {
+    @EnvironmentObject private var subscriptionManager: SubscriptionManager
+
+    func body(content: Content) -> some View {
+        content.fullScreenCover(
+            item: Binding(
+                get: { subscriptionManager.presentedPaywall },
+                set: { subscriptionManager.presentedPaywall = $0 }
+            )
+        ) { context in
+            PremiumPaywallView(context: context)
+                .avoidingFold()
+        }
+    }
+}
+
+extension View {
+    func presentsPaywall() -> some View { modifier(PaywallPresenter()) }
 }
 
 struct PremiumPaywallView: View {

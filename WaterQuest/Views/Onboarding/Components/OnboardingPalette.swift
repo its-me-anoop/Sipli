@@ -51,6 +51,60 @@ enum OnboardingPalette {
     )
 #endif
 
+    // Cards / chat bubbles — white on paper in light mode, a lifted slate in
+    // dark mode so `ink` text on top stays readable.
+#if os(watchOS)
+    static let card = Color.white
+    static let cardStroke = Color(red: 0.894, green: 0.871, blue: 0.800)
+#else
+    static let card = Color(
+        uiColor: UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(red: 0.13, green: 0.18, blue: 0.26, alpha: 1)
+                : UIColor.white
+        }
+    )
+    static let cardStroke = Color(
+        uiColor: UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(white: 1, alpha: 0.10)
+                : UIColor(red: 0.894, green: 0.871, blue: 0.800, alpha: 1) // #E4DECC
+        }
+    )
+#endif
+
+    // Feature gradients (target card, celebration sky). Pastels in light mode,
+    // deep tints in dark mode so `ink` text stays readable on them.
+#if os(watchOS)
+    static let mistBlue = Color(red: 0.910, green: 0.957, blue: 0.984)
+    static let mistCream = Color(red: 1.0, green: 0.956, blue: 0.878)
+    static let skyTop = Color(red: 0.863, green: 0.933, blue: 1.0)
+#else
+    static let mistBlue = Color(
+        uiColor: UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(red: 0.11, green: 0.20, blue: 0.32, alpha: 1)
+                : UIColor(red: 0.910, green: 0.957, blue: 0.984, alpha: 1)
+        }
+    )
+    static let mistCream = Color(
+        uiColor: UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(red: 0.22, green: 0.19, blue: 0.15, alpha: 1)
+                : UIColor(red: 1.0, green: 0.956, blue: 0.878, alpha: 1)
+        }
+    )
+    static let skyTop = Color(
+        uiColor: UIColor { traits in
+            traits.userInterfaceStyle == .dark
+                ? UIColor(red: 0.10, green: 0.19, blue: 0.32, alpha: 1)
+                : UIColor(red: 0.863, green: 0.933, blue: 1.0, alpha: 1)
+        }
+    )
+#endif
+    /// Always-navy pill background (for sun-yellow labels in either mode).
+    static let navy = Color(red: 0.039, green: 0.102, blue: 0.184)
+
     // Water — `water` mirrors `Theme.lagoon`.
     static let water = Theme.lagoon
     static let waterDeep = Color(red: 0.055, green: 0.247, blue: 0.745)  // #0E3FBE

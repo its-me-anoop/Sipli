@@ -27,13 +27,30 @@ struct DiaryView: View {
     }
 
     var body: some View {
-        Group {
+        // Fold / landscape: calendar in one pane, the chosen day in the other.
+        FoldAwareSplit(allowsLandscapeSplit: !isRegular) {
+            calendarSection
+                .padding(.horizontal, 16)
+                .padding(.bottom, 12)
+                .fittingPane(minimumScale: 0.5)
+        } secondary: {
+            ScrollView {
+                VStack(spacing: 16) {
+                    daySummary
+                    entryList
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 24)
+            }
+            .scrollIndicators(.automatic)
+        } single: {
             if isRegular {
                 iPadLayout
             } else {
                 iPhoneLayout
             }
         }
+        .background { AppWaterBackground().ignoresSafeArea() }
         .navigationTitle("Diary")
         .sheet(item: $entryToEdit) { entry in
             EntryEditorSheet(entry: entry, unitSystem: store.profile.unitSystem) { updatedAmount, updatedFluidType, updatedNote in

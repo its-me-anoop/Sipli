@@ -34,6 +34,10 @@ struct WelcomeStep: View {
             + Text("mean it.").italic().foregroundStyle(OnboardingPalette.water))
                 .font(.editorialSerif(46, relativeTo: .largeTitle))
                 .lineSpacing(-2)
+                // Short panes (tabletop pose, landscape) shrink the headline
+                // rather than truncating it.
+                .minimumScaleFactor(0.55)
+                .layoutPriority(1)
 
             Text("A hydration habit that actually fits in your life. No streaks to lose sleep over.")
                 .font(.system(size: 15))

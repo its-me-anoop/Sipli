@@ -51,13 +51,21 @@ struct DashboardView: View {
     }
 
     var body: some View {
-        Group {
+        // Foldable / landscape: the bottle and summary hold one pane while the
+        // cards scroll in the other. iPad keeps its own wide layout unless a
+        // fold is present.
+        FoldAwareSplit(allowsLandscapeSplit: sizeClass != .regular) {
+            splitHeroPane
+        } secondary: {
+            splitCardsPane
+        } single: {
             if sizeClass == .regular {
                 iPadLayout
             } else {
                 iPhoneLayout
             }
         }
+        .background { AppWaterBackground().ignoresSafeArea() }
         .navigationTitle("Today")
         .toolbar {
             ToolbarItem(placement: .topBarTrailing) {
@@ -153,102 +161,134 @@ struct DashboardView: View {
     private var iPhoneLayout: some View {
         ScrollView {
             VStack(spacing: 16) {
-                summarySection
-                    .padding(.top, 8)
-                    .staggeredAppear(0)
-
-                gamificationChips
-                    .staggeredAppear(1)
-
-                if MatchDay.isActive() {
-                    DashboardCard(title: "Match Day", icon: "soccerball") {
-                        matchDaySection
-                    }
-                    .staggeredAppear(2)
-                }
-
-                DashboardCard(title: "Weekly Quests", icon: "flag.checkered") {
-                    WeeklyQuestCard(quests: activeQuests, daysRemaining: WeeklyQuests.daysRemaining())
-                }
-                .staggeredAppear(3)
-
-                if subscriptionManager.hasAccess(to: .aiInsights), let tip = aiService.currentTip {
-                    DashboardCard(title: "Hydration Coach", icon: "sparkles", backgroundGradient: Theme.coachCard) {
-                        tipSection(tip)
-                    }
-                }
-
-                if shouldShowPremiumPrompt {
-                    premiumSoftSell
-                }
-
-                if subscriptionManager.hasPremiumAccess {
-                    if store.effectiveProfile.prefersWeatherGoal {
-                        DashboardCard(title: "Weather", icon: activeWeather.map { weatherIcon($0) } ?? "cloud.sun.fill") {
-                            weatherSection
-                        }
-                    }
-
-                    DashboardCard(title: "Today's Activity", icon: "figure.run") {
-                        activitySection
-                    }
-                }
-
-                DashboardCard(title: "Today's Log", icon: "drop.fill") {
-                    if todayEntries.isEmpty {
-                        VStack(spacing: 12) {
-                            Image(systemName: "drop")
-                                .font(.largeTitle)
-                                .foregroundStyle(.tertiary)
-                            Text("No water logged yet.")
-                                .foregroundStyle(.secondary)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 20)
-                    } else {
-                        VStack(spacing: 12) {
-                            ForEach(todayEntries) { entry in
-                                let fluidTypeTotal = todayEntries
-                                    .filter { $0.fluidType == entry.fluidType }
-                                    .reduce(0) { $0 + $1.effectiveML }
-                                
-                                Button {
-                                    Haptics.selection()
-                                    entryToEdit = entry
-                                } label: {
-                                    DetailedLogRow(
-                                        entry: entry,
-                                        unitSystem: store.profile.unitSystem,
-                                        fluidTypeTotalML: fluidTypeTotal
-                                    )
-                                }
-                                .buttonStyle(.plain)
-                                .contextMenu {
-                                    Button(role: .destructive) {
-                                        entryToDelete = entry
-                                    } label: {
-                                        Label("Delete", systemImage: "trash")
-                                    }
-                                }
-                                .confirmationDialog("Delete this entry?", isPresented: deleteDialogBinding(for: entry), titleVisibility: .visible) {
-                                    Button("Delete", role: .destructive) {
-                                        deleteEntry(entry)
-                                        entryToDelete = nil
-                                    }
-                                    Button("Cancel", role: .cancel) {
-                                        entryToDelete = nil
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                heroContent
+                cardsContent
             }
             .padding(.horizontal, 16)
             .padding(.bottom, 24)
         }
         .scrollIndicators(.automatic)
         .background { AppWaterBackground().ignoresSafeArea() }
+    }
+
+    /// Fold / landscape pane 1: the bottle and today's numbers.
+    private var splitHeroPane: some View {
+        VStack(spacing: 16) {
+            heroContent
+        }
+        .padding(.horizontal, 16)
+        .padding(.bottom, 12)
+        .fittingPane(minimumScale: 0.42)
+    }
+
+    /// Fold / landscape pane 2: quests, coach, weather and the log.
+    private var splitCardsPane: some View {
+        ScrollView {
+            VStack(spacing: 16) {
+                cardsContent
+            }
+            .padding(.horizontal, 16)
+            .padding(.top, 8)
+            .padding(.bottom, 24)
+        }
+        .scrollIndicators(.automatic)
+    }
+
+    @ViewBuilder
+    private var heroContent: some View {
+        summarySection
+            .padding(.top, 8)
+            .staggeredAppear(0)
+
+        gamificationChips
+            .staggeredAppear(1)
+    }
+
+    @ViewBuilder
+    private var cardsContent: some View {
+        if MatchDay.isActive() {
+            DashboardCard(title: "Match Day", icon: "soccerball") {
+                matchDaySection
+            }
+            .staggeredAppear(2)
+        }
+
+        DashboardCard(title: "Weekly Quests", icon: "flag.checkered") {
+            WeeklyQuestCard(quests: activeQuests, daysRemaining: WeeklyQuests.daysRemaining())
+        }
+        .staggeredAppear(3)
+
+        if subscriptionManager.hasAccess(to: .aiInsights), let tip = aiService.currentTip {
+            DashboardCard(title: "Hydration Coach", icon: "sparkles", backgroundGradient: Theme.coachCard) {
+                tipSection(tip)
+            }
+        }
+
+        if shouldShowPremiumPrompt {
+            premiumSoftSell
+        }
+
+        if subscriptionManager.hasPremiumAccess {
+            if store.effectiveProfile.prefersWeatherGoal {
+                DashboardCard(title: "Weather", icon: activeWeather.map { weatherIcon($0) } ?? "cloud.sun.fill") {
+                    weatherSection
+                }
+            }
+
+            DashboardCard(title: "Today's Activity", icon: "figure.run") {
+                activitySection
+            }
+        }
+
+        DashboardCard(title: "Today's Log", icon: "drop.fill") {
+            if todayEntries.isEmpty {
+                VStack(spacing: 12) {
+                    Image(systemName: "drop")
+                        .font(.largeTitle)
+                        .foregroundStyle(.tertiary)
+                    Text("No water logged yet.")
+                        .foregroundStyle(.secondary)
+                }
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 20)
+            } else {
+                VStack(spacing: 12) {
+                    ForEach(todayEntries) { entry in
+                        let fluidTypeTotal = todayEntries
+                            .filter { $0.fluidType == entry.fluidType }
+                            .reduce(0) { $0 + $1.effectiveML }
+                        
+                        Button {
+                            Haptics.selection()
+                            entryToEdit = entry
+                        } label: {
+                            DetailedLogRow(
+                                entry: entry,
+                                unitSystem: store.profile.unitSystem,
+                                fluidTypeTotalML: fluidTypeTotal
+                            )
+                        }
+                        .buttonStyle(.plain)
+                        .contextMenu {
+                            Button(role: .destructive) {
+                                entryToDelete = entry
+                            } label: {
+                                Label("Delete", systemImage: "trash")
+                            }
+                        }
+                        .confirmationDialog("Delete this entry?", isPresented: deleteDialogBinding(for: entry), titleVisibility: .visible) {
+                            Button("Delete", role: .destructive) {
+                                deleteEntry(entry)
+                                entryToDelete = nil
+                            }
+                            Button("Cancel", role: .cancel) {
+                                entryToDelete = nil
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private var iPadLayout: some View {

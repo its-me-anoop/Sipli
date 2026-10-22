@@ -139,7 +139,7 @@ struct TargetStep: View {
                     .foregroundStyle(OnboardingPalette.sun)
                     .padding(.horizontal, 10)
                     .padding(.vertical, 4)
-                    .background(Capsule().fill(OnboardingPalette.ink))
+                    .background(Capsule().fill(OnboardingPalette.navy))
                     .padding(.top, 4)
                 }
             }
@@ -152,7 +152,7 @@ struct TargetStep: View {
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .fill(
                     LinearGradient(
-                        colors: [Color(red: 0.910, green: 0.957, blue: 0.984), Color(red: 1.0, green: 0.956, blue: 0.878)],
+                        colors: [OnboardingPalette.mistBlue, OnboardingPalette.mistCream],
                         startPoint: .topLeading, endPoint: .bottomTrailing
                     )
                 )
@@ -219,7 +219,7 @@ struct TargetStep: View {
         .padding(.vertical, 14)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color.white)
+                .fill(OnboardingPalette.card)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
@@ -269,7 +269,7 @@ struct TargetStep: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color.white)
+                .fill(OnboardingPalette.card)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
@@ -412,7 +412,7 @@ struct TargetStep: View {
         .accessibilityHint(hasWeatherPremium ? "" : "Premium feature. Opens upgrade screen.")
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color.white)
+                .fill(OnboardingPalette.card)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 18, style: .continuous)

@@ -202,12 +202,14 @@ struct AddIntakeView: View {
         .navigationTitle("Log Intake")
         .scrollContentBackground(.hidden)
         .background {
-            AppWaterBackground()
-                .ignoresSafeArea()
-                .modifier(RippleEffect(
-                    at: CGPoint(x: UIScreen.main.bounds.width / 2, y: 200),
-                    trigger: rippleTrigger
-                ))
+            GeometryReader { geometry in
+                AppWaterBackground()
+                    .modifier(RippleEffect(
+                        at: CGPoint(x: geometry.size.width / 2, y: 200),
+                        trigger: rippleTrigger
+                    ))
+            }
+            .ignoresSafeArea()
         }
         .overlay(alignment: .top) {
             if showSavedBanner {
