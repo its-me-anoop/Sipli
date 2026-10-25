@@ -48,6 +48,7 @@ struct TrophyRoomView: View {
             .padding(.bottom, 32)
         }
         .background { AppWaterBackground().ignoresSafeArea() }
+        .avoidingFold()
         .navigationTitle("Trophy Room")
         .navigationBarTitleDisplayMode(.large)
         .task(id: latestUnlock?.0.id) {

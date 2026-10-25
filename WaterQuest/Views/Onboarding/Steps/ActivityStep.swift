@@ -4,6 +4,7 @@ struct ActivityStep: View {
     @Binding var state: OnboardingState
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     let onContinue: () -> Void
+    @Environment(\.onboardingQuestionInHero) private var questionInHero
 
     private var hasHealthKitPremium: Bool {
         subscriptionManager.hasAccess(to: .healthKitSync)
@@ -28,21 +29,20 @@ struct ActivityStep: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    headline
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 24)
+                    if !questionInHero {
+                        headline
+                            .padding(.horizontal, 24)
+                            .padding(.bottom, 24)
+                    }
 
-                    VStack(spacing: 10) {
+                    LazyVGrid(columns: [GridItem(.adaptive(minimum: 240), spacing: 12)], spacing: 12) {
                         ForEach(options) { opt in
                             optionCard(opt)
                         }
+                        healthRow
                     }
                     .padding(.horizontal, 24)
                     .padding(.bottom, 18)
-
-                    healthRow
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 18)
                 }
             }
 
@@ -56,10 +56,7 @@ struct ActivityStep: View {
     }
 
     private var headline: some View {
-        (Text("How active\n").foregroundStyle(OnboardingPalette.ink)
-            + Text("is your average day?").italic().foregroundStyle(OnboardingPalette.water))
-            .font(.editorialSerif(40, relativeTo: .largeTitle))
-            .lineSpacing(-2)
+        OnboardingQuestion(step: .activity)
     }
 
     private func optionCard(_ opt: Option) -> some View {
@@ -101,8 +98,7 @@ struct ActivityStep: View {
                     )
             }
             .padding(16)
-            .padding(.leading, isSelected ? 4 : 16) // make room for the side stripe
-            .padding(.trailing, 16)
+            .padding(.leading, 4) // reserve the same stripe space in both states
             .frame(maxWidth: .infinity, alignment: .leading)
             .overlay(alignment: .topTrailing) {
                 if isSelected {

@@ -42,8 +42,18 @@ struct SubscriptionManagerTests {
 
     init() async throws {
         session = try SKTestSession(configurationFileNamed: "Products")
+        // Each test owns an empty local storefront. Otherwise an annual plan
+        // purchased by an earlier test can mask monthly expiry or selection.
+        session.clearTransactions()
         try await Task.sleep(for: .milliseconds(300))
         manager = SubscriptionManager()
+        // StoreKit delivers cache invalidation asynchronously, even after the
+        // test session's clear operation returns.
+        for _ in 0..<30 {
+            await manager.refreshStatus()
+            if !manager.hasPremiumAccess { break }
+            try await Task.sleep(for: .milliseconds(100))
+        }
     }
 
     // MARK: - Helpers
@@ -80,7 +90,10 @@ struct SubscriptionManagerTests {
         // real regressions.
         for _ in 0..<8 {
             for await result in Transaction.currentEntitlements {
-                if case .verified = result { return true }
+                if case .verified(let transaction) = result,
+                   transaction.productID == identifier,
+                   transaction.revocationDate == nil,
+                   transaction.expirationDate.map({ $0 > Date() }) ?? true { return true }
             }
             try await Task.sleep(for: .milliseconds(250))
         }
@@ -128,6 +141,9 @@ struct SubscriptionManagerTests {
         #expect(manager.hasPremiumAccess, "precondition: access expected after purchase")
 
         do {
+            for transaction in session.allTransactions() where transaction.productIdentifier == "com.sipli.monthly" {
+                try session.disableAutoRenewForTransaction(identifier: transaction.identifier)
+            }
             try session.expireSubscription(productIdentifier: "com.sipli.monthly")
         } catch {
             withKnownIssue("expireSubscription requires testmanagerd XPC — passes in Xcode.app", isIntermittent: true) {
@@ -135,7 +151,11 @@ struct SubscriptionManagerTests {
             }
             return
         }
-        await manager.refreshStatus()
+        for _ in 0..<30 {
+            await manager.refreshStatus()
+            if !manager.hasPremiumAccess { break }
+            try await Task.sleep(for: .milliseconds(100))
+        }
         #expect(manager.hasPremiumAccess == false)
         #expect(manager.activeProductID == nil)
     }

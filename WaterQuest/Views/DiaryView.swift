@@ -28,13 +28,14 @@ struct DiaryView: View {
 
     var body: some View {
         // Fold / landscape: calendar in one pane, the chosen day in the other.
-        FoldAwareSplit(allowsLandscapeSplit: !isRegular) {
-            calendarSection
-                .padding(.horizontal, 16)
-                .padding(.bottom, 12)
-                .fittingPane(minimumScale: 0.5)
+        FoldAwareSplit(scrollsTogetherInLandscape: true) {
+            FoldPaneScroll(identifier: "diaryCalendarPane") { _ in
+                calendarSection
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 12)
+            }
         } secondary: {
-            ScrollView {
+            FoldPaneScroll(identifier: "diaryEntriesPane") { _ in
                 VStack(spacing: 16) {
                     daySummary
                     entryList

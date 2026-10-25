@@ -3,9 +3,10 @@ import SwiftUI
 struct NameStep: View {
     @Binding var state: OnboardingState
     let onContinue: () -> Void
+    @Environment(\.onboardingQuestionInHero) private var questionInHero
 
     @FocusState private var nameFieldFocused: Bool
-    @State private var replyAppeared = false
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var trimmed: String { state.name.trimmingCharacters(in: .whitespacesAndNewlines) }
 
@@ -14,12 +15,15 @@ struct NameStep: View {
             ScrollViewReader { scroller in
                 ScrollView {
                     VStack(alignment: .leading, spacing: 0) {
-                        headline
-                            .padding(.horizontal, 24)
-                            .padding(.top, 4)
-                            .padding(.bottom, 28)
+                        if !questionInHero {
+                            headline
+                                .padding(.horizontal, 24)
+                                .padding(.top, 4)
+                                .padding(.bottom, 28)
+                        }
 
                         chatStack
+                            .animation(reduceMotion ? nil : .easeOut(duration: 0.2), value: trimmed.isEmpty)
                             .padding(.horizontal, 24)
                             .padding(.bottom, 16)
 
@@ -40,21 +44,18 @@ struct NameStep: View {
             }
 
             VStack {
-                SipliCTA(title: "Continue", disabled: !state.canContinueFromName, action: onContinue)
+                SipliCTA(title: "Continue", disabled: !state.canContinueFromName) {
+                    nameFieldFocused = false
+                    onContinue()
+                }
             }
             .padding(.horizontal, 24)
             .padding(.bottom, 28)
             .padding(.top, 12)
         }
-        .onAppear {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.4) {
-                nameFieldFocused = true
-            }
-        }
-        .onChange(of: trimmed.isEmpty) { _, isEmpty in
-            withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
-                replyAppeared = !isEmpty
-            }
+        .task {
+            do { try await Task.sleep(for: .seconds(0.4)) } catch { return }
+            nameFieldFocused = true
         }
     }
 
@@ -62,26 +63,41 @@ struct NameStep: View {
 
     private func scrollToChatBottom(_ scroller: ScrollViewProxy, delay: Double) {
         DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            withAnimation(.smooth(duration: 0.3)) {
+            withAnimation(reduceMotion ? nil : .smooth(duration: 0.3)) {
                 scroller.scrollTo(Self.chatBottomID, anchor: .bottom)
             }
         }
     }
 
     private var headline: some View {
-        (Text("What should we\n").foregroundStyle(OnboardingPalette.ink)
-            + Text("call you?").italic().foregroundStyle(OnboardingPalette.water))
-            .font(.editorialSerif(44, relativeTo: .largeTitle))
-            .lineSpacing(-3)
+        OnboardingQuestion(step: .name, fontSize: 44)
     }
 
+    @ViewBuilder
     private var chatStack: some View {
+        if questionInHero {
+            OnboardingAnswerLayout {
+                userInputBubble
+                HStack(alignment: .bottom, spacing: 10) {
+                    avatar
+                    botBubble(trimmed.isEmpty ? "Hey there! I'm your bottle." : "Hi, \(trimmed). ✦ Nice to meet you.")
+                    Spacer(minLength: 0)
+                }
+            }
+        } else {
+            singlePaneChat
+        }
+    }
+
+    private var singlePaneChat: some View {
         VStack(alignment: .leading, spacing: 14) {
             // Bot intro bubble
-            HStack(alignment: .bottom, spacing: 10) {
-                avatar
-                botBubble("Hey there! I'm your bottle. What's your name?")
-                Spacer(minLength: 0)
+            if !questionInHero {
+                HStack(alignment: .bottom, spacing: 10) {
+                    avatar
+                    botBubble("Hey there! I'm your bottle. What's your name?")
+                    Spacer(minLength: 0)
+                }
             }
 
             // User input bubble
@@ -98,7 +114,7 @@ struct NameStep: View {
                         .transition(.opacity.combined(with: .offset(y: 6)))
                     Spacer(minLength: 0)
                 }
-                .id("reply-\(trimmed)") // re-animate on name change
+                .id("name-reply")
             }
         }
     }
@@ -158,7 +174,7 @@ struct NameStep: View {
             .foregroundStyle(OnboardingPalette.paper)
             .tint(OnboardingPalette.sun)
             .onSubmit {
-                if state.canContinueFromName { onContinue() }
+                nameFieldFocused = false
             }
             .padding(.horizontal, 18)
             .padding(.vertical, 14)

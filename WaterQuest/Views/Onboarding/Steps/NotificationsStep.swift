@@ -2,8 +2,10 @@ import SwiftUI
 import Combine
 
 struct NotificationsStep: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Binding var state: OnboardingState
     let onFinish: () -> Void
+    @Environment(\.onboardingQuestionInHero) private var questionInHero
 
     @State private var msgIdx = 0
     private let msgTimer = Timer.publish(every: 2.8, on: .main, in: .common).autoconnect()
@@ -25,20 +27,22 @@ struct NotificationsStep: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    headline
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 26)
+                    if !questionInHero {
+                        headline
+                            .padding(.horizontal, 24)
+                            .padding(.bottom, 26)
+                    }
 
-                    notifPreview
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 26)
-
-                    cadenceRow
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 16)
+                    OnboardingAnswerLayout {
+                        notifPreview
+                        cadenceRow
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 16)
                 }
             }
             .onReceive(msgTimer) { _ in
+                guard !reduceMotion else { return }
                 withAnimation(.spring(response: 0.45, dampingFraction: 0.78)) {
                     msgIdx = (msgIdx + 1) % sampleMessages.count
                 }
@@ -54,10 +58,7 @@ struct NotificationsStep: View {
     }
 
     private var headline: some View {
-        (Text("How loud\nshould we ").foregroundStyle(OnboardingPalette.ink)
-            + Text("nudge?").italic().foregroundStyle(OnboardingPalette.water))
-            .font(.editorialSerif(40, relativeTo: .largeTitle))
-            .lineSpacing(-2)
+        OnboardingQuestion(step: .notifications)
     }
 
     private var notifPreview: some View {
@@ -111,7 +112,7 @@ struct NotificationsStep: View {
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .frame(height: 110, alignment: .top)
+            .frame(minHeight: 110, alignment: .top)
             .background(
                 RoundedRectangle(cornerRadius: 22, style: .continuous)
                     .fill(OnboardingPalette.card.opacity(0.95))
@@ -119,7 +120,7 @@ struct NotificationsStep: View {
             .shadow(color: OnboardingPalette.ink.opacity(0.18), radius: 30, x: 0, y: 12)
             .padding(.horizontal, 0)
         }
-        .frame(height: 130)
+        .frame(minHeight: 130)
     }
 
     private func notifCardSurface() -> some View {

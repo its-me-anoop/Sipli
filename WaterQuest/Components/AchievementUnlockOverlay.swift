@@ -22,10 +22,18 @@ struct AchievementUnlockOverlay: View {
             DropletConfetti(trigger: confettiTrigger)
                 .ignoresSafeArea()
 
-            card
-                .scaleEffect(appeared || reduceMotion ? 1 : 0.82)
-                .opacity(appeared ? 1 : 0)
-                .padding(.horizontal, 36)
+            GeometryReader { proxy in
+                ScrollView {
+                    card
+                        .scaleEffect(appeared || reduceMotion ? 1 : 0.96)
+                        .opacity(appeared ? 1 : 0)
+                        .padding(.horizontal, 20)
+                        .padding(.vertical, 16)
+                        .frame(maxWidth: 560)
+                        .frame(maxWidth: .infinity, minHeight: proxy.size.height)
+                }
+            }
+            .avoidingFold(showsBackground: false)
         }
         .onAppear {
             Haptics.success()

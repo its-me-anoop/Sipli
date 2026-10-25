@@ -1,6 +1,7 @@
 import SwiftUI
 
 struct PrimaryButtonStyle: ButtonStyle {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     var fullWidth: Bool = true
 
     func makeBody(configuration: Configuration) -> some View {
@@ -18,13 +19,14 @@ struct PrimaryButtonStyle: ButtonStyle {
                     )
             )
             .foregroundStyle(Color.white.opacity(0.95))
-            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
+            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.98 : 1.0)
             .shadow(color: Theme.lagoon.opacity(configuration.isPressed ? 0.16 : 0.30), radius: configuration.isPressed ? 5 : 12, x: 0, y: configuration.isPressed ? 3 : 6)
-            .animation(Theme.quickSpring, value: configuration.isPressed)
+            .animation(reduceMotion ? nil : Theme.quickSpring, value: configuration.isPressed)
     }
 }
 
 struct SecondaryButtonStyle: ButtonStyle {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     func makeBody(configuration: Configuration) -> some View {
         configuration.label
             .font(Theme.bodyFont(.subheadline))
@@ -35,8 +37,8 @@ struct SecondaryButtonStyle: ButtonStyle {
                     .fill(Theme.card)
             )
             .foregroundStyle(Theme.textPrimary)
-            .scaleEffect(configuration.isPressed ? 0.97 : 1.0)
-            .animation(Theme.quickSpring, value: configuration.isPressed)
+            .scaleEffect(configuration.isPressed && !reduceMotion ? 0.98 : 1.0)
+            .animation(reduceMotion ? nil : Theme.quickSpring, value: configuration.isPressed)
     }
 }
 

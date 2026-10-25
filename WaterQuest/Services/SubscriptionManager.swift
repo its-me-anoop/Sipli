@@ -387,7 +387,9 @@ final class SubscriptionManager: ObservableObject {
     private func refreshSubscriptionStatus() async {
         var matchedProductID: ProductID?
         for await result in Transaction.currentEntitlements {
-            guard case .verified(let transaction) = result else { continue }
+            guard case .verified(let transaction) = result,
+                  transaction.revocationDate == nil,
+                  transaction.expirationDate.map({ $0 > Date() }) ?? true else { continue }
             if let productID = ProductID(rawValue: transaction.productID) {
                 matchedProductID = productID
                 break

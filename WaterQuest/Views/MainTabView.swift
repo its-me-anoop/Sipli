@@ -31,6 +31,7 @@ struct MainTabView: View {
     @State private var selectedTab: AppTab = .dashboard
     @State private var showAddIntake = false
     @State private var showTrophyRoom = false
+    @State private var showAchievementCelebration = false
     @EnvironmentObject private var store: HydrationStore
     @Environment(\.deepLinkAddIntake) private var deepLinkAddIntake
     @Environment(\.deepLinkTrophyRoom) private var deepLinkTrophyRoom
@@ -39,19 +40,26 @@ struct MainTabView: View {
     var body: some View {
         tabContent
             .tint(Theme.lagoon)
-            .overlay {
-                // Badge celebrations sit above the tabs so they present no
-                // matter where the unlock happened (log, sync, watch entry).
+            .fullScreenCover(isPresented: $showAchievementCelebration) {
+                // A native presentation keeps the Duo's tab chrome from
+                // intercepting taps on a visually overlaid celebration.
                 if let pending = store.pendingAchievementUnlocks.first {
                     AchievementUnlockOverlay(achievement: pending) {
                         store.dismissPendingAchievement()
+                        if store.pendingAchievementUnlocks.isEmpty {
+                            showAchievementCelebration = false
+                        }
                     }
                     .id(pending.id)
-                    .zIndex(10)
                     .transition(.opacity)
+                    .presentationBackground(.clear)
                 }
             }
-            .animation(Theme.gentleSpring, value: store.pendingAchievementUnlocks.first?.id)
+            .animation(reduceMotion ? nil : Theme.gentleSpring, value: store.pendingAchievementUnlocks.first?.id)
+            .onChange(of: store.pendingAchievementUnlocks.first?.id) {
+                presentPendingAchievement()
+            }
+            .onAppear(perform: presentPendingAchievement)
             .onChange(of: selectedTab) {
                 Haptics.selection()
             }
@@ -73,10 +81,9 @@ struct MainTabView: View {
                     showTrophyRoom = true
                 }
             }
-            .sheet(isPresented: $showAddIntake) {
+            .sheet(isPresented: $showAddIntake, onDismiss: presentPendingAchievement) {
                 NavigationStack {
                     AddIntakeView()
-                        .avoidingFold()
                         .navigationBarTitleDisplayMode(.inline)
                         .toolbar {
                             ToolbarItem(placement: .cancellationAction) {
@@ -84,13 +91,14 @@ struct MainTabView: View {
                             }
                         }
                 }
+                .presentationDragIndicator(.visible)
+                .presentationCompactAdaptation(.sheet)
                 // "Unlock" inside this sheet must present the paywall from here.
                 .presentsPaywall()
             }
-            .sheet(isPresented: $showTrophyRoom) {
+            .sheet(isPresented: $showTrophyRoom, onDismiss: presentPendingAchievement) {
                 NavigationStack {
                     TrophyRoomView()
-                        .avoidingFold()
                         .navigationBarTitleDisplayMode(.inline)
                         .toolbar {
                             ToolbarItem(placement: .confirmationAction) {
@@ -99,6 +107,12 @@ struct MainTabView: View {
                         }
                 }
             }
+    }
+
+    private func presentPendingAchievement() {
+        guard !showAddIntake, !showTrophyRoom,
+              !store.pendingAchievementUnlocks.isEmpty else { return }
+        showAchievementCelebration = true
     }
 
     @ViewBuilder
@@ -121,7 +135,7 @@ struct MainTabView: View {
                         .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
                 }
                 .toolbarBackground(.hidden, for: .navigationBar)
-                .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
+                .modifier(TabContentTransition(tabID: selectedTab.rawValue, ownerID: AppTab.dashboard.rawValue, reduceMotion: reduceMotion))
             }
 
             Tab(AppTab.insights.title, systemImage: AppTab.insights.symbol, value: .insights) {
@@ -130,7 +144,7 @@ struct MainTabView: View {
                         .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
                 }
                 .toolbarBackground(.hidden, for: .navigationBar)
-                .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
+                .modifier(TabContentTransition(tabID: selectedTab.rawValue, ownerID: AppTab.insights.rawValue, reduceMotion: reduceMotion))
             }
 
             Tab(AppTab.diary.title, systemImage: AppTab.diary.symbol, value: .diary) {
@@ -139,17 +153,16 @@ struct MainTabView: View {
                         .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
                 }
                 .toolbarBackground(.hidden, for: .navigationBar)
-                .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
+                .modifier(TabContentTransition(tabID: selectedTab.rawValue, ownerID: AppTab.diary.rawValue, reduceMotion: reduceMotion))
             }
 
             Tab(AppTab.settings.title, systemImage: AppTab.settings.symbol, value: .settings) {
                 NavigationStack {
                     SettingsView()
-                        .avoidingFold()
                         .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
                 }
                 .toolbarBackground(.hidden, for: .navigationBar)
-                .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
+                .modifier(TabContentTransition(tabID: selectedTab.rawValue, ownerID: AppTab.settings.rawValue, reduceMotion: reduceMotion))
             }
         }
         .tabViewStyle(.tabBarOnly)
@@ -164,7 +177,7 @@ struct MainTabView: View {
                     .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
             }
             .toolbarBackground(.hidden, for: .navigationBar)
-            .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
+            .modifier(TabContentTransition(tabID: selectedTab.rawValue, ownerID: AppTab.dashboard.rawValue, reduceMotion: reduceMotion))
             .tabItem { Label(AppTab.dashboard.title, systemImage: AppTab.dashboard.symbol) }
             .tag(AppTab.dashboard)
 
@@ -173,7 +186,7 @@ struct MainTabView: View {
                     .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
             }
             .toolbarBackground(.hidden, for: .navigationBar)
-            .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
+            .modifier(TabContentTransition(tabID: selectedTab.rawValue, ownerID: AppTab.insights.rawValue, reduceMotion: reduceMotion))
             .tabItem { Label(AppTab.insights.title, systemImage: AppTab.insights.symbol) }
             .tag(AppTab.insights)
 
@@ -182,17 +195,16 @@ struct MainTabView: View {
                     .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
             }
             .toolbarBackground(.hidden, for: .navigationBar)
-            .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
+            .modifier(TabContentTransition(tabID: selectedTab.rawValue, ownerID: AppTab.diary.rawValue, reduceMotion: reduceMotion))
             .tabItem { Label(AppTab.diary.title, systemImage: AppTab.diary.symbol) }
             .tag(AppTab.diary)
 
             NavigationStack {
                 SettingsView()
-                    .avoidingFold()
                     .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
             }
             .toolbarBackground(.hidden, for: .navigationBar)
-            .modifier(TabContentTransition(tabID: selectedTab.rawValue, reduceMotion: reduceMotion))
+            .modifier(TabContentTransition(tabID: selectedTab.rawValue, ownerID: AppTab.settings.rawValue, reduceMotion: reduceMotion))
             .tabItem { Label(AppTab.settings.title, systemImage: AppTab.settings.symbol) }
             .tag(AppTab.settings)
         }
@@ -216,41 +228,38 @@ private struct AddIntakeToolbarButton: ViewModifier {
             }
     }
 
-    @ViewBuilder
     private var addButton: some View {
-        let button = Button {
-            Haptics.impact(.medium)
+        Button("Log water intake", systemImage: "plus") {
             showAddIntake = true
-        } label: {
-            Label("Log water intake", systemImage: "plus")
         }
         .accessibilityHint("Opens the intake logging screen")
-
-        if #available(iOS 26.0, *) {
-            button.buttonStyle(.glassProminent)
-        } else {
-            button.buttonStyle(.borderedProminent)
-                .buttonBorderShape(.circle)
-        }
     }
 }
 
 // MARK: - Tab Content Transition
 
-/// Applies a cross-fade + subtle scale on tab switches.
-/// The scale collapses to pure opacity when `reduceMotion` is true.
+/// A brief arrival cue on a real tab change, preserving each navigation stack.
 private struct TabContentTransition: ViewModifier {
     let tabID: Int
+    let ownerID: Int
     let reduceMotion: Bool
+    @State private var arrivalTrigger = 0
 
     func body(content: Content) -> some View {
         if reduceMotion {
             content
-                .animation(Theme.gentleSpring, value: tabID)
         } else {
-            content
-                .transition(.opacity.combined(with: .scale(scale: 0.98, anchor: .center)))
-                .animation(Theme.gentleSpring, value: tabID)
+            content.keyframeAnimator(initialValue: CGFloat.zero, trigger: arrivalTrigger) { view, phase in
+                view.opacity(1 - phase * 0.15).offset(y: phase * 6)
+            } keyframes: { _ in
+                MoveKeyframe(1)
+                CubicKeyframe(0, duration: 0.24)
+            }
+            .onChange(of: tabID) {
+                // Hidden native tabs do not render keyframes. Only start an
+                // arrival for the tab that is actually becoming visible.
+                if tabID == ownerID { arrivalTrigger += 1 }
+            }
         }
     }
 }

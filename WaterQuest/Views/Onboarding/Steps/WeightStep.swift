@@ -3,8 +3,9 @@ import SwiftUI
 struct WeightStep: View {
     @Binding var state: OnboardingState
     let onContinue: () -> Void
+    @Environment(\.onboardingQuestionInHero) private var questionInHero
+    @State private var answerHeight: CGFloat = 390
 
-    @State private var weightDisplayKey = UUID()
 
     private var range: ClosedRange<Double> { state.weightSliderRange() }
     private var unit: String { state.unitSystem.bodyWeightUnit }
@@ -25,9 +26,11 @@ struct WeightStep: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    headline
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 6)
+                    if !questionInHero {
+                        headline
+                            .padding(.horizontal, 24)
+                            .padding(.bottom, 6)
+                    }
 
                     Text("We use this to set your daily baseline. Drag the dial.")
                         .font(.system(size: 15))
@@ -35,17 +38,18 @@ struct WeightStep: View {
                         .padding(.horizontal, 24)
                         .padding(.bottom, 22)
 
-                    HStack(alignment: .center, spacing: 18) {
-                        readout
-                        verticalRuler
+                    OnboardingAnswerLayout(minimumColumnWidth: 150, spacing: 18) {
+                        VStack(alignment: .leading, spacing: 18) {
+                            readout
+                            unitToggle
+                        }
+                        verticalRuler.frame(maxWidth: .infinity)
                     }
                     .padding(.horizontal, 24)
                     .padding(.bottom, 22)
-
-                    unitToggle
-                        .padding(.bottom, 16)
                 }
             }
+            .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { answerHeight = $0 }
 
             VStack {
                 SipliCTA(title: "Continue", action: onContinue)
@@ -57,10 +61,7 @@ struct WeightStep: View {
     }
 
     private var headline: some View {
-        (Text("You weigh\n").foregroundStyle(OnboardingPalette.ink)
-            + Text("about how much?").italic().foregroundStyle(OnboardingPalette.water))
-            .font(.editorialSerif(40, relativeTo: .largeTitle))
-            .lineSpacing(-2)
+        OnboardingQuestion(step: .weight)
     }
 
     private var readout: some View {
@@ -69,7 +70,6 @@ struct WeightStep: View {
                 Text("\(Int(state.weight))")
                     .font(.editorialSerif(96, weight: .regular, relativeTo: .largeTitle))
                     .foregroundStyle(OnboardingPalette.ink)
-                    .id(weightDisplayKey)
                     .contentTransition(.numericText())
                     .minimumScaleFactor(0.55)
                     .lineLimit(1)
@@ -114,7 +114,7 @@ struct WeightStep: View {
                 }
             }
         )
-        .frame(width: 140, height: 38)
+        .frame(width: 140, height: 44)
         .frame(maxWidth: .infinity)
     }
 
@@ -133,6 +133,7 @@ struct WeightStep: View {
 
     private var verticalRuler: some View {
         let pct = (state.weight - range.lowerBound) / (range.upperBound - range.lowerBound)
+        let rulerHeight = questionInHero ? min(240, max(100, answerHeight - 150)) : 240
         // 51 ticks across the 0–500 kg / 0–1100 lb range: 10 kg per tick
         // (major every 50 kg) for metric; ~22 lb per tick (major every 110 lb)
         // for imperial. Drag is continuous, so the underlying value is finer
@@ -185,7 +186,7 @@ struct WeightStep: View {
                         .onEnded { _ in Haptics.selection() }
                 )
             }
-            .frame(width: 80, height: 240)
+            .frame(width: 80, height: rulerHeight)
 
             // Numeric scale on the trailing side: max top, min bottom.
             VStack(alignment: .trailing) {
@@ -197,7 +198,7 @@ struct WeightStep: View {
             }
             .font(.sipliMono(11, weight: .medium, relativeTo: .caption))
             .foregroundStyle(OnboardingPalette.ink3)
-            .frame(height: 240)
+            .frame(height: rulerHeight)
         }
     }
 
@@ -213,7 +214,6 @@ struct WeightStep: View {
         let rounded = value.rounded()
         if Int(rounded) != Int(state.weight) {
             state.weight = rounded
-            weightDisplayKey = UUID()
         }
     }
 }

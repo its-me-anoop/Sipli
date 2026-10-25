@@ -15,10 +15,13 @@ struct OnboardingView: View {
 
     var onComplete: () -> Void
 
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @State private var isFinishing = false
     @State private var step: OnboardingStep = .welcome
     @State private var direction: OnboardingNavDirection = .forward
     @State private var state = OnboardingState()
     @State private var hasRequestedLocation = false
+    @State private var questionHeight: CGFloat = 104
     @Environment(\.simulatedFoldGlobalFrame) private var simulatedFold
 
     var body: some View {
@@ -41,6 +44,7 @@ struct OnboardingView: View {
                 .toolbarBackground(.hidden, for: .navigationBar)
                 .navigationBarTitleDisplayMode(.inline)
         }
+        .transaction { if reduceMotion { $0.animation = nil; $0.disablesAnimations = true } }
         .task { @MainActor in
             state.prefersHealthKit = healthKit.isAuthorized
         }
@@ -70,7 +74,9 @@ struct OnboardingView: View {
             let placement: VesselPlacement = arrangement.isSplit
                 ? .hero
                 : ((step.vesselPlacement == .hero && constrained) ? .compact : step.vesselPlacement)
-            let geo = vesselGeometry(placement: placement, in: proxy.size, arrangement: arrangement)
+            let questionInHero = arrangement.isSplit && step.hasQuestion
+            let geo = vesselGeometry(placement: placement, in: proxy.size, arrangement: arrangement,
+                                     questionHeight: questionInHero ? questionHeight + 12 : 0)
             ZStack(alignment: .top) {
                 OnboardingPalette.paper.ignoresSafeArea()
 
@@ -79,9 +85,25 @@ struct OnboardingView: View {
                 // Done paints a full-bleed gradient/confetti and handles its own
                 // text inset internally, so it isn't padded here.
                 stepContainer(insetForDone: geo.contentInset, leadingInsetForDone: geo.contentLeading)
+                    .environment(\.onboardingQuestionInHero, questionInHero)
                     .padding(.top, step == .done ? 0 : geo.contentInset)
                     .padding(.leading, step == .done ? 0 : geo.contentLeading)
                     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+
+                if questionInHero {
+                    let pane = questionPaneSize(in: proxy.size, arrangement: arrangement)
+                    let columns = questionUsesColumns(in: proxy.size, arrangement: arrangement)
+                    OnboardingQuestion(step: step, fontSize: 36)
+                        .padding(.horizontal, 24)
+                        .padding(.top, columns ? 0 : 8)
+                        .frame(width: columns ? pane.width * 0.52 : pane.width, alignment: .leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                        .onGeometryChange(for: CGFloat.self) { $0.size.height } action: { questionHeight = $0 }
+                        .frame(height: columns ? pane.height : questionHeight, alignment: .leading)
+                        .position(x: columns ? pane.width * 0.74 : pane.width / 2,
+                                  y: columns ? pane.height / 2 : questionHeight / 2)
+                        .accessibilitySortPriority(2)
+                }
 
                 // The single persistent vessel. Size + position are derived from
                 // the screen, so they spring smoothly between steps (the
@@ -93,6 +115,7 @@ struct OnboardingView: View {
                     size: geo.width
                 )
                 .position(geo.center)
+                .allowsHitTesting(false)
                 // Smooth respring whenever the bottle resizes or relocates
                 // (e.g. hero → top-right corner when the keyboard appears).
                 .animation(.smooth(duration: 0.5), value: placement)
@@ -127,31 +150,54 @@ struct OnboardingView: View {
         var contentLeading: CGFloat = 0
     }
 
-    private func vesselGeometry(placement: VesselPlacement, in size: CGSize, arrangement: PaneArrangement) -> VesselGeometry {
+    private func questionPaneSize(in size: CGSize, arrangement: PaneArrangement) -> CGSize {
+        switch arrangement {
+        case let .sideBySide(leading, _, _): CGSize(width: leading, height: size.height)
+        case let .stacked(top, _, _): CGSize(width: size.width, height: top)
+        case .single: size
+        }
+    }
+
+    private func questionUsesColumns(in size: CGSize, arrangement: PaneArrangement) -> Bool {
+        let pane = questionPaneSize(in: size, arrangement: arrangement)
+        return step.hasQuestion && pane.width >= 440
+            && (pane.width > pane.height * 1.1 || size.width > size.height)
+    }
+
+    private func vesselGeometry(placement: VesselPlacement, in size: CGSize, arrangement: PaneArrangement,
+                                questionHeight: CGFloat = 0) -> VesselGeometry {
         // The navigation bar (with the back button) sits above this proxy, so
         // only a small breathing gap is needed at the top.
         let backRowBottom: CGFloat = 8
+        let columns = questionUsesColumns(in: size, arrangement: arrangement)
         switch arrangement {
         case let .sideBySide(leading, gap, _):
             // Bottle centred in the leading pane, below the back button row.
-            let available = size.height - backRowBottom - 24
-            let width = max(72, min(184, leading * 0.55, available / 1.36))
-            let centerY = backRowBottom + (size.height - backRowBottom) / 2
+            let start = backRowBottom + (columns ? 0 : questionHeight)
+            let available = max(1, size.height - start - 24)
+            // The asset has generous transparent side margins. Its canvas
+            // can extend beyond this pane while the visible bottle stays
+            // inside it, filling the available height instead of a tiny cap.
+            let bottlePaneWidth = columns ? leading * 0.48 : leading
+            let width = min(bottlePaneWidth * 1.4, available / 1.36)
+            let centerY = start + available / 2
             return VesselGeometry(
                 width: width,
-                center: CGPoint(x: leading / 2, y: centerY),
+                center: CGPoint(x: bottlePaneWidth / 2, y: centerY),
                 contentInset: 8,
                 contentLeading: leading + gap
             )
         case let .stacked(top, gap, _):
             // Tabletop: bottle stands in the upper half, content sits below the fold.
-            let available = top - backRowBottom - 12
-            let width = max(56, min(184, available / 1.36))
+            let start = backRowBottom + (columns ? 0 : questionHeight)
+            let available = max(1, top - start - 12)
+            let bottlePaneWidth = columns ? size.width * 0.48 : size.width
+            let width = min(bottlePaneWidth * 1.2, available / 1.36)
             let height = width * 1.36
-            let centerY = max(backRowBottom + height / 2, top / 2 + backRowBottom / 4)
+            let centerY = start + available / 2
             return VesselGeometry(
                 width: width,
-                center: CGPoint(x: size.width / 2, y: min(centerY, top - height / 2 - 6)),
+                center: CGPoint(x: bottlePaneWidth / 2, y: min(centerY, top - height / 2 - 6)),
                 contentInset: top + gap
             )
         case .single:
@@ -164,7 +210,8 @@ struct OnboardingView: View {
             let bottomGap: CGFloat = 20
             // Give the bottle more presence while scaling it down on shorter
             // screens. The content inset below follows its enlarged bounds.
-            let width = min(184, max(128, size.height * 0.22))
+            let availableHeight = size.height * ((step == .welcome || step == .done) ? 0.48 : 0.32)
+            let width = min(size.width * 1.1, max(150, availableHeight / 1.36))
             let height = width * 1.36
             let centerY = backRowBottom + topGap + height / 2
             let inset = centerY + height / 2 + bottomGap
@@ -174,13 +221,12 @@ struct OnboardingView: View {
                 contentInset: inset
             )
         case .compact:
-            // Small bottle tucked into the top-trailing corner; content sits
-            // below the header strip beside it, so it needs only a small inset.
-            // Sits up beside the back button in the (transparent) nav bar.
+            // Keep the entire compact vessel inside the content bounds and
+            // start the question below its base, including on the cover display.
             return VesselGeometry(
                 width: 60,
-                center: CGPoint(x: size.width - 50, y: 6),
-                contentInset: 40
+                center: CGPoint(x: size.width - 50, y: 42),
+                contentInset: 88
             )
         }
     }
@@ -213,6 +259,7 @@ struct OnboardingView: View {
     }
 
     private var slideTransition: AnyTransition {
+        if reduceMotion { return .opacity }
         // The whole content block glides + fades + subtly scales in, so every
         // element on the step animates together with the same smooth feel.
         switch direction {
@@ -307,7 +354,11 @@ struct OnboardingView: View {
 
     // MARK: - Completion
 
+    @MainActor
     private func finishToDone() async {
+        guard !isFinishing else { return }
+        isFinishing = true
+        defer { isFinishing = false }
         // Notification permission requested as we enter the celebration screen.
         await notifier.requestAuthorization()
         await MainActor.run { advance() }

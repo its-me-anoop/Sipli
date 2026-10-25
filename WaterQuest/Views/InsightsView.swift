@@ -98,32 +98,28 @@ struct InsightsView: View {
     }
 
     var body: some View {
-        // Fold / landscape: trends on one side, breakdowns on the other.
-        FoldAwareSplit(allowsLandscapeSplit: !isRegular) {
-            ScrollView {
-                VStack(spacing: 20) {
-                    if !hasAnyEntries { emptyState }
-                    headerSummary
-                    DashboardCard(title: "Weekly Intake", icon: "chart.bar.fill") { chartSection }
-                    DashboardCard(title: "Hydration Heatmap", icon: "square.grid.3x3.fill") { heatmapSection }
-                }
-                .padding(16)
+        // Trends and breakdowns remain columns, with one page scroll owner.
+        FoldAwareSplit(allowsLandscapeSplit: !isRegular, scrollsTogether: true) {
+            VStack(spacing: 20) {
+                if !hasAnyEntries { emptyState }
+                headerSummary
+                DashboardCard(title: "Weekly Intake", icon: "chart.bar.fill") { chartSection }
+                DashboardCard(title: "Hydration Heatmap", icon: "square.grid.3x3.fill") { heatmapSection }
             }
+            .padding(16)
         } secondary: {
-            ScrollView {
-                VStack(spacing: 20) {
-                    DashboardCard(title: "Goal Breakdown", icon: "target") { breakdownSection }
-                    if subscriptionManager.hasAccess(to: .fluidTypes), !store.entries.isEmpty {
-                        DashboardCard(title: "Beverage Breakdown (Past \(timeframe.rawValue))", icon: "cup.and.saucer.fill") { beverageBreakdownSection }
-                    }
-                    DashboardCard(title: "Trends & Streaks", icon: "chart.line.uptrend.xyaxis") { trendsSection }
-                    if subscriptionManager.hasAccess(to: .aiInsights) {
-                        DashboardCard(title: "Weekly Digest", icon: "calendar.badge.clock") { weeklyDigestSection }
-                        DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
-                    }
+            VStack(spacing: 20) {
+                DashboardCard(title: "Goal Breakdown", icon: "target") { breakdownSection }
+                if subscriptionManager.hasAccess(to: .fluidTypes), !store.entries.isEmpty {
+                    DashboardCard(title: "Beverage Breakdown (Past \(timeframe.rawValue))", icon: "cup.and.saucer.fill") { beverageBreakdownSection }
                 }
-                .padding(16)
+                DashboardCard(title: "Trends & Streaks", icon: "chart.line.uptrend.xyaxis") { trendsSection }
+                if subscriptionManager.hasAccess(to: .aiInsights) {
+                    DashboardCard(title: "Weekly Digest", icon: "calendar.badge.clock") { weeklyDigestSection }
+                    DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
+                }
             }
+            .padding(16)
         } single: {
             singleLayout
         }
@@ -145,11 +141,9 @@ struct InsightsView: View {
                 .presentationDetents([.medium, .large])
         }
         .task {
-            #if canImport(FoundationModels)
-            if #available(iOS 26.0, *), subscriptionManager.hasAccess(to: .aiInsights) {
-                SipliIntelligence.shared.prewarm(.insights)
-            }
-            #endif
+            // Opening analytics must not start device-only model work. The
+            // recap and insight have immediate data-based defaults; generation
+            // is explicitly requested from their buttons below.
             viewModel.recompute(
                 entries: store.entries,
                 dailyGoalML: store.dailyGoal.totalML,
@@ -255,6 +249,9 @@ struct InsightsView: View {
             }
             .padding(isRegular ? 24 : 16)
         }
+        .contentMargins(.bottom, 32, for: .scrollContent)
+        .scrollIndicatorsFlash(onAppear: true)
+        .accessibilityIdentifier("insightsSingleScroll")
     }
 
     private var isRegular: Bool { sizeClass == .regular }
@@ -561,6 +558,7 @@ struct InsightsView: View {
                 Text("More")
                     .font(.caption2)
                     .foregroundStyle(.secondary)
+                    .accessibilityIdentifier("insightsHeatmapEnd")
             }
         }
         .padding(.vertical, 6)
@@ -663,10 +661,12 @@ struct InsightsView: View {
                     Text("\(store.streakFreezeTokens) streak freeze\(store.streakFreezeTokens == 1 ? "" : "s") banked — a missed day won't end your run.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .accessibilityIdentifier("insightsStreaksEnd")
                 } else {
                     Text("Hit your goal 7 days in a row to bank a streak freeze.")
                         .font(.caption)
                         .foregroundStyle(.secondary)
+                        .accessibilityIdentifier("insightsStreaksEnd")
                 }
                 Spacer()
             }
@@ -686,6 +686,16 @@ struct InsightsView: View {
         var isCloudGenerated: Bool
     }
 
+    private var staticWeeklyDigest: WeeklyDigestDisplay {
+        let stats = WeeklyStats.compute(entries: store.entries, goalML: store.dailyGoal.totalML)
+        return WeeklyDigestDisplay(
+            headline: "Your week in water",
+            narrative: stats.staticDigest,
+            encouragement: nil,
+            isCloudGenerated: false
+        )
+    }
+
     private var weeklyDigestSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             if isGeneratingDigest {
@@ -695,7 +705,8 @@ struct InsightsView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
-            } else if let digest = weeklyDigest {
+            } else {
+                let digest = weeklyDigest ?? staticWeeklyDigest
                 VStack(alignment: .leading, spacing: 8) {
                     Text(digest.headline)
                         .font(Theme.editorialSerif(22, weight: .semibold, relativeTo: .title3))
@@ -715,23 +726,18 @@ struct InsightsView: View {
             }
 
             Button {
-                Task { await generateWeeklyDigest(force: true) }
+                Task { await generateWeeklyDigest() }
             } label: {
-                Label("Refresh digest", systemImage: "arrow.clockwise")
+                Label("Generate AI recap", systemImage: "sparkles")
                     .font(.subheadline.weight(.medium))
             }
             .disabled(isGeneratingDigest)
         }
         .padding(.vertical, 6)
-        .task {
-            guard subscriptionManager.hasAccess(to: .aiInsights), weeklyDigest == nil else { return }
-            await generateWeeklyDigest(force: false)
-        }
     }
 
-    private func generateWeeklyDigest(force: Bool) async {
-        guard subscriptionManager.hasAccess(to: .aiInsights) else { return }
-        if weeklyDigest != nil && !force { return }
+    private func generateWeeklyDigest() async {
+        guard subscriptionManager.hasAccess(to: .aiInsights), !isGeneratingDigest else { return }
         isGeneratingDigest = true
         defer { isGeneratingDigest = false }
 
@@ -770,7 +776,8 @@ struct InsightsView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
-            } else if let insight = aiInsight {
+            } else {
+                let insight = aiInsight ?? generateStaticInsight(data: trendData)
                 HStack(alignment: .top, spacing: 10) {
                     Image(systemName: "sparkles")
                         .foregroundStyle(Theme.lavender)
@@ -783,22 +790,18 @@ struct InsightsView: View {
             Button {
                 Task { await generateAIInsight() }
             } label: {
-                Label("Refresh insight", systemImage: "arrow.clockwise")
+                Label("Generate AI insight", systemImage: "sparkles")
                     .font(.subheadline.weight(.medium))
             }
             .disabled(isGeneratingInsight)
         }
         .padding(.vertical, 6)
-        .task {
-            guard subscriptionManager.hasAccess(to: .aiInsights), aiInsight == nil else { return }
-            await generateAIInsight()
-        }
     }
 
     // MARK: - AI Insight Generation
 
     private func generateAIInsight() async {
-        guard subscriptionManager.hasAccess(to: .aiInsights) else { return }
+        guard subscriptionManager.hasAccess(to: .aiInsights), !isGeneratingInsight else { return }
         isGeneratingInsight = true
         defer { isGeneratingInsight = false }
 

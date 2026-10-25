@@ -10,7 +10,6 @@ struct SipliCTA: View {
 
     enum Variant { case ink, water }
 
-    @State private var pressed = false
 
     private var background: Color {
         switch variant {
@@ -45,7 +44,9 @@ struct SipliCTA: View {
         }) {
             HStack(spacing: 10) {
                 Text(title)
-                    .font(.system(size: 16, weight: .semibold))
+                    .font(.body.weight(.semibold))
+                    .multilineTextAlignment(.center)
+                    .fixedSize(horizontal: false, vertical: true)
                     .foregroundStyle(titleColor)
 
                 ZStack {
@@ -56,32 +57,25 @@ struct SipliCTA: View {
                         .font(.system(size: 13, weight: .bold))
                         .foregroundStyle(arrowFg)
                 }
-                .offset(x: pressed ? 4 : 0)
+                .accessibilityHidden(true)
             }
+            .padding(.horizontal, 20)
+            .padding(.vertical, 12)
             .frame(maxWidth: .infinity, minHeight: 60)
             .background(
                 Capsule(style: .continuous)
                     .fill(background)
             )
             .opacity(disabled ? 0.5 : 1)
-            .scaleEffect(pressed && !disabled ? 0.98 : 1)
         }
-        .buttonStyle(.plain)
+        .buttonStyle(SipliPressStyle())
         .disabled(disabled)
-        .simultaneousGesture(
-            DragGesture(minimumDistance: 0)
-                .onChanged { _ in
-                    if !pressed { withAnimation(.easeOut(duration: 0.12)) { pressed = true } }
-                }
-                .onEnded { _ in
-                    withAnimation(.easeOut(duration: 0.18)) { pressed = false }
-                }
-        )
     }
 }
 
 /// Custom toggle styled like the design's `.switch` — water-coloured when on.
 struct SipliToggle: View {
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Binding var isOn: Bool
     var tint: Color = OnboardingPalette.water
     var onToggle: ((Bool) -> Void)? = nil
@@ -97,7 +91,8 @@ struct SipliToggle: View {
                     .padding(.horizontal, 3)
                     .shadow(color: .black.opacity(0.15), radius: 2, x: 0, y: 1)
             }
-            .animation(.spring(response: 0.4, dampingFraction: 0.78), value: isOn)
+            .animation(reduceMotion ? nil : Theme.quickSpring, value: isOn)
+            .frame(minWidth: 44, minHeight: 44)
             .contentShape(Rectangle())
             .onTapGesture {
                 isOn.toggle()

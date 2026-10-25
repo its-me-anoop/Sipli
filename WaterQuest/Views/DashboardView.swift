@@ -51,10 +51,9 @@ struct DashboardView: View {
     }
 
     var body: some View {
-        // Foldable / landscape: the bottle and summary hold one pane while the
-        // cards scroll in the other. iPad keeps its own wide layout unless a
-        // fold is present.
-        FoldAwareSplit(allowsLandscapeSplit: sizeClass != .regular) {
+        // A wide landscape window uses both columns, including regular-width
+        // Duo and iPad windows. Fold regions continue to take priority.
+        FoldAwareSplit(scrollsTogetherInLandscape: true) {
             splitHeroPane
         } secondary: {
             splitCardsPane
@@ -159,31 +158,34 @@ struct DashboardView: View {
     // MARK: - Layouts
 
     private var iPhoneLayout: some View {
-        ScrollView {
-            VStack(spacing: 16) {
-                heroContent
-                cardsContent
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(spacing: 16) {
+                    heroContent(availableHeight: max(200, proxy.size.height - 76), availableWidth: proxy.size.width - 32)
+                    cardsContent
+                }
+                .padding(.horizontal, 16)
+                .padding(.bottom, 24)
             }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 24)
+            .scrollIndicators(.automatic)
         }
-        .scrollIndicators(.automatic)
         .background { AppWaterBackground().ignoresSafeArea() }
     }
 
     /// Fold / landscape pane 1: the bottle and today's numbers.
     private var splitHeroPane: some View {
-        VStack(spacing: 16) {
-            heroContent
+        FoldPaneScroll(identifier: "homeSummaryPane") { size in
+            VStack(spacing: 16) {
+                heroContent(availableHeight: max(200, size.height - 76), availableWidth: size.width - 32)
+            }
+            .padding(.horizontal, 16)
+            .padding(.bottom, 12)
         }
-        .padding(.horizontal, 16)
-        .padding(.bottom, 12)
-        .fittingPane(minimumScale: 0.42)
     }
 
     /// Fold / landscape pane 2: quests, coach, weather and the log.
     private var splitCardsPane: some View {
-        ScrollView {
+        FoldPaneScroll(identifier: "homeCardsPane") { _ in
             VStack(spacing: 16) {
                 cardsContent
             }
@@ -191,17 +193,19 @@ struct DashboardView: View {
             .padding(.top, 8)
             .padding(.bottom, 24)
         }
-        .scrollIndicators(.automatic)
     }
 
     @ViewBuilder
-    private var heroContent: some View {
-        summarySection
+    private func heroContent(availableHeight: CGFloat? = nil, availableWidth: CGFloat) -> some View {
+        let usesTwoColumns = availableWidth >= 560
+        summarySection(availableHeight: availableHeight, availableWidth: availableWidth, usesTwoColumns: usesTwoColumns)
             .padding(.top, 8)
             .staggeredAppear(0)
 
-        gamificationChips
-            .staggeredAppear(1)
+        if !usesTwoColumns {
+            gamificationChips()
+                .staggeredAppear(1)
+        }
     }
 
     @ViewBuilder
@@ -257,7 +261,7 @@ struct DashboardView: View {
                         let fluidTypeTotal = todayEntries
                             .filter { $0.fluidType == entry.fluidType }
                             .reduce(0) { $0 + $1.effectiveML }
-                        
+
                         Button {
                             Haptics.selection()
                             entryToEdit = entry
@@ -292,87 +296,79 @@ struct DashboardView: View {
     }
 
     private var iPadLayout: some View {
-        ScrollView {
-            VStack(spacing: 20) {
-                // Summary card spans full width
-                HydrationSummaryCard(
-                    greeting: greeting,
-                    progress: progress,
-                    todayTotalML: store.todayTotalML,
-                    goalTotalML: goal.totalML,
-                    compositions: store.todayCompositions,
-                    unitSystem: store.profile.unitSystem,
-                    showsFluidBreakdown: subscriptionManager.hasAccess(to: .fluidTypes)
-                )
+        GeometryReader { proxy in
+            ScrollView {
+                VStack(spacing: 20) {
+                    heroContent(availableHeight: min(460, max(320, proxy.size.height - 76)),
+                                availableWidth: min(1200, proxy.size.width) - 48)
 
-                gamificationChips
-
-                if MatchDay.isActive() {
-                    DashboardCard(title: "Match Day", icon: "soccerball") {
-                        matchDaySection
+                    if MatchDay.isActive() {
+                        DashboardCard(title: "Match Day", icon: "soccerball") {
+                            matchDaySection
+                        }
                     }
-                }
 
-                DashboardCard(title: "Weekly Quests", icon: "flag.checkered") {
-                    WeeklyQuestCard(quests: activeQuests, daysRemaining: WeeklyQuests.daysRemaining())
-                }
+                    DashboardCard(title: "Weekly Quests", icon: "flag.checkered") {
+                        WeeklyQuestCard(quests: activeQuests, daysRemaining: WeeklyQuests.daysRemaining())
+                    }
 
-                if shouldShowPremiumPrompt {
-                    premiumSoftSell
-                }
+                    if shouldShowPremiumPrompt {
+                        premiumSoftSell
+                    }
 
-                // Two columns: Coach (left), Weather + Activity (right)
-                HStack(alignment: .top, spacing: 20) {
-                    // Left column: Hydration Coach (larger)
-                    VStack(spacing: 16) {
-                        if subscriptionManager.hasAccess(to: .aiInsights), let tip = aiService.currentTip {
-                            DashboardCard(title: "Hydration Coach", icon: "sparkles", backgroundGradient: Theme.coachCard) {
-                                iPadTipSection(tip)
+                    // Two columns: Coach (left), Weather + Activity (right)
+                    HStack(alignment: .top, spacing: 20) {
+                        // Left column: Hydration Coach (larger)
+                        VStack(spacing: 16) {
+                            if subscriptionManager.hasAccess(to: .aiInsights), let tip = aiService.currentTip {
+                                DashboardCard(title: "Hydration Coach", icon: "sparkles", backgroundGradient: Theme.coachCard) {
+                                    iPadTipSection(tip)
+                                }
                             }
                         }
-                    }
-                    .frame(minWidth: 0, maxWidth: .infinity)
+                        .frame(minWidth: 0, maxWidth: .infinity)
 
-                    // Right column: Weather + Activity
-                    VStack(spacing: 16) {
-                        if subscriptionManager.hasPremiumAccess && store.effectiveProfile.prefersWeatherGoal {
-                            DashboardCard(title: "Weather", icon: "cloud.sun.fill") {
-                                weatherSection
+                        // Right column: Weather + Activity
+                        VStack(spacing: 16) {
+                            if subscriptionManager.hasPremiumAccess && store.effectiveProfile.prefersWeatherGoal {
+                                DashboardCard(title: "Weather", icon: "cloud.sun.fill") {
+                                    weatherSection
+                                }
+                            }
+
+                            if subscriptionManager.hasPremiumAccess {
+                                DashboardCard(title: "Today\'s Activity", icon: "figure.run") {
+                                    activitySection
+                                }
                             }
                         }
+                        .frame(minWidth: 0, maxWidth: .infinity)
+                    }
 
-                        if subscriptionManager.hasPremiumAccess {
-                            DashboardCard(title: "Today\'s Activity", icon: "figure.run") {
-                                activitySection
+                    // Full-width log at bottom
+                    DashboardCard(title: "Today\'s Log", icon: "drop.fill") {
+                        if todayEntries.isEmpty {
+                            VStack(spacing: 12) {
+                                Image(systemName: "drop")
+                                    .font(.largeTitle)
+                                    .foregroundStyle(.tertiary)
+                                Text("No water logged yet.")
+                                    .foregroundStyle(.secondary)
                             }
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 30)
+                        } else {
+                            iPadLogGrid
                         }
                     }
-                    .frame(minWidth: 0, maxWidth: .infinity)
                 }
-
-                // Full-width log at bottom
-                DashboardCard(title: "Today\'s Log", icon: "drop.fill") {
-                    if todayEntries.isEmpty {
-                        VStack(spacing: 12) {
-                            Image(systemName: "drop")
-                                .font(.largeTitle)
-                                .foregroundStyle(.tertiary)
-                            Text("No water logged yet.")
-                                .foregroundStyle(.secondary)
-                        }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 30)
-                    } else {
-                        iPadLogGrid
-                    }
-                }
+                .padding(.horizontal, 24)
+                .padding(.vertical, 16)
+                .frame(maxWidth: 1200)
+                .frame(maxWidth: .infinity)
             }
-            .padding(.horizontal, 24)
-            .padding(.vertical, 16)
-            .frame(maxWidth: 1200)
-            .frame(maxWidth: .infinity)
+            .background { AppWaterBackground().ignoresSafeArea() }
         }
-        .background { AppWaterBackground().ignoresSafeArea() }
     }
 
     private var iPadLogGrid: some View {
@@ -418,7 +414,7 @@ struct DashboardView: View {
         }
     }
 
-    private var summarySection: some View {
+    private func summarySection(availableHeight: CGFloat? = nil, availableWidth: CGFloat, usesTwoColumns: Bool) -> some View {
         ZStack {
             HydrationSummaryCard(
                 greeting: greeting,
@@ -427,7 +423,11 @@ struct DashboardView: View {
                 goalTotalML: goal.totalML,
                 compositions: store.todayCompositions,
                 unitSystem: store.profile.unitSystem,
-                showsFluidBreakdown: subscriptionManager.hasAccess(to: .fluidTypes)
+                showsFluidBreakdown: subscriptionManager.hasAccess(to: .fluidTypes),
+                availableHeight: availableHeight,
+                availableWidth: availableWidth,
+                usesTwoColumns: usesTwoColumns,
+                accessories: gamificationChips(vertical: true)
             )
 
             if showGoalCelebration {
@@ -464,8 +464,9 @@ struct DashboardView: View {
     }
 
     /// Streak flame + Trophy Room entry, side by side under the hero card.
-    private var gamificationChips: some View {
-        HStack(spacing: 12) {
+    private func gamificationChips(vertical: Bool = false) -> some View {
+        let layout = vertical ? AnyLayout(VStackLayout(spacing: 12)) : AnyLayout(HStackLayout(spacing: 12))
+        return layout {
             let streak = store.currentStreak
             HStack(spacing: 8) {
                 Image(systemName: "flame.fill")
@@ -498,7 +499,7 @@ struct DashboardView: View {
                 HStack(spacing: 8) {
                     Image(systemName: "trophy.fill")
                         .foregroundStyle(Theme.lagoon)
-                    Text("\(store.unlockedAchievements.count) badges")
+                    Text(store.unlockedAchievements.count == 1 ? "1 badge" : "\(store.unlockedAchievements.count) badges")
                         .font(Theme.sipliMono(13, weight: .semibold, relativeTo: .subheadline))
                         .foregroundStyle(Theme.ink)
                         .contentTransition(.numericText())
@@ -513,6 +514,7 @@ struct DashboardView: View {
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Trophy Room, \(store.unlockedAchievements.count) badges earned")
+            .accessibilityIdentifier("homeBadgeButton")
         }
     }
 
@@ -695,7 +697,7 @@ struct DashboardView: View {
                             .foregroundStyle(Theme.lagoon)
                     }
                 }
-                
+
                 // Apple Weather Attribution
                 Link(destination: Legal.weatherAttributionURL) {
                     HStack(spacing: 4) {
@@ -901,7 +903,7 @@ struct DashboardView: View {
 
 }
 
-private struct HydrationSummaryCard: View {
+private struct HydrationSummaryCard<Accessories: View>: View {
     let greeting: String
     let progress: Double
     let todayTotalML: Double
@@ -909,6 +911,10 @@ private struct HydrationSummaryCard: View {
     let compositions: [FluidComposition]
     let unitSystem: UnitSystem
     let showsFluidBreakdown: Bool
+    var availableHeight: CGFloat? = nil
+    var availableWidth: CGFloat
+    var usesTwoColumns: Bool
+    var accessories: Accessories
 
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.colorScheme) private var colorScheme
@@ -925,50 +931,43 @@ private struct HydrationSummaryCard: View {
     }
 
     var body: some View {
-        HStack(alignment: .center, spacing: isRegular ? 28 : 16) {
-            VStack(alignment: .leading, spacing: isRegular ? 8 : 6) {
-                editorialGreeting
-                    .foregroundStyle(Theme.ink)
+        Group {
+            if usesTwoColumns {
+                HStack(alignment: .center, spacing: 24) {
+                    let columnWidth = (availableWidth - (isRegular ? 48 : 40) - 24) * 0.44
+                    let height = min(420, columnWidth * 1748 / 1240,
+                                     max(240, (availableHeight ?? 380) - 48))
+                    RemainingWaterBottle(
+                        progress: progress,
+                        isRegular: isRegular,
+                        bottleWidth: height * 1240 / 1748,
+                        bottleHeight: height
+                    )
+                    .frame(width: columnWidth)
 
-                VStack(alignment: .leading, spacing: 2) {
-                    Text(Formatters.volumeString(ml: todayTotalML, unit: unitSystem))
-                        .font(Theme.editorialSerif(isRegular ? 36 : 32, relativeTo: .title))
-                        .foregroundStyle(Theme.lagoon)
-                        .contentTransition(.numericText())
-                    Text("of \(Formatters.volumeString(ml: goalTotalML, unit: unitSystem)) today")
-                        .font(Theme.sipliMono(11, weight: .medium, relativeTo: .caption))
-                        .tracking(0.6)
-                        .foregroundStyle(Theme.textSecondary)
+                    VStack(alignment: .leading, spacing: 20) {
+                        summaryText
+                        accessories
+                    }
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .fixedSize(horizontal: false, vertical: true)
                 }
-                .padding(.top, 4)
-
-                if showsFluidBreakdown && !topCompositions.isEmpty {
-                    VStack(alignment: .leading, spacing: isRegular ? 10 : 8) {
-                        Text("Top liquids")
-                            .font(.system(isRegular ? .subheadline : .caption, design: .rounded).weight(.bold))
-                            .foregroundStyle(Theme.textSecondary)
-                            .padding(.top, isRegular ? 8 : 6)
-
-                        ForEach(topCompositions, id: \.type) { composition in
-                            LiquidBreakdownRow(
-                                fluidType: composition.type,
-                                percentage: composition.proportion
-                            )
-                        }
+            } else {
+                ViewThatFits(in: .horizontal) {
+                    HStack(alignment: .center, spacing: isRegular ? 28 : 16) {
+                        summaryText.frame(minWidth: 120, maxWidth: .infinity, alignment: .leading)
+                        summaryBottle(compact: false)
+                    }
+                    VStack(alignment: .leading, spacing: 16) {
+                        summaryText
+                        summaryBottle(compact: true).frame(maxWidth: .infinity)
                     }
                 }
+                .frame(height: availableHeight.map { max(120, $0 - (isRegular ? 48 : 40)) })
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
-
-            RemainingWaterBottle(
-                progress: progress,
-                isRegular: isRegular,
-                bottleWidth: isRegular ? 230 : 165,
-                bottleHeight: isRegular ? 340 : 260
-            )
         }
         .padding(isRegular ? 24 : 20)
-        .frame(minHeight: isRegular ? 430 : 350)
+        .frame(minHeight: availableHeight == nil ? (isRegular ? 380 : 330) : nil)
         .background(cardBackground)
         .shadow(color: Theme.shadowColor.opacity(0.6), radius: 15, x: 0, y: 8)
         // Press-ripple removed: `onPressingChanged` installs a
@@ -976,7 +975,79 @@ private struct HydrationSummaryCard: View {
         // and prevents the parent ScrollView from scrolling when the touch
         // begins on the card. Onboarding's small ripple targets aren't
         // inside a ScrollView so they're unaffected.
-        .accessibilityElement(children: .combine)
+        .accessibilityElement(children: usesTwoColumns ? .contain : .combine)
+    }
+
+    private var summaryText: some View {
+        VStack(alignment: .leading, spacing: isRegular ? 8 : 6) {
+            editorialGreeting
+                .foregroundStyle(Theme.ink)
+
+            VStack(alignment: .leading, spacing: 2) {
+                Text(Formatters.volumeString(ml: todayTotalML, unit: unitSystem))
+                    .font(Theme.editorialSerif(isRegular ? 36 : 32, relativeTo: .title))
+                    .foregroundStyle(Theme.lagoon)
+                    .contentTransition(.numericText())
+                Text("of \(Formatters.volumeString(ml: goalTotalML, unit: unitSystem)) today")
+                    .font(Theme.sipliMono(11, weight: .medium, relativeTo: .caption))
+                    .tracking(0.6)
+                    .foregroundStyle(Theme.textSecondary)
+            }
+            .padding(.top, 4)
+
+            if showsFluidBreakdown && !topCompositions.isEmpty {
+                VStack(alignment: .leading, spacing: isRegular ? 10 : 8) {
+                    Text("Top liquids")
+                        .font(.system(isRegular ? .subheadline : .caption, design: .rounded).weight(.bold))
+                        .foregroundStyle(Theme.textSecondary)
+                        .padding(.top, isRegular ? 8 : 6)
+
+                    ForEach(topCompositions, id: \.type) { composition in
+                        LiquidBreakdownRow(
+                            fluidType: composition.type,
+                            percentage: composition.proportion
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func summaryBottle(compact: Bool) -> some View {
+        if compact {
+            if availableHeight != nil {
+                GeometryReader { proxy in
+                    let height = max(1, min(proxy.size.height, proxy.size.width * 1748 / 1240))
+                    RemainingWaterBottle(
+                        progress: progress,
+                        isRegular: false,
+                        bottleWidth: height * 1240 / 1748,
+                        bottleHeight: height
+                    )
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                }
+            } else {
+                GeometryReader { proxy in
+                    RemainingWaterBottle(
+                        progress: progress,
+                        isRegular: false,
+                        bottleWidth: proxy.size.width,
+                        bottleHeight: proxy.size.height
+                    )
+                }
+                .aspectRatio(1240.0 / 1748.0, contentMode: .fit)
+                .frame(maxWidth: 320)
+            }
+        } else {
+            let height = min(isRegular ? 410.0 : 300.0, availableHeight.map { max(80, $0 - (isRegular ? 48 : 40)) } ?? .infinity)
+            RemainingWaterBottle(
+                progress: progress,
+                isRegular: isRegular,
+                bottleWidth: min(isRegular ? 280 : 190, height * 1240 / 1748),
+                bottleHeight: height
+            )
+        }
     }
 
     /// Splits the greeting into "[lead], [name]." with the name set in the
@@ -1276,6 +1347,8 @@ struct EntryEditorSheet: View {
                     }
                 }
             }
+            .scrollDismissesKeyboard(.interactively)
+            .avoidingFold()
             .navigationTitle("Edit Entry")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -1291,6 +1364,7 @@ struct EntryEditorSheet: View {
                 Button("Cancel", role: .cancel) {}
             }
         }
+        .presentsPaywall()
     }
 }
 

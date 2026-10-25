@@ -4,6 +4,20 @@ import XCTest
 /// Tests for the Weekly Digest's pure stats aggregation.
 final class WeeklyStatsTests: XCTestCase {
 
+    func test_modelCompatibilityBlocksAffectedReleaseAcrossPatches() {
+        for patch in [0, 1, 2, 10] {
+            XCTAssertFalse(FoundationModelCompatibility.permitsGeneration(on:
+                OperatingSystemVersion(majorVersion: 27, minorVersion: 1, patchVersion: patch)))
+        }
+    }
+
+    func test_modelCompatibilityLeavesOtherReleasesToAvailabilityChecks() {
+        for (major, minor) in [(26, 1), (27, 0), (27, 2), (28, 1)] {
+            XCTAssertTrue(FoundationModelCompatibility.permitsGeneration(on:
+                OperatingSystemVersion(majorVersion: major, minorVersion: minor, patchVersion: 0)))
+        }
+    }
+
     private let calendar = Calendar.current
     private var now: Date {
         calendar.date(bySettingHour: 15, minute: 0, second: 0, of: Date())!

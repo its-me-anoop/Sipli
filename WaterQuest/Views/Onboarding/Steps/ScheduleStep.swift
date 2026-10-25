@@ -3,6 +3,7 @@ import SwiftUI
 struct ScheduleStep: View {
     @Binding var state: OnboardingState
     let onContinue: () -> Void
+    @Environment(\.onboardingQuestionInHero) private var questionInHero
 
     private enum ActiveHandle { case wake, sleep }
 
@@ -12,9 +13,11 @@ struct ScheduleStep: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    headline
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 6)
+                    if !questionInHero {
+                        headline
+                            .padding(.horizontal, 24)
+                            .padding(.bottom, 6)
+                    }
 
                     Text("Drag the sun and moon. We'll only nudge you during waking hours.")
                         .font(.system(size: 15))
@@ -22,12 +25,12 @@ struct ScheduleStep: View {
                         .padding(.horizontal, 24)
                         .padding(.bottom, 12)
 
-                    dial
-                        .padding(.bottom, 8)
-
-                    readout
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 12)
+                    OnboardingAnswerLayout {
+                        dial
+                        readout
+                    }
+                    .padding(.horizontal, 24)
+                    .padding(.bottom, 12)
                 }
             }
 
@@ -41,19 +44,27 @@ struct ScheduleStep: View {
     }
 
     private var headline: some View {
-        (Text("When are you\n").foregroundStyle(OnboardingPalette.ink)
-            + Text("awake?").italic().foregroundStyle(OnboardingPalette.water))
-            .font(.editorialSerif(40, relativeTo: .largeTitle))
-            .lineSpacing(-2)
+        OnboardingQuestion(step: .schedule)
     }
 
     private var dial: some View {
-        let dialSize: CGFloat = 264
+        GeometryReader { proxy in
+            dial(diameter: min(320, proxy.size.width))
+                .frame(width: proxy.size.width, height: proxy.size.height)
+        }
+        .aspectRatio(1, contentMode: .fit)
+        .frame(maxWidth: 320)
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 12)
+    }
+
+    private func dial(diameter dialSize: CGFloat) -> some View {
+        let radius = max(40, dialSize / 2 - 48)
         return ZStack {
             // Night ring (background)
             Circle()
                 .stroke(OnboardingPalette.ink.opacity(0.06), lineWidth: 22)
-                .frame(width: 220, height: 220)
+                .frame(width: radius * 2, height: radius * 2)
 
             // Hour ticks
             ForEach(0..<24) { i in
@@ -61,7 +72,7 @@ struct ScheduleStep: View {
                 Capsule()
                     .fill(OnboardingPalette.ink.opacity(isMajor ? 0.5 : 0.18))
                     .frame(width: isMajor ? 2 : 1, height: isMajor ? 8 : 4)
-                    .offset(y: -130)
+                    .offset(y: -(radius + 20))
                     .rotationEffect(.degrees(Double(i) / 24.0 * 360))
             }
 
@@ -70,9 +81,10 @@ struct ScheduleStep: View {
                 Text(String(format: "%02d", h))
                     .font(.sipliMono(11, weight: .medium, relativeTo: .caption))
                     .foregroundStyle(OnboardingPalette.ink3)
-                    .offset(y: -148)
-                    .rotationEffect(.degrees(Double(h) / 24.0 * 360))
-                    .rotationEffect(.degrees(-Double(h) / 24.0 * 360), anchor: .center)
+                    .offset(
+                        x: CGFloat(sin(Double(h) / 24 * 2 * .pi)) * (radius + 36),
+                        y: -CGFloat(cos(Double(h) / 24 * 2 * .pi)) * (radius + 36)
+                    )
             }
 
             // Awake arc (gradient)
@@ -84,7 +96,7 @@ struct ScheduleStep: View {
                     ),
                     style: StrokeStyle(lineWidth: 22, lineCap: .round)
                 )
-                .frame(width: 220, height: 220)
+                .frame(width: radius * 2, height: radius * 2)
                 .animation(.spring(response: 0.4, dampingFraction: 0.85), value: state.wakeHour)
                 .animation(.spring(response: 0.4, dampingFraction: 0.85), value: state.sleepHour)
 
@@ -101,7 +113,7 @@ struct ScheduleStep: View {
             }
 
             // Wake handle
-            handlePosition(hour: state.wakeHour, radius: 110) { offset in
+            handlePosition(hour: state.wakeHour, radius: radius) { offset in
                 Circle()
                     .fill(OnboardingPalette.sun)
                     .frame(width: 44, height: 44)
@@ -115,7 +127,7 @@ struct ScheduleStep: View {
             }
 
             // Sleep handle
-            handlePosition(hour: state.sleepHour, radius: 110) { offset in
+            handlePosition(hour: state.sleepHour, radius: radius) { offset in
                 Circle()
                     .fill(OnboardingPalette.ink)
                     .frame(width: 44, height: 44)
@@ -129,7 +141,6 @@ struct ScheduleStep: View {
             }
         }
         .frame(width: dialSize, height: dialSize)
-        .frame(maxWidth: .infinity)
         .contentShape(Rectangle())
         .gesture(
             DragGesture(minimumDistance: 0)
@@ -172,18 +183,9 @@ struct ScheduleStep: View {
     }
 
     private var readout: some View {
-        HStack {
-            block(label: "WAKE", value: state.formatHour(state.wakeHour),
-                  iconBg: Color(red: 1.0, green: 0.886, blue: 0.714),
-                  iconFg: Color(red: 1.0, green: 0.541, blue: 0.122),
-                  symbol: "sun.max.fill")
-            Rectangle()
-                .fill(OnboardingPalette.ink.opacity(0.10))
-                .frame(width: 1, height: 32)
-            block(label: "SLEEP", value: state.formatHour(state.sleepHour),
-                  iconBg: OnboardingPalette.ink,
-                  iconFg: OnboardingPalette.sun,
-                  symbol: "moon.stars.fill")
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: 12) { scheduleBlocks }
+            VStack(alignment: .leading, spacing: 12) { scheduleBlocks }
         }
         .padding(.horizontal, 16)
         .padding(.vertical, 14)
@@ -191,10 +193,18 @@ struct ScheduleStep: View {
             RoundedRectangle(cornerRadius: 18, style: .continuous)
                 .fill(OnboardingPalette.card)
         )
-        .overlay(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(OnboardingPalette.ink.opacity(0.06), lineWidth: 1)
-        )
+    }
+
+    @ViewBuilder
+    private var scheduleBlocks: some View {
+        block(label: "WAKE", value: state.formatHour(state.wakeHour),
+              iconBg: Color(red: 1.0, green: 0.886, blue: 0.714),
+              iconFg: Color(red: 1.0, green: 0.541, blue: 0.122),
+              symbol: "sun.max.fill")
+        block(label: "SLEEP", value: state.formatHour(state.sleepHour),
+              iconBg: OnboardingPalette.ink,
+              iconFg: OnboardingPalette.sun,
+              symbol: "moon.stars.fill")
     }
 
     private func block(label: String, value: String, iconBg: Color, iconFg: Color, symbol: String) -> some View {
@@ -215,8 +225,9 @@ struct ScheduleStep: View {
                 Text(value)
                     .font(.editorialSerif(22, weight: .semibold, relativeTo: .title2))
                     .foregroundStyle(OnboardingPalette.ink)
+                    .fixedSize(horizontal: true, vertical: false)
             }
-            Spacer()
+            Spacer(minLength: 0)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
     }

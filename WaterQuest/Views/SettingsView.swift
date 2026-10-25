@@ -12,6 +12,7 @@ struct SettingsView: View {
 
     @AppStorage("appTheme") private var appTheme: AppTheme = .system
 
+    @FocusState private var nameFocused: Bool
     @State private var customGoalEnabled = false
     @State private var customGoalValue: Double = 2200
     @State private var wakeTime: Date = Date()
@@ -37,8 +38,23 @@ struct SettingsView: View {
     }
 
     var body: some View {
-        ScrollView {
-            VStack(spacing: 16) {
+        FoldAwareSplit(allowsStackedSplit: false, landscapeLeadingFraction: 0.5, scrollsTogetherInLandscape: true) {
+            settingsPane(identifier: "settingsProfilePane") {
+                profileCard
+                trophyRoomCard
+                appearanceCard
+                premiumGoalCard
+                goalCard
+            }
+        } secondary: {
+            settingsPane(identifier: "settingsPreferencesPane") {
+                scheduleCard
+                reminderCard
+                permissionsCard
+                aboutCard
+            }
+        } single: {
+            settingsPane(identifier: "settingsSinglePane") {
                 profileCard
                 trophyRoomCard
                 appearanceCard
@@ -49,10 +65,7 @@ struct SettingsView: View {
                 permissionsCard
                 aboutCard
             }
-            .padding(.horizontal, 16)
-            .padding(.bottom, 24)
         }
-        .scrollIndicators(.automatic)
         .navigationTitle("Settings")
         .background { AppWaterBackground().ignoresSafeArea() }
         .task {
@@ -63,6 +76,21 @@ struct SettingsView: View {
             hydrateLocalStateFromProfile()
             isPremiumPromptDismissed = false
         }
+    }
+
+    private func settingsPane<Content: View>(
+        identifier: String,
+        @ViewBuilder content: @escaping () -> Content
+    ) -> some View {
+        FoldPaneScroll(identifier: identifier) { _ in
+            VStack(spacing: 16, content: content)
+                .padding(.horizontal, 16)
+                .padding(.top, 8)
+                .padding(.bottom, 24)
+        }
+        .contentMargins(.bottom, 24, for: .scrollContent)
+        .scrollDismissesKeyboard(.interactively)
+        .scrollIndicators(.automatic)
     }
 
     private var premiumGoalCard: some View {
@@ -162,6 +190,9 @@ struct SettingsView: View {
                             store.updateProfile { $0.name = value }
                         }
                     ))
+                    .focused($nameFocused)
+                    .submitLabel(.done)
+                    .onSubmit { nameFocused = false }
                     .textInputAutocapitalization(.words)
                     .disableAutocorrection(true)
                     .padding(12)
@@ -382,6 +413,7 @@ struct SettingsView: View {
                     HStack(alignment: .top, spacing: 4) {
                         Image(systemName: "info.circle")
                         Text("This app does not provide medical advice. Hydration goals are general wellness estimates based on the sources above. Consult a healthcare professional for guidance specific to your health needs.")
+                            .accessibilityIdentifier("settingsGoalEnd")
                     }
                     .font(.caption2)
                     .foregroundStyle(.secondary)
@@ -638,6 +670,7 @@ struct SettingsView: View {
                         .foregroundStyle(Theme.lagoon)
                         .frame(width: 22)
                     Text("Version")
+                        .accessibilityIdentifier("settingsVersion")
                         .font(.subheadline.weight(.medium))
                     Spacer()
                     Text(Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "1.0")

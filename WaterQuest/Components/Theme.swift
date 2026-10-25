@@ -410,8 +410,17 @@ struct AppWaterBackground: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
+    private var usesStaticBackground: Bool {
+        #if DEBUG
+        // Layout tests freeze decorative ambient motion alongside the bottle.
+        // Native controls and navigation still animate normally.
+        if ProcessInfo.processInfo.environment["SIPLI_BOTTLE_REDUCE_MOTION"] == "1" { return true }
+        #endif
+        return reduceMotion
+    }
+
     var body: some View {
-        if reduceMotion {
+        if usesStaticBackground {
             GeometryReader { geo in
                 shaderBackground(size: geo.size, time: 0)
             }

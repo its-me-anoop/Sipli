@@ -39,23 +39,27 @@ struct DoneStep: View {
             }
 
             VStack(spacing: 0) {
-                Spacer(minLength: 8)
+                GeometryReader { proxy in
+                    ScrollView {
+                        VStack(spacing: 0) {
+                            (Text("You're set,\n").foregroundStyle(OnboardingPalette.ink)
+                                + Text("\(firstName).").italic().foregroundStyle(OnboardingPalette.water))
+                                .font(.editorialSerif(38, relativeTo: .largeTitle))
+                                .multilineTextAlignment(.center)
+                                .frame(maxWidth: .infinity)
 
-                (Text("You're set,\n").foregroundStyle(OnboardingPalette.ink)
-                    + Text("\(firstName).").italic().foregroundStyle(OnboardingPalette.water))
-                    .font(.editorialSerif(38, relativeTo: .largeTitle))
-                    .multilineTextAlignment(.center)
-                    .frame(maxWidth: .infinity)
-
-                Text("Your daily target: \(Text(targetDisplay).fontWeight(.semibold).foregroundColor(OnboardingPalette.ink)). Let's start with a small sip.")
-                    .font(.system(size: 15))
-                    .foregroundStyle(OnboardingPalette.ink3)
-                    .multilineTextAlignment(.center)
-                    .padding(.horizontal, 32)
-                    .padding(.top, 18)
-                    .frame(maxWidth: 320)
-
-                Spacer()
+                            Text("Your daily target: \(Text(targetDisplay).fontWeight(.semibold).foregroundColor(OnboardingPalette.ink)). Let's start with a small sip.")
+                                .font(.system(size: 15))
+                                .foregroundStyle(OnboardingPalette.ink3)
+                                .multilineTextAlignment(.center)
+                                .padding(.horizontal, 32)
+                                .padding(.top, 18)
+                                .frame(maxWidth: 320)
+                        }
+                        .padding(.vertical, 16)
+                        .frame(maxWidth: .infinity, minHeight: proxy.size.height)
+                    }
+                }
 
                 SipliCTA(title: "Open Sipli", variant: .water, action: onFinish)
                     .padding(.horizontal, 24)

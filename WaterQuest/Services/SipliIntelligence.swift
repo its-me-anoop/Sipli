@@ -1,4 +1,14 @@
 import Foundation
+
+enum FoundationModelCompatibility {
+    static func permitsGeneration(on version: OperatingSystemVersion) -> Bool {
+        // Sipli 6.0 (16), incident D95D7BFE: FoundationModels asserted on
+        // iOS 27.1. Avoid entering the framework on that release until the
+        // underlying assertion can be diagnosed and verified on a device.
+        !(version.majorVersion == 27 && version.minorVersion == 1)
+    }
+}
+
 #if canImport(FoundationModels)
 import FoundationModels
 #endif
@@ -93,8 +103,18 @@ final class SipliIntelligence {
 
     /// True when the on-device model is ready and supports the user's locale.
     var isReady: Bool {
-        SystemLanguageModel.default.availability == .available
+        guard FoundationModelCompatibility.permitsGeneration(
+            on: ProcessInfo.processInfo.operatingSystemVersion
+        ) else { return false }
+        #if targetEnvironment(simulator)
+        // The Duo runtime advertises model availability but can trap inside
+        // FoundationModels during generation. Keep every surface usable with
+        // its existing deterministic fallback while running in Simulator.
+        return false
+        #else
+        return SystemLanguageModel.default.availability == .available
             && SystemLanguageModel.default.supportsLocale()
+        #endif
     }
 
     /// Whether the last digest came from the Private Cloud Compute model —

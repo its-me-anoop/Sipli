@@ -5,12 +5,14 @@ struct WelcomeStep: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            Spacer(minLength: 0)
-
-            welcomeText
-                .padding(.horizontal, 24)
-
-            Spacer(minLength: 8)
+            GeometryReader { proxy in
+                ScrollView {
+                    welcomeText
+                        .padding(.horizontal, 24)
+                        .padding(.vertical, 12)
+                        .frame(minHeight: proxy.size.height, alignment: .center)
+                }
+            }
 
             SipliCTA(title: "Get started", action: onContinue)
                 .padding(.horizontal, 24)

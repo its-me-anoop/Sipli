@@ -38,6 +38,77 @@ enum OnboardingNavDirection {
     case backward
 }
 
+private struct OnboardingQuestionInHeroKey: EnvironmentKey {
+    static let defaultValue = false
+}
+
+extension EnvironmentValues {
+    var onboardingQuestionInHero: Bool {
+        get { self[OnboardingQuestionInHeroKey.self] }
+        set { self[OnboardingQuestionInHeroKey.self] = newValue }
+    }
+}
+
+extension OnboardingStep {
+    var hasQuestion: Bool { self != .welcome && self != .done }
+}
+
+/// Shared question copy lets the coordinator move the question alongside the
+/// bottle on a split display without duplicating it in the answer pane.
+struct OnboardingQuestion: View {
+    let step: OnboardingStep
+    var fontSize: CGFloat = 40
+
+    private var copy: (String, String) {
+        switch step {
+        case .name: ("What should we\n", "call you?")
+        case .weight: ("You weigh\n", "about how much?")
+        case .activity: ("How active\n", "is your average day?")
+        case .target: ("Pour the perfect\n", "daily amount.")
+        case .schedule: ("When are you\n", "awake?")
+        case .notifications: ("How loud\nshould we ", "nudge?")
+        case .welcome, .done: ("", "")
+        }
+    }
+
+    var body: some View {
+        (Text(copy.0).foregroundStyle(OnboardingPalette.ink)
+            + Text(copy.1).italic().foregroundStyle(OnboardingPalette.water))
+            .font(.editorialSerif(fontSize, relativeTo: .largeTitle))
+            .lineSpacing(-2)
+            .accessibilityAddTraits(.isHeader)
+    }
+}
+
+/// Reflows the same controls without duplicating their state or keyboard focus.
+struct OnboardingAnswerLayout: Layout {
+    var minimumColumnWidth: CGFloat = 240
+    var spacing: CGFloat = 24
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
+        let width = proposal.width ?? minimumColumnWidth * 2 + spacing
+        let columns = width >= minimumColumnWidth * 2 + spacing
+        let childWidth = columns ? (width - spacing) / 2 : width
+        let sizes = subviews.map { $0.sizeThatFits(ProposedViewSize(width: childWidth, height: nil)) }
+        return CGSize(width: width, height: columns ? (sizes.map(\.height).max() ?? 0)
+                      : sizes.reduce(0) { $0 + $1.height } + spacing * CGFloat(max(0, sizes.count - 1)))
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
+        let columns = bounds.width >= minimumColumnWidth * 2 + spacing
+        let childWidth = columns ? (bounds.width - spacing) / 2 : bounds.width
+        var y = bounds.minY
+        for (index, subview) in subviews.enumerated() {
+            let childProposal = ProposedViewSize(width: childWidth, height: nil)
+            let size = subview.sizeThatFits(childProposal)
+            subview.place(at: CGPoint(x: columns ? bounds.minX + CGFloat(index) * (childWidth + spacing) : bounds.minX,
+                                     y: columns ? bounds.midY - size.height / 2 : y),
+                          anchor: .topLeading, proposal: childProposal)
+            if !columns { y += size.height + spacing }
+        }
+    }
+}
+
 /// Answer chip displayed in the AnswerChipStack at the top of subsequent steps.
 struct OnboardingAnswerChip: Identifiable, Equatable {
     let id: String

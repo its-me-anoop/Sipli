@@ -6,6 +6,7 @@ struct RootView: View {
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
 
     @State private var showSplash = true
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var shouldSkipOnboardingForICloud: Bool {
         FileManager.default.ubiquityIdentityToken != nil
@@ -15,6 +16,7 @@ struct RootView: View {
         ZStack {
             if hasOnboarded || shouldSkipOnboardingForICloud {
                 MainTabView()
+                    .transition(.opacity)
             } else {
                 OnboardingView {
                     hasOnboarded = true
@@ -30,6 +32,7 @@ struct RootView: View {
                     .zIndex(20)
             }
         }
+        .animation(reduceMotion ? nil : .easeOut(duration: 0.25), value: hasOnboarded)
         .task {
             await bootstrapAppFlow()
         }
@@ -48,7 +51,7 @@ struct RootView: View {
         try? await Task.sleep(for: .seconds(1.0))
 
         await MainActor.run {
-            withAnimation(.easeOut(duration: 0.3)) {
+            withAnimation(reduceMotion ? nil : .easeOut(duration: 0.3)) {
                 showSplash = false
             }
         }
@@ -82,6 +85,7 @@ struct PremiumPaywallView: View {
     let context: PaywallContext
 
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
 
     @State private var selectedProductID: ProductID = .annual
@@ -247,18 +251,6 @@ struct PremiumPaywallView: View {
 
             ScrollView {
                 VStack(spacing: 24) {
-                    HStack {
-                        Spacer()
-                        Button {
-                            closePaywall()
-                        } label: {
-                            Image(systemName: "xmark.circle.fill")
-                                .font(.title2)
-                                .foregroundStyle(.secondary)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("Close premium plans")
-                    }
 
                     Image("sipliIcon")
                         .resizable()
@@ -307,7 +299,9 @@ struct PremiumPaywallView: View {
                                     isAvailable: option.product != nil
                                 ) {
                                     Haptics.selection()
-                                    selectedProductID = option.id
+                                    withAnimation(reduceMotion ? nil : Theme.quickSpring) {
+                                        selectedProductID = option.id
+                                    }
                                 }
                             }
                         }
@@ -352,10 +346,12 @@ struct PremiumPaywallView: View {
                             }
                             .font(.system(size: 16, weight: .semibold))
                             .foregroundStyle(Color.white)
+                            .padding(.horizontal, 18)
+                            .padding(.vertical, 12)
                             .frame(maxWidth: .infinity, minHeight: 60)
                             .background(Capsule(style: .continuous).fill(Theme.lagoon))
                         }
-                        .buttonStyle(.plain)
+                        .buttonStyle(SipliPressStyle())
                         .disabled(isPurchasing)
                     }
 
@@ -388,6 +384,22 @@ struct PremiumPaywallView: View {
                 .padding(.top, 16)
                 .frame(maxWidth: .infinity)
             }
+        }
+        .safeAreaInset(edge: .top, spacing: 0) {
+            HStack {
+                Spacer()
+                Button(action: closePaywall) {
+                    Image(systemName: "xmark.circle.fill")
+                        .font(.title2)
+                        .foregroundStyle(.secondary)
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
+                }
+                .buttonStyle(SipliPressStyle())
+                .accessibilityLabel("Close premium plans")
+            }
+            .padding(.horizontal, 16)
+            .background(.ultraThinMaterial)
         }
         .onAppear {
             syncSelectedPlan()

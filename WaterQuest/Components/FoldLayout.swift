@@ -20,7 +20,12 @@ struct FoldDivision: Equatable {
 
     /// `.vertical` = book pose (panes left/right); `.horizontal` = tabletop
     /// pose (panes top/bottom).
-    var axis: Axis { frame.height >= frame.width ? .vertical : .horizontal }
+    var axis: Axis
+
+    init(frame: CGRect, axis: Axis? = nil) {
+        self.frame = frame
+        self.axis = axis ?? (frame.height >= frame.width ? .vertical : .horizontal)
+    }
 }
 
 /// How a two-pane container should lay itself out right now.
@@ -56,7 +61,33 @@ enum FoldResolver {
         #endif
 
         guard let frame = candidate, frame.intersects(bounds) else { return nil }
-        return FoldDivision(frame: frame)
+        return FoldDivision(frame: frame.intersection(bounds), axis: FoldDivision(frame: frame).axis)
+    }
+
+    /// A single scrolling surface stays entirely within the roomier usable
+    /// pane. Keep the fold's axis even if clipping leaves only its thin edge.
+    static func singlePane(in size: CGSize, division: FoldDivision?, readableWidth: CGFloat = 620) -> CGRect {
+        let bounds = CGRect(origin: .zero, size: size)
+        var pane = bounds
+        if let division, division.frame.intersects(bounds) {
+            let band = division.frame.intersection(bounds)
+            switch division.axis {
+            case .vertical:
+                let leading = band.minX
+                let trailing = size.width - band.maxX
+                pane = leading >= trailing
+                    ? CGRect(x: 0, y: 0, width: leading, height: size.height)
+                    : CGRect(x: band.maxX, y: 0, width: trailing, height: size.height)
+            case .horizontal:
+                let top = band.minY
+                let bottom = size.height - band.maxY
+                pane = bottom >= top
+                    ? CGRect(x: 0, y: band.maxY, width: size.width, height: bottom)
+                    : CGRect(x: 0, y: 0, width: size.width, height: top)
+            }
+        }
+        let width = min(readableWidth, pane.width)
+        return CGRect(x: pane.midX - width / 2, y: pane.minY, width: width, height: pane.height)
     }
 
     /// Resolves the arrangement for a container: fold first, then (optionally)
@@ -65,6 +96,7 @@ enum FoldResolver {
         in proxy: GeometryProxy,
         simulatedGlobal: CGRect?,
         allowsLandscapeSplit: Bool,
+        allowsStackedSplit: Bool = true,
         landscapeLeadingFraction: CGFloat = 0.46
     ) -> PaneArrangement {
         let size = proxy.size
@@ -79,6 +111,7 @@ enum FoldResolver {
                     return .sideBySide(leading: leading, gap: size.width - leading - trailing, trailing: trailing)
                 }
             case .horizontal:
+                guard allowsStackedSplit else { return .single }
                 let top = max(0, min(size.height, band.minY))
                 let bottom = max(0, size.height - band.maxY)
                 if top >= minimumPaneLength * 0.7, bottom >= minimumPaneLength * 0.7 {
@@ -201,14 +234,56 @@ extension View {
     func foldTracking() -> some View { modifier(FoldTracking()) }
 }
 
+// MARK: - Pane scrolling
+
+private struct FoldScrollContext {
+    var shared = false
+    var size: CGSize = .zero
+}
+
+private struct FoldScrollContextKey: EnvironmentKey {
+    static let defaultValue = FoldScrollContext()
+}
+
+private extension EnvironmentValues {
+    var foldScrollContext: FoldScrollContext {
+        get { self[FoldScrollContextKey.self] }
+        set { self[FoldScrollContextKey.self] = newValue }
+    }
+}
+
+/// A pane owns scrolling normally, or contributes natural-height content to
+/// the shared page scroll. Geometry stays available without nesting scrolls.
+struct FoldPaneScroll<Content: View>: View {
+    var identifier: String
+    @ViewBuilder var content: (CGSize) -> Content
+    @Environment(\.foldScrollContext) private var context
+
+    var body: some View {
+        if context.shared {
+            content(context.size)
+        } else {
+            GeometryReader { proxy in
+                ScrollView { content(proxy.size) }
+                    .scrollDismissesKeyboard(.interactively)
+                    .accessibilityIdentifier(identifier)
+            }
+        }
+    }
+}
+
 // MARK: - Two-pane container
 
 /// Lays out `primary` and `secondary` on either side of the fold (book or
 /// tabletop pose), side by side in wide landscape when allowed, and falls back
-/// to `single` otherwise. Each pane owns its own scrolling.
+/// to `single` otherwise. Panes normally own their scrolling; content-only
+/// columns can opt into one shared scroll surface.
 struct FoldAwareSplit<Primary: View, Secondary: View, Single: View>: View {
     var allowsLandscapeSplit: Bool = true
+    var allowsStackedSplit: Bool = true
     var landscapeLeadingFraction: CGFloat = 0.46
+    var scrollsTogether: Bool = false
+    var scrollsTogetherInLandscape: Bool = false
     @ViewBuilder var primary: () -> Primary
     @ViewBuilder var secondary: () -> Secondary
     @ViewBuilder var single: () -> Single
@@ -217,26 +292,51 @@ struct FoldAwareSplit<Primary: View, Secondary: View, Single: View>: View {
 
     var body: some View {
         GeometryReader { proxy in
+            let usesSharedScroll = scrollsTogether || (scrollsTogetherInLandscape && proxy.size.width > proxy.size.height)
             let arrangement = FoldResolver.arrangement(
                 in: proxy,
                 simulatedGlobal: simulatedFold,
                 allowsLandscapeSplit: allowsLandscapeSplit,
+                allowsStackedSplit: allowsStackedSplit,
                 landscapeLeadingFraction: landscapeLeadingFraction
             )
 
             switch arrangement {
             case let .sideBySide(leading, gap, trailing):
-                HStack(spacing: gap) {
-                    primary().frame(width: leading)
-                    secondary().frame(width: trailing)
+                if usesSharedScroll {
+                    ScrollView {
+                        HStack(alignment: .top, spacing: gap) {
+                            primary()
+                                .frame(width: leading)
+                                .environment(\.foldScrollContext, FoldScrollContext(shared: true, size: CGSize(width: leading, height: proxy.size.height)))
+                            secondary()
+                                .frame(width: trailing)
+                                .environment(\.foldScrollContext, FoldScrollContext(shared: true, size: CGSize(width: trailing, height: proxy.size.height)))
+                        }
+                    }
+                    .contentMargins(.bottom, 32, for: .scrollContent)
+                    .scrollDismissesKeyboard(.interactively)
+                    .scrollIndicatorsFlash(onAppear: true)
+                    .accessibilityIdentifier("foldSharedScroll")
+                } else {
+                    HStack(alignment: .top, spacing: gap) {
+                        // Let native scroll views draw through their vertical
+                        // safe-area edge rather than clipping the whole pane.
+                        primary().frame(width: leading, height: proxy.size.height, alignment: .top)
+                        secondary().frame(width: trailing, height: proxy.size.height, alignment: .top)
+                    }
+                    .frame(width: proxy.size.width, height: proxy.size.height, alignment: .top)
                 }
-                .frame(maxHeight: .infinity)
             case let .stacked(top, gap, bottom):
-                VStack(spacing: gap) {
-                    primary().frame(height: top)
-                    secondary().frame(height: bottom)
+                if usesSharedScroll {
+                    single().frame(width: proxy.size.width, height: proxy.size.height)
+                } else {
+                    VStack(spacing: gap) {
+                        primary().frame(height: top).clipped()
+                        secondary().frame(height: bottom).clipped()
+                    }
+                    .frame(maxWidth: .infinity)
                 }
-                .frame(maxWidth: .infinity)
             case .single:
                 single()
                     .frame(width: proxy.size.width, height: proxy.size.height)
@@ -286,46 +386,33 @@ extension View {
 // MARK: - Keep single-column content out of the fold
 
 private struct FoldAvoiding: ViewModifier {
+    var showsBackground = true
     /// Widest a single column gets in phone landscape before it reads as stretched.
     static let readableWidth: CGFloat = 620
 
     @Environment(\.simulatedFoldGlobalFrame) private var simulatedFold
-    @Environment(\.verticalSizeClass) private var verticalSizeClass
-
     func body(content: Content) -> some View {
         GeometryReader { proxy in
-            let size = proxy.size
-            if verticalSizeClass == .compact, size.width > Self.readableWidth + 80 {
-                // Phone landscape: keep a centred, readable column.
-                content
-                    .frame(width: Self.readableWidth, height: size.height)
-                    .frame(width: size.width)
-            } else if let division = FoldResolver.division(in: proxy, simulatedGlobal: simulatedFold),
-               division.axis == .vertical {
-                // A single column can't be split, so it moves wholly into the
-                // roomier pane instead of running across the fold.
-                let leading = max(0, division.frame.minX)
-                let trailing = max(0, size.width - division.frame.maxX)
-                if leading >= trailing {
-                    content
-                        .frame(width: leading, height: size.height)
-                        .frame(width: size.width, alignment: .leading)
-                } else {
-                    content
-                        .frame(width: trailing, height: size.height)
-                        .frame(width: size.width, alignment: .trailing)
-                }
-            } else {
-                content.frame(width: size.width, height: size.height)
-            }
+            let pane = FoldResolver.singlePane(
+                in: proxy.size,
+                division: FoldResolver.division(in: proxy, simulatedGlobal: simulatedFold),
+                readableWidth: Self.readableWidth
+            )
+            content
+                .frame(width: pane.width, height: pane.height)
+                .position(x: pane.midX, y: pane.midY)
         }
         // Margins beside a narrowed column keep the app's water backdrop.
-        .background { AppWaterBackground().ignoresSafeArea() }
+        .background {
+            if showsBackground { AppWaterBackground().ignoresSafeArea() }
+        }
     }
 }
 
 extension View {
-    /// Keeps a single column from straddling a vertical fold (book pose), and
-    /// from stretching edge to edge in phone landscape.
-    func avoidingFold() -> some View { modifier(FoldAvoiding()) }
+    /// Keeps a scrollable single column in one usable pane in either fold axis,
+    /// and caps its width on an unfolded display.
+    func avoidingFold(showsBackground: Bool = true) -> some View {
+        modifier(FoldAvoiding(showsBackground: showsBackground))
+    }
 }

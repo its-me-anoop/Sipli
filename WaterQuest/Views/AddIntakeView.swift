@@ -6,11 +6,16 @@ struct AddIntakeView: View {
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
+
+    @State private var compactContentHeight: CGFloat?
+    @State private var footerHeight: CGFloat = 72
 
     @State private var amount: Double = 250
     @State private var selectedPreset: Int?
     @State private var selectedFluidType: FluidType = .water
     @State private var showSavedBanner = false
+    @State private var savedIntake: HydrationEntry?
     @State private var rippleTrigger = 0
     @State private var amountLabelScale: Double = 1.0
     @State private var lastHapticThreshold: Int = -1
@@ -27,178 +32,48 @@ struct AddIntakeView: View {
     }
 
     var body: some View {
-        Form {
-            Section {
-                VStack(alignment: .leading, spacing: isRegular ? 14 : 10) {
-                    Text("Log Intake")
-                        .font(isRegular ? .title.weight(.semibold) : .title2.weight(.semibold))
-                    Text("Basic water logging is free. Premium adds beverage types and HealthKit sync.")
-                        .font(isRegular ? .body : .subheadline)
-                        .foregroundStyle(.secondary)
-                }
-                .padding(.vertical, isRegular ? 10 : 6)
-
-                // Quick Log: your usual drinks, one tap, no slider.
-                HStack(spacing: isRegular ? 12 : 8) {
-                    ForEach(quickLogPresets) { preset in
-                        Button {
-                            logPreset(preset)
-                        } label: {
-                            HStack(spacing: 6) {
-                                Image(systemName: preset.fluidType.iconName)
-                                    .font(.caption)
-                                Text("\(Int(store.profile.unitSystem.amount(fromML: preset.amountML))) \(store.profile.unitSystem.volumeUnit)")
-                                    .font(.subheadline.weight(.semibold))
-                            }
-                            .padding(.horizontal, 14)
-                            .padding(.vertical, 9)
-                            .background(
-                                Capsule(style: .continuous)
-                                    .fill(preset.fluidType.color.opacity(0.14))
-                            )
-                            .foregroundStyle(preset.fluidType.color)
+        GeometryReader { proxy in
+            if proxy.size.width >= 420 && dynamicTypeSize <= .large {
+                compactColumns
+            } else {
+                Form {
+                    Section("Amount") {
+                        amountReadout(compact: false)
+                        amountSlider
+                        ViewThatFits(in: .horizontal) {
+                            quickLogButtons(horizontal: true)
+                            quickLogButtons(horizontal: false)
                         }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("Quick log \(Int(preset.amountML)) millilitres of \(preset.fluidType.displayName)")
-                        .accessibilityHint("Logs immediately")
-                    }
-                    Spacer(minLength: 0)
-                }
-                .padding(.vertical, 2)
-
-                HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text("\(Int(amount))")
-                        .font(.system(size: isRegular ? 56 : 44, weight: .bold, design: .default))
-                        .scaleEffect(amountLabelScale)
-                        .animation(reduceMotion ? .none : Theme.quickSpring, value: amountLabelScale)
-                    Text(store.profile.unitSystem.volumeUnit)
-                        .font(isRegular ? .title2 : .title3)
-                        .foregroundStyle(.secondary)
-                    Spacer()
-                }
-
-                Slider(value: $amount, in: amountRange, step: amountStep)
-                    .tint(selectedFluidType.color)
-                    .onChange(of: amount) { _, newValue in
-                        selectedPreset = nil
-                        // Scale up the label while dragging.
-                        if !reduceMotion {
-                            amountLabelScale = 1.06
-                            withAnimation(Theme.quickSpring) {
-                                amountLabelScale = 1.0
-                            }
-                        }
-                        // Haptic at each 100 ml threshold — rate-limited so
-                        // we only fire once per crossing, not on every tick.
-                        let threshold = Int(newValue / 100)
-                        if threshold != lastHapticThreshold {
-                            lastHapticThreshold = threshold
-                            Haptics.selection()
-                        }
-                    }
-            }
-
-            Section("Beverage") {
-                if subscriptionManager.hasAccess(to: .fluidTypes) {
-                    ScrollView(.horizontal, showsIndicators: false) {
-                        HStack(spacing: isRegular ? 12 : 8) {
-                            ForEach(store.rankedFluidTypes) { type in
-                                Button {
-                                    Haptics.selection()
-                                    withAnimation(Theme.quickSpring) {
-                                        selectedFluidType = type
-                                        amount = store.profile.unitSystem.amount(fromML: type.defaultServingML)
-                                        selectedPreset = nil
-                                    }
-                                } label: {
-                                    VStack(spacing: 4) {
-                                        Image(systemName: type.iconName)
-                                            .font(isRegular ? .title2 : .title3)
-                                            .foregroundStyle(selectedFluidType == type ? .white : type.color)
-                                            .frame(width: isRegular ? 48 : 40, height: isRegular ? 48 : 40)
-                                            .background(
-                                                Circle()
-                                                    .fill(selectedFluidType == type ? type.color : type.color.opacity(0.12))
-                                            )
-                                        Text(type.displayName)
-                                            .font(.caption2)
-                                            .foregroundStyle(selectedFluidType == type ? .primary : .secondary)
-                                            .lineLimit(1)
-                                            .frame(width: isRegular ? 72 : 60)
-                                    }
-                                }
-                                .buttonStyle(.plain)
-                                .accessibilityLabel(type.displayName)
-                                .accessibilityHint("\(type.hydrationLabel). Double tap to select")
-                                .accessibilityAddTraits(selectedFluidType == type ? .isSelected : [])
-                            }
-                        }
-                        .padding(.vertical, 4)
-                    }
-                } else {
-                    VStack(alignment: .leading, spacing: 12) {
-                        HStack(spacing: 12) {
-                            Image(systemName: FluidType.water.iconName)
-                                .foregroundStyle(Theme.lagoon)
-                                .frame(width: 40, height: 40)
-                                .background(
-                                    Circle()
-                                        .fill(Theme.lagoon.opacity(0.12))
-                                )
-
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("Water")
-                                    .font(.subheadline.weight(.semibold))
-                                Text("Premium unlocks coffee, tea, juice, smoothies, sports drinks, and more.")
-                                    .font(.caption)
-                                    .foregroundStyle(.secondary)
-                            }
-
-                            Spacer()
-
-                            Button("Unlock") {
-                                Haptics.selection()
-                                subscriptionManager.presentPaywall(for: .fluidTypes)
-                            }
-                            .font(.caption.weight(.semibold))
-                        }
-                    }
-                }
-
-                if selectedFluidType != .water {
-                    HStack {
-                        Image(systemName: "info.circle")
-                            .foregroundStyle(.secondary)
-                        Text("\(selectedFluidType.displayName) counts as \(selectedFluidType.hydrationLabel)")
+                        Text("Quick amounts log immediately.")
                             .font(.caption)
                             .foregroundStyle(.secondary)
-                        Spacer()
-                        let effectiveAmount = amount * selectedFluidType.hydrationFactor
-                        Text("Effective: \(Int(effectiveAmount)) \(store.profile.unitSystem.volumeUnit)")
-                            .font(.caption.weight(.semibold))
-                            .foregroundStyle(selectedFluidType.color)
+                    }
+                    Section("Beverage") {
+                        beverageControls(compact: false)
                     }
                 }
-            }
-
-            Section {
-                Button {
-                    addIntake()
-                } label: {
-                    HStack {
-                        Image(systemName: selectedFluidType.iconName)
-                        Text("Save Intake")
-                            .fontWeight(.semibold)
-                    }
-                    .frame(maxWidth: .infinity)
-                    .padding(.vertical, 10)
-                    .font(isRegular ? .title3 : .body)
-                }
-                .buttonStyle(.borderedProminent)
-                .tint(selectedFluidType.color)
-                .listRowBackground(Color.clear)
+                .scrollContentBackground(.hidden)
             }
         }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            saveButton
+                .padding(.horizontal, 16)
+                .padding(.vertical, 12)
+                .background(.bar)
+                .background {
+                    GeometryReader { geometry in
+                        Color.clear.preference(key: IntakeFooterHeightKey.self, value: geometry.size.height)
+                    }
+                }
+        }
+        .onPreferenceChange(IntakeContentHeightKey.self) { compactContentHeight = $0 }
+        .onPreferenceChange(IntakeFooterHeightKey.self) { footerHeight = $0 }
+        // Measure the natural content, never the sheet viewport. A single fitted
+        // detent cannot be expanded into empty space. Native presentation caps
+        // this height on short displays; the content remains scrollable.
+        .presentationDetents(compactContentHeight.map {
+            [.height(ceil($0 + footerHeight + 96))]
+        } ?? [.medium, .large])
         .navigationTitle("Log Intake")
         .scrollContentBackground(.hidden)
         .background {
@@ -211,14 +86,25 @@ struct AddIntakeView: View {
             }
             .ignoresSafeArea()
         }
-        .overlay(alignment: .top) {
-            if showSavedBanner {
-                SavedBanner(amount: Int(amount), unit: store.profile.unitSystem.volumeUnit, fluidType: selectedFluidType)
-                    .transition(.move(edge: .top).combined(with: .opacity))
-                    .padding(.top, 8)
+        .disabled(showSavedBanner)
+        .safeAreaInset(edge: .top, spacing: 0) {
+            if let savedIntake {
+                SavedBanner(
+                    amount: Int(store.profile.unitSystem.amount(fromML: savedIntake.volumeML)),
+                    unit: store.profile.unitSystem.volumeUnit,
+                    fluidType: savedIntake.fluidType
+                )
+                .padding(.horizontal, 12)
+                .padding(.vertical, 8)
+                .transition(reduceMotion ? .opacity : .move(edge: .top).combined(with: .opacity))
             }
         }
-        .animation(.spring(response: 0.35, dampingFraction: 0.85), value: showSavedBanner)
+        .animation(reduceMotion ? .easeOut(duration: 0.15) : Theme.quickSpring, value: showSavedBanner)
+        .task(id: savedIntake?.id) {
+            guard savedIntake != nil else { return }
+            do { try await Task.sleep(for: .seconds(0.9)) } catch { return }
+            dismiss()
+        }
         .onAppear {
             if !subscriptionManager.hasAccess(to: .fluidTypes) {
                 selectedFluidType = .water
@@ -226,9 +112,220 @@ struct AddIntakeView: View {
             amount = store.profile.unitSystem.amount(fromML: selectedFluidType.defaultServingML)
             amount = min(max(amount, amountRange.lowerBound), amountRange.upperBound)
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-                rippleTrigger += 1
+                if !reduceMotion { rippleTrigger += 1 }
             }
         }
+    }
+
+    private var compactColumns: some View {
+        ScrollView {
+            VStack(alignment: .leading, spacing: 8) {
+                HStack(alignment: .top, spacing: 16) {
+                    VStack(alignment: .leading, spacing: 6) {
+                        HStack(alignment: .firstTextBaseline) {
+                            Text("Amount")
+                                .font(.subheadline.weight(.semibold))
+                            Spacer(minLength: 8)
+                            amountReadout(compact: true)
+                        }
+                        amountSlider
+                    }
+                    .padding(12)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                    .background(Theme.card, in: RoundedRectangle(cornerRadius: 20))
+
+                    VStack(alignment: .leading, spacing: 8) {
+                        Text("Beverage")
+                            .font(.subheadline.weight(.semibold))
+                        beverageControls(compact: true)
+                    }
+                    .padding(12)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                    .background(Theme.card, in: RoundedRectangle(cornerRadius: 20))
+                }
+                HStack(spacing: 12) {
+                    Text("Quick log")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                    quickLogButtons(horizontal: true, compact: true)
+                    Spacer(minLength: 0)
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 6)
+            .background {
+                GeometryReader { geometry in
+                    Color.clear.preference(key: IntakeContentHeightKey.self, value: geometry.size.height)
+                }
+            }
+        }
+        .scrollDismissesKeyboard(.interactively)
+    }
+
+    private func amountReadout(compact: Bool) -> some View {
+        HStack(alignment: .firstTextBaseline, spacing: 5) {
+            Text("\(Int(amount))")
+                .contentTransition(.numericText())
+                .font(.system(size: compact ? 32 : 44, weight: .bold))
+                .scaleEffect(amountLabelScale)
+                .animation(reduceMotion ? .none : Theme.quickSpring, value: amountLabelScale)
+            Text(store.profile.unitSystem.volumeUnit)
+                .font(compact ? .caption : .title3)
+                .foregroundStyle(.secondary)
+        }
+    }
+
+    private var amountSlider: some View {
+        Slider(value: $amount, in: amountRange, step: amountStep)
+            .accessibilityLabel("Intake amount")
+            .tint(selectedFluidType.color)
+            .onChange(of: amount) { _, newValue in
+                selectedPreset = nil
+                // Scale up the label while dragging.
+                if !reduceMotion {
+                    amountLabelScale = 1.06
+                    withAnimation(Theme.quickSpring) {
+                        amountLabelScale = 1.0
+                    }
+                }
+                // Haptic at each 100 ml threshold — rate-limited so
+                // we only fire once per crossing, not on every tick.
+                let threshold = Int(newValue / 100)
+                if threshold != lastHapticThreshold {
+                    lastHapticThreshold = threshold
+                    Haptics.selection()
+                }
+            }
+    }
+
+    @ViewBuilder
+    private func beverageControls(compact: Bool) -> some View {
+        if subscriptionManager.hasAccess(to: .fluidTypes) {
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: compact ? 8 : (isRegular ? 12 : 8)) {
+                    ForEach(store.rankedFluidTypes) { type in
+                        Button {
+                            Haptics.selection()
+                            withAnimation(Theme.quickSpring) {
+                                selectedFluidType = type
+                                amount = store.profile.unitSystem.amount(fromML: type.defaultServingML)
+                                selectedPreset = nil
+                            }
+                        } label: {
+                            VStack(spacing: 4) {
+                                Image(systemName: type.iconName)
+                                    .font(compact ? .title3 : (isRegular ? .title2 : .title3))
+                                    .foregroundStyle(selectedFluidType == type ? .white : type.color)
+                                    .frame(width: compact ? 36 : (isRegular ? 48 : 40), height: compact ? 36 : (isRegular ? 48 : 40))
+                                    .background(
+                                        Circle()
+                                            .fill(selectedFluidType == type ? type.color : type.color.opacity(0.12))
+                                    )
+                                Text(type.displayName)
+                                    .font(.caption2)
+                                    .foregroundStyle(selectedFluidType == type ? .primary : .secondary)
+                                    .lineLimit(1)
+                                    .frame(width: compact ? 56 : (isRegular ? 72 : 60))
+                            }
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel(type.displayName)
+                        .accessibilityHint("\(type.hydrationLabel). Double tap to select")
+                        .accessibilityAddTraits(selectedFluidType == type ? .isSelected : [])
+                    }
+                }
+                .padding(.vertical, 4)
+            }
+        } else {
+            VStack(alignment: .leading, spacing: 12) {
+                HStack(spacing: compact ? 8 : 12) {
+                    Image(systemName: FluidType.water.iconName)
+                        .foregroundStyle(Theme.lagoon)
+                        .frame(width: compact ? 32 : 40, height: compact ? 32 : 40)
+                        .background(
+                            Circle()
+                                .fill(Theme.lagoon.opacity(0.12))
+                        )
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text("Water")
+                            .font(.subheadline.weight(.semibold))
+                        if !compact {
+                            Text("Premium unlocks coffee, tea, juice, smoothies, sports drinks, and more.")
+                                .font(.caption)
+                                .foregroundStyle(.secondary)
+                        }
+                    }
+
+                    Spacer()
+
+                    Button("Unlock") {
+                        Haptics.selection()
+                        subscriptionManager.presentPaywall(for: .fluidTypes)
+                    }
+                    .font(.caption.weight(.semibold))
+                    .frame(minWidth: 44, minHeight: 44)
+                }
+            }
+        }
+
+        if selectedFluidType != .water {
+            HStack {
+                Image(systemName: "info.circle")
+                    .foregroundStyle(.secondary)
+                Text("\(selectedFluidType.displayName) counts as \(selectedFluidType.hydrationLabel)")
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Spacer()
+                let effectiveAmount = amount * selectedFluidType.hydrationFactor
+                Text("Effective: \(Int(effectiveAmount)) \(store.profile.unitSystem.volumeUnit)")
+                    .font(.caption.weight(.semibold))
+                    .foregroundStyle(selectedFluidType.color)
+            }
+        }
+    }
+
+    private func quickLogButtons(horizontal: Bool, compact: Bool = false) -> some View {
+        let layout = horizontal ? AnyLayout(HStackLayout(spacing: 8)) : AnyLayout(VStackLayout(alignment: .leading, spacing: 8))
+        return layout {
+            ForEach(quickLogPresets) { preset in
+                Button {
+                    logPreset(preset)
+                } label: {
+                    HStack(spacing: compact ? 4 : 6) {
+                        Image(systemName: preset.fluidType.iconName)
+                            .font(compact ? .caption2 : .caption)
+                        Text("\(Int(store.profile.unitSystem.amount(fromML: preset.amountML))) \(store.profile.unitSystem.volumeUnit)")
+                            .font((compact ? Font.caption2 : .subheadline).weight(.semibold))
+                    }
+                    .padding(.horizontal, compact ? 9 : 14)
+                    .frame(minHeight: 44)
+                    .fixedSize(horizontal: true, vertical: false)
+                    .background(
+                        Capsule(style: .continuous)
+                            .fill(preset.fluidType.color.opacity(0.14))
+                    )
+                    .foregroundStyle(preset.fluidType.color)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel("Quick log \(Int(preset.amountML)) millilitres of \(preset.fluidType.displayName)")
+                .accessibilityHint("Logs immediately")
+            }
+        }
+    }
+
+    private var saveButton: some View {
+        Button {
+            addIntake()
+        } label: {
+            Label("Save Intake", systemImage: selectedFluidType.iconName)
+                .fontWeight(.semibold)
+                .frame(maxWidth: .infinity)
+                .padding(.vertical, 10)
+                .font(isRegular ? .title3 : .body)
+        }
+        .buttonStyle(.borderedProminent)
+        .tint(selectedFluidType.color)
     }
 
     private var amountRange: ClosedRange<Double> {
@@ -241,6 +338,7 @@ struct AddIntakeView: View {
 
     /// One-tap logging for a learned preset: bypasses the slider entirely.
     private func logPreset(_ preset: QuickLogPresets.Preset) {
+        guard !showSavedBanner else { return }
         Haptics.splash()
 
         // Reflect the preset in the visible controls so the banner and any
@@ -264,15 +362,12 @@ struct AddIntakeView: View {
             await healthKit.saveWaterIntake(ml: entry.volumeML, date: entry.date, entryID: entry.id)
         }
 
-        withAnimation {
-            showSavedBanner = true
-        }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            dismiss()
-        }
+        savedIntake = entry
+        showSavedBanner = true
     }
 
     private func addIntake() {
+        guard !showSavedBanner else { return }
         Haptics.splash()
 
         let entry = store.addIntake(amount: amount, source: .manual, fluidType: selectedFluidType, note: nil)
@@ -282,16 +377,22 @@ struct AddIntakeView: View {
             await healthKit.saveWaterIntake(ml: entry.volumeML, date: entry.date, entryID: entry.id)
         }
 
-        withAnimation {
-            showSavedBanner = true
-        }
+        savedIntake = entry
+        showSavedBanner = true
+    }
+}
 
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
-            dismiss()
-        }
+private struct IntakeContentHeightKey: PreferenceKey {
+    static var defaultValue: CGFloat? { nil }
+    static func reduce(value: inout CGFloat?, nextValue: () -> CGFloat?) {
+        value = nextValue() ?? value
+    }
+}
 
-        selectedPreset = nil
-        selectedFluidType = .water
+private struct IntakeFooterHeightKey: PreferenceKey {
+    static var defaultValue: CGFloat { 72 }
+    static func reduce(value: inout CGFloat, nextValue: () -> CGFloat) {
+        value = nextValue()
     }
 }
 

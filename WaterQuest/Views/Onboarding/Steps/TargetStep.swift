@@ -6,6 +6,7 @@ struct TargetStep: View {
     @EnvironmentObject private var locationManager: LocationManager
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     let onContinue: () -> Void
+    @Environment(\.onboardingQuestionInHero) private var questionInHero
 
     private var hasWeatherPremium: Bool {
         subscriptionManager.hasAccess(to: .weatherGoals)
@@ -53,28 +54,24 @@ struct TargetStep: View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    headline
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 14)
-
-                    targetStage
-                        .padding(.horizontal, 24)
-                        .padding(.bottom, 12)
-
-                    customGoalToggle
-                        .padding(.horizontal, 24)
-                        .padding(.top, 4)
-
-                    weatherToggle
-                        .padding(.horizontal, 24)
-                        .padding(.top, 10)
-
-                    if state.prefersWeatherGoal && hasWeatherPremium {
-                        weatherAdjustmentCard
+                    if !questionInHero {
+                        headline
                             .padding(.horizontal, 24)
-                            .padding(.top, 10)
-                            .transition(.opacity.combined(with: .move(edge: .top)))
+                            .padding(.bottom, 14)
                     }
+
+                    OnboardingAnswerLayout {
+                        targetStage
+                        VStack(spacing: 10) {
+                            customGoalToggle
+                            weatherToggle
+                            if state.prefersWeatherGoal && hasWeatherPremium {
+                                weatherAdjustmentCard
+                                    .transition(.opacity.combined(with: .move(edge: .top)))
+                            }
+                        }
+                    }
+                    .padding(.horizontal, 24)
 
                     Color.clear.frame(height: 16) // bottom breathing room
                 }
@@ -99,10 +96,7 @@ struct TargetStep: View {
     }
 
     private var headline: some View {
-        (Text("Pour the perfect\n").foregroundStyle(OnboardingPalette.ink)
-            + Text("daily amount.").italic().foregroundStyle(OnboardingPalette.water))
-            .font(.editorialSerif(40, relativeTo: .largeTitle))
-            .lineSpacing(-2)
+        OnboardingQuestion(step: .target)
     }
 
     private var targetStage: some View {
@@ -119,6 +113,8 @@ struct TargetStep: View {
                         .font(.editorialSerif(64, weight: .regular, relativeTo: .largeTitle))
                         .foregroundStyle(OnboardingPalette.ink)
                         .contentTransition(.numericText())
+                        .minimumScaleFactor(0.55)
+                        .lineLimit(1)
                     Text(displayedUnit)
                         .font(.sipliMono(18, weight: .semibold, relativeTo: .body))
                         .foregroundStyle(OnboardingPalette.ink3)

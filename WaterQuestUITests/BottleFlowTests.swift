@@ -1,4 +1,5 @@
 import XCTest
+import UIKit
 
 /// Run against a dedicated simulator seeded with an empty day and a 2,000 ml
 /// goal. The host seeds its own sandbox; these tests never reset user data.
@@ -6,6 +7,24 @@ final class BottleFlowTests: XCTestCase {
     override func setUp() {
         super.setUp()
         continueAfterFailure = false
+    }
+
+    @MainActor
+    func testNativeShareScreen() throws {
+        let app = XCUIApplication()
+        launch(app)
+        app.buttons["Share today's progress"].tap()
+        XCTAssertTrue(app.otherElements["ActivityListView"].waitForExistence(timeout: 10))
+        let hierarchy = XCTAttachment(string: app.debugDescription)
+        hierarchy.name = "native-share-hierarchy"
+        hierarchy.lifetime = .keepAlways
+        add(hierarchy)
+        capture(app, "native-share-screen")
+        let close = app.buttons["header.closeButton"]
+        XCTAssertTrue(close.isHittable)
+        close.tap()
+        XCTAssertTrue(app.buttons["Log water intake"].isHittable)
+        app.terminate()
     }
 
     /// Storefront captures use a separately seeded day with 1,000 ml logged.
@@ -30,6 +49,40 @@ final class BottleFlowTests: XCTestCase {
         capture(app, "store-log")
     }
 
+    /// Run with a separate 2,750 ml fixture and no preunlocked achievements.
+    @MainActor
+    func testAchievementAndSharingScreens() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-hasOnboarded", "YES"]
+        app.launch()
+        app.buttons["Log water intake"].tap()
+        let quickLog = app.buttons["Quick log 250 millilitres of Water"]
+        XCTAssertTrue(quickLog.waitForExistence(timeout: 10))
+        quickLog.tap()
+        let keepGoing = app.buttons["Keep going"]
+        XCTAssertTrue(keepGoing.waitForExistence(timeout: 10), app.debugDescription)
+        let ready = XCTNSPredicateExpectation(predicate: NSPredicate(format: "hittable == true"), object: keepGoing)
+        XCTAssertEqual(XCTWaiter.wait(for: [ready], timeout: 10), .completed, app.debugDescription)
+        capture(app, "achievement-unlocked")
+        XCTAssertTrue(keepGoing.isHittable)
+        for _ in 0..<12 {
+            if !keepGoing.exists { break }
+            keepGoing.tap()
+            Thread.sleep(forTimeInterval: 0.4)
+        }
+        let share = app.buttons["Share today's progress"]
+        XCTAssertTrue(share.waitForExistence(timeout: 10))
+        share.tap()
+        Thread.sleep(forTimeInterval: 3)
+        let hierarchy = XCTAttachment(string: app.debugDescription)
+        hierarchy.name = "daily-share-hierarchy"
+        hierarchy.lifetime = .keepAlways
+        add(hierarchy)
+        capture(app, "daily-share-sheet")
+        // Inspect only: no external destination is selected.
+        app.terminate()
+    }
+
     @MainActor
     func testRemainingWaterBottleFlow() throws {
         let app = XCUIApplication()
@@ -37,7 +90,8 @@ final class BottleFlowTests: XCTestCase {
         assertRemaining(100, in: app)
         capture(app, "01-Full-before-any-drinks")
 
-        log(500, in: app)
+        // A rapid second tap during confirmation must not create a second log.
+        log(500, in: app, rapidTap: true)
         assertRemaining(75, in: app)
         capture(app, "02-After-500ml")
         log(500, in: app)
@@ -135,13 +189,17 @@ final class BottleFlowTests: XCTestCase {
     }
 
     @MainActor
-    private func log(_ amount: Int, in app: XCUIApplication) {
+    private func log(_ amount: Int, in app: XCUIApplication, rapidTap: Bool = false) {
         let add = app.buttons["Log water intake"]
         XCTAssertTrue(add.waitForExistence(timeout: 10))
         add.tap()
         let quickLog = app.buttons["Quick log \(amount) millilitres of Water"]
         XCTAssertTrue(quickLog.waitForExistence(timeout: 10), app.debugDescription)
-        quickLog.tap()
+        if rapidTap {
+            quickLog.tap(withNumberOfTaps: 2, numberOfTouches: 1)
+        } else {
+            quickLog.tap()
+        }
         let dismissed = XCTNSPredicateExpectation(
             predicate: NSPredicate(format: "exists == false"),
             object: app.navigationBars["Log Intake"]
@@ -152,7 +210,7 @@ final class BottleFlowTests: XCTestCase {
 
     @MainActor
     private func openEntry(_ amount: Int, in app: XCUIApplication) {
-        let diary = app.tabBars.buttons["Diary"]
+        let diary = app.buttons["Diary"].firstMatch
         XCTAssertTrue(diary.waitForExistence(timeout: 10))
         diary.tap()
         let row = app.buttons.matching(NSPredicate(
@@ -217,9 +275,23 @@ final class BottleFlowTests: XCTestCase {
         // Let the deliberately damped water settle before the still image;
         // motion dynamics and lifecycle have separate model/controller tests.
         Thread.sleep(forTimeInterval: 2)
-        let attachment = XCTAttachment(screenshot: app.screenshot())
-        attachment.name = name
-        attachment.lifetime = .keepAlways
-        add(attachment)
+        for (index, screen) in XCUIScreen.screens.enumerated() {
+            let screenshot = screen.screenshot()
+            guard let cgImage = screenshot.image.cgImage else { continue }
+            var pixel: [UInt8] = [0, 0, 0, 0]
+            let visible = pixel.withUnsafeMutableBytes { bytes in
+                guard let context = CGContext(data: bytes.baseAddress, width: 1, height: 1,
+                                              bitsPerComponent: 8, bytesPerRow: 4,
+                                              space: CGColorSpaceCreateDeviceRGB(),
+                                              bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue) else { return false }
+                context.draw(cgImage, in: CGRect(x: 0, y: 0, width: 1, height: 1))
+                return Int(bytes[0]) + Int(bytes[1]) + Int(bytes[2]) > 6
+            }
+            guard visible else { continue }
+            let attachment = XCTAttachment(screenshot: screenshot)
+            attachment.name = "\(name)-display-\(index)"
+            attachment.lifetime = .keepAlways
+            add(attachment)
+        }
     }
 }
