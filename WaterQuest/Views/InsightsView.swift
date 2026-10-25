@@ -683,7 +683,6 @@ struct InsightsView: View {
         var headline: String
         var narrative: String
         var encouragement: String?
-        var isCloudGenerated: Bool
     }
 
     private var staticWeeklyDigest: WeeklyDigestDisplay {
@@ -691,8 +690,7 @@ struct InsightsView: View {
         return WeeklyDigestDisplay(
             headline: "Your week in water",
             narrative: stats.staticDigest,
-            encouragement: nil,
-            isCloudGenerated: false
+            encouragement: nil
         )
     }
 
@@ -716,11 +714,6 @@ struct InsightsView: View {
                         Text(encouragement)
                             .font(.subheadline.weight(.medium))
                             .foregroundStyle(Theme.lagoon)
-                    }
-                    if digest.isCloudGenerated {
-                        Label("Written with Private Cloud Compute", systemImage: "lock.icloud")
-                            .font(.caption2)
-                            .foregroundStyle(.secondary)
                     }
                 }
             }
@@ -749,8 +742,7 @@ struct InsightsView: View {
                 weeklyDigest = WeeklyDigestDisplay(
                     headline: payload.headline,
                     narrative: payload.narrative,
-                    encouragement: payload.encouragement,
-                    isCloudGenerated: SipliIntelligence.shared.lastDigestUsedCloudModel
+                    encouragement: payload.encouragement
                 )
                 return
             }
@@ -760,8 +752,7 @@ struct InsightsView: View {
         weeklyDigest = WeeklyDigestDisplay(
             headline: "Your week in water",
             narrative: stats.staticDigest,
-            encouragement: nil,
-            isCloudGenerated: false
+            encouragement: nil
         )
     }
 

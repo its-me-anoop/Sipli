@@ -1,14 +1,5 @@
 import Foundation
 
-enum FoundationModelCompatibility {
-    static func permitsGeneration(on version: OperatingSystemVersion) -> Bool {
-        // Sipli 6.0 (16), incident D95D7BFE: FoundationModels asserted on
-        // iOS 27.1. Avoid entering the framework on that release until the
-        // underlying assertion can be diagnosed and verified on a device.
-        !(version.majorVersion == 27 && version.minorVersion == 1)
-    }
-}
-
 #if canImport(FoundationModels)
 import FoundationModels
 #endif
@@ -67,12 +58,12 @@ struct WeeklyDigestPayload: Equatable {
 /// - Typed error handling: a context-window overflow resets that surface's
 ///   session; other generation errors just fall back.
 ///
-/// iOS 27 (fenced with compiler(>=6.4) — the App Store toolchain is
-/// Xcode 26.6 until Xcode 27 goes GM): the Weekly Digest upgrades itself to
-/// `PrivateCloudComputeLanguageModel`, Apple's larger server model on Private
-/// Cloud Compute (bigger context, better narrative), with quota awareness and
-/// silent fallback to the on-device model. Notifications and tips stay
-/// on-device — network latency would blow their budgets.
+/// Every surface, the Weekly Digest included, uses the on-device model only.
+/// Do not use `PrivateCloudComputeLanguageModel` unless Apple has granted the
+/// app its managed PCC entitlement: without it, FoundationModels deliberately
+/// traps ("Missing entitlement") on the first request, even though
+/// `isAvailable` reports true. That trap was the Sipli 6.0 (16) Insights
+/// crash (incident D95D7BFE).
 @available(iOS 26.0, *)
 @MainActor
 final class SipliIntelligence {
@@ -103,25 +94,9 @@ final class SipliIntelligence {
 
     /// True when the on-device model is ready and supports the user's locale.
     var isReady: Bool {
-        guard FoundationModelCompatibility.permitsGeneration(
-            on: ProcessInfo.processInfo.operatingSystemVersion
-        ) else { return false }
-        #if targetEnvironment(simulator)
-        // The Duo runtime advertises model availability but can trap inside
-        // FoundationModels during generation. Keep every surface usable with
-        // its existing deterministic fallback while running in Simulator.
-        return false
-        #else
-        return SystemLanguageModel.default.availability == .available
+        SystemLanguageModel.default.availability == .available
             && SystemLanguageModel.default.supportsLocale()
-        #endif
     }
-
-    /// Whether the last digest came from the Private Cloud Compute model —
-    /// surfaced in the UI as a small provenance note.
-    private(set) var lastDigestUsedCloudModel = false
-    /// Which model backs the currently cached digest session.
-    private var digestSessionIsCloud = false
 
     // MARK: Prewarm
 
@@ -171,17 +146,12 @@ final class SipliIntelligence {
     // MARK: Weekly digest
 
     func weeklyDigest(stats: WeeklyStats) async -> WeeklyDigestPayload? {
-        let prompt = Self.digestPrompt(stats: stats)
-        let payload = await generate(
+        await generate(
             surface: .digest,
-            prompt: prompt,
+            prompt: Self.digestPrompt(stats: stats),
             generating: WeeklyDigestPayload.self,
             options: Self.options(top: 30, temperature: 0.7, maxTokens: 220)
         )
-        // Provenance follows the session that actually produced this digest;
-        // a failed generation must not carry a stale cloud label.
-        lastDigestUsedCloudModel = payload != nil && digestSessionIsCloud
-        return payload
     }
 
     /// Top-k sampling + temperature + response cap, spelled for both
@@ -291,28 +261,9 @@ final class SipliIntelligence {
                 """
             }
         case .digest:
-            return makeDigestSession()
-        }
-    }
-
-    private func makeDigestSession() -> LanguageModelSession {
-        digestSessionIsCloud = false
-        #if compiler(>=6.4)
-        // iOS 27: Apple's server-scale model on Private Cloud Compute — larger
-        // context and noticeably better narrative for the weekly recap. Quota
-        // aware; anything short of fully available falls back to on-device.
-        if #available(iOS 27.0, *) {
-            let cloud = PrivateCloudComputeLanguageModel()
-            if cloud.isAvailable, !cloud.quotaUsage.isLimitReached {
-                digestSessionIsCloud = true
-                return LanguageModelSession(model: cloud) {
-                    Self.digestInstructions
-                }
+            return LanguageModelSession {
+                Self.digestInstructions
             }
-        }
-        #endif
-        return LanguageModelSession {
-            Self.digestInstructions
         }
     }
 

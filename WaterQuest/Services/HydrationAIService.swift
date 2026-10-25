@@ -91,13 +91,6 @@ final class HydrationAIService: ObservableObject {
     #if canImport(FoundationModels)
     @available(iOS 26.0, *)
     private func _checkFoundationModelsAvailability() {
-        guard FoundationModelCompatibility.permitsGeneration(
-            on: ProcessInfo.processInfo.operatingSystemVersion
-        ) else {
-            isAvailable = false
-            errorMessage = nil
-            return
-        }
         let model = SystemLanguageModel.default
         switch model.availability {
         case .available:
