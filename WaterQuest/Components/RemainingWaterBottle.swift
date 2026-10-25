@@ -82,6 +82,10 @@ struct RemainingWaterBottle: View {
             animation.setProgress(value, animated: !usesReducedMotion)
         }
         .onChange(of: scenePhase) { updateActivity() }
+        // Folding or unfolding moves the window to another display and
+        // resizes the bottle; follow the new display's refresh.
+        .onChange(of: bottleWidth) { animation.followHostScreen() }
+        .onChange(of: bottleHeight) { animation.followHostScreen() }
         .onChange(of: usesReducedMotion) { updateActivity() }
         // Water changes its drawing, never the surrounding layout. Suppress any
         // inherited log/celebration animation, especially with Reduce Motion.
@@ -185,6 +189,12 @@ final class BottleWaterAnimation: ObservableObject {
     private let motion = CMMotionManager()
     private var displayLink: CADisplayLink?
     private var displayTarget: BottleDisplayLinkTarget?
+    /// Display the link is synced to. A link from `CADisplayLink(target:)`
+    /// follows the main screen, which on a foldable is the cover display:
+    /// when the app runs on the inner display the cover is off and the link
+    /// never fires, freezing the water.
+    private weak var linkScreen: UIScreen?
+    private var screenObservers: [NSObjectProtocol] = []
     private var lastTimestamp: CFTimeInterval?
     private(set) var isActive = false
     private(set) var isReducedMotion = false
@@ -194,11 +204,35 @@ final class BottleWaterAnimation: ObservableObject {
         let initial = BottleWaterModel(progress: progress)
         model = initial
         frame = initial
+        let center = NotificationCenter.default
+        for name in [UIScreen.didConnectNotification, UIScreen.didDisconnectNotification,
+                     UIScene.didActivateNotification, UIScene.willEnterForegroundNotification] {
+            screenObservers.append(center.addObserver(forName: name, object: nil, queue: .main) { [weak self] _ in
+                MainActor.assumeIsolated { self?.followHostScreen() }
+            })
+        }
     }
 
     deinit {
         motion.stopDeviceMotionUpdates()
         displayLink?.invalidate()
+        for observer in screenObservers { NotificationCenter.default.removeObserver(observer) }
+    }
+
+    /// The display showing the app's window right now.
+    static func hostScreen() -> UIScreen? {
+        let scenes = UIApplication.shared.connectedScenes.compactMap { $0 as? UIWindowScene }
+        let scene = scenes.first { $0.activationState == .foregroundActive }
+            ?? scenes.first { $0.activationState == .foregroundInactive }
+            ?? scenes.first
+        return scene?.screen
+    }
+
+    /// Re-syncs a running animation if the window moved to another display.
+    func followHostScreen() {
+        guard displayLink != nil, let screen = Self.hostScreen(), screen !== linkScreen else { return }
+        stopAnimation()
+        wakeAnimation()
     }
 
     func setProgress(_ progress: Double, animated: Bool) {
@@ -264,7 +298,11 @@ final class BottleWaterAnimation: ObservableObject {
         guard isActive, !isReducedMotion, !model.isSettled, displayLink == nil else { return }
         let target = BottleDisplayLinkTarget()
         target.owner = self
-        let link = CADisplayLink(target: target, selector: #selector(BottleDisplayLinkTarget.tick(_:)))
+        let selector = #selector(BottleDisplayLinkTarget.tick(_:))
+        let screen = Self.hostScreen()
+        let link = screen?.displayLink(withTarget: target, selector: selector)
+            ?? CADisplayLink(target: target, selector: selector)
+        linkScreen = screen
         link.preferredFrameRateRange = CAFrameRateRange(minimum: 30, maximum: 60, preferred: 60)
         displayTarget = target
         displayLink = link
@@ -284,6 +322,7 @@ final class BottleWaterAnimation: ObservableObject {
         displayLink?.invalidate()
         displayLink = nil
         displayTarget = nil
+        linkScreen = nil
         lastTimestamp = nil
     }
 }
