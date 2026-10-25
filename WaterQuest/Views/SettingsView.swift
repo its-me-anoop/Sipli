@@ -1,3 +1,4 @@
+import AppIntents
 import SwiftUI
 import StoreKit
 import CoreLocation
@@ -50,6 +51,7 @@ struct SettingsView: View {
             settingsPane(identifier: "settingsPreferencesPane") {
                 scheduleCard
                 reminderCard
+                siriCard
                 permissionsCard
                 aboutCard
             }
@@ -62,6 +64,7 @@ struct SettingsView: View {
                 goalCard
                 scheduleCard
                 reminderCard
+                siriCard
                 permissionsCard
                 aboutCard
             }
@@ -510,6 +513,38 @@ struct SettingsView: View {
     }
 
     // MARK: - Permissions
+
+    /// Example phrases, so people learn Siri works without opening the app.
+    private static let siriExamples = [
+        "Log a coffee in Sipli",
+        "How much more water do I need in Sipli",
+        "Log my usual in Sipli",
+        "Undo my last drink in Sipli",
+    ]
+
+    private var siriCard: some View {
+        DashboardCard(title: "Siri & Shortcuts", icon: "waveform") {
+            VStack(alignment: .leading, spacing: 12) {
+                Text("Log drinks and check progress hands-free. Just say:")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                ForEach(Self.siriExamples, id: \.self) { phrase in
+                    Label {
+                        Text("\u{201C}\(phrase)\u{201D}")
+                            .font(.subheadline.weight(.medium))
+                    } icon: {
+                        Image(systemName: "mic.fill")
+                            .foregroundStyle(Theme.lagoon)
+                    }
+                }
+                ShortcutsLink()
+                    .shortcutsLinkStyle(.automaticOutline)
+                    .frame(maxWidth: .infinity)
+                    .accessibilityIdentifier("settingsShortcutsLink")
+            }
+            .frame(maxWidth: .infinity, alignment: .leading)
+        }
+    }
 
     private var permissionsCard: some View {
         DashboardCard(title: "Permissions", icon: "shield.fill") {

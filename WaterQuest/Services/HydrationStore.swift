@@ -31,6 +31,8 @@ final class HydrationStore: ObservableObject {
     @Published private(set) var pendingAchievementUnlocks: [Achievement] = []
     /// Monotonic engagement counters (Siri/widget logs, undos).
     private(set) var counters: EngagementCounters
+    /// Entry id → removal date; see `PersistedState.removedEntryIDs`.
+    private(set) var removedEntryIDs: [UUID: Date]
 
     /// Unlock celebrations are suppressed during init so a v4.1 → v5.0 upgrade
     /// retro-credits badges silently (they appear in the Trophy Room) instead
@@ -59,6 +61,7 @@ final class HydrationStore: ObservableObject {
         self.streakFreezeDates = state.streakFreezeDates
         self.unlockedAchievements = state.unlockedAchievements
         self.counters = state.counters
+        self.removedEntryIDs = state.removedEntryIDs
 
         persistence.setRemoteDataChangeHandler { [weak self] data in
             guard let self else { return }
@@ -302,6 +305,7 @@ final class HydrationStore: ObservableObject {
 
     func deleteEntry(_ entry: HydrationEntry) {
         entries.removeAll { $0.id == entry.id }
+        recordRemoval(of: [entry.id])
         counters.undoCount += 1
         persist()
     }
@@ -374,6 +378,7 @@ final class HydrationStore: ObservableObject {
     }
 
     func resetToday() {
+        recordRemoval(of: entries.filter { $0.date.isSameDay(as: Date()) }.map(\.id))
         entries.removeAll { $0.date.isSameDay(as: Date()) }
         persist()
     }
@@ -394,8 +399,18 @@ final class HydrationStore: ObservableObject {
             streakFreezeTokens: streakFreezeTokens,
             streakFreezeDates: streakFreezeDates,
             unlockedAchievements: unlockedAchievements,
-            counters: counters
+            counters: counters,
+            removedEntryIDs: removedEntryIDs
         )
+    }
+
+    /// Remembers deletes so a stale copy elsewhere can't bring them back.
+    private func recordRemoval(of ids: [UUID]) {
+        guard !ids.isEmpty else { return }
+        var state = PersistedState.default
+        state.removedEntryIDs = removedEntryIDs
+        state.recordRemoval(of: ids, at: Date())
+        removedEntryIDs = state.removedEntryIDs
     }
 
     private func persist() {
@@ -410,10 +425,21 @@ final class HydrationStore: ObservableObject {
             snapshot.counters = snapshot.counters.merged(with: disk.counters)
             snapshot.unlockedAchievements = snapshot.unlockedAchievements
                 .merging(disk.unlockedAchievements) { min($0, $1) }
+            // Removals also merge losslessly: a Siri undo written to disk
+            // while this copy was stale must not be overwritten by it.
+            snapshot.removedEntryIDs = PersistedState.mergedRemovals(
+                snapshot.removedEntryIDs, disk.removedEntryIDs
+            )
+            let removed = Set(snapshot.removedEntryIDs.keys)
+            snapshot.entries.removeAll { removed.contains($0.id) }
             disk = snapshot
         }
         counters = merged.counters
         unlockedAchievements = merged.unlockedAchievements
+        removedEntryIDs = merged.removedEntryIDs
+        if merged.entries.count != entries.count {
+            entries = merged.entries
+        }
         PhoneSessionManager.shared.sendState(merged)
         WidgetCenter.shared.reloadAllTimelines()
     }
@@ -438,6 +464,7 @@ final class HydrationStore: ObservableObject {
         reloadFromDisk() // background wake-up — see addWatchEntry
         guard entries.contains(where: { $0.id == id }) else { return }
         entries.removeAll { $0.id == id }
+        recordRemoval(of: [id])
         counters.undoCount += 1
         persist()
     }
@@ -465,8 +492,17 @@ final class HydrationStore: ObservableObject {
         // Merge entries by ID: take the loaded snapshot as the source of truth,
         // and keep any local entries it doesn't include (logged on this device
         // since the snapshot was saved).
-        let merged = HydrationMerge.mergeByID(local: entries, incoming: state.entries)
+        removedEntryIDs = PersistedState.mergedRemovals(removedEntryIDs, state.removedEntryIDs)
+        let merged = HydrationMerge.mergeByID(
+            local: entries,
+            incoming: state.entries,
+            removed: Set(removedEntryIDs.keys)
+        )
+        // Write back when this copy holds entries or removals the incoming
+        // snapshot lacks.
         let hadExtraLocal = merged.count > state.entries.count
+            || removedEntryIDs.count != state.removedEntryIDs.count
+            || state.entries.contains { removedEntryIDs[$0.id] != nil }
         entries = merged
 
         profile = state.profile

@@ -1,6 +1,72 @@
 import AppIntents
 import Foundation
+import SwiftUI
 import WidgetKit
+
+// MARK: - Shared intent plumbing
+
+extension Notification.Name {
+    /// Posted after an intent writes hydration data, so a running app
+    /// reloads immediately instead of waiting for the next foreground.
+    static let sipliHydrationDataChanged = Notification.Name("sipliHydrationDataChanged")
+}
+
+enum IntentEffects {
+    /// Call after any intent writes the shared state file.
+    static func hydrationDataChanged() {
+        WidgetCenter.shared.reloadAllTimelines()
+        Task { @MainActor in
+            NotificationCenter.default.post(name: .sipliHydrationDataChanged, object: nil)
+        }
+    }
+}
+
+/// Compact progress card Siri and Shortcuts show under the spoken reply.
+struct HydrationSnippetView: View {
+    let progress: HydrationIntentCore.Progress
+
+    private func volume(_ ml: Double) -> String {
+        HydrationIntentCore.volume(ml, unit: progress.unit)
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .firstTextBaseline, spacing: 6) {
+                Image(systemName: "drop.fill")
+                    .foregroundStyle(Theme.lagoon)
+                Text(volume(progress.totalML))
+                    .font(.title2.weight(.semibold))
+                    .monospacedDigit()
+                Text("of \(volume(progress.goalML))")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                Spacer(minLength: 8)
+                Text("\(progress.percent)%")
+                    .font(.headline)
+                    .monospacedDigit()
+                    .foregroundStyle(Theme.lagoon)
+            }
+            // Plain shapes rather than ProgressView: snippets are rendered
+            // out of process, where UIKit-backed controls may not draw.
+            GeometryReader { proxy in
+                ZStack(alignment: .leading) {
+                    Capsule().fill(Theme.lagoon.opacity(0.18))
+                    Capsule().fill(Theme.lagoon)
+                        .frame(width: max(proxy.size.width * progress.fraction, progress.fraction > 0 ? 6 : 0))
+                }
+            }
+            .frame(height: 6)
+            Text(progress.remainingML >= 1 ? "\(volume(progress.remainingML)) to go today" : "Today's goal reached")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+        }
+        .padding(16)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel(
+            "\(volume(progress.totalML)) of \(volume(progress.goalML)), \(progress.percent) percent of today's goal"
+        )
+    }
+}
 
 // MARK: - FluidTypeAppEnum
 
@@ -48,11 +114,11 @@ enum FluidTypeAppEnum: String, AppEnum {
     static var typeDisplayRepresentation = TypeDisplayRepresentation(name: "Fluid Type")
 
     static var caseDisplayRepresentations: [FluidTypeAppEnum: DisplayRepresentation] = [
-        .water:        DisplayRepresentation(title: "Water"),
-        .sparklingWater: DisplayRepresentation(title: "Sparkling Water"),
+        .water:        DisplayRepresentation(title: "Water", synonyms: ["a glass of water", "glass of water", "a water", "a bottle of water"]),
+        .sparklingWater: DisplayRepresentation(title: "Sparkling Water", synonyms: ["fizzy water", "a sparkling water", "seltzer"]),
         .coconutWater: DisplayRepresentation(title: "Coconut Water"),
-        .herbalTea:    DisplayRepresentation(title: "Herbal Tea"),
-        .greenTea:     DisplayRepresentation(title: "Green Tea"),
+        .herbalTea: DisplayRepresentation(title: "Herbal Tea", synonyms: ["an herbal tea", "a herbal tea"]),
+        .greenTea: DisplayRepresentation(title: "Green Tea", synonyms: ["a green tea", "cup of green tea"]),
         .blackTea:     DisplayRepresentation(title: "Black Tea"),
         .earlGrey:     DisplayRepresentation(title: "Earl Grey"),
         .chamomile:    DisplayRepresentation(title: "Chamomile"),
@@ -61,27 +127,27 @@ enum FluidTypeAppEnum: String, AppEnum {
         .oolong:       DisplayRepresentation(title: "Oolong"),
         .chai:         DisplayRepresentation(title: "Chai"),
         .rooibos:      DisplayRepresentation(title: "Rooibos"),
-        .tea:          DisplayRepresentation(title: "Tea"),
-        .milk:         DisplayRepresentation(title: "Milk"),
-        .juice:        DisplayRepresentation(title: "Juice"),
+        .tea: DisplayRepresentation(title: "Tea", synonyms: ["a tea", "a cup of tea", "cup of tea", "a cuppa"]),
+        .milk: DisplayRepresentation(title: "Milk", synonyms: ["a glass of milk", "glass of milk"]),
+        .juice: DisplayRepresentation(title: "Juice", synonyms: ["a juice", "a glass of juice", "orange juice"]),
         .lemonade:     DisplayRepresentation(title: "Lemonade"),
-        .smoothie:     DisplayRepresentation(title: "Smoothie"),
-        .sportsDrink:  DisplayRepresentation(title: "Sports Drink"),
-        .espresso:     DisplayRepresentation(title: "Espresso"),
-        .americano:    DisplayRepresentation(title: "Americano"),
-        .latte:        DisplayRepresentation(title: "Latte"),
-        .cappuccino:   DisplayRepresentation(title: "Cappuccino"),
-        .flatWhite:    DisplayRepresentation(title: "Flat White"),
+        .smoothie: DisplayRepresentation(title: "Smoothie", synonyms: ["a smoothie"]),
+        .sportsDrink: DisplayRepresentation(title: "Sports Drink", synonyms: ["a sports drink"]),
+        .espresso: DisplayRepresentation(title: "Espresso", synonyms: ["an espresso", "a shot of espresso"]),
+        .americano: DisplayRepresentation(title: "Americano", synonyms: ["an americano"]),
+        .latte: DisplayRepresentation(title: "Latte", synonyms: ["a latte"]),
+        .cappuccino: DisplayRepresentation(title: "Cappuccino", synonyms: ["a cappuccino"]),
+        .flatWhite: DisplayRepresentation(title: "Flat White", synonyms: ["a flat white"]),
         .mocha:        DisplayRepresentation(title: "Mocha"),
         .icedCoffee:   DisplayRepresentation(title: "Iced Coffee"),
         .coldBrew:     DisplayRepresentation(title: "Cold Brew"),
         .macchiato:    DisplayRepresentation(title: "Macchiato"),
-        .coffee:       DisplayRepresentation(title: "Coffee"),
-        .soda:         DisplayRepresentation(title: "Soda"),
-        .energyDrink:  DisplayRepresentation(title: "Energy Drink"),
+        .coffee: DisplayRepresentation(title: "Coffee", synonyms: ["a coffee", "a cup of coffee", "cup of coffee"]),
+        .soda: DisplayRepresentation(title: "Soda", synonyms: ["a soda", "a can of soda", "a soft drink", "a coke"]),
+        .energyDrink: DisplayRepresentation(title: "Energy Drink", synonyms: ["an energy drink"]),
         .soup:         DisplayRepresentation(title: "Soup"),
-        .beer:         DisplayRepresentation(title: "Beer"),
-        .wine:         DisplayRepresentation(title: "Wine"),
+        .beer: DisplayRepresentation(title: "Beer", synonyms: ["a beer", "a pint", "a pint of beer"]),
+        .wine: DisplayRepresentation(title: "Wine", synonyms: ["a glass of wine", "glass of wine", "a wine"]),
         .cocktail:     DisplayRepresentation(title: "Cocktail"),
         .other:        DisplayRepresentation(title: "Other"),
     ]
@@ -136,23 +202,26 @@ struct LogWaterIntent: AppIntent {
     static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
     #endif
 
-    func perform() async throws -> some IntentResult & ProvidesDialog {
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
         let resolvedFluid = fluidType?.toFluidType() ?? .water
         let amount = amountInMilliliters
 
         // Coordinated read-modify-write: Siri/Shortcuts can run this while
         // the widget or app writes the same shared state file.
         var result: (entry: HydrationEntry, dialog: String, compactDialog: String)!
+        var progress: HydrationIntentCore.Progress!
         PersistenceService.shared.update(PersistedState.self, fallback: .default) { state in
+            let now = Date()
             result = HydrationIntentCore.logWater(
                 into: &state,
                 amountInMilliliters: amount,
                 fluidType: resolvedFluid,
-                now: Date()
+                now: now
             )
+            progress = HydrationIntentCore.progress(state: state, now: now)
         }
 
-        WidgetCenter.shared.reloadAllTimelines()
+        IntentEffects.hydrationDataChanged()
         IntentDonationService.donateLogWater(
             amount: result.entry.volumeML,
             fluidType: resolvedFluid
@@ -166,7 +235,163 @@ struct LogWaterIntent: AppIntent {
             dialogText = result.compactDialog
         }
         #endif
-        return .result(dialog: IntentDialog(stringLiteral: dialogText))
+        return .result(
+            dialog: IntentDialog(stringLiteral: dialogText),
+            view: HydrationSnippetView(progress: progress)
+        )
+    }
+}
+
+// MARK: - LogDrinkIntent
+
+/// "Log a latte in Sipli": logs a named drink at the user's usual size for
+/// it (their last amount of that drink, else its typical serving), so Siri
+/// never has to ask "how much?".
+struct LogDrinkIntent: AppIntent {
+    static var title: LocalizedStringResource = "Log a Drink"
+    static var description = IntentDescription("Logs a drink at the size you usually have it.")
+    static var openAppWhenRun: Bool = false
+
+    @Parameter(title: "Drink", requestValueDialog: "Which drink?")
+    var fluidType: FluidTypeAppEnum
+
+    init() {}
+
+    init(fluidType: FluidTypeAppEnum) {
+        self.fluidType = fluidType
+    }
+
+    static var parameterSummary: some ParameterSummary {
+        Summary("Log \(\.$fluidType)")
+    }
+
+    #if compiler(>=6.4)
+    @available(iOS 27.0, *)
+    static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
+    #endif
+
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
+        let fluid = fluidType.toFluidType()
+        var result: (entry: HydrationEntry, dialog: String, compactDialog: String)!
+        var progress: HydrationIntentCore.Progress!
+        PersistenceService.shared.update(PersistedState.self, fallback: .default) { state in
+            let now = Date()
+            result = HydrationIntentCore.logDrink(into: &state, fluidType: fluid, now: now)
+            progress = HydrationIntentCore.progress(state: state, now: now)
+        }
+
+        IntentEffects.hydrationDataChanged()
+        IntentDonationService.donateLogWater(amount: result.entry.volumeML, fluidType: fluid)
+
+        var dialogText = result.dialog
+        #if compiler(>=6.4)
+        if #available(iOS 27.0, *), !systemContext.isVoiceOnly {
+            dialogText = result.compactDialog
+        }
+        #endif
+        return .result(
+            dialog: IntentDialog(stringLiteral: dialogText),
+            view: HydrationSnippetView(progress: progress)
+        )
+    }
+}
+
+// MARK: - LogAmountIntent
+
+/// Siri-facing wrapper for `DrinkAmount`: "350 ml", "12 oz of coffee".
+struct DrinkAmountEntity: AppEntity {
+    static var typeDisplayRepresentation = TypeDisplayRepresentation(name: "Amount")
+    static var defaultQuery = DrinkAmountQuery()
+
+    let id: String
+    let amount: DrinkAmount
+
+    init(_ amount: DrinkAmount) {
+        self.id = amount.id
+        self.amount = amount
+    }
+
+    var displayRepresentation: DisplayRepresentation {
+        DisplayRepresentation(
+            title: "\(amount.title)",
+            synonyms: amount.synonyms.map { "\($0)" }
+        )
+    }
+}
+
+struct DrinkAmountQuery: EntityStringQuery {
+    func entities(for identifiers: [String]) async throws -> [DrinkAmountEntity] {
+        identifiers.compactMap(DrinkAmount.init(id:)).map(DrinkAmountEntity.init)
+    }
+
+    /// Typed text in Shortcuts, e.g. "350ml latte" or "16 oz".
+    func entities(matching string: String) async throws -> [DrinkAmountEntity] {
+        let unit = PersistenceService.shared.load(PersistedState.self, fallback: .default).profile.unitSystem
+        return DrinkAmount.parse(string, defaultUnit: unit).map { [DrinkAmountEntity($0)] } ?? []
+    }
+
+    /// The values Siri can recognise in speech; refreshed by
+    /// `SipliAppShortcuts.updateAppShortcutParameters()`.
+    func suggestedEntities() async throws -> [DrinkAmountEntity] {
+        let state = PersistenceService.shared.load(PersistedState.self, fallback: .default)
+        return DrinkAmount.suggestions(state: state).map(DrinkAmountEntity.init)
+    }
+}
+
+/// "Log 350 ml of latte in Sipli", "I had 12 oz in Sipli".
+struct LogAmountIntent: AppIntent {
+    static var title: LocalizedStringResource = "Log an Amount"
+    static var description = IntentDescription("Logs a specific amount of water or another drink, like 350 ml of latte.")
+    static var openAppWhenRun: Bool = false
+
+    @Parameter(title: "Amount", requestValueDialog: "How much did you drink?")
+    var amount: DrinkAmountEntity
+
+    init() {}
+
+    init(amount: DrinkAmount) {
+        self.amount = DrinkAmountEntity(amount)
+    }
+
+    static var parameterSummary: some ParameterSummary {
+        Summary("Log \(\.$amount)")
+    }
+
+    #if compiler(>=6.4)
+    @available(iOS 27.0, *)
+    static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
+    #endif
+
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
+        let drink = amount.amount
+        let fluid = drink.fluid ?? .water
+        var result: (entry: HydrationEntry, dialog: String, compactDialog: String)!
+        var progress: HydrationIntentCore.Progress!
+        PersistenceService.shared.update(PersistedState.self, fallback: .default) { state in
+            let now = Date()
+            result = HydrationIntentCore.logWater(
+                into: &state,
+                amountInMilliliters: Int(drink.milliliters.rounded()),
+                fluidType: fluid,
+                now: now,
+                minimumML: 10
+            )
+            progress = HydrationIntentCore.progress(state: state, now: now)
+        }
+
+        IntentEffects.hydrationDataChanged()
+        IntentDonationService.donateLogWater(amount: result.entry.volumeML, fluidType: fluid)
+
+        var dialogText = result.dialog
+        #if compiler(>=6.4)
+        if #available(iOS 27.0, *), !systemContext.isVoiceOnly {
+            dialogText = result.compactDialog
+        }
+        #endif
+        return .result(
+            dialog: IntentDialog(stringLiteral: dialogText),
+            view: HydrationSnippetView(progress: progress)
+        )
     }
 }
 
@@ -182,7 +407,7 @@ struct GetTodaysHydrationIntent: AppIntent {
     static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
     #endif
 
-    func perform() async throws -> some IntentResult & ProvidesDialog {
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
         let persistence = PersistenceService.shared
         let state = persistence.load(PersistedState.self, fallback: .default)
         let now = Date()
@@ -192,7 +417,10 @@ struct GetTodaysHydrationIntent: AppIntent {
             dialogText = HydrationIntentCore.todaysHydrationCompact(state: state, now: now)
         }
         #endif
-        return .result(dialog: IntentDialog(stringLiteral: dialogText))
+        return .result(
+            dialog: IntentDialog(stringLiteral: dialogText),
+            view: HydrationSnippetView(progress: HydrationIntentCore.progress(state: state, now: now))
+        )
     }
 }
 
@@ -251,9 +479,10 @@ struct GetRemainingIntent: AppIntent {
     static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
     #endif
 
-    func perform() async throws -> some IntentResult & ProvidesDialog {
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
         let state = PersistenceService.shared.load(PersistedState.self, fallback: .default)
-        let result = HydrationIntentCore.remainingDialog(state: state, now: Date())
+        let now = Date()
+        let result = HydrationIntentCore.remainingDialog(state: state, now: now)
 
         var dialogText = result.dialog
         #if compiler(>=6.4)
@@ -261,7 +490,10 @@ struct GetRemainingIntent: AppIntent {
             dialogText = result.compactDialog
         }
         #endif
-        return .result(dialog: IntentDialog(stringLiteral: dialogText))
+        return .result(
+            dialog: IntentDialog(stringLiteral: dialogText),
+            view: HydrationSnippetView(progress: HydrationIntentCore.progress(state: state, now: now))
+        )
     }
 }
 
@@ -277,13 +509,16 @@ struct RepeatLastDrinkIntent: AppIntent {
     static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
     #endif
 
-    func perform() async throws -> some IntentResult & ProvidesDialog {
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
         var result: (entry: HydrationEntry, dialog: String, compactDialog: String)!
+        var progress: HydrationIntentCore.Progress!
         PersistenceService.shared.update(PersistedState.self, fallback: .default) { state in
-            result = HydrationIntentCore.repeatLastDrink(into: &state, now: Date())
+            let now = Date()
+            result = HydrationIntentCore.repeatLastDrink(into: &state, now: now)
+            progress = HydrationIntentCore.progress(state: state, now: now)
         }
 
-        WidgetCenter.shared.reloadAllTimelines()
+        IntentEffects.hydrationDataChanged()
         IntentDonationService.donateLogWater(
             amount: result.entry.volumeML,
             fluidType: result.entry.fluidType
@@ -295,7 +530,10 @@ struct RepeatLastDrinkIntent: AppIntent {
             dialogText = result.compactDialog
         }
         #endif
-        return .result(dialog: IntentDialog(stringLiteral: dialogText))
+        return .result(
+            dialog: IntentDialog(stringLiteral: dialogText),
+            view: HydrationSnippetView(progress: progress)
+        )
     }
 }
 
@@ -346,13 +584,16 @@ struct UndoLastIntakeIntent: AppIntent {
     static var allowedExecutionTargets: IntentExecutionTargets { [.main] }
     #endif
 
-    func perform() async throws -> some IntentResult & ProvidesDialog {
+    func perform() async throws -> some IntentResult & ProvidesDialog & ShowsSnippetView {
         var result: (removed: HydrationEntry?, dialog: String, compactDialog: String)!
+        var progress: HydrationIntentCore.Progress!
         PersistenceService.shared.update(PersistedState.self, fallback: .default) { state in
-            result = HydrationIntentCore.undoLastToday(from: &state, now: Date())
+            let now = Date()
+            result = HydrationIntentCore.undoLastToday(from: &state, now: now)
+            progress = HydrationIntentCore.progress(state: state, now: now)
         }
         if result.removed != nil {
-            WidgetCenter.shared.reloadAllTimelines()
+            IntentEffects.hydrationDataChanged()
         }
 
         var dialogText = result.dialog
@@ -361,6 +602,9 @@ struct UndoLastIntakeIntent: AppIntent {
             dialogText = result.compactDialog
         }
         #endif
-        return .result(dialog: IntentDialog(stringLiteral: dialogText))
+        return .result(
+            dialog: IntentDialog(stringLiteral: dialogText),
+            view: HydrationSnippetView(progress: progress)
+        )
     }
 }

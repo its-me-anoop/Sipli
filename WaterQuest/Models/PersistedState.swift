@@ -64,6 +64,27 @@ struct PersistedState: Codable {
     var unlockedAchievements: [String: Date]
     /// Monotonic engagement counters (Siri/widget logs, undos) for secret badges.
     var counters: EngagementCounters
+    /// Entry id → removal date. Lets a delete made in one process (a Siri
+    /// undo, the watch, another device) stick when another copy that still
+    /// holds the entry merges. Pruned after `removedEntryRetention`.
+    var removedEntryIDs: [UUID: Date]
+
+    static let removedEntryRetention: TimeInterval = 30 * 24 * 60 * 60
+
+    /// Records `ids` as removed and drops expired records.
+    mutating func recordRemoval(of ids: [UUID], at date: Date) {
+        for id in ids { removedEntryIDs[id] = date }
+        removedEntryIDs = Self.pruned(removedEntryIDs, now: date)
+    }
+
+    /// Union of two removal maps, keeping the later date, minus expired ones.
+    static func mergedRemovals(_ a: [UUID: Date], _ b: [UUID: Date], now: Date = Date()) -> [UUID: Date] {
+        pruned(a.merging(b) { max($0, $1) }, now: now)
+    }
+
+    private static func pruned(_ removals: [UUID: Date], now: Date) -> [UUID: Date] {
+        removals.filter { now.timeIntervalSince($0.value) < removedEntryRetention }
+    }
 
     // `gameState`, `manualWeather`, and the legacy Earth Day 2026 keys are kept
     // in CodingKeys so old persisted JSON decodes without error — we just
@@ -75,6 +96,7 @@ struct PersistedState: Codable {
         case matchDayWins, lastMatchDayWinDate
         case streakFreezeTokens, streakFreezeDates
         case unlockedAchievements, counters
+        case removedEntryIDs
     }
 
     init(
@@ -91,7 +113,8 @@ struct PersistedState: Codable {
         streakFreezeTokens: Int = 0,
         streakFreezeDates: [Date] = [],
         unlockedAchievements: [String: Date] = [:],
-        counters: EngagementCounters = .zero
+        counters: EngagementCounters = .zero,
+        removedEntryIDs: [UUID: Date] = [:]
     ) {
         self.entries = entries
         self.profile = profile
@@ -107,6 +130,7 @@ struct PersistedState: Codable {
         self.streakFreezeDates = streakFreezeDates
         self.unlockedAchievements = unlockedAchievements
         self.counters = counters
+        self.removedEntryIDs = removedEntryIDs
     }
 
     init(from decoder: Decoder) throws {
@@ -125,6 +149,7 @@ struct PersistedState: Codable {
         streakFreezeDates      = try c.decodeIfPresent([Date].self, forKey: .streakFreezeDates) ?? []
         unlockedAchievements   = try c.decodeIfPresent([String: Date].self, forKey: .unlockedAchievements) ?? [:]
         counters               = try c.decodeIfPresent(EngagementCounters.self, forKey: .counters) ?? .zero
+        removedEntryIDs        = try c.decodeIfPresent([UUID: Date].self, forKey: .removedEntryIDs) ?? [:]
         // .gameState, .manualWeather, .earthDay2026* silently ignored if
         // present in old persisted JSON.
     }
@@ -145,6 +170,7 @@ struct PersistedState: Codable {
         try c.encode(streakFreezeDates,           forKey: .streakFreezeDates)
         try c.encode(unlockedAchievements,        forKey: .unlockedAchievements)
         try c.encode(counters,                    forKey: .counters)
+        try c.encode(removedEntryIDs,             forKey: .removedEntryIDs)
     }
 
     static let `default` = PersistedState(

@@ -28,6 +28,7 @@ struct WaterQuestApp: App {
         _locationManager = StateObject(wrappedValue: location)
         _weatherClient = StateObject(wrappedValue: WeatherClient(locationManager: location))
         Self.applyAppearance()
+        SipliAppShortcuts.updateAppShortcutParameters()
     }
 
     /// Brand the navigation bar to use SF Serif so every `navigationTitle`
@@ -93,6 +94,11 @@ struct WaterQuestApp: App {
             }
             .onChange(of: scenePhase) { _, phase in
                 guard ProcessInfo.processInfo.environment["XCTestConfigurationFilePath"] == nil else { return }
+                if phase == .background {
+                    // Siri matches spoken amounts against a precomputed list
+                    // that includes the user's favourite drinks; refresh it.
+                    SipliAppShortcuts.updateAppShortcutParameters()
+                }
                 if phase == .active {
                     Task {
                         // Pick up entries written by App Intents (Siri/Shortcuts)
@@ -133,6 +139,11 @@ struct WaterQuestApp: App {
                         deepLinkTrophyRoom = false
                     }
                 }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .sipliHydrationDataChanged)) { _ in
+                // A Siri/Shortcuts intent just wrote in this process: show it
+                // now rather than on the next foreground.
+                store.reloadFromDisk()
             }
             .onReceive(NotificationCenter.default.publisher(for: .sipliOpenTrophyRoom)) { _ in
                 UserDefaults.standard.removeObject(forKey: OpenTrophyRoomIntent.pendingOpenDefaultsKey)
