@@ -1,0 +1,6 @@
+# Rendered films and raw simulator recordings are large binaries (some over
+# GitHub's 100 MB limit). Rebuild them with the render scripts in each folder.
+*.mp4
+*.mov
+*.m4a
+*.wav

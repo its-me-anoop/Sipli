@@ -1,0 +1,1 @@
+PASS: 780 decoded frames; 3840×960; 26.00s; 30.0 fps; audio peak 0.52756023; RMS 0.10008194358394358; four final frames extracted.
