@@ -68,6 +68,16 @@ class ReleaseSafetyTests(unittest.TestCase):
         with self.assertRaises(asc.ReleaseError):
             asc.read_screenshot(path, "APP_IPHONE_67")
 
+    def test_iphone_duo_accepts_both_displays_in_either_orientation(self):
+        path = self.root / "duo.png"
+        for size in [(1398, 2034), (2034, 1398), (2007, 2853), (2853, 2007)]:
+            path.write_bytes(png(*size))
+            self.assertEqual((asc.read_screenshot(path, "APP_IPHONE_DUO").width,
+                              asc.read_screenshot(path, "APP_IPHONE_DUO").height), size)
+        path.write_bytes(png(1320, 2868))
+        with self.assertRaisesRegex(asc.ReleaseError, "dimensions"):
+            asc.read_screenshot(path, "APP_IPHONE_DUO")
+
     def test_upload_uses_exact_byte_ranges_without_api_authorization_and_retries(self):
         asset = self.asset(data=b"abcdefgh")
         reservation = shot("new", None, "AWAITING_UPLOAD")

@@ -38,6 +38,10 @@ PORTRAIT_SIZES = {
     "APP_IPHONE_67": {(1260, 2736), (1290, 2796), (1320, 2868)},
     "APP_IPAD_PRO_3GEN_129": {(2048, 2732)},
     "APP_IPAD_PRO_3GEN_11": {(1668, 2388)},
+    # One set holds both displays: outer 1398x2034 and inner 2007x2853 (up to 10 total).
+    # Apple's OpenAPI spec omits this value; creating the set and uploading outer-display
+    # images have been checked against the live API, inner-display uploads not yet.
+    "APP_IPHONE_DUO": {(1398, 2034), (2007, 2853)},
 }
 
 

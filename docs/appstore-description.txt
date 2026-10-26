@@ -4,6 +4,10 @@ A BOTTLE THAT FOLLOWS YOUR DAY
 
 The Home bottle starts full and drains as you log drinks. Its percentage shows how much of your daily goal is left. Tilt your phone and the water moves with it, then settles. With Reduce Motion enabled, the level updates without the motion effects.
 
+MADE FOR IPHONE DUO
+
+Open your iPhone Duo and Sipli fills the inner display, with Home, Insights, and Diary split around the fold. Close it and your bottle stays on the cover screen. Sipli works in every orientation, with two-column layouts in landscape.
+
 QUICK TO LOG, EASY TO CORRECT
 
 • Add water with quick amounts or choose your own serving size.
@@ -14,7 +18,7 @@ QUICK TO LOG, EASY TO CORRECT
 
 SMALL REASONS TO KEEP GOING
 
-Build a streak, take on weekly quests, and discover 31 badges in the Trophy Room. Share a daily summary, a week of progress, or a badge you've earned. Siri shortcuts help you log water and check your progress without opening the app.
+Build a streak, take on weekly quests, and discover 31 badges in the Trophy Room. Share a daily summary, a week of progress, or a badge you've earned. Ask Siri to log a drink by name and amount, like “Log 350 ml of latte in Sipli”, and hear how much is left without opening the app.
 
 FREE TO START
 
