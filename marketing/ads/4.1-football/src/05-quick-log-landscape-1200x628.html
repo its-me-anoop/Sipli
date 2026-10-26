@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sipli 4.1 — Quick log landscape (1200x628)</title>
+<style>
+  html,body{margin:0;padding:0;width:1200px;height:628px;overflow:hidden;
+    font-family:'Liberation Sans',-apple-system,"SF Pro Display","Helvetica Neue",Arial,sans-serif;}
+  #ad{position:relative;width:1200px;height:628px;overflow:hidden;color:#fff;
+    background:linear-gradient(115deg,#062A66 0%,#0A3D91 45%,#1C78F5 100%);}
+  #ad::before{content:"";position:absolute;inset:-30% auto auto -10%;width:70%;height:80%;
+    background:radial-gradient(ellipse at center,rgba(255,255,255,.18),transparent 62%);pointer-events:none;}
+
+  .brand{position:absolute;top:44px;left:56px;font-weight:700;font-size:44px;letter-spacing:-1px;}
+  .brand .dot{display:inline-block;width:12px;height:12px;border-radius:50%;background:#30C2A3;margin-left:6px;vertical-align:middle;transform:translateY(-5px);}
+  .newchip{position:absolute;top:48px;left:230px;height:44px;padding:0 20px;border-radius:999px;
+    background:#30C2A3;color:#04314F;font-weight:700;font-size:19px;letter-spacing:1.5px;
+    display:flex;align-items:center;}
+
+  .headline{position:absolute;top:150px;left:56px;width:640px;font-size:64px;line-height:1.08;font-weight:700;letter-spacing:-1.5px;
+    text-shadow:0 4px 18px rgba(6,42,102,.35);}
+  .sub{position:absolute;top:328px;left:56px;width:600px;font-size:26px;line-height:1.4;color:rgba(255,255,255,.92);font-weight:500;}
+  .sub b{color:#CFF6EC;}
+
+  .cta{position:absolute;bottom:88px;left:56px;height:62px;padding:0 36px;border-radius:999px;
+    background:#fff;color:#0A3D91;display:inline-flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:24px;box-shadow:0 12px 26px rgba(4,30,70,.45);white-space:nowrap;}
+  .cta .arrow{margin-left:10px;color:#30C2A3;}
+
+  /* right visual: control-center tile + ball */
+  .tile{position:absolute;top:120px;right:100px;width:300px;height:300px;border-radius:64px;
+    background:linear-gradient(160deg,rgba(255,255,255,.24),rgba(255,255,255,.1));
+    border:2px solid rgba(255,255,255,.35);
+    box-shadow:0 30px 60px rgba(4,20,50,.45),inset 0 2px 0 rgba(255,255,255,.35);
+    display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;}
+  .tile .drop{width:110px;height:110px;}
+  .tile .amt{font-size:44px;font-weight:700;}
+  .tile .lbl{font-size:20px;font-weight:700;letter-spacing:2px;color:rgba(255,255,255,.8);}
+  .tapring{position:absolute;top:96px;right:76px;width:348px;height:348px;border-radius:88px;
+    border:3px dashed rgba(48,194,163,.7);}
+
+  .ball{position:absolute;bottom:70px;right:76px;width:110px;height:110px;
+    filter:drop-shadow(0 12px 16px rgba(3,20,50,.5));}
+
+  /* pitch strip footer */
+  .pitchstrip{position:absolute;left:0;right:0;bottom:0;height:38px;
+    background:repeating-linear-gradient(90deg,#0B7A3E 0 100px,#0E8C46 100px 200px);}
+  .pitchstrip::before{content:"";position:absolute;top:8px;left:0;right:0;height:3px;background:rgba(255,255,255,.7);}
+</style>
+</head>
+<body>
+<div id="ad">
+  <div class="brand">Sipli<span class="dot"></span></div>
+  <div class="newchip">NEW IN 4.1</div>
+
+  <div class="headline">Log water faster than a counter-attack.</div>
+  <div class="sub">One tap from <b>Control Center</b>, plus <b>Quick Log</b> presets that learn your usual drinks. No fumbling &mdash; straight back to the game.</div>
+
+  <div class="cta">Download free on the App&nbsp;Store <span class="arrow">&rsaquo;</span></div>
+
+  <div class="tapring"></div>
+  <div class="tile">
+    <svg class="drop" viewBox="0 0 100 100">
+      <path d="M50 6 C50 6 18 46 18 66 C18 84 32 96 50 96 C68 96 82 84 82 66 C82 46 50 6 50 6 Z" fill="#fff"/>
+      <path d="M36 62 C33 66 32 70 32 73 C32 80 38 86 46 86 L46 78 C42 78 40 76 40 73 C40 71 41 68 43 65 Z" fill="#9AD1FF"/>
+    </svg>
+    <div class="amt">+250 ml</div>
+    <div class="lbl">ONE TAP</div>
+  </div>
+
+  <svg class="ball" viewBox="0 0 100 100">
+    <defs><clipPath id="bc5"><circle cx="50" cy="50" r="47"/></clipPath></defs>
+    <circle cx="50" cy="50" r="47" fill="#fff"/>
+    <g clip-path="url(#bc5)" fill="#0A2540" stroke="#0A2540">
+      <polygon points="50,32 67,44 61,64 39,64 33,44" stroke-width="0"/>
+      <g stroke-width="3">
+        <line x1="50" y1="32" x2="50" y2="3"/>
+        <line x1="67" y1="44" x2="95" y2="35"/>
+        <line x1="61" y1="64" x2="78" y2="88"/>
+        <line x1="39" y1="64" x2="22" y2="88"/>
+        <line x1="33" y1="44" x2="5" y2="35"/>
+      </g>
+      <g stroke-width="0">
+        <polygon points="77,-1 90,9 85,24 69,24 64,9"/>
+        <polygon points="94,50 107,60 102,75 86,75 81,60"/>
+        <polygon points="50,82 63,92 58,107 42,107 37,92"/>
+        <polygon points="6,50 19,60 14,75 -2,75 -7,60"/>
+        <polygon points="23,-1 36,9 31,24 15,24 10,9"/>
+      </g>
+    </g>
+    <circle cx="50" cy="50" r="47" fill="none" stroke="#0A2540" stroke-width="3"/>
+  </svg>
+
+  <div class="pitchstrip"></div>
+</div>
+</body>
+</html>

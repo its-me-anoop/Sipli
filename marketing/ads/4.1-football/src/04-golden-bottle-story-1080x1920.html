@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Sipli 4.1 — Golden Bottle story (1080x1920)</title>
+<style>
+  html,body{margin:0;padding:0;width:1080px;height:1920px;overflow:hidden;
+    font-family:'Liberation Sans',-apple-system,"SF Pro Display","Helvetica Neue",Arial,sans-serif;}
+  #ad{position:relative;width:1080px;height:1920px;overflow:hidden;color:#fff;
+    background:radial-gradient(90% 55% at 50% 46%,#0A3D91 0%,#062A66 55%,#041B45 100%);}
+
+  .brand{position:absolute;top:88px;left:0;right:0;text-align:center;font-weight:700;font-size:64px;letter-spacing:-1.5px;}
+  .brand .dot{display:inline-block;width:18px;height:18px;border-radius:50%;background:#30C2A3;margin-left:9px;vertical-align:middle;transform:translateY(-8px);}
+  .newchip{position:absolute;top:200px;left:50%;transform:translateX(-50%);height:58px;padding:0 30px;border-radius:999px;
+    background:#30C2A3;color:#04314F;font-weight:700;font-size:26px;letter-spacing:2px;
+    display:flex;align-items:center;box-shadow:0 10px 24px rgba(4,49,79,.4);}
+
+  .glow{position:absolute;top:400px;left:50%;transform:translateX(-50%);width:820px;height:820px;border-radius:50%;
+    background:radial-gradient(circle,rgba(245,197,66,.32) 0%,rgba(245,197,66,.08) 45%,transparent 70%);}
+
+  .bottle{position:absolute;top:430px;left:50%;transform:translateX(-50%);
+    filter:drop-shadow(0 30px 60px rgba(245,197,66,.35));}
+
+  .plinth{position:absolute;top:1080px;left:50%;transform:translateX(-50%);width:460px;height:64px;border-radius:16px;
+    background:linear-gradient(180deg,#0E2C5E,#081E44);box-shadow:0 24px 50px rgba(2,12,32,.6);}
+  .plinth .plate{position:absolute;top:14px;left:50%;transform:translateX(-50%);height:36px;padding:0 22px;border-radius:8px;
+    background:linear-gradient(180deg,#F7D465,#D99A18);color:#4A3305;font-weight:700;font-size:20px;letter-spacing:3px;
+    display:flex;align-items:center;white-space:nowrap;}
+
+  .star{position:absolute;color:#F5C542;opacity:.9;}
+
+  .headline{position:absolute;top:1250px;left:40px;right:40px;text-align:center;
+    font-size:84px;line-height:1.14;font-weight:700;letter-spacing:-2px;white-space:nowrap;
+    text-shadow:0 8px 30px rgba(2,16,42,.6);}
+  .headline .gold{color:#F5C542;}
+  .sub{position:absolute;top:1500px;left:130px;right:130px;text-align:center;
+    font-size:40px;line-height:1.35;color:rgba(255,255,255,.92);font-weight:500;}
+
+  .season{position:absolute;top:1660px;left:50%;transform:translateX(-50%);height:56px;padding:0 28px;border-radius:999px;
+    border:2px solid rgba(255,255,255,.5);display:inline-flex;align-items:center;white-space:nowrap;
+    font-size:26px;font-weight:700;color:rgba(255,255,255,.95);background:rgba(6,42,102,.35);}
+
+  .cta{position:absolute;bottom:90px;left:50%;transform:translateX(-50%);height:96px;padding:0 58px;border-radius:999px;
+    background:#fff;color:#0A3D91;display:flex;align-items:center;justify-content:center;
+    font-weight:700;font-size:36px;box-shadow:0 18px 40px rgba(2,12,32,.6);white-space:nowrap;}
+  .cta .arrow{margin-left:16px;color:#30C2A3;}
+</style>
+</head>
+<body>
+<div id="ad">
+  <div class="brand">Sipli<span class="dot"></span></div>
+  <div class="newchip">MATCH DAY &middot; NEW IN 4.1</div>
+
+  <div class="glow"></div>
+
+  <div class="star" style="top:520px;left:250px;font-size:54px;">&#9733;</div>
+  <div class="star" style="top:700px;left:170px;font-size:34px;opacity:.6;">&#9733;</div>
+  <div class="star" style="top:560px;right:240px;font-size:44px;">&#9733;</div>
+  <div class="star" style="top:820px;right:170px;font-size:30px;opacity:.6;">&#9733;</div>
+  <div class="star" style="top:950px;left:280px;font-size:28px;opacity:.5;">&#9733;</div>
+  <div class="star" style="top:990px;right:300px;font-size:36px;opacity:.7;">&#9733;</div>
+
+  <!-- Golden bottle trophy -->
+  <svg class="bottle" width="360" height="640" viewBox="0 0 180 320">
+    <defs>
+      <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#B57E0A"/>
+        <stop offset="0.28" stop-color="#F7D465"/>
+        <stop offset="0.5" stop-color="#FFF0B8"/>
+        <stop offset="0.72" stop-color="#F0BC38"/>
+        <stop offset="1" stop-color="#A86F06"/>
+      </linearGradient>
+      <linearGradient id="goldcap" x1="0" y1="0" x2="1" y2="0">
+        <stop offset="0" stop-color="#8F5E04"/>
+        <stop offset="0.5" stop-color="#F7D465"/>
+        <stop offset="1" stop-color="#8F5E04"/>
+      </linearGradient>
+    </defs>
+    <!-- cap -->
+    <rect x="66" y="8" width="48" height="34" rx="8" fill="url(#goldcap)"/>
+    <rect x="62" y="38" width="56" height="10" rx="5" fill="#C89112"/>
+    <!-- neck + body -->
+    <path d="M72 48 L72 86 C40 116 30 150 30 196 L30 282 C30 300 44 312 62 312 L118 312 C136 312 150 300 150 282 L150 196 C150 150 140 116 108 86 L108 48 Z" fill="url(#gold)"/>
+    <!-- highlight -->
+    <path d="M52 130 C44 150 40 170 40 196 L40 270 C40 276 42 282 46 286 L54 286 C48 280 48 274 48 268 L48 196 C48 172 52 152 60 134 Z" fill="#FFF6D6" opacity="0.55"/>
+    <!-- engraved ball -->
+    <circle cx="90" cy="210" r="34" fill="none" stroke="#7A5203" stroke-width="4"/>
+    <polygon points="90,196 103,206 98,221 82,221 77,206" fill="#7A5203"/>
+    <line x1="90" y1="196" x2="90" y2="176" stroke="#7A5203" stroke-width="4"/>
+    <line x1="103" y1="206" x2="121" y2="201" stroke="#7A5203" stroke-width="4"/>
+    <line x1="98" y1="221" x2="109" y2="237" stroke="#7A5203" stroke-width="4"/>
+    <line x1="82" y1="221" x2="71" y2="237" stroke="#7A5203" stroke-width="4"/>
+    <line x1="77" y1="206" x2="59" y2="201" stroke="#7A5203" stroke-width="4"/>
+  </svg>
+
+  <div class="plinth"><div class="plate">GOLDEN BOTTLE</div></div>
+
+  <div class="headline">Win 12 match days.<br>Lift the <span class="gold">Golden&nbsp;Bottle</span>.</div>
+  <div class="sub">Hit your hydration goal to win the day. Stack wins all summer and claim the badge.</div>
+  <div class="season">Football-summer challenge &middot; 3 Jul &ndash; 2 Aug</div>
+
+  <div class="cta">Play your first Match Day &mdash; free <span class="arrow">&rsaquo;</span></div>
+</div>
+</body>
+</html>
