@@ -246,7 +246,7 @@ final class BottleWaterModelTests: XCTestCase {
 
     @MainActor
     func testControllerStartsAtRestAndStopsAnimationWhenHomeDisappears() {
-        let controller = BottleWaterAnimation(progress: 0)
+        let controller = BottleWaterAnimation(progress: 0, idleMotionOverride: false)
         XCTAssertFalse(controller.isActive)
         XCTAssertFalse(controller.isAnimating)
         controller.setActive(true, reduceMotion: false)
@@ -264,7 +264,7 @@ final class BottleWaterModelTests: XCTestCase {
 
     @MainActor
     func testControllerReducedMotionAlwaysUpdatesImmediatelyAndIgnoresSensors() {
-        let controller = BottleWaterAnimation(progress: 0)
+        let controller = BottleWaterAnimation(progress: 0, idleMotionOverride: false)
         controller.setActive(true, reduceMotion: true)
         controller.setProgress(0.75, animated: true)
         controller.receiveGravity(x: 0.5, y: -0.8, acceleration: 1)
@@ -278,7 +278,7 @@ final class BottleWaterModelTests: XCTestCase {
 
     @MainActor
     func testControllerOffscreenIgnoresGravityAndUsesLatestIntakeOnReturn() {
-        let controller = BottleWaterAnimation(progress: 0)
+        let controller = BottleWaterAnimation(progress: 0, idleMotionOverride: false)
         controller.receiveGravity(x: 0.5, y: -0.8, acceleration: 1)
         controller.setProgress(0.7, animated: true)
         XCTAssertFalse(controller.isAnimating)
@@ -292,7 +292,7 @@ final class BottleWaterModelTests: XCTestCase {
 
     @MainActor
     func testControllerMotionWakesDisplayLinkAndReduceMotionStopsIt() {
-        let controller = BottleWaterAnimation(progress: 0.5)
+        let controller = BottleWaterAnimation(progress: 0.5, idleMotionOverride: false)
         controller.setActive(true, reduceMotion: false)
         controller.receiveGravity(x: 0.4, y: -0.9)
         XCTAssertTrue(controller.isAnimating)
@@ -305,7 +305,7 @@ final class BottleWaterModelTests: XCTestCase {
 
     @MainActor
     func testControllerNoiseDoesNotStartDisplayLink() {
-        let controller = BottleWaterAnimation(progress: 0.5)
+        let controller = BottleWaterAnimation(progress: 0.5, idleMotionOverride: false)
         controller.setActive(true, reduceMotion: false)
         for index in 0..<100 {
             controller.receiveGravity(x: index.isMultiple(of: 2) ? 0.001 : -0.001, y: -1)
@@ -375,4 +375,119 @@ final class BottleWaterModelTests: XCTestCase {
         }
         return area
     }
+}
+
+/// Idle motion (onboarding-style) and learning a display's offset from the
+/// motion sensor, which fixed the leaning water on the iPhone Duo inner screen.
+final class BottleIdleMotionAndCalibrationTests: XCTestCase {
+
+    func test_ambientWaterNeverSettlesAndKeepsMoving() {
+        var model = BottleWaterModel(progress: 0.4)
+        XCTAssertTrue(model.isSettled)
+        model.setAmbient(true)
+        XCTAssertFalse(model.isSettled)
+        let start = model.phase
+        for _ in 0..<600 { model.advance(by: 1.0 / 30) }
+        XCTAssertFalse(model.isSettled)
+        XCTAssertGreaterThan(model.phase, start)
+        XCTAssertEqual(model.ripple, BottleWaterModel.ambientRipple, accuracy: 0.0001)
+        XCTAssertEqual(model.tilt, BottleWaterModel.restingTilt)
+    }
+
+    func test_ambientOffLetsWaterSettleAgain() {
+        var model = BottleWaterModel(progress: 0.4)
+        model.setAmbient(true)
+        for _ in 0..<30 { model.advance(by: 1.0 / 30) }
+        model.setAmbient(false)
+        for _ in 0..<600 { model.advance(by: 1.0 / 30) }
+        XCTAssertTrue(model.isSettled)
+    }
+
+    func test_drinkInAmbientStillRipplesThenReturnsToIdle() {
+        var model = BottleWaterModel(progress: 0.2)
+        model.setAmbient(true)
+        model.setProgress(0.5, animated: true)
+        XCTAssertGreaterThan(model.ripple, BottleWaterModel.ambientRipple)
+        for _ in 0..<600 { model.advance(by: 1.0 / 30) }
+        XCTAssertEqual(model.ripple, BottleWaterModel.ambientRipple, accuracy: 0.0001)
+        XCTAssertEqual(model.remaining, model.targetRemaining, accuracy: 0.0001)
+    }
+
+    // MARK: Calibration
+
+    private func learn(x: Double, y: Double, acceleration: Double = 0, seconds: Double = 1.2) -> BottleTiltCalibration {
+        var calibration = BottleTiltCalibration()
+        var t = 0.0
+        while t <= seconds {
+            _ = calibration.observe(x: x, y: y, acceleration: acceleration, time: t)
+            t += 1.0 / 30
+        }
+        return calibration
+    }
+
+    func test_alignedDisplayLearnsZero() {
+        XCTAssertEqual(learn(x: 0.05, y: -0.99).learnedQuarter, 0)
+    }
+
+    func test_quarterTurnDisplaysLearnTheRightOffset() {
+        // A level phone that reads "gravity points right/left/up" on screen.
+        for (x, y) in [(1.0, 0.0), (-1.0, 0.0), (0.0, 1.0)] {
+            let calibration = learn(x: x, y: y)
+            let quarter = try! XCTUnwrap(calibration.learnedQuarter)
+            let corrected = BottleTiltCalibration.rotate(x: x, y: y, quarters: quarter)
+            XCTAssertEqual(corrected.x, 0, accuracy: 0.000001, "(\(x), \(y))")
+            XCTAssertEqual(corrected.y, -1, accuracy: 0.000001, "(\(x), \(y))")
+        }
+    }
+
+    func test_offsetHoldsInEveryInterfaceOrientation() {
+        // Panel a quarter turn off the sensor: learn in portrait, then check
+        // a level reading in landscape is also corrected.
+        let quarter = try! XCTUnwrap(learn(x: 1, y: 0).learnedQuarter)
+        let landscapeReading = BottleWaterAnimationTestShim.rotate90(x: 1, y: 0)
+        let corrected = BottleTiltCalibration.rotate(x: landscapeReading.x, y: landscapeReading.y, quarters: quarter)
+        let expectedDown = BottleWaterAnimationTestShim.rotate90(x: 0, y: -1)
+        XCTAssertEqual(corrected.x, expectedDown.x, accuracy: 0.000001)
+        XCTAssertEqual(corrected.y, expectedDown.y, accuracy: 0.000001)
+    }
+
+    func test_doesNotLearnWhileMovingFlatOrTooBrief() {
+        XCTAssertNil(learn(x: 0, y: -1, acceleration: 0.2).learnedQuarter, "moving")
+        XCTAssertNil(learn(x: 0.1, y: -0.2).learnedQuarter, "lying flat")
+        XCTAssertNil(learn(x: 0, y: -1, seconds: 0.5).learnedQuarter, "too brief")
+        XCTAssertNil(learn(x: 0.7, y: -0.7).learnedQuarter, "between quarters")
+    }
+
+    func test_candidateResetsWhenReadingChanges() {
+        var calibration = BottleTiltCalibration()
+        _ = calibration.observe(x: 0, y: -1, acceleration: 0, time: 0)
+        _ = calibration.observe(x: 1, y: 0, acceleration: 0, time: 0.6)
+        XCTAssertFalse(calibration.observe(x: 1, y: 0, acceleration: 0, time: 1.1))
+        XCTAssertTrue(calibration.observe(x: 1, y: 0, acceleration: 0, time: 1.7))
+    }
+
+    @MainActor
+    func test_idleControllerAnimatesWhileVisibleAndStopsOffscreen() {
+        let controller = BottleWaterAnimation(progress: 0.5, idleMotionOverride: true)
+        controller.setActive(true, reduceMotion: false)
+        XCTAssertTrue(controller.isAnimating, "idle motion runs with no tilt or drink")
+        XCTAssertTrue(controller.frame.isAmbient)
+        controller.setActive(false, reduceMotion: false)
+        XCTAssertFalse(controller.isAnimating)
+        controller.setActive(true, reduceMotion: true)
+        XCTAssertFalse(controller.isAnimating, "Reduce Motion keeps the water still")
+        controller.setActive(false, reduceMotion: true)
+    }
+
+    func test_savedOffsetIsUsedImmediately() {
+        var calibration = BottleTiltCalibration(learnedQuarter: 7)
+        XCTAssertEqual(calibration.learnedQuarter, 3)
+        XCTAssertFalse(calibration.observe(x: 0, y: -1, acceleration: 0, time: 5))
+        XCTAssertEqual(calibration.learnedQuarter, 3)
+    }
+}
+
+/// A plain 90° rotation, standing in for the interface turning to landscape.
+private enum BottleWaterAnimationTestShim {
+    static func rotate90(x: Double, y: Double) -> (x: Double, y: Double) { (-y, x) }
 }

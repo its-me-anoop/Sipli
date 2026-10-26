@@ -12,9 +12,18 @@ struct BottleWaterModel {
     private(set) var ripple = 0.0
     private(set) var phase = 0.0
     private var targetTilt = restingTilt
+    /// Idle motion like onboarding's bottle: a gentle rolling surface and
+    /// rising bubbles that never stop. Used when tilt can't drive the water.
+    private(set) var isAmbient = false
+    static let ambientRipple = 0.6
 
     var isSettled: Bool {
-        remaining == targetRemaining && tilt == targetTilt && ripple == 0
+        !isAmbient && remaining == targetRemaining && tilt == targetTilt && ripple == 0
+    }
+
+    mutating func setAmbient(_ ambient: Bool) {
+        isAmbient = ambient
+        if ambient { ripple = max(ripple, Self.ambientRipple) }
     }
 
     init(progress: Double) {
@@ -69,7 +78,12 @@ struct BottleWaterModel {
 
         if abs(targetRemaining - remaining) < 0.0001 { remaining = targetRemaining }
         if abs(targetTilt - tilt) < 0.0001 { tilt = targetTilt }
-        if ripple > 0 {
+        if isAmbient {
+            // Disturbances still play out, then ease into the idle swell.
+            let disturbed = ripple > Self.ambientRipple + 0.02
+            phase += step * (disturbed ? 5.2 : 2.6)
+            ripple = max(Self.ambientRipple, ripple * exp(-2.8 * step))
+        } else if ripple > 0 {
             phase += step * 5.2
             ripple *= exp(-2.8 * step)
             if ripple < 0.001 { ripple = 0 }
@@ -187,5 +201,69 @@ enum BottleWaterGeometry {
             twiceArea += last.x * first.y - first.x * last.y
         }
         return abs(twiceArea) / 2
+    }
+}
+
+
+/// Works out how a display is rotated against the motion sensor.
+///
+/// Gravity mapping assumes the sensor's axes match the display's native
+/// orientation. On a foldable's inner display that isn't guaranteed: if the
+/// panel is mounted a quarter turn off, a level phone reads as tilted and the
+/// water leans to its limit. No public API reports the rotation, so it is
+/// learned once: when the phone is held upright and still, gravity should
+/// point straight down the screen, and the quarter turn that makes it do so
+/// is the offset. Until then the caller keeps the water level.
+struct BottleTiltCalibration: Equatable {
+    static let holdDuration = 1.0
+    private(set) var learnedQuarter: Int?
+    private var candidate: Int?
+    private var candidateSince: Double?
+
+    init(learnedQuarter: Int? = nil) {
+        self.learnedQuarter = learnedQuarter.map(Self.normalized)
+    }
+
+    /// Feeds one screen-space gravity sample. Returns true when the offset
+    /// has just been learned.
+    mutating func observe(x: Double, y: Double, acceleration: Double, time: Double) -> Bool {
+        guard learnedQuarter == nil else { return false }
+        // Upright (not lying flat) and not being moved around.
+        guard x.isFinite, y.isFinite, hypot(x, y) >= 0.8,
+              acceleration.isFinite, acceleration < 0.05 else {
+            candidate = nil
+            candidateSince = nil
+            return false
+        }
+        let angle = atan2(-x, -y)
+        let quarter = Int((angle / (.pi / 2)).rounded())
+        // Only trust readings close to a whole quarter turn.
+        guard abs(angle - Double(quarter) * .pi / 2) < 20 * .pi / 180 else {
+            candidate = nil
+            candidateSince = nil
+            return false
+        }
+        if candidate == quarter, let since = candidateSince {
+            if time - since >= Self.holdDuration {
+                learnedQuarter = Self.normalized(quarter)
+                return true
+            }
+        } else {
+            candidate = quarter
+            candidateSince = time
+        }
+        return false
+    }
+
+    /// Rotates screen-space gravity by the learned offset (counter-clockwise
+    /// quarter turns), so a level phone reads as straight down.
+    static func rotate(x: Double, y: Double, quarters: Int) -> (x: Double, y: Double) {
+        var vector = (x: x, y: y)
+        for _ in 0..<normalized(quarters) { vector = (x: -vector.y, y: vector.x) }
+        return vector
+    }
+
+    private static func normalized(_ quarter: Int) -> Int {
+        ((quarter % 4) + 4) % 4
     }
 }

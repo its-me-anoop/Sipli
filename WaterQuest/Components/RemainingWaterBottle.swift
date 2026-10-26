@@ -118,8 +118,10 @@ private struct BottleWaterCanvas: View {
 
             let level = BottleWaterGeometry.surfaceY(remaining: water.remaining, tilt: water.tilt, size: size)
             // Short, damped capillary waves after drinking or moving the phone.
-            // There is no perpetual animation once the water has settled.
-            let amplitude = size.height * 0.012 * water.ripple * min(1, water.remaining * 15)
+            // Settled water is still, except in idle (ambient) motion.
+            // Idle motion rolls like onboarding's bottle, so it is taller.
+            let idleBoost = water.isAmbient ? 2.0 : 1.0
+            let amplitude = size.height * 0.012 * idleBoost * water.ripple * min(1, water.remaining * 15)
             let slope = tan(water.tilt)
             func surface(back: Bool) -> Path {
                 var path = Path()
@@ -196,11 +198,19 @@ final class BottleWaterAnimation: ObservableObject {
     private weak var linkScreen: UIScreen?
     private var screenObservers: [NSObjectProtocol] = []
     private var lastTimestamp: CFTimeInterval?
+    /// Offset between the motion sensor and the display showing the app.
+    private var calibration = BottleTiltCalibration(learnedQuarter: 0)
+    private weak var calibratedScreen: UIScreen?
     private(set) var isActive = false
     private(set) var isReducedMotion = false
     var isAnimating: Bool { displayLink != nil }
 
-    init(progress: Double) {
+    /// Forces idle motion on (true) or off (false); nil decides from the
+    /// device. Lets tests pin either mode regardless of the simulator.
+    private let idleMotionOverride: Bool?
+
+    init(progress: Double, idleMotionOverride: Bool? = nil) {
+        self.idleMotionOverride = idleMotionOverride
         let initial = BottleWaterModel(progress: progress)
         model = initial
         frame = initial
@@ -230,9 +240,67 @@ final class BottleWaterAnimation: ObservableObject {
 
     /// Re-syncs a running animation if the window moved to another display.
     func followHostScreen() {
+        configureTilt(for: Self.hostScreen())
         guard displayLink != nil, let screen = Self.hostScreen(), screen !== linkScreen else { return }
         stopAnimation()
         wakeAnimation()
+    }
+
+    /// Picks the tilt calibration for `screen`. A phone with one display
+    /// needs none. On a foldable, the cover display (the main screen) is
+    /// aligned with the sensor; any other display uses its saved offset, or
+    /// keeps the water level with idle motion until one is learned.
+    private func configureTilt(for screen: UIScreen?) {
+        guard let screen, screen !== calibratedScreen else { return }
+        calibratedScreen = screen
+        let isMainDisplay = UIScreen.screens.count <= 1 || screen === UIScreen.screens.first
+        let saved = UserDefaults.standard.object(forKey: Self.calibrationKey(for: screen)) as? Int
+        calibration = BottleTiltCalibration(learnedQuarter: isMainDisplay ? 0 : saved)
+        updateAmbient()
+    }
+
+    private static func calibrationKey(for screen: UIScreen) -> String {
+        "bottleTiltQuarter.\(Int(screen.nativeBounds.width))x\(Int(screen.nativeBounds.height))"
+    }
+
+    /// Idle motion whenever tilt can't drive the water: no motion sensor,
+    /// or a display whose offset from the sensor isn't known yet.
+    private func updateAmbient() {
+        var ambient = !motion.isDeviceMotionAvailable || calibration.learnedQuarter == nil
+#if DEBUG && targetEnvironment(simulator)
+        if ProcessInfo.processInfo.environment["SIPLI_BOTTLE_GRAVITY_X"] != nil { ambient = false }
+        if let forced = ProcessInfo.processInfo.environment["SIPLI_BOTTLE_AMBIENT"] { ambient = forced == "1" }
+#endif
+        if let idleMotionOverride { ambient = idleMotionOverride }
+        guard ambient != model.isAmbient else { return }
+        if !ambient { model.setGravity(x: 0, y: -1) }
+        model.setAmbient(ambient)
+        frame = model
+        // Frame rate differs between idle motion and tilt response.
+        stopAnimation()
+        wakeAnimation()
+    }
+
+    private func handleMotion(_ data: CMDeviceMotion) {
+        let scene = UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .first { $0.activationState == .foregroundActive }
+        configureTilt(for: scene?.screen)
+        let orientation = scene?.interfaceOrientation ?? .portrait
+        let gravity = Self.screenGravity(x: data.gravity.x, y: data.gravity.y, orientation: orientation)
+        let a = data.userAcceleration
+        let acceleration = sqrt(a.x * a.x + a.y * a.y + a.z * a.z)
+
+        guard let quarter = calibration.learnedQuarter else {
+            if calibration.observe(x: gravity.x, y: gravity.y, acceleration: acceleration, time: data.timestamp),
+               let learned = calibration.learnedQuarter, let screen = calibratedScreen {
+                UserDefaults.standard.set(learned, forKey: Self.calibrationKey(for: screen))
+                updateAmbient()
+            }
+            return
+        }
+        let corrected = BottleTiltCalibration.rotate(x: gravity.x, y: gravity.y, quarters: quarter)
+        receiveGravity(x: corrected.x, y: corrected.y, acceleration: acceleration)
     }
 
     func setProgress(_ progress: Double, animated: Bool) {
@@ -245,6 +313,7 @@ final class BottleWaterAnimation: ObservableObject {
         isActive = active
         isReducedMotion = reduceMotion
         motion.stopDeviceMotionUpdates()
+        if active { configureTilt(for: Self.hostScreen()) }
         guard active && !reduceMotion else {
             stopAnimation()
             model.setGravity(x: 0, y: -1)
@@ -262,19 +331,14 @@ final class BottleWaterAnimation: ObservableObject {
             return
         }
 #endif
-        guard motion.isDeviceMotionAvailable else { return }
+        guard motion.isDeviceMotionAvailable else {
+            wakeAnimation() // idle motion still runs without a sensor
+            return
+        }
         motion.deviceMotionUpdateInterval = 1.0 / 30.0
         motion.startDeviceMotionUpdates(to: .main) { [weak self] data, error in
             guard let data, error == nil else { return }
-            MainActor.assumeIsolated {
-                guard let self else { return }
-                let orientation = UIApplication.shared.connectedScenes
-                    .compactMap { $0 as? UIWindowScene }
-                    .first { $0.activationState == .foregroundActive }?.interfaceOrientation ?? .portrait
-                let gravity = Self.screenGravity(x: data.gravity.x, y: data.gravity.y, orientation: orientation)
-                let a = data.userAcceleration
-                self.receiveGravity(x: gravity.x, y: gravity.y, acceleration: sqrt(a.x * a.x + a.y * a.y + a.z * a.z))
-            }
+            MainActor.assumeIsolated { self?.handleMotion(data) }
         }
         wakeAnimation()
     }
@@ -303,7 +367,10 @@ final class BottleWaterAnimation: ObservableObject {
         let link = screen?.displayLink(withTarget: target, selector: selector)
             ?? CADisplayLink(target: target, selector: selector)
         linkScreen = screen
-        link.preferredFrameRateRange = CAFrameRateRange(minimum: 30, maximum: 60, preferred: 60)
+        // Idle motion is slow; 30 fps keeps it smooth and light on battery.
+        link.preferredFrameRateRange = model.isAmbient
+            ? CAFrameRateRange(minimum: 24, maximum: 30, preferred: 30)
+            : CAFrameRateRange(minimum: 30, maximum: 60, preferred: 60)
         displayTarget = target
         displayLink = link
         lastTimestamp = nil
