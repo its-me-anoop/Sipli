@@ -1,0 +1,23 @@
+{
+  "type": "builds",
+  "id": "8b3bfb32-9489-41c3-91f7-b22d5b5f1516",
+  "attributes": {
+    "version": "25",
+    "processingState": "VALID",
+    "qcState": "BETA_INTERNAL_TESTING",
+    "uploadedDate": "2026-10-28T12:41:40-07:00",
+    "usesNonExemptEncryption": false
+  },
+  "appID": "6758851574",
+  "bundleID": "com.waterquest.hydration",
+  "marketingVersion": "6.2",
+  "verifiedAt": "2026-10-28T19:48:49Z",
+  "uploadCompletedAt": "2026-10-28T19:38:45Z",
+  "sourceCommit": "97a083d281fa6f2cdb0f72e80d33f946a755204d",
+  "branch": "codex/living-bottle-insights",
+  "source": "Sanitized Apple build lookup through existing authorized Xcode account",
+  "facelessRelevantTestsPassed": 39,
+  "facelessNativeUITestsPassed": 2,
+  "archivePreflight": "passed: four bundles, uniform 6.2/25, privacy manifests, code seal, binary linkage, toolchain stamps",
+  "physicalAIQualityVerified": false
+}

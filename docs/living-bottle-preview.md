@@ -24,3 +24,11 @@ Preview screenshots use a DEBUG simulator-only, UUID-isolated local persistence 
 The user-requested revision removes both eyes and smile from the shared bottle renderer, including its unused face configuration and drawing shape. Original bottle artwork, water animation, remaining-goal gauge, encouragement and saved-log behavior are preserved.
 
 Faceless revision verification: 39 bottle animation/model and live-feedback tests passed; 2 native UI tests passed. Welcome, saved-feedback, Insights, dark Home, coffee, landscape and accessibility screenshots were refreshed as Library version 1. Apple’s fresh response at 19:29 UTC confirmed previousBundleVersion 24; build 25 is used uniformly for app and embedded targets. Archive and upload evidence follows after processing completes.
+
+## TestFlight 6.2 (25)
+
+The faceless revision was uploaded once from source commit `97a083d281fa6f2cdb0f72e80d33f946a755204d`. The app, iOS widget, Watch app and Watch widget all archive as 6.2/25. Repository archive preflight passed signatures, four privacy manifests, uniform versions, linkage, development-artifact exclusion and release toolchain checks. The Release binary excludes simulator fixture and preview access switches; no camera permission is present.
+
+Upload `8b3bfb32-9489-41c3-91f7-b22d5b5f1516` succeeded at 19:38:45 UTC. Apple subsequently confirmed `processingState: VALID`, `qcState: BETA_INTERNAL_TESTING`, and `usesNonExemptEncryption: false`. This is available for existing internal TestFlight testing. No groups/testers, external beta review, main merge or public release were changed. See `testflight-6.2-25-verification.json` for the exact verification timestamp.
+
+The two native UI tests and 39 relevant model/animation/feedback tests passed after removing all facial drawing. Seven Library preview items were replaced with faceless version 1, including welcome, feedback, live insights, light/dark, landscape and accessibility-size captures. These use isolated fixture data. Physical model output quality, VoiceOver speech and Duo-specific hardware remain unverified. No GitHub release/publish workflow was triggered.
