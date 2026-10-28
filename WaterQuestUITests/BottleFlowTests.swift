@@ -11,6 +11,7 @@ final class BottleFlowTests: XCTestCase {
 
     @MainActor
     func testBottleCompanionFlow() throws {
+        XCUIDevice.shared.orientation = .portrait
         let app = XCUIApplication()
         let namespace = UUID().uuidString
         launch(app, environment: ["SIPLI_COMPANION_UI_NAMESPACE": namespace,
@@ -44,6 +45,12 @@ final class BottleFlowTests: XCTestCase {
         XCTAssertTrue(app.buttons["Finished bottle"].isEnabled)
         XCUIDevice.shared.orientation = .landscapeLeft
         capture(app, "companion-landscape")
+        for _ in 0..<3 {
+            if app.buttons["Finished bottle"].isHittable { break }
+            app.collectionViews.firstMatch.swipeUp()
+        }
+        XCTAssertTrue(app.buttons["Finished bottle"].isHittable)
+        capture(app, "companion-landscape-controls")
         XCUIDevice.shared.orientation = .portrait
         app.buttons["Done"].tap()
         app.terminate()

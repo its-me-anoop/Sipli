@@ -12,11 +12,13 @@ Baseline: remote main `cf2443f050bddc970a94ba12d3b7c18bbe7f74c9` (6.1/22). Isola
 - The native UI test exposed SwiftUI Form’s automatic multi-button row behavior. Applying borderless style to the preset row ensures Half triggers only Half; the full native flow passed after this fix.
 - Candidate **6.2 (23)**: Release archive succeeded with app, widget, Watch app and Watch widgets. Repository preflight passed all checks: uniform versions, privacy manifests, supported toolchain/OS, binary linkage, development-artifact exclusion and code seal. `build/Sipli-6.2-23-verified.xcarchive`, `build/preflight-verified.log`.
 - Scoped native UI static audit: 0 errors/warnings (`build/companion-premium-audit.json`). The repository-wide audit also finds an existing unrelated marketing-web native-select ownership issue; marketing source was not changed.
+- Extended native landscape action-reachability test: **passed**, 0 failures, using a clean portrait starting orientation and swipes targeted at the native Form collection view. The app-level swipe did not move the form after rotation on this runtime; targeting the form reached Finished and produced a controls screenshot. No uploaded production-code defect was found or changed. `build/companion-ui-targeted-landscape.xcresult`.
+- GitHub status/check lookup for source commit returned no statuses or workflow runs. Both repository workflows are manual release/publish jobs, not automatic push CI; neither was triggered. Local Xcode validation is the test evidence.
 - `git diff --check` passed.
 
 ## Visual evidence
 
-Exported test screenshots and their manifest are in `build/companion-screenshots/`: setup portrait, half checkpoint controls, and landscape. Screenshots were inspected; the active form scrolls to its actions and uses native navigation, menus, labels and accessible sliders. Quantities are explicitly estimates; the action preview and disabled repeat commit are visible after logging.
+Setup, checkpoint and landscape screenshots were saved to ChatGPT Library for delivery. The additional landscape-controls screenshot is retained in `build/companion-landscape-screenshots/`. Exported test screenshots and their manifest are in `build/companion-screenshots/`: setup portrait, half checkpoint controls, and landscape. Screenshots were inspected; the active form scrolls to its actions and uses native navigation, menus, labels and accessible sliders. Quantities are explicitly estimates; the action preview and disabled repeat commit are visible after logging.
 
 ## Environment limits
 
@@ -26,4 +28,4 @@ The existing iPhone 18 Pro iOS 27.2 simulators `5C940483-20F4-4628-BBC9-6836D587
 
 Native computer use reports the Mac locked, and the separate in-app App Store Connect browser has no authenticated session. The existing Xcode signed-in account nevertheless supports shell distribution. A local export succeeded; Apple's current response confirmed version 6.1 build22 VALID and previousBundleVersion22 before selecting 6.2 build23. No new credentials, account/security changes or agreement acceptance were used.
 
-TestFlight upload and processing evidence will be recorded separately when complete. No merge to main, tester/group assignment, external beta review or public App Store release is part of this work.
+TestFlight upload completed at 16:36 UTC. Apple’s subsequent build lookup confirms original upload/build ID `40bb1b30-89e8-47fb-aa27-12d6920742b9`, version 6.2 build23, `processingState: VALID`, `qcState: BETA_INTERNAL_TESTING`, and `usesNonExemptEncryption: false`. It is available through existing internal TestFlight testing. See `docs/testflight-6.2-23-verification.json`. No second binary was uploaded. Local status validation briefly created an unused AWAITING_UPLOAD reservation while the original processed; no bytes were sent for that reservation. No merge to main, tester/group assignment, external beta review or public App Store release is part of this work.
