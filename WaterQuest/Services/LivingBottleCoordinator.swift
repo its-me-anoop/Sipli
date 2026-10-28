@@ -38,7 +38,16 @@ final class LivingBottleCoordinator: ObservableObject {
     init(defaults: UserDefaults? = nil, toneGenerator: (@MainActor (String) async -> BottleTone?)? = nil) {
         let defaults = defaults ?? Self.feedbackDefaults
         self.defaults = defaults
-        self.toneGenerator = toneGenerator ?? { await Self.generateTone(context: $0) }
+        var generator = toneGenerator ?? { await Self.generateTone(context: $0) }
+#if DEBUG && targetEnvironment(simulator)
+        // Exercise both presentation paths without requiring simulator model assets.
+        if UUID(uuidString: ProcessInfo.processInfo.environment["SIPLI_LIVING_UI_NAMESPACE"] ?? "") != nil,
+           let response = ProcessInfo.processInfo.environment["SIPLI_LIVING_UI_RESPONSE"] {
+            if let tone = BottleTone(rawValue: response) { generator = { _ in tone } }
+            else if response == "unavailable" { generator = { _ in nil } }
+        }
+#endif
+        self.toneGenerator = generator
         policy = defaults.data(forKey: key).flatMap { try? JSONDecoder().decode(BottleFeedbackPolicy.self, from: $0) } ?? BottleFeedbackPolicy()
     }
     func update(_ next: LivingInsightSnapshot, now: Date, canPresent: Bool, useAI: Bool) {

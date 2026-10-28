@@ -68,6 +68,60 @@ final class BottleFlowTests: XCTestCase {
         app.terminate()
     }
 
+    @MainActor
+    func testCoachCopyFallbackPreview() throws {
+        verifyCoachCopy(response: "unavailable", theme: "1", largeText: false)
+    }
+
+    @MainActor
+    func testCoachCopyModelPreview() throws {
+        verifyCoachCopy(response: "warm", theme: "2", largeText: false)
+    }
+
+    @MainActor
+    func testCoachCopyLargeTextPreview() throws {
+        verifyCoachCopy(response: "unavailable", theme: "1", largeText: true)
+    }
+
+    @MainActor
+    private func verifyCoachCopy(response: String, theme: String, largeText: Bool) {
+        let app = XCUIApplication()
+        app.launchArguments = ["-hasOnboarded", "YES", "-spookySeason2026InvitePrompted", "YES", "-appTheme", theme]
+        if largeText { app.launchArguments += ["-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"] }
+        app.launchEnvironment = ["SIPLI_LIVING_UI_NAMESPACE": UUID().uuidString, "SIPLI_LIVING_UI_RESPONSE": response,
+                                 "SIPLI_BOTTLE_REDUCE_MOTION": "1", "SIPLI_LIVING_REDUCE_MOTION": "1"]
+        app.launch()
+        XCTAssertTrue(bottle(in: app).waitForExistence(timeout: 30))
+        let dismiss = app.buttons["Dismiss bottle encouragement"]
+        if dismiss.exists { dismiss.tap() }
+        if largeText { app.buttons["Insights"].firstMatch.tap() }
+        let expected = response == "warm" ? "Every check-in helps tell the story of your day." : "Small check-ins make your day easier to follow."
+        let copy = app.staticTexts[expected].firstMatch
+        XCTAssertTrue(copy.waitForExistence(timeout: 10), app.debugDescription)
+        let facts = app.staticTexts["500 ml logged today · 2000 ml goal"].firstMatch
+        for _ in 0..<14 {
+            if copy.isHittable && facts.isHittable { break }
+            app.swipeUp()
+        }
+        XCTAssertTrue(copy.isHittable, app.debugDescription)
+        XCTAssertTrue(facts.isHittable, app.debugDescription)
+        let tree = app.debugDescription.lowercased()
+        for technical in ["live log", "built-in", "on-device ai", "apple intelligence is unavailable", "generate ai", "ai insights"] {
+            XCTAssertFalse(tree.contains(technical), "Technical label is exposed in accessibility tree: \(technical)")
+        }
+        capture(app, largeText ? "coach-copy-clean-large-insights" : "coach-copy-clean-\(response)-home")
+        if !largeText {
+            app.buttons["Insights"].firstMatch.tap()
+            XCTAssertTrue(app.staticTexts[expected].firstMatch.waitForExistence(timeout: 10))
+            let insightTree = app.debugDescription.lowercased()
+            for technical in ["live log", "built-in", "on-device ai", "apple intelligence is unavailable", "generate ai", "ai insights"] {
+                XCTAssertFalse(insightTree.contains(technical))
+            }
+            capture(app, "coach-copy-clean-\(response)-insights")
+        }
+        app.terminate()
+    }
+
     override func setUp() {
         super.setUp()
         continueAfterFailure = false

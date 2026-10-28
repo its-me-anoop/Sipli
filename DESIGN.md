@@ -43,6 +43,8 @@ numeric changes use `numericText` where useful. Light mode uses paper and navy;
 dark mode uses the same semantic tokens with slate surfaces and pale text.
 Preserve existing cards, SF Symbols, bottle artwork, and supportive language.
 
+Coach, insight and feedback copy speaks to the person using Sipli. Omit implementation/provenance labels such as “live log”, “built-in encouragement” and “on-device AI” from these ordinary views. Keep useful intake/progress facts and encouragement; fallback content must not be labelled AI-generated. Privacy/legal disclosures and required Weather attribution remain visible in their appropriate places.
+
 ## Layout
 
 `FoldResolver`, `FoldAwareSplit`, and `avoidingFold()` own responsive geometry.

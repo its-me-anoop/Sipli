@@ -43,12 +43,6 @@ struct LivingInsightCard: View {
                     Text(living.wording).font(.subheadline.weight(.medium))
                     Text(snapshot.fact).font(.caption).foregroundStyle(.secondary)
                     Text(snapshot.detail).font(.caption).foregroundStyle(.secondary)
-                    Text(living.onDeviceWording ? "On-device AI · live log" : "Live log · built-in encouragement")
-                        .font(.caption2).foregroundStyle(.secondary)
-                    if !LivingBottleCoordinator.isModelReady {
-                        Text("Apple Intelligence is unavailable here. Your log still updates live.")
-                            .font(.caption2).foregroundStyle(.secondary)
-                    }
                 }
                 .fixedSize(horizontal: false, vertical: true)
                 Spacer(minLength: 0)

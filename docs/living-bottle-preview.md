@@ -32,3 +32,13 @@ The faceless revision was uploaded once from source commit `97a083d281fa6f2cdb0f
 Upload `8b3bfb32-9489-41c3-91f7-b22d5b5f1516` succeeded at 19:38:45 UTC. Apple subsequently confirmed `processingState: VALID`, `qcState: BETA_INTERNAL_TESTING`, and `usesNonExemptEncryption: false`. This is available for existing internal TestFlight testing. No groups/testers, external beta review, main merge or public release were changed. See `testflight-6.2-25-verification.json` for the exact verification timestamp.
 
 The two native UI tests and 39 relevant model/animation/feedback tests passed after removing all facial drawing. Seven Library preview items were replaced with faceless version 1, including welcome, feedback, live insights, light/dark, landscape and accessibility-size captures. These use isolated fixture data. Physical model output quality, VoiceOver speech and Duo-specific hardware remain unverified. No GitHub release/publish workflow was triggered.
+
+## Coach copy cleanup (unreleased)
+
+Following the 22:46 user feedback, ordinary coach/insight cards no longer show provenance or availability footers such as “Live log”, “built-in encouragement”, “On-device AI”, or the model-unavailable explanation. Useful intake, goal and check-in facts and encouragement remain. The insight section and refresh controls use neutral wording so fallback content is not presented as AI-generated. Privacy/legal disclosures and required Weather attribution remain intact.
+
+The copy-only UI change preserves the faceless bottle, motion, cooldowns, state refresh and dark-theme colors. A DEBUG simulator fixture can deterministically exercise model-output and unavailable-model presentation without calling physical model inference. Accessibility-tree assertions check that removed labels are absent, while encouragement and intake facts remain reachable at standard and accessibility text sizes. Existing state tests passed (11/11).
+
+This cleanup is committed on the same feature branch only. It has not been uploaded to TestFlight; the delivered 6.2 (25) binary and its verification record still refer to source commit 97a083d.
+
+Copy cleanup verification: all 3 native UI tests passed (`build/coach-copy-ui-verified.xcresult`), covering light fallback, dark simulated-model output and accessibility-size presentation. All 11 existing live-state tests passed (`build/coach-copy-state.xcresult`). Both encouragement and intake facts remained reachable; the complete accessibility hierarchy contained none of the removed provenance labels. Four reviewed native screenshots were saved to Library. Physical model inference was not used or claimed for these presentation fixtures.

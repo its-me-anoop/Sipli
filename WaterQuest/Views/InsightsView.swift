@@ -124,7 +124,7 @@ struct InsightsView: View {
                 DashboardCard(title: "Trends & Streaks", icon: "chart.line.uptrend.xyaxis") { trendsSection }
                 if subscriptionManager.hasAccess(to: .aiInsights) {
                     DashboardCard(title: "Weekly Digest", icon: "calendar.badge.clock") { weeklyDigestSection }
-                    DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
+                    DashboardCard(title: "Insights for you", icon: "brain.head.profile.fill") { aiInsightsSection }
                 }
             }
             .padding(16)
@@ -241,7 +241,7 @@ struct InsightsView: View {
                     // Full-width AI Insights below columns
                     if subscriptionManager.hasAccess(to: .aiInsights) {
                         DashboardCard(title: "Weekly Digest", icon: "calendar.badge.clock") { weeklyDigestSection }
-                        DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
+                        DashboardCard(title: "Insights for you", icon: "brain.head.profile.fill") { aiInsightsSection }
                     }
                 } else {
                     // iPhone Stacked layout
@@ -255,7 +255,7 @@ struct InsightsView: View {
                         DashboardCard(title: "Trends & Streaks", icon: "chart.line.uptrend.xyaxis") { trendsSection }
                         if subscriptionManager.hasAccess(to: .aiInsights) {
                             DashboardCard(title: "Weekly Digest", icon: "calendar.badge.clock") { weeklyDigestSection }
-                            DashboardCard(title: "AI Insights", icon: "brain.head.profile.fill") { aiInsightsSection }
+                            DashboardCard(title: "Insights for you", icon: "brain.head.profile.fill") { aiInsightsSection }
                         }
                     }
                 }
@@ -733,7 +733,7 @@ struct InsightsView: View {
             Button {
                 Task { await generateWeeklyDigest() }
             } label: {
-                Label("Generate AI recap", systemImage: "sparkles")
+                Label("Refresh recap", systemImage: "sparkles")
                     .font(.subheadline.weight(.medium))
             }
             .disabled(isGeneratingDigest || !LivingBottleCoordinator.isModelReady)
@@ -777,7 +777,7 @@ struct InsightsView: View {
             Button {
                 Task { await generateAIInsight() }
             } label: {
-                Label("Generate AI insight", systemImage: "sparkles")
+                Label("Refresh insight", systemImage: "sparkles")
                     .font(.subheadline.weight(.medium))
             }
             .disabled(isGeneratingInsight || !LivingBottleCoordinator.isModelReady)
