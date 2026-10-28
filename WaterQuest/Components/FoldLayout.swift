@@ -40,13 +40,72 @@ enum PaneArrangement: Equatable {
     var isSplit: Bool { self != .single }
 }
 
+/// Options a two-pane container passes when asking for its arrangement.
+struct PaneSplitOptions: Equatable {
+    /// Split side by side in wide landscape when no fold is present.
+    var allowsLandscapeSplit: Bool
+    /// Split top/bottom around a tabletop fold.
+    var allowsStackedSplit: Bool = true
+    /// Share of the width the leading pane gets in a landscape split.
+    var landscapeLeadingFraction: CGFloat = 0.46
+}
+
+/// Decides how a container of a given size lays out around an optional fold.
+/// Kept free of SwiftUI geometry so the decision can be unit tested.
+protocol PaneArrangementResolving {
+    func arrangement(for size: CGSize, division: FoldDivision?, options: PaneSplitOptions) -> PaneArrangement
+}
+
+/// Default policy: fold first, then (optionally) a landscape side-by-side
+/// split, otherwise `.single`.
+struct FoldLayoutPolicy: PaneArrangementResolving {
+    /// Panes narrower than this aren't worth splitting into.
+    var minimumPaneLength: CGFloat = 220
+    /// Tabletop panes may be a little shorter than book panes are narrow.
+    var stackedPaneFactor: CGFloat = 0.7
+    /// Width must exceed height by this factor to count as wide landscape.
+    var landscapeAspectRatio: CGFloat = 1.15
+    /// Gap between panes in a landscape (no fold) split.
+    var landscapeGap: CGFloat = 16
+
+    func arrangement(for size: CGSize, division: FoldDivision?, options: PaneSplitOptions) -> PaneArrangement {
+        if let division {
+            let band = division.frame
+            switch division.axis {
+            case .vertical:
+                let leading = max(0, min(size.width, band.minX))
+                let trailing = max(0, size.width - band.maxX)
+                if leading >= minimumPaneLength, trailing >= minimumPaneLength {
+                    return .sideBySide(leading: leading, gap: size.width - leading - trailing, trailing: trailing)
+                }
+            case .horizontal:
+                guard options.allowsStackedSplit else { return .single }
+                let minimum = minimumPaneLength * stackedPaneFactor
+                let top = max(0, min(size.height, band.minY))
+                let bottom = max(0, size.height - band.maxY)
+                if top >= minimum, bottom >= minimum {
+                    return .stacked(top: top, gap: size.height - top - bottom, bottom: bottom)
+                }
+            }
+        }
+
+        if options.allowsLandscapeSplit,
+           size.width > size.height * landscapeAspectRatio,
+           size.width >= minimumPaneLength * 2 + 24 {
+            let leading = (size.width * options.landscapeLeadingFraction).rounded()
+            return .sideBySide(leading: leading, gap: landscapeGap, trailing: size.width - leading - landscapeGap)
+        }
+
+        return .single
+    }
+}
+
 enum FoldResolver {
     /// Panes narrower than this aren't worth splitting into.
-    static let minimumPaneLength: CGFloat = 220
+    static let minimumPaneLength: CGFloat = FoldLayoutPolicy().minimumPaneLength
 
     /// The active fold crossing a view of `size`, or nil if there isn't one.
     static func division(in proxy: GeometryProxy, simulatedGlobal: CGRect?) -> FoldDivision? {
-        let bounds = CGRect(origin: .zero, size: proxy.size)
         var candidate: CGRect?
 
         if #available(iOS 27.1, *) {
@@ -55,13 +114,25 @@ enum FoldResolver {
 
         #if DEBUG
         if candidate == nil, let simulatedGlobal {
-            let origin = proxy.frame(in: .global).origin
-            candidate = simulatedGlobal.offsetBy(dx: -origin.x, dy: -origin.y)
+            candidate = localFrame(ofGlobal: simulatedGlobal, viewOrigin: proxy.frame(in: .global).origin)
         }
         #endif
 
-        guard let frame = candidate, frame.intersects(bounds) else { return nil }
+        return division(clipping: candidate, to: proxy.size)
+    }
+
+    /// Clips a fold frame (in local coordinates) to a view of `size`. The axis
+    /// comes from the unclipped frame so a clipped edge keeps its pose.
+    static func division(clipping frame: CGRect?, to size: CGSize) -> FoldDivision? {
+        let bounds = CGRect(origin: .zero, size: size)
+        guard let frame, frame.intersects(bounds) else { return nil }
         return FoldDivision(frame: frame.intersection(bounds), axis: FoldDivision(frame: frame).axis)
+    }
+
+    /// Converts a global fold frame into the coordinate space of a view whose
+    /// global origin is `viewOrigin`.
+    static func localFrame(ofGlobal global: CGRect, viewOrigin: CGPoint) -> CGRect {
+        global.offsetBy(dx: -viewOrigin.x, dy: -viewOrigin.y)
     }
 
     /// A single scrolling surface stays entirely within the roomier usable
@@ -97,36 +168,18 @@ enum FoldResolver {
         simulatedGlobal: CGRect?,
         allowsLandscapeSplit: Bool,
         allowsStackedSplit: Bool = true,
-        landscapeLeadingFraction: CGFloat = 0.46
+        landscapeLeadingFraction: CGFloat = 0.46,
+        policy: PaneArrangementResolving = FoldLayoutPolicy()
     ) -> PaneArrangement {
-        let size = proxy.size
-
-        if let division = division(in: proxy, simulatedGlobal: simulatedGlobal) {
-            let band = division.frame
-            switch division.axis {
-            case .vertical:
-                let leading = max(0, min(size.width, band.minX))
-                let trailing = max(0, size.width - band.maxX)
-                if leading >= minimumPaneLength, trailing >= minimumPaneLength {
-                    return .sideBySide(leading: leading, gap: size.width - leading - trailing, trailing: trailing)
-                }
-            case .horizontal:
-                guard allowsStackedSplit else { return .single }
-                let top = max(0, min(size.height, band.minY))
-                let bottom = max(0, size.height - band.maxY)
-                if top >= minimumPaneLength * 0.7, bottom >= minimumPaneLength * 0.7 {
-                    return .stacked(top: top, gap: size.height - top - bottom, bottom: bottom)
-                }
-            }
-        }
-
-        if allowsLandscapeSplit, size.width > size.height * 1.15, size.width >= minimumPaneLength * 2 + 24 {
-            let leading = (size.width * landscapeLeadingFraction).rounded()
-            let gap: CGFloat = 16
-            return .sideBySide(leading: leading, gap: gap, trailing: size.width - leading - gap)
-        }
-
-        return .single
+        policy.arrangement(
+            for: proxy.size,
+            division: division(in: proxy, simulatedGlobal: simulatedGlobal),
+            options: PaneSplitOptions(
+                allowsLandscapeSplit: allowsLandscapeSplit,
+                allowsStackedSplit: allowsStackedSplit,
+                landscapeLeadingFraction: landscapeLeadingFraction
+            )
+        )
     }
 }
 
