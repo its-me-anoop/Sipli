@@ -33,12 +33,20 @@ Upload `8b3bfb32-9489-41c3-91f7-b22d5b5f1516` succeeded at 19:38:45 UTC. Apple s
 
 The two native UI tests and 39 relevant model/animation/feedback tests passed after removing all facial drawing. Seven Library preview items were replaced with faceless version 1, including welcome, feedback, live insights, light/dark, landscape and accessibility-size captures. These use isolated fixture data. Physical model output quality, VoiceOver speech and Duo-specific hardware remain unverified. No GitHub release/publish workflow was triggered.
 
-## Coach copy cleanup (unreleased)
+## Coach copy cleanup
 
 Following the 22:46 user feedback, ordinary coach/insight cards no longer show provenance or availability footers such as “Live log”, “built-in encouragement”, “On-device AI”, or the model-unavailable explanation. Useful intake, goal and check-in facts and encouragement remain. The insight section and refresh controls use neutral wording so fallback content is not presented as AI-generated. Privacy/legal disclosures and required Weather attribution remain intact.
 
 The copy-only UI change preserves the faceless bottle, motion, cooldowns, state refresh and dark-theme colors. A DEBUG simulator fixture can deterministically exercise model-output and unavailable-model presentation without calling physical model inference. Accessibility-tree assertions check that removed labels are absent, while encouragement and intake facts remain reachable at standard and accessibility text sizes. Existing state tests passed (11/11).
 
-This cleanup is committed on the same feature branch only. It has not been uploaded to TestFlight; the delivered 6.2 (25) binary and its verification record still refer to source commit 97a083d.
+The cleanup was initially verified on the feature branch, then delivered in TestFlight 6.2 (26). The earlier 6.2 (25) binary and its verification record remain intact.
 
 Copy cleanup verification: all 3 native UI tests passed (`build/coach-copy-ui-verified.xcresult`), covering light fallback, dark simulated-model output and accessibility-size presentation. All 11 existing live-state tests passed (`build/coach-copy-state.xcresult`). Both encouragement and intake facts remained reachable; the complete accessibility hierarchy contained none of the removed provenance labels. Four reviewed native screenshots were saved to Library. Physical model inference was not used or claimed for these presentation fixtures.
+
+## TestFlight 6.2 (26)
+
+The copy cleanup at `5310c8c424818bfc1bf611a83bd288acf46697a3` was archived from release source `5da2cb011b9ed350c578c320664230c128b97b92`; only uniform build-number settings differ. A fresh Apple check confirmed 25 as the preceding build, and 26 was accepted. All app/Watch/widget bundles are 6.2/26. Archive preflight passed code signatures, four privacy manifests, binary hygiene, version parity and release toolchain checks. The shipping binary excludes the removed provenance footers and DEBUG preview switches.
+
+The repository regression plan passed 291 tests with 2 system Intent tests skipped on simulator transport cancellation and no failures. The previously excluded StoreKit suite remains excluded for its existing finalization issue. The cleanup's 3 native presentation tests passed for fallback, simulated-model output, dark mode and accessibility-size text, including accessibility-tree absence checks. Physical inference quality and Duo hardware are not claimed verified.
+
+Upload `58f26dfa-744f-4043-a3f6-2b370bf71bc8` completed once at 23:08:25 UTC. Apple confirmed `VALID` / `BETA_INTERNAL_TESTING`, with non-exempt encryption false. Exact terminal evidence is in `testflight-6.2-26-verification.json`. No testers/groups, external review, main merge or public release were changed; old builds and branches remain intact. GitHub release/publish workflows were not triggered.

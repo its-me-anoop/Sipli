@@ -1,0 +1,35 @@
+{
+  "type": "builds",
+  "id": "58f26dfa-744f-4043-a3f6-2b370bf71bc8",
+  "attributes": {
+    "version": "26",
+    "processingState": "VALID",
+    "qcState": "BETA_INTERNAL_TESTING",
+    "uploadedDate": "2026-10-28T16:09:46-07:00",
+    "usesNonExemptEncryption": false
+  },
+  "appID": "6758851574",
+  "bundleID": "com.waterquest.hydration",
+  "marketingVersion": "6.2",
+  "verifiedAt": "2026-10-28T23:13:25Z",
+  "uploadCompletedAt": "2026-10-28T23:08:25Z",
+  "cleanupCommit": "5310c8c424818bfc1bf611a83bd288acf46697a3",
+  "sourceCommit": "5da2cb011b9ed350c578c320664230c128b97b92",
+  "branch": "codex/living-bottle-insights",
+  "source": "Sanitized Apple build lookup through the existing authorized Xcode account",
+  "uploadCount": 1,
+  "regression": {
+    "passed": 291,
+    "skipped": 2,
+    "failed": 0,
+    "excludedSuite": "SubscriptionManagerTests (existing StoreKit finalization issue)"
+  },
+  "nativePresentationUITestsPassed": 3,
+  "uiVerification": "Fallback, simulated model output, dark mode and accessibility-size copy; removed labels absent from accessibility hierarchy",
+  "archivePreflight": "passed: app, iOS widget, Watch app and Watch widget; uniform 6.2/26; four privacy manifests; code seal; linkage; release toolchain stamps",
+  "releaseBinaryChecks": "Removed provenance text and simulator preview switches absent",
+  "physicalAIQualityVerified": false,
+  "testersOrGroupsChanged": false,
+  "externalReviewStarted": false,
+  "publicReleasePerformed": false
+}
