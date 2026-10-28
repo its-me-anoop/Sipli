@@ -27,6 +27,14 @@ enum SpookySeason {
     static let themeDefaultsKey = "spookyThemeEnabled"
     /// Set once the invite popup has been answered (or dismissed) this season.
     static let invitePromptedKey = "spookySeason2026InvitePrompted"
+    /// Parked by `sipli://spooky-season` until the main screen can respond,
+    /// so a cold launch from the App Store event isn't lost behind the splash.
+    static let deepLinkPendingKey = "spookySeasonDeepLinkPending"
+
+    /// The App Store in-app event opens the app with `sipli://spooky-season`.
+    static func isDeepLink(_ url: URL) -> Bool {
+        url.scheme?.lowercased() == "sipli" && url.host?.lowercased() == "spooky-season"
+    }
     static let appGroupID = "group.com.waterquest.hydration"
 
     enum Phase: Equatable {

@@ -12,6 +12,8 @@
 		0A6AF1AF6B3D3222F30C3E85 /* WeatherSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */; };
 		0A98E6835256CBC9D3B2DF65 /* HydrationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */; };
 		1C0A17000000000000000B99 /* AppIconManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0A17000000000000000F99 /* AppIconManager.swift */; };
+		1C0A17000000000000000B98 /* AppUpdateChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0A17000000000000000F98 /* AppUpdateChecker.swift */; };
+		1C0A17000000000000000B97 /* AppUpdateCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0A17000000000000000F97 /* AppUpdateCheckerTests.swift */; };
 		0C93F570D7DFBA18FF035984 /* ActivityStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84831A8CDF761270D25F9BE2 /* ActivityStep.swift */; };
 		0E54D9CCCA944AAEB6EA20F8 /* HydrationEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */; };
 		11DFD61DBBED6087CAF037CC /* WeatherClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2DDAD6DD4B924CCA0509D0 /* WeatherClient.swift */; };
@@ -301,6 +303,8 @@
 		32666279C657FCC433303B6A /* OnboardingStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingStep.swift; sourceTree = "<group>"; };
 		32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationStore.swift; sourceTree = "<group>"; };
 		1C0A17000000000000000F99 /* AppIconManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconManager.swift; sourceTree = "<group>"; };
+		1C0A17000000000000000F98 /* AppUpdateChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppUpdateChecker.swift; sourceTree = "<group>"; };
+		1C0A17000000000000000F97 /* AppUpdateCheckerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AppUpdateCheckerTests.swift; sourceTree = "<group>"; };
 		3834593BE0BDE1EF6B965E24 /* HydrationMerge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HydrationMerge.swift; sourceTree = "<group>"; };
 		39EF82B8B03A482B4BC8CBF9 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3ABC282C313B061E1E34EDF7 /* StatPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatPill.swift; sourceTree = "<group>"; };
@@ -709,6 +713,7 @@
 				F1A2B3C4D5E6F70000000008 /* StreakCalculatorTests.swift */,
 				F1A2B3C4D5E6F70000000009 /* MatchDayTests.swift */,
 				5B00C5EA50000000000000F3 /* SpookySeasonTests.swift */,
+				1C0A17000000000000000F97 /* AppUpdateCheckerTests.swift */,
 				F1A2B3C4D5E6F7000000000A /* WeeklyStatsTests.swift */,
 				F1A2B3C4D5E6F7000000000B /* QuickLogPresetsTests.swift */,
 				A1B2C3D4E5F60718293A4B01 /* PersistenceServiceTests.swift */,
@@ -838,6 +843,7 @@
 				55B57443B7032DDCF70ACB8C /* HydrationAIService.swift */,
 				32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */,
 				1C0A17000000000000000F99 /* AppIconManager.swift */,
+				1C0A17000000000000000F98 /* AppUpdateChecker.swift */,
 				6862392928A13FBD5E45D6E3 /* LocationManager.swift */,
 				E4A8068B4418852446BD78E6 /* MotionManager.swift */,
 				BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */,
@@ -1192,6 +1198,7 @@
 				0E54D9CCCA944AAEB6EA20F8 /* HydrationEntry.swift in Sources */,
 				0A98E6835256CBC9D3B2DF65 /* HydrationStore.swift in Sources */,
 				1C0A17000000000000000B99 /* AppIconManager.swift in Sources */,
+				1C0A17000000000000000B98 /* AppUpdateChecker.swift in Sources */,
 				D1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift in Sources */,
 				C0AC658494F0FF61381C286D /* InsightsView.swift in Sources */,
 				2CA08ED2F08EB233538DC4D5 /* LiquidGlassCard.swift in Sources */,
@@ -1287,6 +1294,7 @@
 				B1A2B3C4D5E6F70000000T01 /* StreakCalculatorTests.swift in Sources */,
 				B1A2B3C4D5E6F70000000T02 /* MatchDayTests.swift in Sources */,
 				5B00C5EA50000000000000B6 /* SpookySeasonTests.swift in Sources */,
+				1C0A17000000000000000B97 /* AppUpdateCheckerTests.swift in Sources */,
 				B1A2B3C4D5E6F70000000T03 /* WeeklyStatsTests.swift in Sources */,
 				B1A2B3C4D5E6F70000000T04 /* QuickLogPresetsTests.swift in Sources */,
 				A1B2C3D4E5F60718293A4B02 /* PersistenceServiceTests.swift in Sources */,

@@ -240,6 +240,9 @@ extension View {
 private struct SpookySeasonInviteModifier: ViewModifier {
     /// False while another sheet or celebration is up.
     let canPresent: Bool
+    /// Shows the Settings tab, where the Spooky Season card lives.
+    let openSettings: () -> Void
+    @Environment(\.scenePhase) private var scenePhase
 
     @AppStorage(SpookySeason.themeDefaultsKey, store: UserDefaults(suiteName: SpookySeason.appGroupID))
     private var enabled = false
@@ -255,10 +258,16 @@ private struct SpookySeasonInviteModifier: ViewModifier {
             .task {
                 // Let the splash and first layout settle before asking.
                 try? await Task.sleep(for: .seconds(1.5))
-                if shouldInvite { showInvite = true }
+                if !handlePendingDeepLink(), shouldInvite { showInvite = true }
             }
             .onChange(of: canPresent) {
-                if shouldInvite { showInvite = true }
+                if !handlePendingDeepLink(), shouldInvite { showInvite = true }
+            }
+            .onChange(of: scenePhase) { _, phase in
+                if phase == .active { _ = handlePendingDeepLink() }
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .sipliOpenSpookySeason)) { _ in
+                _ = handlePendingDeepLink()
             }
             .sheet(isPresented: $showInvite, onDismiss: { prompted = true }) {
                 SpookySeasonInviteView { accepted in
@@ -275,9 +284,35 @@ private struct SpookySeasonInviteModifier: ViewModifier {
     }
 }
 
+private extension SpookySeasonInviteModifier {
+    /// Acts on a parked `sipli://spooky-season` link. Returns true when it
+    /// did something. Tapping the event shows interest, so the invite comes
+    /// back even if it was dismissed before; members go to the Settings card.
+    /// Outside the event dates the link just opens the app.
+    func handlePendingDeepLink() -> Bool {
+        let defaults = UserDefaults.standard
+        guard defaults.bool(forKey: SpookySeason.deepLinkPendingKey), canPresent else { return false }
+        defaults.removeObject(forKey: SpookySeason.deepLinkPendingKey)
+        guard SpookySeason.isActive() else { return false }
+        if enabled {
+            openSettings()
+        } else {
+            // A beat later, so a sheet that's still closing (or the app still
+            // coming to the front) doesn't swallow the presentation.
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { showInvite = true }
+        }
+        return true
+    }
+}
+
+extension Notification.Name {
+    /// Posted when `sipli://spooky-season` opens the app.
+    static let sipliOpenSpookySeason = Notification.Name("sipliOpenSpookySeason")
+}
+
 extension View {
-    func spookySeasonInvite(canPresent: Bool) -> some View {
-        modifier(SpookySeasonInviteModifier(canPresent: canPresent))
+    func spookySeasonInvite(canPresent: Bool, openSettings: @escaping () -> Void) -> some View {
+        modifier(SpookySeasonInviteModifier(canPresent: canPresent, openSettings: openSettings))
     }
 }
 

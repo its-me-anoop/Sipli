@@ -60,6 +60,15 @@ final class SpookySeasonTests: XCTestCase {
         XCTAssertFalse(SpookySeason.showsTheme(on: date(2026, 12, 1), defaults: defaults))
     }
 
+    // MARK: - Deep link
+
+    func test_deepLink_matchesEventURLOnly() throws {
+        XCTAssertTrue(SpookySeason.isDeepLink(try XCTUnwrap(URL(string: "sipli://spooky-season"))))
+        XCTAssertTrue(SpookySeason.isDeepLink(try XCTUnwrap(URL(string: "SIPLI://Spooky-Season"))))
+        XCTAssertFalse(SpookySeason.isDeepLink(try XCTUnwrap(URL(string: "sipli://trophy-room"))))
+        XCTAssertFalse(SpookySeason.isDeepLink(try XCTUnwrap(URL(string: "https://spooky-season"))))
+    }
+
     // MARK: - App icon
 
     func test_appIcon_spookyOverridesPreference_andClassicIsPrimary() {

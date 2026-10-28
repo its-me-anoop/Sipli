@@ -37,6 +37,14 @@ struct MainTabView: View {
     @Environment(\.deepLinkTrophyRoom) private var deepLinkTrophyRoom
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.spookyTheme) private var spookyTheme
+    @AppStorage(SpookySeason.invitePromptedKey) private var spookyInvitePrompted = false
+    @AppStorage(SpookySeason.themeDefaultsKey, store: UserDefaults(suiteName: SpookySeason.appGroupID))
+    private var spookyJoined = false
+
+    /// The Spooky Season invite may still appear; the update popup waits for it.
+    private var spookyInviteMayShow: Bool {
+        SpookySeason.isActive() && !spookyInvitePrompted && !spookyJoined
+    }
 
     var body: some View {
         tabContent
@@ -56,7 +64,10 @@ struct MainTabView: View {
                     .presentationBackground(.clear)
                 }
             }
-            .spookySeasonInvite(canPresent: !showAddIntake && !showTrophyRoom && !showAchievementCelebration)
+            .spookySeasonInvite(canPresent: !showAddIntake && !showTrophyRoom && !showAchievementCelebration) {
+                selectedTab = .settings
+            }
+            .appUpdatePrompt(canPresent: !showAddIntake && !showTrophyRoom && !showAchievementCelebration && !spookyInviteMayShow)
             .animation(reduceMotion ? nil : Theme.gentleSpring, value: store.pendingAchievementUnlocks.first?.id)
             .onChange(of: store.pendingAchievementUnlocks.first?.id) {
                 presentPendingAchievement()
