@@ -1,0 +1,44 @@
+{
+  "type": "builds",
+  "id": "fc9e64ca-718b-4750-a370-a39ce538ff98",
+  "attributes": {
+    "version": "27",
+    "uploadedDate": "2026-10-28T16:52:11-07:00",
+    "processingState": "VALID",
+    "usesNonExemptEncryption": false,
+    "qcState": "BETA_INTERNAL_TESTING"
+  },
+  "appID": "6758851574",
+  "bundleID": "com.waterquest.hydration",
+  "marketingVersion": "6.2",
+  "verifiedAt": "2026-10-28T23:54:22.863087+00:00",
+  "uploadCompletedAt": "2026-10-28T23:50:57Z",
+  "featureCommit": "aaf66b08af8954314e10a4dcdd949c98b68ab510",
+  "sourceCommit": "c029c24bcad47894e4a7634b6adeca99d744ca4c",
+  "metadataPreparationCommit": "def1b32749f1cd2e0d365e0e407d05793bfc4fc7",
+  "branch": "codex/living-bottle-insights",
+  "uploadCount": 1,
+  "internalBuildState": "IN_BETA_TESTING",
+  "regression": {
+    "passed": 297,
+    "skipped": 2,
+    "failed": 0,
+    "excludedSuite": "SubscriptionManagerTests (existing StoreKit finalization issue)"
+  },
+  "nativeShareUITestsPassed": 1,
+  "archivePreflight": "passed: four bundles, uniform 6.2/27, four privacy manifests, code seal, linkage, release toolchain",
+  "distributionExportValidation": "succeeded",
+  "testersOrGroupsChanged": false,
+  "externalReviewStarted": false,
+  "appStoreSubmission": {
+    "status": "blocked before authenticated inspection or mutation",
+    "reason": "Native Mac UI locked; in-app browser is at Apple Account sign-in, authResult=FAILED",
+    "metadataSaved": false,
+    "screenshotsAudited": false,
+    "reviewContactVerified": false,
+    "submissionID": null,
+    "automaticReleaseSettingSaved": false,
+    "requestedReleaseMode": "automatic upon Apple approval"
+  },
+  "publicReleasePerformed": false
+}
