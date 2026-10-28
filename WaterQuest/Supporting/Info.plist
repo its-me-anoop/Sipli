@@ -26,6 +26,8 @@
   <true/>
   <key>UILaunchStoryboardName</key>
   <string>LaunchScreen</string>
+  <key>NSCameraUsageDescription</key>
+  <string>Sipli uses the camera to read a drink label on your device. Photos are not saved, and nothing is logged until you confirm.</string>
   <key>NSMotionUsageDescription</key>
   <string>Sipli uses device motion to animate the water level indicator.</string>
   <key>UIRequiredDeviceCapabilities</key>

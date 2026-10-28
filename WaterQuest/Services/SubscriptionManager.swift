@@ -311,6 +311,9 @@ final class SubscriptionManager: ObservableObject {
     }
 
     func hasAccess(to feature: PremiumFeature) -> Bool {
+#if DEBUG && targetEnvironment(simulator)
+        if feature == .fluidTypes, UUID(uuidString: ProcessInfo.processInfo.environment["SIPLI_SCAN_UI_NAMESPACE"] ?? "") != nil { return true }
+#endif
         switch feature {
         case .fluidTypes, .aiInsights, .healthKitSync, .weatherGoals, .activityGoals, .smartReminders:
             return hasPremiumAccess

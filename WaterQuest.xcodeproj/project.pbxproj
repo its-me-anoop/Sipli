@@ -209,6 +209,11 @@
 		WWEXT012000000000000001 /* PersistedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8888888888888888888888 /* PersistedState.swift */; };
 		WWEXT013000000000000001 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CBD2C7DC27199FF61EB613 /* Theme.swift */; };
 		WWICON00000000000000001 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = WWICON00000000000000002 /* AppIcon.icon */; };
+		B7E0F10D732E4785A1D002CA /* ScanDraft.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC89B55662054CEAB3B07E84 /* ScanDraft.swift */; };
+		C95A292EF4D34F56958FAA7A /* ScanAnalyzer.swift in Sources */ = {isa = PBXBuildFile; fileRef = A17C98E3E05E4FAE92297A6A /* ScanAnalyzer.swift */; };
+		2468B1A20B5C47E6B32C5A9A /* SipliScanView.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE71C2DE02C34000A2C22C39 /* SipliScanView.swift */; };
+		7000552306B84BE39C5B414E /* ScanCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = DFA96C83FE344569BE820365 /* ScanCamera.swift */; };
+		A587C53ED741478FB45E71C6 /* ScanTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 692D72A24A534495B2F97957 /* ScanTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -454,6 +459,11 @@
 		WA002B000000000000000002 /* WatchNotificationHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchNotificationHandler.swift; sourceTree = "<group>"; };
 		WS001000000000000000001 /* WatchSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSessionManager.swift; sourceTree = "<group>"; };
 		WWICON00000000000000002 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		DC89B55662054CEAB3B07E84 /* ScanDraft.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanDraft.swift; sourceTree = "<group>"; };
+		A17C98E3E05E4FAE92297A6A /* ScanAnalyzer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanAnalyzer.swift; sourceTree = "<group>"; };
+		EE71C2DE02C34000A2C22C39 /* SipliScanView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SipliScanView.swift; sourceTree = "<group>"; };
+		DFA96C83FE344569BE820365 /* ScanCamera.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanCamera.swift; sourceTree = "<group>"; };
+		692D72A24A534495B2F97957 /* ScanTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScanTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -600,6 +610,7 @@
 				A139EF313607077443D4FCFE /* FluidType.swift */,
 				FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */,
 				31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */,
+				DC89B55662054CEAB3B07E84 /* ScanDraft.swift */,
 				AA8888888888888888888888 /* PersistedState.swift */,
 				F1A2B3C4D5E6F70000000003 /* MatchDay.swift */,
 				5B00C5EA50000000000000F1 /* SpookySeason.swift */,
@@ -723,6 +734,7 @@
 				82F04F63618B8784AE3A769E /* WeeklyQuestTests.swift */,
 				4E1C527AF0BCC9ABC2C35DEB /* SipliV5IntentsTests.swift */,
 				02A8E333B2651E91E651308D /* BottleWaterModelTests.swift */,
+				692D72A24A534495B2F97957 /* ScanTests.swift */,
 			);
 			path = WaterQuestTests;
 			sourceTree = "<group>";
@@ -778,6 +790,8 @@
 			children = (
 				9FBC0C7A2F89C0FD52822D48 /* AddIntakeView.swift */,
 				BD7043107E62B2C04F4C58EB /* DashboardView.swift */,
+				DFA96C83FE344569BE820365 /* ScanCamera.swift */,
+				EE71C2DE02C34000A2C22C39 /* SipliScanView.swift */,
 				A1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift */,
 				EB90E806138FFE1C09E7187A /* InsightsView.swift */,
 				B2126EAEDD87BD49B24C7BE2 /* MainTabView.swift */,
@@ -842,6 +856,7 @@
 				63F661B4016F8BE1E8DDA5B5 /* HealthKitManager.swift */,
 				55B57443B7032DDCF70ACB8C /* HydrationAIService.swift */,
 				32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */,
+				A17C98E3E05E4FAE92297A6A /* ScanAnalyzer.swift */,
 				1C0A17000000000000000F99 /* AppIconManager.swift */,
 				1C0A17000000000000000F98 /* AppUpdateChecker.swift */,
 				6862392928A13FBD5E45D6E3 /* LocationManager.swift */,
@@ -1187,6 +1202,8 @@
 				00E5359EB56D89B045DDBDF1 /* AddIntakeView.swift in Sources */,
 				1DCE9DE6A19E823BA1E5079B /* DashboardCard.swift in Sources */,
 				F9760161C65BFA2368DB8094 /* DashboardView.swift in Sources */,
+				7000552306B84BE39C5B414E /* ScanCamera.swift in Sources */,
+				2468B1A20B5C47E6B32C5A9A /* SipliScanView.swift in Sources */,
 				A543E5598AAD6E7D7CD5164C /* DateExtensions.swift in Sources */,
 				7077C5CF3469D64E94804983 /* FluidType.swift in Sources */,
 				E27FB3C46FDAA80AD7E43C6F /* Formatters.swift in Sources */,
@@ -1196,7 +1213,9 @@
 				35CC573F0348943EF21D693D /* HealthKitManager.swift in Sources */,
 				7C578D3D8C788EDEDD9F383C /* HydrationAIService.swift in Sources */,
 				0E54D9CCCA944AAEB6EA20F8 /* HydrationEntry.swift in Sources */,
+				B7E0F10D732E4785A1D002CA /* ScanDraft.swift in Sources */,
 				0A98E6835256CBC9D3B2DF65 /* HydrationStore.swift in Sources */,
+				C95A292EF4D34F56958FAA7A /* ScanAnalyzer.swift in Sources */,
 				1C0A17000000000000000B99 /* AppIconManager.swift in Sources */,
 				1C0A17000000000000000B98 /* AppUpdateChecker.swift in Sources */,
 				D1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift in Sources */,
@@ -1303,6 +1322,7 @@
 				342229A71BB2678A2FB14D9B /* WeeklyQuestTests.swift in Sources */,
 				87E6869DA83072CDD47ED555 /* SipliV5IntentsTests.swift in Sources */,
 				18CBB0D62D19FE8B95C041B0 /* BottleWaterModelTests.swift in Sources */,
+				A587C53ED741478FB45E71C6 /* ScanTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1379,14 +1399,14 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = WaterQuest/Supporting/WaterQuest.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				INFOPLIST_FILE = WaterQuest/Supporting/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.1;
+				MARKETING_VERSION = 6.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration;
 				PRODUCT_NAME = Sipli;
 				SDKROOT = iphoneos;
@@ -1509,14 +1529,14 @@
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = WaterQuest/Supporting/WaterQuest.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				INFOPLIST_FILE = WaterQuest/Supporting/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.1;
+				MARKETING_VERSION = 6.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration;
 				PRODUCT_NAME = Sipli;
 				SDKROOT = iphoneos;
@@ -1532,7 +1552,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = SipliWatchWidgets/SipliWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_PREPROCESSOR_DEFINITIONS = (
@@ -1550,7 +1570,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 6.1;
+				MARKETING_VERSION = 6.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.watchapp.SipliWatchWidgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -1574,7 +1594,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = SipliWatchWidgets/SipliWatchWidgets.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1588,7 +1608,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 6.1;
+				MARKETING_VERSION = 6.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.watchapp.SipliWatchWidgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -1695,7 +1715,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = SipliWidget/SipliWidgetEntitlements.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SipliWidget/Info.plist;
@@ -1705,7 +1725,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 6.1;
+				MARKETING_VERSION = 6.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1723,7 +1743,7 @@
 				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
 				CODE_SIGN_ENTITLEMENTS = SipliWidget/SipliWidgetEntitlements.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SipliWidget/Info.plist;
@@ -1733,7 +1753,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 6.1;
+				MARKETING_VERSION = 6.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1750,7 +1770,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = SipliWatch/SipliWatch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SipliWatch/Info.plist;
@@ -1760,7 +1780,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.1;
+				MARKETING_VERSION = 6.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.watchapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -1778,7 +1798,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = SipliWatch/SipliWatch.entitlements;
 				CODE_SIGN_STYLE = Automatic;
-				CURRENT_PROJECT_VERSION = 22;
+				CURRENT_PROJECT_VERSION = 24;
 				DEVELOPMENT_TEAM = K6623R3GP5;
 				GENERATE_INFOPLIST_FILE = NO;
 				INFOPLIST_FILE = SipliWatch/Info.plist;
@@ -1788,7 +1808,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.1;
+				MARKETING_VERSION = 6.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.watchapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;

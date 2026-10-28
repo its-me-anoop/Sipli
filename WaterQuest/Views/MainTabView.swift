@@ -29,6 +29,7 @@ struct MainTabView: View {
     }
 
     @State private var selectedTab: AppTab = .dashboard
+    @State private var showScan = false
     @State private var showAddIntake = false
     @State private var showTrophyRoom = false
     @State private var showAchievementCelebration = false
@@ -64,10 +65,10 @@ struct MainTabView: View {
                     .presentationBackground(.clear)
                 }
             }
-            .spookySeasonInvite(canPresent: !showAddIntake && !showTrophyRoom && !showAchievementCelebration) {
+            .spookySeasonInvite(canPresent: !showAddIntake && !showScan && !showTrophyRoom && !showAchievementCelebration) {
                 selectedTab = .settings
             }
-            .appUpdatePrompt(canPresent: !showAddIntake && !showTrophyRoom && !showAchievementCelebration && !spookyInviteMayShow)
+            .appUpdatePrompt(canPresent: !showAddIntake && !showScan && !showTrophyRoom && !showAchievementCelebration && !spookyInviteMayShow)
             .animation(reduceMotion ? nil : Theme.gentleSpring, value: store.pendingAchievementUnlocks.first?.id)
             .onChange(of: store.pendingAchievementUnlocks.first?.id) {
                 presentPendingAchievement()
@@ -78,12 +79,18 @@ struct MainTabView: View {
             }
             .onChange(of: deepLinkAddIntake) {
                 if deepLinkAddIntake {
-                    showAddIntake = true
+                    if showScan {
+                        showScan = false
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { showAddIntake = true }
+                    } else { showAddIntake = true }
                 }
             }
             .onChange(of: deepLinkTrophyRoom) {
                 guard deepLinkTrophyRoom else { return }
-                if showAddIntake {
+                if showScan {
+                    showScan = false
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { showTrophyRoom = true }
+                } else if showAddIntake {
                     // Sibling sheets can't stack — retire the add-intake sheet
                     // first, then present once its dismissal settles.
                     showAddIntake = false
@@ -94,6 +101,7 @@ struct MainTabView: View {
                     showTrophyRoom = true
                 }
             }
+            .sheet(isPresented: $showScan, onDismiss: presentPendingAchievement) { SipliScanView() }
             .sheet(isPresented: $showAddIntake, onDismiss: presentPendingAchievement) {
                 NavigationStack {
                     AddIntakeView()
@@ -123,7 +131,7 @@ struct MainTabView: View {
     }
 
     private func presentPendingAchievement() {
-        guard !showAddIntake, !showTrophyRoom,
+        guard !showAddIntake, !showScan, !showTrophyRoom,
               !store.pendingAchievementUnlocks.isEmpty else { return }
         showAchievementCelebration = true
     }
@@ -145,7 +153,7 @@ struct MainTabView: View {
             Tab(AppTab.dashboard.title, systemImage: AppTab.dashboard.symbol, value: .dashboard) {
                 NavigationStack {
                     DashboardView()
-                        .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
+                        .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake, showScan: $showScan))
                 }
                 .toolbarBackground(.hidden, for: .navigationBar)
                 .modifier(TabContentTransition(tabID: selectedTab.rawValue, ownerID: AppTab.dashboard.rawValue, reduceMotion: reduceMotion))
@@ -154,7 +162,7 @@ struct MainTabView: View {
             Tab(AppTab.insights.title, systemImage: AppTab.insights.symbol, value: .insights) {
                 NavigationStack {
                     InsightsView()
-                        .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
+                        .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake, showScan: $showScan))
                 }
                 .toolbarBackground(.hidden, for: .navigationBar)
                 .modifier(TabContentTransition(tabID: selectedTab.rawValue, ownerID: AppTab.insights.rawValue, reduceMotion: reduceMotion))
@@ -163,7 +171,7 @@ struct MainTabView: View {
             Tab(AppTab.diary.title, systemImage: AppTab.diary.symbol, value: .diary) {
                 NavigationStack {
                     DiaryView()
-                        .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
+                        .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake, showScan: $showScan))
                 }
                 .toolbarBackground(.hidden, for: .navigationBar)
                 .modifier(TabContentTransition(tabID: selectedTab.rawValue, ownerID: AppTab.diary.rawValue, reduceMotion: reduceMotion))
@@ -172,7 +180,7 @@ struct MainTabView: View {
             Tab(AppTab.settings.title, systemImage: AppTab.settings.symbol, value: .settings) {
                 NavigationStack {
                     SettingsView()
-                        .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
+                        .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake, showScan: $showScan))
                 }
                 .toolbarBackground(.hidden, for: .navigationBar)
                 .modifier(TabContentTransition(tabID: selectedTab.rawValue, ownerID: AppTab.settings.rawValue, reduceMotion: reduceMotion))
@@ -187,7 +195,7 @@ struct MainTabView: View {
         TabView(selection: $selectedTab) {
             NavigationStack {
                 DashboardView()
-                    .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
+                    .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake, showScan: $showScan))
             }
             .toolbarBackground(.hidden, for: .navigationBar)
             .modifier(TabContentTransition(tabID: selectedTab.rawValue, ownerID: AppTab.dashboard.rawValue, reduceMotion: reduceMotion))
@@ -196,7 +204,7 @@ struct MainTabView: View {
 
             NavigationStack {
                 InsightsView()
-                    .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
+                    .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake, showScan: $showScan))
             }
             .toolbarBackground(.hidden, for: .navigationBar)
             .modifier(TabContentTransition(tabID: selectedTab.rawValue, ownerID: AppTab.insights.rawValue, reduceMotion: reduceMotion))
@@ -205,7 +213,7 @@ struct MainTabView: View {
 
             NavigationStack {
                 DiaryView()
-                    .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
+                    .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake, showScan: $showScan))
             }
             .toolbarBackground(.hidden, for: .navigationBar)
             .modifier(TabContentTransition(tabID: selectedTab.rawValue, ownerID: AppTab.diary.rawValue, reduceMotion: reduceMotion))
@@ -214,7 +222,7 @@ struct MainTabView: View {
 
             NavigationStack {
                 SettingsView()
-                    .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake))
+                    .modifier(AddIntakeToolbarButton(showAddIntake: $showAddIntake, showScan: $showScan))
             }
             .toolbarBackground(.hidden, for: .navigationBar)
             .modifier(TabContentTransition(tabID: selectedTab.rawValue, ownerID: AppTab.settings.rawValue, reduceMotion: reduceMotion))
@@ -231,11 +239,14 @@ struct MainTabView: View {
 /// landscape or on either side of a fold.
 private struct AddIntakeToolbarButton: ViewModifier {
     @Binding var showAddIntake: Bool
+    @Binding var showScan: Bool
 
     func body(content: Content) -> some View {
         content
             .toolbar {
-                ToolbarItem(placement: .primaryAction) {
+                ToolbarItemGroup(placement: .primaryAction) {
+                    Button("Scan drink label", systemImage: "camera") { showScan = true }
+                        .accessibilityHint("Photograph a labelled drink, then confirm how much you drank")
                     addButton
                 }
             }

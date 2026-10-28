@@ -10,6 +10,84 @@ final class BottleFlowTests: XCTestCase {
     }
 
     @MainActor
+    func testSipliScanConfirmationAndUnknownAmount() throws {
+        XCUIDevice.shared.orientation = .portrait
+        let app = XCUIApplication()
+        app.launchArguments = ["-hasOnboarded", "YES", "-appTheme", "1"]
+        app.launchEnvironment = ["SIPLI_SCAN_UI_NAMESPACE": UUID().uuidString, "SIPLI_BOTTLE_REDUCE_MOTION": "1"]
+        app.launch()
+        if app.buttons["Not for me"].waitForExistence(timeout: 4) { app.buttons["Not for me"].tap() }
+        XCTAssertTrue(app.buttons["Scan drink label"].waitForExistence(timeout: 20))
+        app.buttons["Scan drink label"].tap()
+        scanReveal("Use labelled water fixture", app)
+        app.buttons["Use labelled water fixture"].tap()
+        scanReveal("Confirm scanned drink", app)
+        XCTAssertFalse(app.buttons["Confirm scanned drink"].isEnabled)
+        app.buttons["Half"].tap()
+        XCTAssertTrue(app.buttons["Confirm scanned drink"].isEnabled)
+        capture(app, "scan-editable-confirmation-half")
+        app.buttons["Confirm scanned drink"].tap(withNumberOfTaps: 2, numberOfTouches: 1)
+        XCTAssertTrue(app.staticTexts["Drink logged"].waitForExistence(timeout: 5))
+        capture(app, "scan-confirmed-log")
+        app.buttons["Undo scanned drink"].tap()
+        XCTAssertTrue(app.staticTexts["Drink undone"].waitForExistence(timeout: 5))
+        app.buttons["Close"].tap()
+        app.buttons["Scan drink label"].tap()
+        scanReveal("Use unmarked glass fixture", app)
+        app.buttons["Use unmarked glass fixture"].tap()
+        scanReveal("Confirm scanned drink", app)
+        XCTAssertFalse(app.buttons["All"].isEnabled)
+        XCTAssertFalse(app.buttons["Half"].isEnabled)
+        XCTAssertFalse(app.buttons["Confirm scanned drink"].isEnabled)
+        app.buttons["Custom"].tap()
+        app.collectionViews.firstMatch.swipeUp()
+        let amount = app.textFields["scanConsumedAmount"]
+        amount.tap(); amount.typeText("180")
+        app.collectionViews.firstMatch.swipeUp()
+        capture(app, "scan-unknown-glass-explicit-amount")
+        app.buttons["Close"].tap() // Cancel without any second log.
+        app.buttons["Scan drink label"].tap()
+        scanReveal("Simulate camera denial", app)
+        app.buttons["Simulate camera denial"].tap()
+        capture(app, "scan-camera-denied-fallback")
+        XCTAssertTrue(app.buttons["Log manually"].exists)
+        app.buttons["Close"].tap()
+        app.terminate()
+    }
+
+    @MainActor
+    func testCoffeeContrastLight() throws { try coffeeContrast(theme: "light") }
+    @MainActor
+    func testCoffeeContrastDark() throws { try coffeeContrast(theme: "dark") }
+
+    @MainActor
+    private func coffeeContrast(theme: String) throws {
+        XCUIDevice.shared.orientation = .portrait
+        let app = XCUIApplication()
+        app.launchArguments = ["-hasOnboarded", "YES", "-appTheme", theme == "dark" ? "2" : "1"]
+        app.launchEnvironment = ["SIPLI_SCAN_UI_NAMESPACE": UUID().uuidString, "SIPLI_BOTTLE_REDUCE_MOTION": "1"]
+        app.launch()
+        if app.buttons["Not for me"].waitForExistence(timeout: 4) { app.buttons["Not for me"].tap() }
+        XCTAssertTrue(app.buttons["Log water intake"].waitForExistence(timeout: 20))
+        app.buttons["Log water intake"].tap()
+        XCTAssertTrue(app.buttons["Americano"].waitForExistence(timeout: 8))
+        capture(app, "coffee-contrast-" + theme + "-unselected")
+        app.buttons["Americano"].tap()
+        capture(app, "coffee-contrast-" + theme + "-selected")
+        app.buttons["Cancel"].tap()
+        app.terminate()
+    }
+
+    @MainActor
+    private func scanReveal(_ label: String, _ app: XCUIApplication) {
+        for _ in 0..<4 {
+            if app.buttons[label].exists && app.buttons[label].isHittable { return }
+            app.collectionViews.firstMatch.swipeUp()
+        }
+        XCTAssertTrue(app.buttons[label].exists, app.debugDescription)
+    }
+
+    @MainActor
     func testNativeShareScreen() throws {
         let app = XCUIApplication()
         launch(app)

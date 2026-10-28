@@ -41,13 +41,14 @@ final class HydrationStore: ObservableObject {
     /// of queueing a dozen overlays on first launch.
     private var celebratesUnlocks = false
 
-    private let persistence = PersistenceService.shared
+    private let persistence: PersistenceService
 
     /// Set by the app after both objects are created so the store can notify
     /// the scheduler when new intake is logged.
     weak var notificationScheduler: NotificationScheduler?
 
-    init() {
+    init(persistence: PersistenceService = .shared) {
+        self.persistence = persistence
         let state = persistence.load(PersistedState.self, fallback: .default)
         self.entries = state.entries
         self.profile = state.profile
