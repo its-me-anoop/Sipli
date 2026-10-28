@@ -17,7 +17,9 @@ struct DashboardView: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.spookyTheme) private var spookyTheme
 
-    @StateObject private var aiService = HydrationAIService()
+    @ScaledMetric(relativeTo: .subheadline) private var noticeAllowance: CGFloat = 110
+    @EnvironmentObject private var living: LivingBottleCoordinator
+    @AppStorage("sipli.lastBottleGoalCelebration") private var lastGoalCelebration: Double = 0
 
     @State private var entryToEdit: HydrationEntry?
     @State private var entryToDelete: HydrationEntry?
@@ -95,10 +97,6 @@ struct DashboardView: View {
         }
         .task {
             await refreshSignals()
-            if subscriptionManager.hasAccess(to: .aiInsights) {
-                aiService.prewarmCoach()
-                await generateAITip()
-            }
         }
         .onAppear {
             isPremiumPromptDismissed = false
@@ -112,6 +110,7 @@ struct DashboardView: View {
             guard store.effectiveProfile.prefersWeatherGoal else { return }
             await refreshWeather()
         }
+        .onChange(of: entryToEdit) { living.entryFlowActive = entryToEdit != nil }
         .sheet(item: $entryToEdit) { entry in
             EntryEditorSheet(entry: entry, unitSystem: store.profile.unitSystem) { updatedAmount, updatedFluidType, updatedNote in
                 store.updateEntry(
@@ -133,16 +132,16 @@ struct DashboardView: View {
             maybeRequestReview()
         }
         .onChange(of: progress) { oldValue, newValue in
-            guard oldValue < 1.0, newValue >= 1.0,
-                  !hasShownGoalCelebrationThisSession else { return }
+            guard oldValue < 1.0, newValue >= 1.0, store.todayTotalML <= goal.totalML * 1.25,
+                  !hasShownGoalCelebrationThisSession,
+                  !Calendar.current.isDate(Date(timeIntervalSince1970: lastGoalCelebration), inSameDayAs: Date()) else { return }
+            lastGoalCelebration = Date().timeIntervalSince1970
             hasShownGoalCelebrationThisSession = true
             Haptics.splash()
             showGoalCelebration = true
         }
-        .onChange(of: store.todayEntries.count) { oldValue, newValue in
-            // A small splash for every fresh log; the full celebration is
-            // reserved for the goal crossing above.
-            guard newValue > oldValue, !showGoalCelebration else { return }
+        .onChange(of: living.pulseID) {
+            guard !showGoalCelebration, !LivingBottleMotion.disabled(reduceMotion) else { return }
             logSplashTrigger += 1
         }
     }
@@ -199,7 +198,16 @@ struct DashboardView: View {
     @ViewBuilder
     private func heroContent(availableHeight: CGFloat? = nil, availableWidth: CGFloat) -> some View {
         let usesTwoColumns = availableWidth >= 560
-        summarySection(availableHeight: availableHeight, availableWidth: availableWidth, usesTwoColumns: usesTwoColumns)
+        if let notice = living.notice {
+            LivingBottleNotice(notice: notice, progress: living.snapshot?.progress ?? 0) { living.dismiss() }
+                .clipShape(RoundedRectangle(cornerRadius: 20))
+                .task(id: notice.id) {
+                    let delay = max(0, notice.expiresAt.timeIntervalSinceNow)
+                    try? await Task.sleep(for: .seconds(delay))
+                    if !Task.isCancelled { living.expire(notice.id) }
+                }
+        }
+        summarySection(availableHeight: availableHeight.map { max(200, $0 - (living.notice == nil ? 0 : noticeAllowance)) }, availableWidth: availableWidth, usesTwoColumns: usesTwoColumns)
             .padding(.top, 8)
             .staggeredAppear(0)
 
@@ -230,9 +238,9 @@ struct DashboardView: View {
         }
         .staggeredAppear(3)
 
-        if subscriptionManager.hasAccess(to: .aiInsights), let tip = aiService.currentTip {
+        if subscriptionManager.hasAccess(to: .aiInsights) {
             DashboardCard(title: "Hydration Coach", icon: "sparkles", backgroundGradient: Theme.coachCard) {
-                tipSection(tip)
+                LivingInsightCard()
             }
         }
 
@@ -334,9 +342,9 @@ struct DashboardView: View {
                     HStack(alignment: .top, spacing: 20) {
                         // Left column: Hydration Coach (larger)
                         VStack(spacing: 16) {
-                            if subscriptionManager.hasAccess(to: .aiInsights), let tip = aiService.currentTip {
+                            if subscriptionManager.hasAccess(to: .aiInsights) {
                                 DashboardCard(title: "Hydration Coach", icon: "sparkles", backgroundGradient: Theme.coachCard) {
-                                    iPadTipSection(tip)
+                                    LivingInsightCard()
                                 }
                             }
                         }
@@ -584,115 +592,6 @@ struct DashboardView: View {
 
     @Environment(\.horizontalSizeClass) private var sizeClass
 
-    private func tipSection(_ tip: HydrationTip) -> some View {
-        Button {
-            Task {
-                Haptics.selection()
-                await generateAITip()
-            }
-        } label: {
-            HStack(spacing: 12) {
-                Image(systemName: tip.category.icon)
-                    .font(.title3)
-                    .foregroundStyle(tip.category.color)
-                    .frame(width: 34)
-
-                VStack(alignment: .leading, spacing: 3) {
-                    Text(tip.message)
-                        .font(.body)
-                        .multilineTextAlignment(.leading)
-                    Text("Tap to refresh")
-                        .font(.caption)
-                        .foregroundStyle(.secondary)
-                }
-
-                Spacer()
-
-                if aiService.isGenerating {
-                    ProgressView()
-                }
-            }
-        }
-        .buttonStyle(.plain)
-    }
-
-    private func iPadTipSection(_ tip: HydrationTip) -> some View {
-        VStack(alignment: .leading, spacing: 16) {
-            // Category header
-            HStack(spacing: 10) {
-                Image(systemName: tip.category.icon)
-                    .font(.title2)
-                    .foregroundStyle(tip.category.color)
-
-                Text(tip.category.label)
-                    .font(.headline)
-                    .foregroundStyle(tip.category.color)
-
-                Spacer()
-
-                if aiService.isGenerating {
-                    ProgressView()
-                }
-            }
-
-            // Main message
-            Text(tip.message)
-                .font(.title3)
-                .multilineTextAlignment(.leading)
-                .fixedSize(horizontal: false, vertical: true)
-
-            // Progress context
-            VStack(alignment: .leading, spacing: 8) {
-                let pct = Int(progress * 100)
-                HStack(spacing: 6) {
-                    Image(systemName: "drop.fill")
-                        .foregroundStyle(Theme.lagoon)
-                    Text("\(pct)% of daily goal reached")
-                        .font(.subheadline)
-                        .foregroundStyle(.secondary)
-                }
-
-                if let temp = activeWeather?.temperatureC {
-                    HStack(spacing: 6) {
-                        Image(systemName: "thermometer.medium")
-                            .foregroundStyle(Theme.coral)
-                        Text("Current temperature: \(Formatters.temperatureString(celsius: temp, unit: store.profile.unitSystem))")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-
-                if store.lastWorkout.exerciseMinutes > 0 {
-                    HStack(spacing: 6) {
-                        Image(systemName: "figure.run")
-                            .foregroundStyle(Theme.sun)
-                        Text("\(Int(store.lastWorkout.exerciseMinutes)) min of activity today")
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                    }
-                }
-            }
-
-            Divider()
-
-            // Refresh button
-            Button {
-                Task {
-                    Haptics.selection()
-                    await generateAITip()
-                }
-            } label: {
-                HStack {
-                    Image(systemName: "arrow.clockwise")
-                    Text("Get new tip")
-                }
-                .font(.subheadline.weight(.medium))
-                .foregroundStyle(tip.category.color)
-            }
-            .buttonStyle(.plain)
-        }
-    }
-
     @ViewBuilder
     private var weatherSection: some View {
         if let snapshot = activeWeather {
@@ -911,17 +810,6 @@ struct DashboardView: View {
         }
     }
 
-    private func generateAITip() async {
-        guard subscriptionManager.hasAccess(to: .aiInsights) else { return }
-        await aiService.generateTip(
-            currentIntake: store.todayTotalML,
-            goalML: goal.totalML,
-            weatherTemp: activeWeather?.temperatureC,
-            exerciseMinutes: Int(store.lastWorkout.exerciseMinutes),
-            timeOfDay: TimeOfDay.current
-        )
-    }
-
     private func dismissPremiumPrompt() {
         Haptics.selection()
         isPremiumPromptDismissed = true
@@ -945,6 +833,7 @@ private struct HydrationSummaryCard<Accessories: View>: View {
 
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.dynamicTypeSize) private var dynamicType
 
     @State private var rippleCounter: Int = 0
     @State private var rippleOrigin: CGPoint = .zero
@@ -959,7 +848,20 @@ private struct HydrationSummaryCard<Accessories: View>: View {
 
     var body: some View {
         Group {
-            if usesTwoColumns {
+            if dynamicType.isAccessibilitySize {
+                VStack(alignment: .leading, spacing: 20) {
+                    summaryText.fixedSize(horizontal: false, vertical: true)
+                    RemainingWaterBottle(progress: progress, isRegular: isRegular, bottleWidth: 160, bottleHeight: 225)
+                        .frame(maxWidth: .infinity)
+                }
+            } else if !usesTwoColumns, let availableHeight, availableHeight < 320 {
+                // Short landscape/fold panes must reserve real space for the mascot.
+                HStack(alignment: .center, spacing: 12) {
+                    summaryText.frame(maxWidth: .infinity, alignment: .leading)
+                        .fixedSize(horizontal: false, vertical: true)
+                    RemainingWaterBottle(progress: progress, isRegular: false, bottleWidth: 80, bottleHeight: 112)
+                }
+            } else if usesTwoColumns {
                 HStack(alignment: .center, spacing: 24) {
                     let columnWidth = (availableWidth - (isRegular ? 48 : 40) - 24) * 0.44
                     let height = min(420, columnWidth * 1748 / 1240,

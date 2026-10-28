@@ -8,6 +8,8 @@ struct RemainingWaterBottle: View {
     let isRegular: Bool
     let bottleWidth: CGFloat
     let bottleHeight: CGFloat
+    var showsGauge: Bool = true
+    var personality: Bool = false
 
     @StateObject private var animation: BottleWaterAnimation
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -16,11 +18,13 @@ struct RemainingWaterBottle: View {
     /// Spooky Season potion look (event dates + Settings toggle).
     @Environment(\.spookyTheme) private var isSpooky
 
-    init(progress: Double, isRegular: Bool, bottleWidth: CGFloat, bottleHeight: CGFloat) {
+    init(progress: Double, isRegular: Bool, bottleWidth: CGFloat, bottleHeight: CGFloat, showsGauge: Bool = true, personality: Bool = true) {
         self.progress = progress
         self.isRegular = isRegular
         self.bottleWidth = bottleWidth
         self.bottleHeight = bottleHeight
+        self.showsGauge = showsGauge
+        self.personality = personality
         _animation = StateObject(wrappedValue: BottleWaterAnimation(progress: progress))
     }
 
@@ -49,6 +53,22 @@ struct RemainingWaterBottle: View {
                     .frame(width: bottleWidth, height: bottleHeight)
             }
 
+            if personality {
+                VStack(spacing: bottleWidth * 0.018) {
+                    HStack(spacing: bottleWidth * 0.08) {
+                        Capsule().frame(width: bottleWidth * 0.022, height: bottleWidth * 0.042)
+                        Capsule().frame(width: bottleWidth * 0.022, height: bottleWidth * 0.042)
+                    }
+                    BottleSmile()
+                        .stroke(style: StrokeStyle(lineWidth: max(1.2, bottleWidth * 0.009), lineCap: .round))
+                        .frame(width: bottleWidth * 0.09, height: bottleWidth * 0.035)
+                }
+                .foregroundStyle(BottleOptics.highlight)
+                .shadow(color: BottleOptics.shadow, radius: 1)
+                .offset(y: -bottleHeight * 0.11)
+                .accessibilityHidden(true)
+            }
+            if showsGauge {
             VStack(spacing: 0) {
                 Text("\(remainingPercent)%")
                     .font(.system(isRegular ? .largeTitle : .title, design: .rounded).weight(.heavy))
@@ -66,9 +86,11 @@ struct RemainingWaterBottle: View {
                         .padding(.top, 4)
                 }
             }
+            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
             .frame(width: bottleWidth * 0.48)
             .foregroundStyle(BottleOptics.highlight)
             .shadow(color: BottleOptics.shadow.opacity(0.8), radius: 2, x: 0, y: 1)
+            }
         }
         .frame(width: bottleWidth, height: bottleHeight)
         .accessibilityElement(children: .ignore)
@@ -435,5 +457,14 @@ private struct SpookyBottleBats: View {
         BatShape()
             .fill(SpookySeason.Palette.potion.opacity(0.85))
             .frame(width: size, height: size / 2)
+    }
+}
+
+private struct BottleSmile: Shape {
+    func path(in rect: CGRect) -> Path {
+        Path { p in
+            p.move(to: CGPoint(x: rect.minX, y: rect.minY))
+            p.addQuadCurve(to: CGPoint(x: rect.maxX, y: rect.minY), control: CGPoint(x: rect.midX, y: rect.maxY * 1.7))
+        }
     }
 }

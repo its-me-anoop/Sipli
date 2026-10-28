@@ -28,6 +28,23 @@ struct MainTabView: View {
         }
     }
 
+    @StateObject private var living = LivingBottleCoordinator()
+    @State private var clock = Date()
+    @Environment(\.scenePhase) private var scenePhase
+    @EnvironmentObject private var subscriptionManager: SubscriptionManager
+    private var liveSnapshot: LivingInsightSnapshot {
+        LivingInsightSnapshot(entries: store.entries, goalML: store.dailyGoal.totalML, now: clock,
+                              unit: store.profile.unitSystem, freezeDates: store.streakFreezeDates)
+    }
+    private var canShowBottleNotice: Bool {
+        scenePhase == .active && !living.entryFlowActive && selectedTab == .dashboard && !showAddIntake && !showTrophyRoom
+        && !showAchievementCelebration && !spookyInviteMayShow
+    }
+    private func refreshBottle() {
+        clock = Date()
+        living.update(liveSnapshot, now: clock, canPresent: canShowBottleNotice,
+                      useAI: scenePhase == .active && !living.entryFlowActive && !showAddIntake && subscriptionManager.hasAccess(to: .aiInsights))
+    }
     @State private var selectedTab: AppTab = .dashboard
     @State private var showAddIntake = false
     @State private var showTrophyRoom = false
@@ -48,6 +65,16 @@ struct MainTabView: View {
 
     var body: some View {
         tabContent
+            .environmentObject(living)
+            .onAppear { clock = Date(); refreshBottle() }
+            .onChange(of: liveSnapshot) { refreshBottle() }
+            .onChange(of: canShowBottleNotice) { refreshBottle() }
+            .onChange(of: subscriptionManager.hasAccess(to: .aiInsights)) { refreshBottle() }
+            .onReceive(Timer.publish(every: 30, on: .main, in: .common).autoconnect()) { clock = $0 }
+            .onChange(of: scenePhase) {
+                clock = Date()
+                if scenePhase == .active { refreshBottle() } else { living.background() }
+            }
             .tint(spookyTheme ? SpookySeason.Palette.accent : Theme.lagoon)
             .fullScreenCover(isPresented: $showAchievementCelebration) {
                 // A native presentation keeps the Duo's tab chrome from

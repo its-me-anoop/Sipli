@@ -22,6 +22,23 @@ struct WaterQuestApp: App {
     }
 
     init() {
+#if DEBUG && targetEnvironment(simulator)
+        if let namespace = ProcessInfo.processInfo.environment["SIPLI_LIVING_UI_NAMESPACE"], UUID(uuidString: namespace) != nil {
+            let persistence = PersistenceService(filename: "living-ui-\(namespace).json", syncEnabled: false)
+            if !FileManager.default.fileExists(atPath: persistence.fileURL.path) {
+                var fixture = PersistedState.default
+                fixture.profile.prefersHealthKit = false
+                fixture.profile.prefersWeatherGoal = false
+                fixture.profile.remindersEnabled = false
+                fixture.profile.customGoalML = 2000
+                fixture.unlockedAchievements = Dictionary(uniqueKeysWithValues: AchievementCatalog.all.map { ($0.id, Date()) })
+                fixture.entries = [HydrationEntry(date: Date().addingTimeInterval(-5 * 3600), volumeML: 500, source: .manual)]
+                persistence.saveLocalOnly(fixture)
+            }
+            _store = StateObject(wrappedValue: HydrationStore(persistence: persistence))
+        }
+#endif
+
         NotificationCategories.registerAll()
         UNUserNotificationCenter.current().delegate = NotificationHandler.shared
         let location = LocationManager()

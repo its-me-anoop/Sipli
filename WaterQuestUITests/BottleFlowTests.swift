@@ -4,6 +4,70 @@ import UIKit
 /// Run against a dedicated simulator seeded with an empty day and a 2,000 ml
 /// goal. The host seeds its own sandbox; these tests never reset user data.
 final class BottleFlowTests: XCTestCase {
+    @MainActor
+    func testLivingBottlePreview() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-hasOnboarded", "YES", "-spookySeason2026InvitePrompted", "YES", "-appTheme", "1"]
+        app.launchEnvironment = ["SIPLI_LIVING_UI_NAMESPACE": UUID().uuidString, "SIPLI_BOTTLE_REDUCE_MOTION": "1", "SIPLI_LIVING_REDUCE_MOTION": "1"]
+        app.launch()
+        XCTAssertTrue(bottle(in: app).waitForExistence(timeout: 30), app.debugDescription)
+        let notice = app.descendants(matching: .any).matching(identifier: "livingBottleNotice").firstMatch
+        XCTAssertTrue(notice.waitForExistence(timeout: 10), app.debugDescription)
+        XCTAssertTrue(app.staticTexts["Welcome back. We can pick up from here."].exists)
+        XCTAssertTrue(app.buttons["Log water intake"].isHittable)
+        capture(app, "living-01-welcome-light-fixture")
+        app.buttons["Dismiss bottle encouragement"].tap()
+        XCTAssertFalse(notice.exists)
+        app.buttons["Log water intake"].tap()
+        XCTAssertTrue(app.navigationBars["Log Intake"].waitForExistence(timeout: 10))
+        XCTAssertFalse(notice.exists, "Encouragement must not interrupt entry")
+        app.buttons["Quick log 250 millilitres of Water"].tap()
+        XCTAssertTrue(app.staticTexts["Nice check-in. Your log is up to date."].waitForExistence(timeout: 10), app.debugDescription)
+        capture(app, "living-02-saved-light-fixture")
+        assertRemaining(63, in: app)
+        app.buttons["Insights"].firstMatch.tap()
+        XCTAssertTrue(app.staticTexts["750 ml logged today · 2000 ml goal"].waitForExistence(timeout: 10), app.debugDescription)
+        capture(app, "living-03-live-insights-fixture")
+        goHome(app)
+        app.terminate()
+        // Same isolated local fixture is retained across relaunch. No repeated welcome.
+        app.launchArguments = ["-hasOnboarded", "YES", "-spookySeason2026InvitePrompted", "YES", "-appTheme", "2"]
+        app.launch()
+        XCTAssertTrue(bottle(in: app).waitForExistence(timeout: 20))
+        XCTAssertFalse(app.staticTexts["Welcome back. We can pick up from here."].exists)
+        capture(app, "living-04-home-dark-fixture")
+        app.buttons["Log water intake"].tap()
+        XCTAssertTrue(app.navigationBars["Log Intake"].waitForExistence(timeout: 10))
+        let coffee = app.buttons["Coffee"]
+        if coffee.exists { coffee.tap() }
+        capture(app, "living-05-coffee-contrast-dark-fixture")
+        app.buttons["Cancel"].tap()
+        goHome(app)
+        XCUIDevice.shared.orientation = .landscapeLeft
+        XCTAssertGreaterThan(bottle(in: app).frame.height, 80, "The landscape mascot must not collapse")
+        capture(app, "living-06-landscape-fixture")
+        XCUIDevice.shared.orientation = .portrait
+        app.terminate()
+    }
+
+    @MainActor
+    func testLivingBottleLargeTextPreview() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-hasOnboarded", "YES", "-spookySeason2026InvitePrompted", "YES", "-appTheme", "1",
+                               "-UIPreferredContentSizeCategoryName", "UICTContentSizeCategoryAccessibilityXXXL"]
+        app.launchEnvironment = ["SIPLI_LIVING_UI_NAMESPACE": UUID().uuidString,
+                                 "SIPLI_BOTTLE_REDUCE_MOTION": "1", "SIPLI_LIVING_REDUCE_MOTION": "1"]
+        app.launch()
+        XCTAssertTrue(bottle(in: app).waitForExistence(timeout: 30))
+        XCTAssertTrue(app.buttons["Dismiss bottle encouragement"].waitForExistence(timeout: 10))
+        XCTAssertTrue(app.buttons["Dismiss bottle encouragement"].isHittable)
+        XCTAssertTrue(app.buttons["Log water intake"].isHittable)
+        capture(app, "living-07-accessibility-large-text-reduced-motion-fixture")
+        app.buttons["Dismiss bottle encouragement"].tap()
+        XCTAssertTrue(app.buttons["Log water intake"].isHittable)
+        app.terminate()
+    }
+
     override func setUp() {
         super.setUp()
         continueAfterFailure = false

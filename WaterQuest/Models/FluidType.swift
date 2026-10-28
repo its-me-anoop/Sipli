@@ -146,7 +146,7 @@ enum FluidType: String, CaseIterable, Codable, Identifiable, Hashable {
         case .coconutWater:                                 return Theme.mint
         case .herbalTea, .chamomile, .peppermintTea:        return Theme.mint
         case .greenTea, .matcha:                            return Color(red: 0.27, green: 0.68, blue: 0.36)
-        case .blackTea, .oolong:                            return Color(red: 0.42, green: 0.27, blue: 0.18)
+        case .blackTea, .oolong:                            return brownColor
         case .earlGrey:                                     return Theme.lavender
         case .chai:                                         return Theme.peach
         case .rooibos:                                      return Theme.coral
@@ -154,16 +154,75 @@ enum FluidType: String, CaseIterable, Codable, Identifiable, Hashable {
         case .milk, .smoothie:                              return Theme.peach
         case .juice, .lemonade:                             return Theme.sun
         case .sportsDrink, .energyDrink:                    return Theme.coral
-        case .espresso, .americano, .coffee, .coldBrew:     return Color(red: 0.32, green: 0.18, blue: 0.08)
-        case .latte, .flatWhite:                            return Color(red: 0.72, green: 0.48, blue: 0.28)
-        case .cappuccino, .macchiato:                       return Color(red: 0.56, green: 0.34, blue: 0.16)
-        case .mocha:                                        return Color(red: 0.40, green: 0.22, blue: 0.12)
-        case .icedCoffee:                                   return Color(red: 0.48, green: 0.30, blue: 0.18)
+        case .espresso, .americano, .coffee, .coldBrew:     return brownColor
+        case .latte, .flatWhite:                            return brownColor
+        case .cappuccino, .macchiato:                       return brownColor
+        case .mocha:                                        return brownColor
+        case .icedCoffee:                                   return brownColor
         case .soda:                                         return Theme.lavender
         case .soup:                                         return Theme.sun
         case .beer, .wine, .cocktail:                       return Theme.coral
         case .other:                                        return .gray
         }
+    }
+
+    var usesBrownAccent: Bool {
+        switch self {
+        case .blackTea, .oolong, .espresso, .americano, .coffee, .coldBrew,
+             .latte, .flatWhite, .cappuccino, .macchiato, .mocha, .icedCoffee: return true
+        default: return false
+        }
+    }
+
+    /// Canonical RGB owner shared by the dynamic renderer and numeric contrast checks.
+    func brownAccentComponents(isDark: Bool) -> [Double]? {
+        let light: [Double]
+        switch self {
+        case .blackTea, .oolong: light = [0.42, 0.27, 0.18]
+        case .espresso, .americano, .coffee, .coldBrew: light = [0.32, 0.18, 0.08]
+        case .latte, .flatWhite: light = [0.72, 0.48, 0.28]
+        case .cappuccino, .macchiato: light = [0.56, 0.34, 0.16]
+        case .mocha: light = [0.40, 0.22, 0.12]
+        case .icedCoffee: light = [0.48, 0.30, 0.18]
+        default: return nil
+        }
+#if os(watchOS)
+        return light
+#else
+        if isDark { return [0.94, 0.78, 0.60] }
+        return light[0] > 0.6 ? [0.56, 0.34, 0.16] : light
+#endif
+    }
+
+    func selectionComponents(isDark: Bool) -> [Double] {
+#if os(watchOS)
+        return [1, 1, 1]
+#else
+        return usesBrownAccent && isDark ? [0, 0, 0] : [1, 1, 1]
+#endif
+    }
+
+    var selectionForeground: Color {
+#if os(watchOS)
+        return .white
+#else
+        return Color(uiColor: UIColor { traits in
+            let c = selectionComponents(isDark: traits.userInterfaceStyle == .dark)
+            return UIColor(red: c[0], green: c[1], blue: c[2], alpha: 1)
+        })
+#endif
+    }
+
+    private var brownColor: Color {
+#if os(watchOS)
+        let c = brownAccentComponents(isDark: true) ?? [0.32, 0.18, 0.08]
+        return Color(red: c[0], green: c[1], blue: c[2])
+#else
+        return Color(uiColor: UIColor { traits in
+            let c = brownAccentComponents(isDark: traits.userInterfaceStyle == .dark) ?? [0.32, 0.18, 0.08]
+            return UIColor(red: c[0], green: c[1], blue: c[2], alpha: 1)
+        })
+#endif
     }
 
     /// Fraction of raw volume that counts as effective hydration (0.0–1.0).

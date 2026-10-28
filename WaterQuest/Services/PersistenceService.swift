@@ -7,6 +7,7 @@ final class PersistenceService {
 
     /// Internal (not private) so tests can write fixture bytes directly.
     let fileURL: URL
+    private let syncEnabled: Bool
     private let keyValueStore = NSUbiquitousKeyValueStore.default
     private let iCloudStateKey = "WaterQuestPersistedStatePayload"
     private let localUpdatedAtKey = "WaterQuestStateLocalUpdatedAt"
@@ -18,7 +19,8 @@ final class PersistenceService {
         let blob: Data
     }
 
-    init(filename: String = "WaterQuestState.json") {
+    init(filename: String = "WaterQuestState.json", syncEnabled: Bool = true) {
+        self.syncEnabled = syncEnabled
         let groupURL = FileManager.default.containerURL(
             forSecurityApplicationGroupIdentifier: PersistenceService.appGroupID
         )
@@ -29,6 +31,7 @@ final class PersistenceService {
         self.fileURL = directory.appendingPathComponent(filename)
 
         Self.migrateIfNeeded(to: self.fileURL, filename: filename)
+        guard syncEnabled else { return }
         keyValueStore.synchronize()
 
         kvStoreObserver = NotificationCenter.default.addObserver(
@@ -57,6 +60,7 @@ final class PersistenceService {
     /// Async variant that reads the file off the calling actor.
     /// Prefer this at non-init call sites where blocking is not acceptable.
     func loadAsync<T: Decodable>(_ type: T.Type, fallback: T) async -> T {
+        if !syncEnabled { return loadLocalOnly(type, fallback: fallback) }
         let fileURL = fileURL
         let iCloudKey = iCloudStateKey
         let kvStore = keyValueStore
@@ -265,6 +269,7 @@ final class PersistenceService {
     }
 
     private func syncToICloud(_ data: Data?) {
+        guard syncEnabled else { return }
         guard let data else { return }
         let payload = SyncedPayload(updatedAt: Date(), blob: data)
         guard let encodedPayload = encodePayload(payload) else { return }
@@ -274,6 +279,7 @@ final class PersistenceService {
     }
 
     private func resolveNewestStateData(localData: Data?) -> Data? {
+        guard syncEnabled else { return localData }
         guard
             let payloadData = keyValueStore.data(forKey: iCloudStateKey),
             let payload = decodePayload(payloadData)

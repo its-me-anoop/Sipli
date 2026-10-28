@@ -3,8 +3,8 @@ import SwiftUI
 /// Caches the three expensive data derivations from `InsightsView` so they
 /// are not recomputed on every SwiftUI body evaluation.
 ///
-/// Recomputes lazily whenever `entries.count` or `dailyGoalML` changes
-/// (the cheapest stable invalidation key for append-only hydration data).
+/// Recomputes from complete entry values, goal, calendar day and freeze dates.
+/// Corrections and deletions are first-class changes, even when count stays equal.
 /// `heatmapData` additionally tracks `heatmapMonthOffset`.
 @MainActor
 @Observable
@@ -18,8 +18,7 @@ final class InsightsViewModel {
 
     // MARK: - Last-seen invalidation keys
 
-    private var lastEntriesCount: Int = -1
-    private var lastDailyGoalML: Double = -1
+    private var lastSnapshot: LivingInsightSnapshot?
     private var lastTimeframe: Timeframe = .weekly
     private var lastHeatmapMonthOffset: Int = -999
 
@@ -31,32 +30,33 @@ final class InsightsViewModel {
         dailyGoalML: Double,
         timeframe: Timeframe,
         heatmapMonthOffset: Int,
-        streakFreezeDates: [Date] = []
+        streakFreezeDates: [Date] = [],
+        now: Date = Date()
     ) {
-        let entriesChanged = entries.count != lastEntriesCount || dailyGoalML != lastDailyGoalML
+        let snapshot = LivingInsightSnapshot(entries: entries, goalML: dailyGoalML, now: now, unit: .metric, freezeDates: streakFreezeDates)
+        let entriesChanged = snapshot != lastSnapshot
         let timeframeChanged = timeframe != lastTimeframe
         let heatmapOffsetChanged = heatmapMonthOffset != lastHeatmapMonthOffset
 
         if entriesChanged || timeframeChanged {
-            chartData = Self.buildChartData(entries: entries, timeframe: timeframe)
-            trendData = Self.buildTrendData(entries: entries, goalML: dailyGoalML, streakFreezeDates: streakFreezeDates)
+            chartData = Self.buildChartData(entries: entries, timeframe: timeframe, now: now)
+            trendData = Self.buildTrendData(entries: entries, goalML: dailyGoalML, streakFreezeDates: streakFreezeDates, now: now)
         }
 
         if entriesChanged || heatmapOffsetChanged {
-            heatmapData = Self.buildHeatmapData(entries: entries, goalML: dailyGoalML, monthOffset: heatmapMonthOffset)
+            heatmapData = Self.buildHeatmapData(entries: entries, goalML: dailyGoalML, monthOffset: heatmapMonthOffset, now: now)
         }
 
-        lastEntriesCount = entries.count
-        lastDailyGoalML = dailyGoalML
+        lastSnapshot = snapshot
         lastTimeframe = timeframe
         lastHeatmapMonthOffset = heatmapMonthOffset
     }
 
     // MARK: - Static builders (pure, no captures)
 
-    static func buildChartData(entries: [HydrationEntry], timeframe: Timeframe) -> [WeeklyDay] {
+    static func buildChartData(entries: [HydrationEntry], timeframe: Timeframe, now: Date = Date()) -> [WeeklyDay] {
         let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
+        let today = calendar.startOfDay(for: now)
         let limit = timeframe.daysCount
 
         return (0..<limit).compactMap { offset in
@@ -70,9 +70,9 @@ final class InsightsViewModel {
         }
     }
 
-    static func buildHeatmapData(entries: [HydrationEntry], goalML: Double, monthOffset: Int) -> [HeatmapDay] {
+    static func buildHeatmapData(entries: [HydrationEntry], goalML: Double, monthOffset: Int, now: Date = Date()) -> [HeatmapDay] {
         let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
+        let today = calendar.startOfDay(for: now)
         guard let monthRef = calendar.date(byAdding: .month, value: -monthOffset, to: today) else { return [] }
         let comps = calendar.dateComponents([.year, .month], from: monthRef)
         guard let startOfMonth = calendar.date(from: comps),
@@ -88,9 +88,9 @@ final class InsightsViewModel {
         }
     }
 
-    static func buildTrendData(entries: [HydrationEntry], goalML: Double, streakFreezeDates: [Date] = []) -> TrendData {
+    static func buildTrendData(entries: [HydrationEntry], goalML: Double, streakFreezeDates: [Date] = [], now: Date = Date()) -> TrendData {
         let calendar = Calendar.current
-        let today = calendar.startOfDay(for: Date())
+        let today = calendar.startOfDay(for: now)
         let goal = max(1, goalML)
 
         var dailyTotals: [(date: Date, total: Double)] = []

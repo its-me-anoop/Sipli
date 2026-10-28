@@ -215,7 +215,7 @@ struct AddIntakeView: View {
                             VStack(spacing: 4) {
                                 Image(systemName: type.iconName)
                                     .font(compact ? .title3 : (isRegular ? .title2 : .title3))
-                                    .foregroundStyle(selectedFluidType == type ? .white : type.color)
+                                    .foregroundStyle(selectedFluidType == type ? type.selectionForeground : type.color)
                                     .frame(width: compact ? 36 : (isRegular ? 48 : 40), height: compact ? 36 : (isRegular ? 48 : 40))
                                     .background(
                                         Circle()
@@ -319,6 +319,7 @@ struct AddIntakeView: View {
             addIntake()
         } label: {
             Label("Save Intake", systemImage: selectedFluidType.iconName)
+                .foregroundStyle(selectedFluidType.selectionForeground)
                 .fontWeight(.semibold)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 10)

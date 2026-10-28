@@ -27,6 +27,13 @@ struct InsightsView: View {
     @State private var heatmapMonthOffset = 0
     @State private var aiInsight: String?
     @State private var isGeneratingInsight = false
+    @EnvironmentObject private var living: LivingBottleCoordinator
+    @State private var clock = Date()
+    @State private var wordingRevision = UUID()
+    private var liveSnapshot: LivingInsightSnapshot {
+        LivingInsightSnapshot(entries: store.entries, goalML: store.dailyGoal.totalML, now: clock,
+                              unit: store.profile.unitSystem, freezeDates: store.streakFreezeDates)
+    }
     @State private var weeklyDigest: WeeklyDigestDisplay?
     @State private var isGeneratingDigest = false
     @State private var viewModel = InsightsViewModel()
@@ -103,6 +110,7 @@ struct InsightsView: View {
             VStack(spacing: 20) {
                 if !hasAnyEntries { emptyState }
                 headerSummary
+                LivingInsightCard()
                 DashboardCard(title: "Weekly Intake", icon: "chart.bar.fill") { chartSection }
                 DashboardCard(title: "Hydration Heatmap", icon: "square.grid.3x3.fill") { heatmapSection }
             }
@@ -140,6 +148,8 @@ struct InsightsView: View {
             ActivityShareSheet(payload: payload)
                 .presentationDetents([.medium, .large])
         }
+        .onReceive(Timer.publish(every: 30, on: .main, in: .common).autoconnect()) { clock = $0 }
+        .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in clock = Date() }
         .task {
             // Opening analytics must not start device-only model work. The
             // recap and insight have immediate data-based defaults; generation
@@ -152,7 +162,9 @@ struct InsightsView: View {
                 streakFreezeDates: store.streakFreezeDates
             )
         }
-        .onChange(of: store.entries.count) {
+        .onChange(of: liveSnapshot) {
+            wordingRevision = UUID()
+            aiInsight = nil; weeklyDigest = nil
             viewModel.recompute(
                 entries: store.entries,
                 dailyGoalML: store.dailyGoal.totalML,
@@ -205,6 +217,7 @@ struct InsightsView: View {
                 if !hasAnyEntries { emptyState }
 
                 headerSummary
+                LivingInsightCard()
 
                 if isRegular {
                     // iPad Multi-column layout
@@ -703,18 +716,17 @@ struct InsightsView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
-            } else {
-                let digest = weeklyDigest ?? staticWeeklyDigest
-                VStack(alignment: .leading, spacing: 8) {
-                    Text(digest.headline)
-                        .font(Theme.editorialSerif(22, weight: .semibold, relativeTo: .title3))
-                    Text(digest.narrative)
-                        .font(.subheadline)
-                    if let encouragement = digest.encouragement {
-                        Text(encouragement)
-                            .font(.subheadline.weight(.medium))
-                            .foregroundStyle(Theme.lagoon)
-                    }
+            }
+            let digest = weeklyDigest ?? staticWeeklyDigest
+            VStack(alignment: .leading, spacing: 8) {
+                Text(digest.headline)
+                    .font(Theme.editorialSerif(22, weight: .semibold, relativeTo: .title3))
+                Text(digest.narrative)
+                    .font(.subheadline)
+                if let encouragement = digest.encouragement {
+                    Text(encouragement)
+                        .font(.subheadline.weight(.medium))
+                        .foregroundStyle(Theme.lagoon)
                 }
             }
 
@@ -724,7 +736,7 @@ struct InsightsView: View {
                 Label("Generate AI recap", systemImage: "sparkles")
                     .font(.subheadline.weight(.medium))
             }
-            .disabled(isGeneratingDigest)
+            .disabled(isGeneratingDigest || !LivingBottleCoordinator.isModelReady)
         }
         .padding(.vertical, 6)
     }
@@ -733,27 +745,12 @@ struct InsightsView: View {
         guard subscriptionManager.hasAccess(to: .aiInsights), !isGeneratingDigest else { return }
         isGeneratingDigest = true
         defer { isGeneratingDigest = false }
-
-        let stats = WeeklyStats.compute(entries: store.entries, goalML: store.dailyGoal.totalML)
-
-        #if canImport(FoundationModels)
-        if #available(iOS 26.0, *), SipliIntelligence.shared.isReady {
-            if let payload = await SipliIntelligence.shared.weeklyDigest(stats: stats) {
-                weeklyDigest = WeeklyDigestDisplay(
-                    headline: payload.headline,
-                    narrative: payload.narrative,
-                    encouragement: payload.encouragement
-                )
-                return
-            }
-        }
-        #endif
-
-        weeklyDigest = WeeklyDigestDisplay(
-            headline: "Your week in water",
-            narrative: stats.staticDigest,
-            encouragement: nil
-        )
+        let snapshot = liveSnapshot, token = wordingRevision
+        let base = staticWeeklyDigest
+        let tone = await LivingBottleCoordinator.generateTone(context: snapshot.modelContext)
+        guard token == wordingRevision, snapshot == liveSnapshot else { return }
+        weeklyDigest = WeeklyDigestDisplay(headline: base.headline, narrative: base.narrative,
+            encouragement: tone.map { BottleCopy.text(tone: $0, purpose: .insight, snapshot: snapshot) })
     }
 
     // MARK: - AI Insights Section
@@ -767,15 +764,14 @@ struct InsightsView: View {
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
-            } else {
-                let insight = aiInsight ?? generateStaticInsight(data: trendData)
-                HStack(alignment: .top, spacing: 10) {
-                    Image(systemName: "sparkles")
-                        .foregroundStyle(Theme.lavender)
-                        .font(.body)
-                    Text(insight)
-                        .font(.subheadline)
-                }
+            }
+            let insight = aiInsight ?? liveSnapshot.fallback
+            HStack(alignment: .top, spacing: 10) {
+                Image(systemName: "sparkles")
+                    .foregroundStyle(Theme.lavender)
+                    .font(.body)
+                Text(insight)
+                    .font(.subheadline)
             }
 
             Button {
@@ -784,7 +780,7 @@ struct InsightsView: View {
                 Label("Generate AI insight", systemImage: "sparkles")
                     .font(.subheadline.weight(.medium))
             }
-            .disabled(isGeneratingInsight)
+            .disabled(isGeneratingInsight || !LivingBottleCoordinator.isModelReady)
         }
         .padding(.vertical, 6)
     }
@@ -795,62 +791,12 @@ struct InsightsView: View {
         guard subscriptionManager.hasAccess(to: .aiInsights), !isGeneratingInsight else { return }
         isGeneratingInsight = true
         defer { isGeneratingInsight = false }
-
-        let data = trendData
-        let todayProgress = store.todayTotalML / max(1, store.dailyGoal.totalML)
-
-        let prompt = """
-            Generate a brief personalized hydration insight (2-3 sentences max).
-            Today's progress: \(String(format: "%.0f", todayProgress * 100))%
-            Current streak: \(data.currentStreak) days
-            Week-over-week change: \(data.weekOverWeekChange.map { String(format: "%.0f%%", $0) } ?? "N/A")
-            Consistency (30 days): \(String(format: "%.0f", data.consistency * 100))%
-            Best day (30 days): \(Int(data.bestDay)) ml
-            Lowest day (30 days): \(data.lowestDay.map { "\(Int($0)) ml" } ?? "N/A")
-            Be encouraging and specific. No emojis.
-            """
-
-        #if canImport(FoundationModels)
-        if #available(iOS 26.0, *) {
-            if let result = await _generateInsightWithFoundationModels(prompt: prompt) {
-                aiInsight = result
-                return
-            }
-        }
-        #endif
-
-        aiInsight = generateStaticInsight(data: data)
+        let snapshot = liveSnapshot, token = wordingRevision
+        let tone = await LivingBottleCoordinator.generateTone(context: snapshot.modelContext)
+        guard token == wordingRevision, snapshot == liveSnapshot else { return }
+        aiInsight = BottleCopy.text(tone: tone ?? .calm, purpose: .insight, snapshot: snapshot)
     }
 
-    #if canImport(FoundationModels)
-    @available(iOS 26.0, *)
-    private func _generateInsightWithFoundationModels(prompt: String) async -> String? {
-        guard SipliIntelligence.shared.isReady else { return nil }
-        return await SipliIntelligence.shared.insight(context: prompt)
-    }
-    #endif
-
-    private func generateStaticInsight(data: TrendData) -> String {
-        if data.currentStreak >= 7 {
-            return "Incredible! You've hit your hydration goal \(data.currentStreak) days in a row. Your consistency is paying off — keep this momentum going."
-        } else if data.currentStreak >= 3 {
-            return "Nice streak! \(data.currentStreak) consecutive days of meeting your goal. You're building a solid hydration habit."
-        }
-
-        if let wow = data.weekOverWeekChange, wow > 10 {
-            return "Your intake is up \(String(format: "%.0f", wow))% compared to last week. Great improvement — your body is thanking you."
-        } else if let wow = data.weekOverWeekChange, wow < -10 {
-            return "Your intake dipped \(String(format: "%.0f", abs(wow)))% from last week. Try setting a few extra reminders to get back on track."
-        }
-
-        if data.consistency >= 0.9 {
-            return "You've logged water on \(String(format: "%.0f", data.consistency * 100))% of the last 30 days. That's outstanding consistency — hydration is clearly a habit for you."
-        } else if data.consistency < 0.5 {
-            return "You've been active \(String(format: "%.0f", data.consistency * 100))% of the last 30 days. Try to log at least one glass daily to build the habit."
-        }
-
-        return "Stay consistent with your hydration goals. Every glass counts toward better health and energy throughout the day."
-    }
 
 }
 
