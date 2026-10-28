@@ -1,0 +1,19 @@
+{
+  "version": "6.1",
+  "locales": {
+    "en-US": {
+      "APP_IPHONE_DUO": [
+        "appstore-screenshots/release-6.0-duo/inner/01-made-for-iphone-duo-2007x2853.png",
+        "appstore-screenshots/release-6.0-duo/inner/02-turn-it-sideways-2007x2853.png",
+        "appstore-screenshots/release-6.0-duo/inner/03-log-a-drink-2007x2853.png",
+        "appstore-screenshots/release-6.0-duo/inner/04-the-bigger-picture-2007x2853.png",
+        "appstore-screenshots/release-6.0-duo/inner/05-folded-or-open-2007x2853.png",
+        "appstore-screenshots/release-6.0-duo/outer/01-see-whats-left-1398x2034.png",
+        "appstore-screenshots/release-6.0-duo/outer/02-log-a-drink-1398x2034.png",
+        "appstore-screenshots/release-6.0-duo/outer/03-watch-your-habit-1398x2034.png",
+        "appstore-screenshots/release-6.0-duo/outer/04-your-daily-diary-1398x2034.png",
+        "appstore-screenshots/release-6.0-duo/outer/05-hydration-coach-1398x2034.png"
+      ]
+    }
+  }
+}
