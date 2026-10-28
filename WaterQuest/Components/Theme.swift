@@ -408,6 +408,7 @@ struct AnimatedMeshBackground: View {
 
 struct AppWaterBackground: View {
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.spookyTheme) private var spookyTheme
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
     private var usesStaticBackground: Bool {
@@ -496,6 +497,11 @@ struct AppWaterBackground: View {
                     endPoint: .bottom
                 )
             )
+            .overlay {
+                if spookyTheme {
+                    SpookyNightSky(time: time, isLight: colorScheme == .light)
+                }
+            }
             .ignoresSafeArea()
     }
 

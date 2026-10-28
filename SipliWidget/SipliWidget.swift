@@ -4,6 +4,7 @@ import WidgetKit
 struct SipliWidgetEntryView: View {
     @Environment(\.widgetFamily) private var family
     let data: WidgetData
+    var date: Date = .now
 
     private var progress: Double {
         min(1, data.todayTotalML / max(1, data.goal.totalML))
@@ -12,25 +13,83 @@ struct SipliWidgetEntryView: View {
     var body: some View {
         switch family {
         case .systemSmall:
-            SmallWidgetView(data: data)
+            SmallWidgetView(data: data, style: style)
         case .systemMedium:
-            MediumWidgetView(data: data)
+            MediumWidgetView(data: data, style: style)
         case .systemLarge:
-            LargeWidgetView(data: data)
+            LargeWidgetView(data: data, style: style)
         case .accessoryCircular:
-            AccessoryCircularWidgetView(progress: progress)
+            AccessoryCircularWidgetView(progress: progress, tint: style.accent)
         case .accessoryRectangular:
-            AccessoryRectangularWidgetView(data: data, progress: progress)
+            AccessoryRectangularWidgetView(data: data, progress: progress, tint: style.accent)
         case .accessoryInline:
             AccessoryInlineWidgetView(data: data, progress: progress)
         default:
-            SmallWidgetView(data: data)
+            SmallWidgetView(data: data, style: style)
         }
+    }
+
+    private var style: WidgetSeasonStyle { WidgetSeasonStyle(date: date) }
+}
+
+// MARK: - Spooky Season
+
+/// Widget colours: the usual water blue, or the potion palette while
+/// Spooky Season is live (keyed off the timeline entry's date).
+struct WidgetSeasonStyle {
+    let spooky: Bool
+    let halloween: Bool
+
+    init(date: Date) {
+        spooky = SpookySeason.showsTheme(on: date)
+        halloween = spooky && SpookySeason.isHalloween(date)
+    }
+
+    static let standard = WidgetSeasonStyle(spooky: false, halloween: false)
+
+    private init(spooky: Bool, halloween: Bool) {
+        self.spooky = spooky
+        self.halloween = halloween
+    }
+
+    var accent: Color { spooky ? SpookySeason.Palette.potion : .blue }
+
+    var ringTrack: Color { spooky ? SpookySeason.Palette.potion.opacity(0.25) : Color.blue.opacity(0.2) }
+
+    var ringFill: AnyShapeStyle {
+        guard spooky else { return AnyShapeStyle(Color.blue) }
+        return AnyShapeStyle(AngularGradient(
+            colors: [SpookySeason.Palette.potion, SpookySeason.Palette.slime],
+            center: .center,
+            startAngle: .degrees(0),
+            endAngle: .degrees(360)
+        ))
+    }
+}
+
+/// Tiny corner decoration: a bat, or a pumpkin on Halloween itself.
+struct SpookyCornerMark: View {
+    let style: WidgetSeasonStyle
+    var width: CGFloat = 22
+
+    var body: some View {
+        Group {
+            if style.halloween {
+                PumpkinView()
+                    .frame(width: width * 0.8)
+            } else {
+                BatShape()
+                    .fill(SpookySeason.Palette.potion.opacity(0.85))
+                    .frame(width: width, height: width / 2)
+            }
+        }
+        .accessibilityHidden(true)
     }
 }
 
 struct AccessoryCircularWidgetView: View {
     let progress: Double
+    var tint: Color = .blue
 
     var body: some View {
         Gauge(value: progress) {
@@ -40,7 +99,7 @@ struct AccessoryCircularWidgetView: View {
                 .font(.caption2.weight(.semibold))
         }
         .gaugeStyle(.accessoryCircular)
-        .tint(.blue)
+        .tint(tint)
         .containerBackground(for: .widget) {
             Color.clear
         }
@@ -50,6 +109,7 @@ struct AccessoryCircularWidgetView: View {
 struct AccessoryRectangularWidgetView: View {
     let data: WidgetData
     let progress: Double
+    var tint: Color = .blue
 
     var body: some View {
         VStack(alignment: .leading, spacing: 4) {
@@ -65,7 +125,7 @@ struct AccessoryRectangularWidgetView: View {
                 EmptyView()
             }
                 .gaugeStyle(.accessoryLinear)
-                .tint(.blue)
+                .tint(tint)
         }
         .containerBackground(for: .widget) {
             Color.clear
@@ -87,7 +147,7 @@ struct SipliWidget: Widget {
 
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: kind, provider: SipliTimelineProvider()) { entry in
-            SipliWidgetEntryView(data: entry.data)
+            SipliWidgetEntryView(data: entry.data, date: entry.date)
         }
         .configurationDisplayName("Sipli")
         .description("Track your daily hydration progress.")
@@ -189,5 +249,35 @@ private extension WidgetData {
     SipliWidget()
 } timeline: {
     SipliEntry(date: .now, data: .previewMid)
+}
+
+private let spookyPreviewDate = Calendar.current.date(from: DateComponents(year: 2026, month: 10, day: 28, hour: 15)) ?? .now
+private let halloweenPreviewDate = Calendar.current.date(from: DateComponents(year: 2026, month: 10, day: 31, hour: 21)) ?? .now
+
+#Preview("Spooky - Small", as: .systemSmall) {
+    SipliWidget()
+} timeline: {
+    SipliEntry(date: spookyPreviewDate, data: .previewMid)
+    SipliEntry(date: halloweenPreviewDate, data: .previewGoalMetImperial)
+}
+
+#Preview("Spooky - Medium", as: .systemMedium) {
+    SipliWidget()
+} timeline: {
+    SipliEntry(date: spookyPreviewDate, data: .previewMid)
+    SipliEntry(date: halloweenPreviewDate, data: .previewMid)
+}
+
+#Preview("Spooky - Large", as: .systemLarge) {
+    SipliWidget()
+} timeline: {
+    SipliEntry(date: spookyPreviewDate, data: .previewMid)
+    SipliEntry(date: halloweenPreviewDate, data: .previewEmpty)
+}
+
+#Preview("Spooky - Lock Screen Circular", as: .accessoryCircular) {
+    SipliWidget()
+} timeline: {
+    SipliEntry(date: spookyPreviewDate, data: .previewMid)
 }
 #endif

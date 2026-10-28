@@ -40,7 +40,17 @@ final class PhoneSessionManager: NSObject, WCSessionDelegate {
         encoder.dateEncodingStrategy = .iso8601
         guard let data = try? encoder.encode(state) else { return }
         // transferUserInfo is queued and delivered even if Watch is not reachable.
-        WCSession.default.transferUserInfo([stateKey: data])
+        WCSession.default.transferUserInfo([
+            stateKey: data,
+            SpookySeason.themeDefaultsKey: SpookySeason.isThemeEnabled(),
+        ])
+    }
+
+    /// Spooky Season opt-in, sent on its own when the user changes it.
+    func sendSpookyPreference(_ enabled: Bool) {
+        guard WCSession.default.activationState == .activated,
+              WCSession.default.isPaired else { return }
+        WCSession.default.transferUserInfo([SpookySeason.themeDefaultsKey: enabled])
     }
 
     // MARK: - WCSessionDelegate

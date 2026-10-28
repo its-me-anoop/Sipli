@@ -39,6 +39,8 @@ struct RootView: View {
         .presentsPaywall()
         // Publishes the foldable hinge state to every screen below.
         .foldTracking()
+        // Spooky Season look, only within the event dates.
+        .spookyThemeProvider()
     }
 
     private func bootstrapAppFlow() async {

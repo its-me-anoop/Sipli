@@ -3,6 +3,7 @@ import WidgetKit
 
 struct SmallWidgetView: View {
     let data: WidgetData
+    var style: WidgetSeasonStyle = .standard
 
     private var progress: Double {
         min(1, data.todayTotalML / max(1, data.goal.totalML))
@@ -12,11 +13,11 @@ struct SmallWidgetView: View {
         VStack(spacing: 8) {
             ZStack {
                 Circle()
-                    .stroke(Color.blue.opacity(0.2), lineWidth: 8)
+                    .stroke(style.ringTrack, lineWidth: 8)
 
                 Circle()
                     .trim(from: 0, to: progress)
-                    .stroke(Color.blue, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                    .stroke(style.ringFill, style: StrokeStyle(lineWidth: 8, lineCap: .round))
                     .rotationEffect(.degrees(-90))
 
                 Text(Formatters.percentString(progress))
@@ -30,6 +31,12 @@ struct SmallWidgetView: View {
                 .foregroundStyle(.secondary)
                 .lineLimit(1)
                 .minimumScaleFactor(0.8)
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        .overlay(alignment: .topTrailing) {
+            if style.spooky {
+                SpookyCornerMark(style: style, width: 20)
+            }
         }
         .containerBackground(.fill.tertiary, for: .widget)
     }

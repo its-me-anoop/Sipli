@@ -3,6 +3,7 @@ import SwiftUI
 struct DiaryView: View {
     @EnvironmentObject private var store: HydrationStore
     @EnvironmentObject private var healthKit: HealthKitManager
+    @Environment(\.spookyTheme) private var spookyTheme
 
     @State private var selectedDate = Date()
     @State private var entryToEdit: HydrationEntry?
@@ -122,12 +123,13 @@ struct DiaryView: View {
             displayedComponents: .date
         )
         .datePickerStyle(.graphical)
-        .tint(Theme.lagoon)
+        .tint(spookyTheme ? SpookySeason.Palette.accent : Theme.lagoon)
         .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 20, style: .continuous)
                 .fill(Theme.card)
         )
+        .spookyCobweb()
     }
 
     private var daySummary: some View {

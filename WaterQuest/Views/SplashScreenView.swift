@@ -3,8 +3,10 @@ import SwiftUI
 struct SplashScreenView: View {
     @Environment(\.horizontalSizeClass) private var sizeClass
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.spookyTheme) private var spookyTheme
 
     private var isRegular: Bool { sizeClass == .regular }
+    private var accent: Color { spookyTheme ? SpookySeason.Palette.accent : Theme.lagoon }
 
     var body: some View {
         ZStack {
@@ -17,9 +19,9 @@ struct SplashScreenView: View {
 
                 VStack(spacing: isRegular ? 14 : 10) {
                     (Text("Sip ").foregroundStyle(Theme.ink)
-                        + Text("more.").italic().foregroundStyle(Theme.lagoon))
+                        + Text(spookyTheme ? "spooky." : "more.").italic().foregroundStyle(accent))
                         .font(Theme.editorialSerif(isRegular ? 56 : 42, relativeTo: .largeTitle))
-                    Text("Hydration that fits your day.")
+                    Text(spookyTheme ? "Spooky Season is here." : "Hydration that fits your day.")
                         .font(Theme.sipliMono(isRegular ? 12 : 11, weight: .medium, relativeTo: .caption))
                         .tracking(1.2)
                         .textCase(.uppercase)
@@ -31,7 +33,7 @@ struct SplashScreenView: View {
 
                 VStack(spacing: 10) {
                     ProgressView()
-                        .tint(Theme.lagoon)
+                        .tint(accent)
                         .controlSize(.regular)
                     Text("Getting things ready")
                         .font(Theme.sipliMono(11, weight: .medium, relativeTo: .caption))

@@ -75,6 +75,11 @@ enum AchievementCatalog {
         Achievement(id: "matchday.first",  title: "First Whistle", detail: "Win your first match day", symbol: "soccerball", category: .season),
         Achievement(id: "matchday.golden", title: "Golden Bottle", detail: "Win 12 match days in a season", symbol: "trophy.circle.fill", category: .season),
 
+        // MARK: Season — Spooky Season (Halloween)
+        Achievement(id: "spooky.first",    title: "First Brew",      detail: "Hit your goal during Spooky Season", symbol: "flask.fill", category: .season),
+        Achievement(id: "spooky.cauldron", title: "Cauldron Keeper", detail: "Brew 5 potions in Spooky Season", symbol: "moon.stars.fill", category: .season),
+        Achievement(id: "spooky.halloween", title: "Trick or Treat", detail: "Hit your goal on Halloween", symbol: "theatermasks.fill", category: .season),
+
         // MARK: Secret — hidden until earned
         Achievement(id: "secret.midnight", title: "Midnight Sip",   detail: "Log a drink in the midnight hour", symbol: "moon.zzz.fill", category: .secret),
         Achievement(id: "secret.siri",     title: "Voice Activated", detail: "Log a drink with Siri", symbol: "waveform", category: .secret),

@@ -24,6 +24,7 @@ final class AchievementEngineTests: XCTestCase {
         entries: [HydrationEntry] = [],
         goalCompletionCount: Int = 0,
         matchDayWins: Int = 0,
+        spookyBrewDates: [Date] = [],
         streakFreezeTokens: Int = 0,
         streakFreezeDates: [Date] = [],
         counters: EngagementCounters = .zero
@@ -32,6 +33,7 @@ final class AchievementEngineTests: XCTestCase {
         s.entries = entries
         s.goalCompletionCount = goalCompletionCount
         s.matchDayWins = matchDayWins
+        s.spookyBrewDates = spookyBrewDates
         s.streakFreezeTokens = streakFreezeTokens
         s.streakFreezeDates = streakFreezeDates
         s.counters = counters
@@ -188,6 +190,22 @@ final class AchievementEngineTests: XCTestCase {
         XCTAssertTrue(earned(state(matchDayWins: 1)).contains("matchday.first"))
         XCTAssertFalse(earned(state(matchDayWins: 1)).contains("matchday.golden"))
         XCTAssertTrue(earned(state(matchDayWins: 12)).contains("matchday.golden"))
+    }
+
+    func test_spookySeason_brewMilestones() {
+        func oct(_ day: Int) -> Date { calendar.date(from: DateComponents(year: 2026, month: 10, day: day))! }
+
+        XCTAssertFalse(earned(state()).contains("spooky.first"))
+
+        let one = earned(state(spookyBrewDates: [oct(25)]))
+        XCTAssertTrue(one.contains("spooky.first"))
+        XCTAssertFalse(one.contains("spooky.cauldron"))
+        XCTAssertFalse(one.contains("spooky.halloween"))
+
+        let five = earned(state(spookyBrewDates: [oct(25), oct(26), oct(27), oct(28), oct(29)]))
+        XCTAssertTrue(five.contains("spooky.cauldron"))
+
+        XCTAssertTrue(earned(state(spookyBrewDates: [oct(31)])).contains("spooky.halloween"))
     }
 
     // MARK: - Counter-backed secrets

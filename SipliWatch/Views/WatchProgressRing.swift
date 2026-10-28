@@ -5,17 +5,25 @@ struct WatchProgressRing: View {
     let currentML: Double
     let goalML: Double
     let unitSystem: UnitSystem
+    /// Potion palette during Spooky Season.
+    var spooky: Bool = false
+
+    private var ringColors: [Color] {
+        spooky
+            ? [SpookySeason.Palette.potion, SpookySeason.Palette.slime]
+            : [Theme.lagoon, Color(red: 0.19, green: 0.76, blue: 0.64)]
+    }
 
     var body: some View {
         ZStack {
             Circle()
-                .stroke(Color.gray.opacity(0.2), lineWidth: 10)
+                .stroke(spooky ? SpookySeason.Palette.potion.opacity(0.25) : Color.gray.opacity(0.2), lineWidth: 10)
 
             Circle()
                 .trim(from: 0, to: min(progress, 1.0))
                 .stroke(
                     AngularGradient(
-                        colors: [Theme.lagoon, Color(red: 0.19, green: 0.76, blue: 0.64)],
+                        colors: ringColors,
                         center: .center,
                         startAngle: .degrees(0),
                         endAngle: .degrees(360)

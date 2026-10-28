@@ -52,6 +52,19 @@ struct WatchWidgetEntry: TimelineEntry {
     let unitSystem: UnitSystem
 }
 
+// MARK: - Spooky Season
+
+/// Complication colours: potion purple while Spooky Season is live.
+private extension WatchWidgetEntry {
+    var spooky: Bool { SpookySeason.showsTheme(on: date) }
+    var accent: Color { spooky ? SpookySeason.Palette.potion : Theme.lagoon }
+    var gaugeGradient: Gradient {
+        spooky
+            ? Gradient(colors: [SpookySeason.Palette.potion, SpookySeason.Palette.slime])
+            : Gradient(colors: [Theme.lagoon, Color(red: 0.19, green: 0.76, blue: 0.64)])
+    }
+}
+
 // MARK: - Complication Views
 
 struct CircularComplicationView: View {
@@ -60,16 +73,13 @@ struct CircularComplicationView: View {
     var body: some View {
         Gauge(value: entry.progress) {
             Image(systemName: "drop.fill")
-                .foregroundStyle(Theme.lagoon)
+                .foregroundStyle(entry.accent)
         } currentValueLabel: {
             Text("\(Int(entry.progress * 100))")
                 .font(.system(size: 14, weight: .bold))
         }
         .gaugeStyle(.accessoryCircular)
-        .tint(Gradient(colors: [
-            Theme.lagoon,
-            Color(red: 0.19, green: 0.76, blue: 0.64)
-        ]))
+        .tint(entry.gaugeGradient)
     }
 }
 
@@ -79,14 +89,14 @@ struct CornerComplicationView: View {
     var body: some View {
         Text("\(Int(entry.progress * 100))%")
             .font(.system(size: 14, weight: .bold))
-            .foregroundStyle(Theme.lagoon)
+            .foregroundStyle(entry.accent)
             .widgetLabel {
                 Gauge(value: entry.progress) {
                     Text("Hydration")
                 } currentValueLabel: {
                     Text("\(Int(entry.progress * 100))%")
                 }
-                .tint(Theme.lagoon)
+                .tint(entry.accent)
                 .gaugeStyle(.accessoryLinear)
             }
     }
@@ -143,7 +153,7 @@ struct QuickAddWidgetView: View {
             Button(intent: WatchQuickAddIntent()) {
                 Image(systemName: "plus.circle.fill")
                     .font(.system(size: 24))
-                    .foregroundStyle(Theme.lagoon)
+                    .foregroundStyle(entry.accent)
             }
             .buttonStyle(.plain)
         }

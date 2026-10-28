@@ -5,13 +5,14 @@ struct DashboardCard<Content: View>: View {
     var icon: String? = nil
     var backgroundGradient: LinearGradient = Theme.card
     @ViewBuilder let content: Content
+    @Environment(\.spookyTheme) private var spookyTheme
 
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
             if let icon = icon {
                 HStack(spacing: 10) {
                     Image(systemName: icon)
-                        .foregroundStyle(Theme.lagoon)
+                        .foregroundStyle(spookyTheme ? SpookySeason.Palette.accent : Theme.lagoon)
                         .font(.body.weight(.semibold))
                     Text(title.uppercased())
                         .font(Theme.sipliMono(11, weight: .semibold, relativeTo: .caption))
@@ -37,6 +38,7 @@ struct DashboardCard<Content: View>: View {
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .stroke(Theme.glassBorder, lineWidth: 1)
         )
+        .spookyCobweb(cornerRadius: 24)
         .shadow(color: Theme.shadowColor.opacity(0.5), radius: 14, x: 0, y: 8)
     }
 }

@@ -15,6 +15,7 @@ struct DashboardView: View {
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
     @Environment(\.requestReview) private var requestReview
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.spookyTheme) private var spookyTheme
 
     @StateObject private var aiService = HydrationAIService()
 
@@ -217,6 +218,13 @@ struct DashboardView: View {
             .staggeredAppear(2)
         }
 
+        if spookyTheme {
+            DashboardCard(title: "Spooky Season", icon: "moon.stars.fill") {
+                spookySeasonSection
+            }
+            .staggeredAppear(2)
+        }
+
         DashboardCard(title: "Weekly Quests", icon: "flag.checkered") {
             WeeklyQuestCard(quests: activeQuests, daysRemaining: WeeklyQuests.daysRemaining())
         }
@@ -305,6 +313,12 @@ struct DashboardView: View {
                     if MatchDay.isActive() {
                         DashboardCard(title: "Match Day", icon: "soccerball") {
                             matchDaySection
+                        }
+                    }
+
+                    if spookyTheme {
+                        DashboardCard(title: "Spooky Season", icon: "moon.stars.fill") {
+                            spookySeasonSection
                         }
                     }
 
@@ -437,6 +451,9 @@ struct DashboardView: View {
                 if MatchDay.isActive() {
                     FootballCelebrationOverlay(isShowing: $showGoalCelebration)
                         .allowsHitTesting(false)
+                } else if spookyTheme {
+                    SpookyCelebrationOverlay(isShowing: $showGoalCelebration)
+                        .allowsHitTesting(false)
                 } else {
                     GoalCelebrationOverlay(isShowing: $showGoalCelebration)
                         .allowsHitTesting(false)
@@ -532,6 +549,16 @@ struct DashboardView: View {
             score: store.todayEntries.count,
             wins: store.matchDayWins,
             phase: MatchDay.phase(progress: progress)
+        )
+    }
+
+    /// Spooky Season (Halloween) dashboard section content.
+    private var spookySeasonSection: some View {
+        SpookySeasonCard(
+            progress: progress,
+            sips: store.todayEntries.count,
+            brews: store.spookyBrewDates.count,
+            phase: SpookySeason.phase(progress: progress)
         )
     }
 

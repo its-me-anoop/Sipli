@@ -3,6 +3,7 @@ import WidgetKit
 
 struct MediumWidgetView: View {
     let data: WidgetData
+    var style: WidgetSeasonStyle = .standard
 
     private var progress: Double {
         min(1, data.todayTotalML / max(1, data.goal.totalML))
@@ -12,11 +13,11 @@ struct MediumWidgetView: View {
         HStack(spacing: 16) {
             ZStack {
                 Circle()
-                    .stroke(Color.blue.opacity(0.2), lineWidth: 8)
+                    .stroke(style.ringTrack, lineWidth: 8)
 
                 Circle()
                     .trim(from: 0, to: progress)
-                    .stroke(Color.blue, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                    .stroke(style.ringFill, style: StrokeStyle(lineWidth: 8, lineCap: .round))
                     .rotationEffect(.degrees(-90))
 
                 Text(Formatters.percentString(progress))
@@ -46,16 +47,22 @@ struct MediumWidgetView: View {
                 Button(intent: QuickAddWaterIntent(amountML: 250)) {
                     Label("250", systemImage: "plus.circle.fill")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(style.accent)
                 }
                 .buttonStyle(.plain)
 
                 Button(intent: QuickAddWaterIntent(amountML: 500)) {
                     Label("500", systemImage: "plus.circle.fill")
                         .font(.caption.weight(.semibold))
-                        .foregroundStyle(.blue)
+                        .foregroundStyle(style.accent)
                 }
                 .buttonStyle(.plain)
+            }
+        }
+        .frame(maxHeight: .infinity)
+        .overlay(alignment: .topTrailing) {
+            if style.spooky {
+                SpookyCornerMark(style: style)
             }
         }
         .containerBackground(.fill.tertiary, for: .widget)

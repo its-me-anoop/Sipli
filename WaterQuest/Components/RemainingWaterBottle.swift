@@ -13,6 +13,8 @@ struct RemainingWaterBottle: View {
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
     @Environment(\.scenePhase) private var scenePhase
     @State private var visible = false
+    /// Spooky Season potion look (event dates + Settings toggle).
+    @Environment(\.spookyTheme) private var isSpooky
 
     init(progress: Double, isRegular: Bool, bottleWidth: CGFloat, bottleHeight: CGFloat) {
         self.progress = progress
@@ -37,11 +39,15 @@ struct RemainingWaterBottle: View {
         ZStack {
             // Render in the asset's own aspect ratio so the liquid and glass align
             // at both phone and tablet sizes, including the outer letterboxing.
-            BottleWaterCanvas(water: animation.frame)
+            BottleWaterCanvas(water: animation.frame, tint: isSpooky ? SpookySeason.Palette.potion : Theme.lagoon)
                 .aspectRatio(1240.0 / 1748.0, contentMode: .fit)
             Image("bottle")
                 .resizable()
                 .scaledToFit()
+            if isSpooky {
+                SpookyBottleBats(reduceMotion: usesReducedMotion)
+                    .frame(width: bottleWidth, height: bottleHeight)
+            }
 
             VStack(spacing: 0) {
                 Text("\(remainingPercent)%")
@@ -66,7 +72,7 @@ struct RemainingWaterBottle: View {
         }
         .frame(width: bottleWidth, height: bottleHeight)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("Water remaining")
+        .accessibilityLabel(isSpooky ? "Potion remaining" : "Water remaining")
         .accessibilityValue("\(remainingPercent) percent left")
         .accessibilityIdentifier("homeWaterBottle")
         .onAppear {
@@ -106,6 +112,7 @@ private enum BottleOptics {
 
 private struct BottleWaterCanvas: View {
     let water: BottleWaterModel
+    var tint: Color = Theme.lagoon
 
     var body: some View {
         Canvas { context, size in
@@ -148,7 +155,7 @@ private struct BottleWaterCanvas: View {
 
             let rear = surface(back: true)
             let front = surface(back: false)
-            let waterBlue = Theme.lagoon
+            let waterBlue = tint
             context.fill(filled(rear), with: .color(waterBlue.opacity(0.32)))
             context.fill(filled(front), with: .linearGradient(
                 Gradient(colors: [waterBlue.opacity(0.60), waterBlue.opacity(0.94)]),
@@ -398,4 +405,35 @@ final class BottleWaterAnimation: ObservableObject {
 private final class BottleDisplayLinkTarget: NSObject {
     weak var owner: BottleWaterAnimation?
     @objc func tick(_ link: CADisplayLink) { owner?.step(at: link.timestamp) }
+}
+
+/// Spooky Season: two small bats drifting beside the bottle's neck. Hidden
+/// from VoiceOver; still under Reduce Motion.
+private struct SpookyBottleBats: View {
+    let reduceMotion: Bool
+
+    var body: some View {
+        GeometryReader { proxy in
+            let w = proxy.size.width, h = proxy.size.height
+            TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion)) { context in
+                let t = reduceMotion ? 0 : context.date.timeIntervalSinceReferenceDate
+                ZStack {
+                    bat(size: w * 0.16)
+                        .position(x: w * 0.18 + sin(t * 0.9) * w * 0.03,
+                                  y: h * 0.12 + cos(t * 1.3) * h * 0.02)
+                    bat(size: w * 0.11)
+                        .position(x: w * 0.84 + cos(t * 0.7) * w * 0.03,
+                                  y: h * 0.34 + sin(t * 1.1) * h * 0.02)
+                }
+            }
+        }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+    }
+
+    private func bat(size: CGFloat) -> some View {
+        BatShape()
+            .fill(SpookySeason.Palette.potion.opacity(0.85))
+            .frame(width: size, height: size / 2)
+    }
 }

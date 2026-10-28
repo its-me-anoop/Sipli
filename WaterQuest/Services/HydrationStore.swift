@@ -19,6 +19,8 @@ final class HydrationStore: ObservableObject {
     @Published private(set) var matchDayWins: Int
     /// Start-of-day of the most recent match-day win (same-day dedupe).
     @Published private(set) var lastMatchDayWinDate: Date?
+    /// Spooky Season: days the potion was brewed (goal hit in the Halloween window).
+    @Published private(set) var spookyBrewDates: [Date]
     /// Banked streak-freeze tokens.
     @Published private(set) var streakFreezeTokens: Int
     /// Days retroactively covered by a spent freeze token.
@@ -57,6 +59,7 @@ final class HydrationStore: ObservableObject {
         self.lastGoalCompletionDate = state.lastGoalCompletionDate
         self.matchDayWins = state.matchDayWins
         self.lastMatchDayWinDate = state.lastMatchDayWinDate
+        self.spookyBrewDates = state.spookyBrewDates
         self.streakFreezeTokens = state.streakFreezeTokens
         self.streakFreezeDates = state.streakFreezeDates
         self.unlockedAchievements = state.unlockedAchievements
@@ -193,6 +196,7 @@ final class HydrationStore: ObservableObject {
 
         let today = Calendar.current.startOfDay(for: Date())
         registerMatchDayWinIfNeeded(today: today)
+        registerSpookyBrewIfNeeded(today: today)
 
         if let last = lastGoalCompletionDate,
            Calendar.current.isDate(last, inSameDayAs: today) {
@@ -219,6 +223,16 @@ final class HydrationStore: ObservableObject {
         }
         matchDayWins += 1
         lastMatchDayWinDate = today
+    }
+
+    /// Spooky Season: for opted-in users, hitting the goal during the
+    /// Halloween window brews the day's potion. One per day; dates only ever get added.
+    private func registerSpookyBrewIfNeeded(today: Date) {
+        guard SpookySeason.isActive(on: today), SpookySeason.isThemeEnabled() else { return }
+        if spookyBrewDates.contains(where: { Calendar.current.isDate($0, inSameDayAs: today) }) {
+            return
+        }
+        spookyBrewDates.append(today)
     }
 
     /// Spends one banked freeze token to cover yesterday when it broke an
@@ -396,6 +410,7 @@ final class HydrationStore: ObservableObject {
             lastGoalCompletionDate: lastGoalCompletionDate,
             matchDayWins: matchDayWins,
             lastMatchDayWinDate: lastMatchDayWinDate,
+            spookyBrewDates: spookyBrewDates,
             streakFreezeTokens: streakFreezeTokens,
             streakFreezeDates: streakFreezeDates,
             unlockedAchievements: unlockedAchievements,
@@ -527,6 +542,9 @@ final class HydrationStore: ObservableObject {
         if let remote = state.lastMatchDayWinDate {
             lastMatchDayWinDate = lastMatchDayWinDate.map { max($0, remote) } ?? remote
         }
+
+        // Spooky brews union: a brew recorded on any device happened.
+        spookyBrewDates = Set(spookyBrewDates).union(state.spookyBrewDates).sorted()
 
         // Freeze dates union (a freeze recorded anywhere really happened);
         // tokens take the larger side — capped, so a rare double-credit from a

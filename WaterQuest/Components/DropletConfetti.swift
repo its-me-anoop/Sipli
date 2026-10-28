@@ -12,12 +12,18 @@ struct DropletConfetti: View {
     var particleCount: Int = 26
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.spookyTheme) private var spookyTheme
     @State private var burstStart: Date?
     /// Increments per burst; the delayed cleanup only clears `burstStart`
     /// when no newer burst has started since it was scheduled.
     @State private var burstGeneration = 0
 
-    private static let colors: [Color] = [Theme.lagoon, Theme.mint, Theme.sun, Theme.coral, Theme.lavender]
+    private static let standardColors: [Color] = [Theme.lagoon, Theme.mint, Theme.sun, Theme.coral, Theme.lavender]
+    private static let spookyColors: [Color] = [
+        SpookySeason.Palette.potion, SpookySeason.Palette.pumpkin, SpookySeason.Palette.slime,
+        SpookySeason.Palette.potion, SpookySeason.Palette.pumpkin,
+    ]
+    private var colors: [Color] { spookyTheme ? Self.spookyColors : Self.standardColors }
     private static let lifetime: TimeInterval = 2.0
 
     var body: some View {
@@ -67,7 +73,7 @@ struct DropletConfetti: View {
             let y = origin.y + sin(angle) * speed * t * 0.7 + 0.5 * gravity * t * t
             let scale = 0.6 + unit(32) * 0.9
             let fade = max(0, 1 - progress * progress * 1.4)
-            let color = Self.colors[i % Self.colors.count]
+            let color = colors[i % colors.count]
 
             var drop = context
             drop.opacity = fade

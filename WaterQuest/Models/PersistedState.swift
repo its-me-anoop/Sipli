@@ -55,6 +55,8 @@ struct PersistedState: Codable {
     var matchDayWins: Int
     /// Start-of-day of the most recent match-day win, for same-day dedupe.
     var lastMatchDayWinDate: Date?
+    /// Spooky Season (Halloween event): start-of-day dates the potion was brewed (goal hit).
+    var spookyBrewDates: [Date]
     /// Banked streak-freeze tokens (earned every 7-day streak, capped).
     var streakFreezeTokens: Int
     /// Start-of-day dates that a freeze token retroactively covered.
@@ -94,6 +96,7 @@ struct PersistedState: Codable {
         case earthDay2026BannerDismissed, earthDay2026Earned
         case goalCompletionCount, lastGoalCompletionDate
         case matchDayWins, lastMatchDayWinDate
+        case spookyBrewDates
         case streakFreezeTokens, streakFreezeDates
         case unlockedAchievements, counters
         case removedEntryIDs
@@ -110,6 +113,7 @@ struct PersistedState: Codable {
         lastGoalCompletionDate: Date? = nil,
         matchDayWins: Int = 0,
         lastMatchDayWinDate: Date? = nil,
+        spookyBrewDates: [Date] = [],
         streakFreezeTokens: Int = 0,
         streakFreezeDates: [Date] = [],
         unlockedAchievements: [String: Date] = [:],
@@ -126,6 +130,7 @@ struct PersistedState: Codable {
         self.lastGoalCompletionDate = lastGoalCompletionDate
         self.matchDayWins = matchDayWins
         self.lastMatchDayWinDate = lastMatchDayWinDate
+        self.spookyBrewDates = spookyBrewDates
         self.streakFreezeTokens = streakFreezeTokens
         self.streakFreezeDates = streakFreezeDates
         self.unlockedAchievements = unlockedAchievements
@@ -145,6 +150,7 @@ struct PersistedState: Codable {
         lastGoalCompletionDate = try c.decodeIfPresent(Date.self, forKey: .lastGoalCompletionDate)
         matchDayWins           = try c.decodeIfPresent(Int.self,  forKey: .matchDayWins) ?? 0
         lastMatchDayWinDate    = try c.decodeIfPresent(Date.self, forKey: .lastMatchDayWinDate)
+        spookyBrewDates        = try c.decodeIfPresent([Date].self, forKey: .spookyBrewDates) ?? []
         streakFreezeTokens     = try c.decodeIfPresent(Int.self,  forKey: .streakFreezeTokens) ?? 0
         streakFreezeDates      = try c.decodeIfPresent([Date].self, forKey: .streakFreezeDates) ?? []
         unlockedAchievements   = try c.decodeIfPresent([String: Date].self, forKey: .unlockedAchievements) ?? [:]
@@ -166,6 +172,7 @@ struct PersistedState: Codable {
         try c.encodeIfPresent(lastGoalCompletionDate, forKey: .lastGoalCompletionDate)
         try c.encode(matchDayWins,                forKey: .matchDayWins)
         try c.encodeIfPresent(lastMatchDayWinDate, forKey: .lastMatchDayWinDate)
+        try c.encode(spookyBrewDates,             forKey: .spookyBrewDates)
         try c.encode(streakFreezeTokens,          forKey: .streakFreezeTokens)
         try c.encode(streakFreezeDates,           forKey: .streakFreezeDates)
         try c.encode(unlockedAchievements,        forKey: .unlockedAchievements)

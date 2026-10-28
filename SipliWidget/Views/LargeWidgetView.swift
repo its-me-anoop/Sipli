@@ -3,6 +3,7 @@ import WidgetKit
 
 struct LargeWidgetView: View {
     let data: WidgetData
+    var style: WidgetSeasonStyle = .standard
 
     private var progress: Double {
         min(1, data.todayTotalML / max(1, data.goal.totalML))
@@ -23,11 +24,11 @@ struct LargeWidgetView: View {
             HStack(spacing: 16) {
                 ZStack {
                     Circle()
-                        .stroke(Color.blue.opacity(0.2), lineWidth: 8)
+                        .stroke(style.ringTrack, lineWidth: 8)
 
                     Circle()
                         .trim(from: 0, to: progress)
-                        .stroke(Color.blue, style: StrokeStyle(lineWidth: 8, lineCap: .round))
+                        .stroke(style.ringFill, style: StrokeStyle(lineWidth: 8, lineCap: .round))
                         .rotationEffect(.degrees(-90))
 
                     Text(Formatters.percentString(progress))
@@ -50,6 +51,11 @@ struct LargeWidgetView: View {
                 }
 
                 Spacer()
+
+                if style.spooky {
+                    SpookyCornerMark(style: style, width: 26)
+                        .frame(height: 56, alignment: .top)
+                }
 
                 if data.streak > 0 {
                     VStack(spacing: 2) {
@@ -116,7 +122,7 @@ struct LargeWidgetView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(.blue)
+                .tint(style.accent)
 
                 Button(intent: QuickAddWaterIntent(amountML: 500)) {
                     Label("Add 500 ml", systemImage: "plus.circle.fill")

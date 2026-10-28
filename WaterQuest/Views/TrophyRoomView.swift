@@ -5,14 +5,22 @@ import SwiftUI
 /// secrets — so the room reads as a curated cabinet, not a settings grid.
 struct TrophyRoomView: View {
     @EnvironmentObject private var store: HydrationStore
+    @Environment(\.spookyTheme) private var spookyTheme
     /// Cached share card for the latest unlock — rendered once per unlock,
     /// not on every body evaluation.
     @State private var heroSharePayload: ShareCardPayload?
 
     private var unlocked: [String: Date] { store.unlockedAchievements }
 
+    /// Halloween badges show only to opted-in users, or once earned.
+    private var visibleCatalog: [Achievement] {
+        AchievementCatalog.all.filter { achievement in
+            !achievement.id.hasPrefix("spooky.") || spookyTheme || unlocked[achievement.id] != nil
+        }
+    }
+
     private var earnedCount: Int {
-        AchievementCatalog.all.filter { unlocked[$0.id] != nil }.count
+        visibleCatalog.filter { unlocked[$0.id] != nil }.count
     }
 
     /// Most recently earned badge, for the hero slot.
@@ -23,7 +31,7 @@ struct TrophyRoomView: View {
     }
 
     private func achievements(in category: AchievementCategory) -> [Achievement] {
-        AchievementCatalog.all.filter { $0.category == category }
+        visibleCatalog.filter { $0.category == category }
     }
 
     var body: some View {
@@ -40,7 +48,8 @@ struct TrophyRoomView: View {
                 categoryRows(.volume, accent: Theme.mint)
                 categoryRows(.explorer, accent: Theme.coral)
                 categoryRows(.dedication, accent: Theme.sun)
-                categoryRows(.season, accent: Theme.lavender)
+                // Season badges glow pumpkin while Spooky Season is on.
+                categoryRows(.season, accent: spookyTheme ? SpookySeason.Palette.pumpkin : Theme.lavender)
 
                 secretShelf
             }
@@ -77,7 +86,7 @@ struct TrophyRoomView: View {
             }
             .padding(.bottom, 8)
 
-            Text("\(earnedCount) of \(AchievementCatalog.all.count) earned")
+            Text("\(earnedCount) of \(visibleCatalog.count) earned")
                 .font(Theme.sipliMono(12, weight: .semibold, relativeTo: .caption))
                 .tracking(1.2)
                 .textCase(.uppercase)
@@ -88,15 +97,17 @@ struct TrophyRoomView: View {
                     Capsule()
                         .fill(Theme.lagoon.opacity(0.12))
                     Capsule()
-                        .fill(Theme.glowGradient)
-                        .frame(width: geo.size.width * CGFloat(earnedCount) / CGFloat(max(1, AchievementCatalog.all.count)))
+                        .fill(spookyTheme
+                            ? LinearGradient(colors: [SpookySeason.Palette.potion, SpookySeason.Palette.pumpkin], startPoint: .leading, endPoint: .trailing)
+                            : Theme.glowGradient)
+                        .frame(width: geo.size.width * CGFloat(earnedCount) / CGFloat(max(1, visibleCatalog.count)))
                 }
             }
             .frame(height: 6)
         }
         .padding(.top, 4)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(earnedCount) of \(AchievementCatalog.all.count) achievements earned")
+        .accessibilityLabel("\(earnedCount) of \(visibleCatalog.count) achievements earned")
     }
 
     /// What the droplet's current tier means, and what comes next.

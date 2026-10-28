@@ -36,10 +36,11 @@ struct MainTabView: View {
     @Environment(\.deepLinkAddIntake) private var deepLinkAddIntake
     @Environment(\.deepLinkTrophyRoom) private var deepLinkTrophyRoom
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.spookyTheme) private var spookyTheme
 
     var body: some View {
         tabContent
-            .tint(Theme.lagoon)
+            .tint(spookyTheme ? SpookySeason.Palette.accent : Theme.lagoon)
             .fullScreenCover(isPresented: $showAchievementCelebration) {
                 // A native presentation keeps the Duo's tab chrome from
                 // intercepting taps on a visually overlaid celebration.
@@ -55,6 +56,7 @@ struct MainTabView: View {
                     .presentationBackground(.clear)
                 }
             }
+            .spookySeasonInvite(canPresent: !showAddIntake && !showTrophyRoom && !showAchievementCelebration)
             .animation(reduceMotion ? nil : Theme.gentleSpring, value: store.pendingAchievementUnlocks.first?.id)
             .onChange(of: store.pendingAchievementUnlocks.first?.id) {
                 presentPendingAchievement()

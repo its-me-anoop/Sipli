@@ -43,6 +43,9 @@ struct SettingsView: View {
             settingsPane(identifier: "settingsProfilePane") {
                 profileCard
                 trophyRoomCard
+                if SpookySeason.isActive() {
+                    SpookySeasonSettingsCard()
+                }
                 appearanceCard
                 premiumGoalCard
                 goalCard
@@ -59,6 +62,9 @@ struct SettingsView: View {
             settingsPane(identifier: "settingsSinglePane") {
                 profileCard
                 trophyRoomCard
+                if SpookySeason.isActive() {
+                    SpookySeasonSettingsCard()
+                }
                 appearanceCard
                 premiumGoalCard
                 goalCard
@@ -289,7 +295,6 @@ struct SettingsView: View {
                         .accessibilityAddTraits(appTheme == theme ? .isSelected : [])
                     }
                 }
-
             }
         }
     }

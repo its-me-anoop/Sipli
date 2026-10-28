@@ -1,5 +1,6 @@
 import Foundation
 import WatchConnectivity
+import WidgetKit
 
 /// Bridges WCSession on the Watch side.
 ///
@@ -79,6 +80,12 @@ final class WatchSessionManager: NSObject, WCSessionDelegate {
     }
 
     nonisolated private func applyStateIfPresent(_ dict: [String: Any]) {
+        // Spooky Season opt-in from the iPhone; the Watch app and its
+        // complications read it from the shared app group.
+        if let spooky = dict[SpookySeason.themeDefaultsKey] as? Bool {
+            UserDefaults(suiteName: SpookySeason.appGroupID)?.set(spooky, forKey: SpookySeason.themeDefaultsKey)
+            Task { @MainActor in WidgetCenter.shared.reloadAllTimelines() }
+        }
         guard let data = dict[stateKey] as? Data else { return }
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .iso8601

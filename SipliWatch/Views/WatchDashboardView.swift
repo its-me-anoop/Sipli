@@ -4,6 +4,9 @@ struct WatchDashboardView: View {
     @EnvironmentObject private var store: WatchHydrationStore
     @State private var showQuickAdd = false
 
+    private var spooky: Bool { SpookySeason.showsTheme() }
+    private var accent: Color { spooky ? SpookySeason.Palette.potion : Theme.lagoon }
+
     var body: some View {
         // `List` is the correct root container on watchOS. Nesting a `List`
         // inside a `ScrollView` breaks rendering and swipe-to-delete.
@@ -13,16 +16,33 @@ struct WatchDashboardView: View {
                     progress: store.progress,
                     currentML: store.todayTotalML,
                     goalML: store.goalBreakdown.totalML,
-                    unitSystem: store.profile.unitSystem
+                    unitSystem: store.profile.unitSystem,
+                    spooky: spooky
                 )
                 .frame(width: 120, height: 120)
+                .overlay(alignment: .topTrailing) {
+                    if spooky {
+                        Group {
+                            if SpookySeason.isHalloween() {
+                                PumpkinView().frame(width: 20)
+                            } else {
+                                BatShape()
+                                    .fill(SpookySeason.Palette.potion.opacity(0.9))
+                                    .frame(width: 24, height: 12)
+                            }
+                        }
+                        .offset(x: 14, y: -2)
+                        .accessibilityHidden(true)
+                    }
+                }
                 .padding(.top, 4)
 
                 HStack(spacing: 8) {
-                    WatchStatPill(icon: "drop.fill", text: "\(store.todayDrinkCount) drinks")
+                    WatchStatPill(icon: "drop.fill", text: "\(store.todayDrinkCount) drinks", tint: accent)
                     WatchStatPill(
                         icon: "target",
-                        text: "\(Formatters.shortVolume(ml: store.remainingML, unit: store.profile.unitSystem)) left"
+                        text: "\(Formatters.shortVolume(ml: store.remainingML, unit: store.profile.unitSystem)) left",
+                        tint: accent
                     )
                 }
 
@@ -34,7 +54,7 @@ struct WatchDashboardView: View {
                         .frame(maxWidth: .infinity)
                 }
                 .buttonStyle(.borderedProminent)
-                .tint(Theme.lagoon)
+                .tint(accent)
             }
             .frame(maxWidth: .infinity)
             .listRowBackground(Color.clear)
@@ -74,6 +94,7 @@ struct WatchDashboardView: View {
 struct WatchStatPill: View {
     let icon: String
     let text: String
+    var tint: Color = Theme.lagoon
 
     var body: some View {
         HStack(spacing: 4) {
@@ -82,9 +103,9 @@ struct WatchStatPill: View {
             Text(text)
                 .font(.system(size: 11, weight: .medium))
         }
-        .foregroundStyle(Theme.lagoon.opacity(0.9))
+        .foregroundStyle(tint.opacity(0.9))
         .padding(.horizontal, 8)
         .padding(.vertical, 4)
-        .background(Theme.lagoon.opacity(0.15), in: Capsule())
+        .background(tint.opacity(0.15), in: Capsule())
     }
 }

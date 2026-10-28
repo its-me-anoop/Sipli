@@ -95,6 +95,11 @@ enum AchievementEngine {
         // MARK: Season
         if state.matchDayWins >= 1 { ids.insert("matchday.first") }
         if state.matchDayWins >= MatchDay.winsForGoldenBottle { ids.insert("matchday.golden") }
+        if !state.spookyBrewDates.isEmpty { ids.insert("spooky.first") }
+        if state.spookyBrewDates.count >= SpookySeason.brewsForCauldronKeeper { ids.insert("spooky.cauldron") }
+        if state.spookyBrewDates.contains(where: { SpookySeason.isHalloween($0, calendar: calendar) }) {
+            ids.insert("spooky.halloween")
+        }
 
         // MARK: Secret
         if hasMidnight { ids.insert("secret.midnight") }

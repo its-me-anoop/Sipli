@@ -23,6 +23,9 @@ struct MascotView: View {
     private var hasAura: Bool { streak >= 7 }
     private var hasSparkles: Bool { streak >= 30 }
     private var hasCrown: Bool { streak >= 100 }
+    /// Spooky Season costume. A 100-day crown still wins.
+    private var hasWitchHat: Bool { !hasCrown && spookyTheme }
+    @Environment(\.spookyTheme) private var spookyTheme
 
     var body: some View {
         ZStack {
@@ -82,6 +85,13 @@ struct MascotView: View {
                     .rotationEffect(.degrees(-12))
                     .offset(x: -size * 0.18, y: -size * 0.68)
                     .shadow(color: Theme.sun.opacity(0.5), radius: 4, x: 0, y: 2)
+            }
+
+            if hasWitchHat {
+                WitchHat()
+                    .frame(width: size * 0.5, height: size * 0.42)
+                    .rotationEffect(.degrees(-10))
+                    .offset(x: -size * 0.05, y: -size * 0.62)
             }
 
             // Face
@@ -145,6 +155,7 @@ struct MascotView: View {
 
     private var mascotAccessibilityLabel: String {
         if hasCrown { return "Sipli mascot with a crown — 100-day streak tier" }
+        if hasWitchHat { return "Sipli mascot in a witch hat for Spooky Season" }
         if hasSparkles { return "Sipli mascot with sparkles — 30-day streak tier" }
         if hasAura { return "Sipli mascot with an aura — 7-day streak tier" }
         return "Sipli mascot"
@@ -248,5 +259,31 @@ struct HeroMascotView: View {
                 sparkleRotation = 360
             }
         }
+    }
+}
+
+/// Spooky Season costume for the mascot: a pointed hat with a pumpkin band.
+private struct WitchHat: View {
+    var body: some View {
+        GeometryReader { proxy in
+            let w = proxy.size.width, h = proxy.size.height
+            ZStack(alignment: .bottom) {
+                Path { path in
+                    path.move(to: CGPoint(x: w * 0.22, y: h * 0.82))
+                    path.addQuadCurve(to: CGPoint(x: w * 0.62, y: 0), control: CGPoint(x: w * 0.42, y: h * 0.3))
+                    path.addQuadCurve(to: CGPoint(x: w * 0.78, y: h * 0.82), control: CGPoint(x: w * 0.62, y: h * 0.4))
+                    path.closeSubpath()
+                }
+                .fill(SpookySeason.Palette.midnight)
+                Rectangle()
+                    .fill(SpookySeason.Palette.pumpkin)
+                    .frame(width: w * 0.54, height: h * 0.1)
+                    .offset(y: -h * 0.18)
+                Capsule()
+                    .fill(SpookySeason.Palette.midnight)
+                    .frame(width: w, height: h * 0.18)
+            }
+        }
+        .accessibilityHidden(true)
     }
 }

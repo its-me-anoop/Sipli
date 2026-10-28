@@ -83,6 +83,12 @@
 		B1A2B3C4D5E6F70000000A01 /* StreakCalculator.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70000000001 /* StreakCalculator.swift */; };
 		B1A2B3C4D5E6F70000000A02 /* SipliIntelligence.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70000000002 /* SipliIntelligence.swift */; };
 		B1A2B3C4D5E6F70000000A03 /* MatchDay.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70000000003 /* MatchDay.swift */; };
+		5B00C5EA50000000000000B1 /* SpookySeason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B00C5EA50000000000000F1 /* SpookySeason.swift */; };
+		5B00C5EA50000000000000B2 /* SpookySeason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B00C5EA50000000000000F1 /* SpookySeason.swift */; };
+		5B00C5EA50000000000000B3 /* SpookySeason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B00C5EA50000000000000F1 /* SpookySeason.swift */; };
+		5B00C5EA50000000000000B4 /* SpookySeason.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B00C5EA50000000000000F1 /* SpookySeason.swift */; };
+		5B00C5EA50000000000000B5 /* SpookySeasonCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B00C5EA50000000000000F2 /* SpookySeasonCard.swift */; };
+		5B00C5EA50000000000000B6 /* SpookySeasonTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5B00C5EA50000000000000F3 /* SpookySeasonTests.swift */; };
 		B1A2B3C4D5E6F70000000A04 /* WeeklyStats.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70000000004 /* WeeklyStats.swift */; };
 		B1A2B3C4D5E6F70000000A05 /* QuickLogPresets.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70000000005 /* QuickLogPresets.swift */; };
 		B1A2B3C4D5E6F70000000A06 /* MatchDayCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = F1A2B3C4D5E6F70000000006 /* MatchDayCard.swift */; };
@@ -393,6 +399,9 @@
 		F1A2B3C4D5E6F70000000001 /* StreakCalculator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakCalculator.swift; sourceTree = "<group>"; };
 		F1A2B3C4D5E6F70000000002 /* SipliIntelligence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SipliIntelligence.swift; sourceTree = "<group>"; };
 		F1A2B3C4D5E6F70000000003 /* MatchDay.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchDay.swift; sourceTree = "<group>"; };
+		5B00C5EA50000000000000F1 /* SpookySeason.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpookySeason.swift; sourceTree = "<group>"; };
+		5B00C5EA50000000000000F2 /* SpookySeasonCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpookySeasonCard.swift; sourceTree = "<group>"; };
+		5B00C5EA50000000000000F3 /* SpookySeasonTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SpookySeasonTests.swift; sourceTree = "<group>"; };
 		F1A2B3C4D5E6F70000000004 /* WeeklyStats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyStats.swift; sourceTree = "<group>"; };
 		F1A2B3C4D5E6F70000000005 /* QuickLogPresets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = QuickLogPresets.swift; sourceTree = "<group>"; };
 		F1A2B3C4D5E6F70000000006 /* MatchDayCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchDayCard.swift; sourceTree = "<group>"; };
@@ -561,6 +570,7 @@
 				31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */,
 				AA8888888888888888888888 /* PersistedState.swift */,
 				F1A2B3C4D5E6F70000000003 /* MatchDay.swift */,
+				5B00C5EA50000000000000F1 /* SpookySeason.swift */,
 				F1A2B3C4D5E6F70000000004 /* WeeklyStats.swift */,
 				032684376DE05B0CC4838664 /* UnitSystem.swift */,
 				50CF0F6325F9C80BFB71AA0D /* UserProfile.swift */,
@@ -602,6 +612,7 @@
 			children = (
 				97414883E4C0F357148B7EC7 /* DashboardCard.swift */,
 				F1A2B3C4D5E6F70000000006 /* MatchDayCard.swift */,
+				5B00C5EA50000000000000F2 /* SpookySeasonCard.swift */,
 				3D58355784786E63DFFB9EC4 /* Haptics.swift */,
 				42E0244F70DCB30BB868A196 /* LiquidGlassCard.swift */,
 				85C07CD814951765EE1A1499 /* LiquidProgressView.swift */,
@@ -669,6 +680,7 @@
 				7978691325DF06C649CACAE7 /* SipliAppIntentsTests.swift */,
 				F1A2B3C4D5E6F70000000008 /* StreakCalculatorTests.swift */,
 				F1A2B3C4D5E6F70000000009 /* MatchDayTests.swift */,
+				5B00C5EA50000000000000F3 /* SpookySeasonTests.swift */,
 				F1A2B3C4D5E6F7000000000A /* WeeklyStatsTests.swift */,
 				F1A2B3C4D5E6F7000000000B /* QuickLogPresetsTests.swift */,
 				A1B2C3D4E5F60718293A4B01 /* PersistenceServiceTests.swift */,
@@ -1082,6 +1094,7 @@
 				WWEXT011000000000000001 /* WorkoutSummary.swift in Sources */,
 				WWEXT012000000000000001 /* PersistedState.swift in Sources */,
 				WWEXT013000000000000001 /* Theme.swift in Sources */,
+				5B00C5EA50000000000000B4 /* SpookySeason.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1119,6 +1132,7 @@
 				CCD1111111111111111111D1 /* WorkoutSummary.swift in Sources */,
 				CCD2222222222222222222D2 /* PersistedState.swift in Sources */,
 				CCD3333333333333333333D3 /* Theme.swift in Sources */,
+				5B00C5EA50000000000000B2 /* SpookySeason.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1172,6 +1186,8 @@
 				368738D16B3E40D6E50CF1D8 /* StatPill.swift in Sources */,
 				371AD185C88F6CB932BDEF79 /* SubscriptionManager.swift in Sources */,
 				524BE8DF8217231DA89BF9FE /* Theme.swift in Sources */,
+				5B00C5EA50000000000000B1 /* SpookySeason.swift in Sources */,
+				5B00C5EA50000000000000B5 /* SpookySeasonCard.swift in Sources */,
 				8CE43E783BB223277701CF7E /* UnitSystem.swift in Sources */,
 				B45B8AFC80046E64CEA7EE18 /* UserProfile.swift in Sources */,
 				3F684105CCCD5783655879E4 /* WaterQuestApp.swift in Sources */,
@@ -1234,6 +1250,7 @@
 				D9B159F3F6641A2604E3BA34 /* SipliAppIntentsTests.swift in Sources */,
 				B1A2B3C4D5E6F70000000T01 /* StreakCalculatorTests.swift in Sources */,
 				B1A2B3C4D5E6F70000000T02 /* MatchDayTests.swift in Sources */,
+				5B00C5EA50000000000000B6 /* SpookySeasonTests.swift in Sources */,
 				B1A2B3C4D5E6F70000000T03 /* WeeklyStatsTests.swift in Sources */,
 				B1A2B3C4D5E6F70000000T04 /* QuickLogPresetsTests.swift in Sources */,
 				A1B2C3D4E5F60718293A4B02 /* PersistenceServiceTests.swift in Sources */,
@@ -1263,6 +1280,7 @@
 				WA001A000000000000000001 /* Formatters.swift in Sources */,
 				WA001B000000000000000001 /* DateExtensions.swift in Sources */,
 				WA001C000000000000000001 /* Theme.swift in Sources */,
+				5B00C5EA50000000000000B3 /* SpookySeason.swift in Sources */,
 				WA001D000000000000000001 /* WatchHaptics.swift in Sources */,
 				WA001E000000000000000001 /* WatchHydrationStore.swift in Sources */,
 				WS001000000000000000002 /* WatchSessionManager.swift in Sources */,
