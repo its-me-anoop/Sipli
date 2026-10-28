@@ -10,6 +10,46 @@ final class BottleFlowTests: XCTestCase {
     }
 
     @MainActor
+    func testBottleCompanionFlow() throws {
+        let app = XCUIApplication()
+        let namespace = UUID().uuidString
+        launch(app, environment: ["SIPLI_COMPANION_UI_NAMESPACE": namespace,
+                                  "SIPLI_BOTTLE_REDUCE_MOTION": "1"])
+        if app.buttons["Not for me"].waitForExistence(timeout: 3) { app.buttons["Not for me"].tap() }
+        let entry = app.buttons.containing(.staticText, identifier: "Track your real bottle").firstMatch
+        if !entry.isHittable { app.swipeUp() }
+        XCTAssertTrue(entry.waitForExistence(timeout: 5), app.debugDescription)
+        entry.tap()
+        XCTAssertTrue(app.buttons["Start with a full bottle"].waitForExistence(timeout: 5))
+        capture(app, "companion-setup-portrait")
+        app.buttons["Start with a full bottle"].tap()
+        app.buttons["Half"].tap()
+        app.swipeUp()
+        XCTAssertTrue(app.buttons["Log consumed water"].waitForExistence(timeout: 5))
+        XCTAssertTrue(app.buttons["Log consumed water"].isEnabled)
+        app.buttons["Log consumed water"].tap()
+        XCTAssertFalse(app.buttons["Log consumed water"].isEnabled)
+        capture(app, "companion-half-portrait")
+        app.terminate()
+        app.launch()
+        let update = app.buttons.containing(.staticText, identifier: "Update water remaining").firstMatch
+        if !update.isHittable { app.swipeUp() }
+        update.tap()
+        app.swipeUp()
+        XCTAssertTrue(app.buttons["Finished bottle"].waitForExistence(timeout: 5))
+        app.buttons["Finished bottle"].tap()
+        XCTAssertFalse(app.buttons["Finished bottle"].isEnabled)
+        app.swipeUp()
+        app.buttons["Undo last bottle action"].tap()
+        XCTAssertTrue(app.buttons["Finished bottle"].isEnabled)
+        XCUIDevice.shared.orientation = .landscapeLeft
+        capture(app, "companion-landscape")
+        XCUIDevice.shared.orientation = .portrait
+        app.buttons["Done"].tap()
+        app.terminate()
+    }
+
+    @MainActor
     func testNativeShareScreen() throws {
         let app = XCUIApplication()
         launch(app)

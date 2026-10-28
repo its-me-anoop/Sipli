@@ -19,6 +19,7 @@ struct DashboardView: View {
 
     @StateObject private var aiService = HydrationAIService()
 
+    @State private var showsCompanion = false
     @State private var entryToEdit: HydrationEntry?
     @State private var entryToDelete: HydrationEntry?
     @State private var isRefreshing = false
@@ -211,6 +212,21 @@ struct DashboardView: View {
 
     @ViewBuilder
     private var cardsContent: some View {
+        DashboardCard(title: "Bottle Companion", icon: "waterbottle") {
+            Button { showsCompanion = true } label: {
+                HStack {
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(store.companion == nil ? "Track your real bottle" : "Update water remaining")
+                        Text(store.companion.map { "Approximately " + Formatters.volumeString(ml: $0.remainingML, unit: store.profile.unitSystem) + " left" } ?? "Optional · log only what you drank")
+                            .font(.footnote).foregroundStyle(.secondary)
+                    }
+                    Spacer()
+                    Image(systemName: "chevron.right")
+                }.frame(minHeight: 44)
+            }.buttonStyle(.plain)
+            .sheet(isPresented: $showsCompanion) { BottleCompanionView() }
+        }
+
         if MatchDay.isActive() {
             DashboardCard(title: "Match Day", icon: "soccerball") {
                 matchDaySection

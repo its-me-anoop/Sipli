@@ -22,6 +22,26 @@ struct WaterQuestApp: App {
     }
 
     init() {
+#if DEBUG && targetEnvironment(simulator)
+        // UI tests use a separate file and defaults suite; existing simulator records stay intact.
+        if let namespace = ProcessInfo.processInfo.environment["SIPLI_COMPANION_UI_NAMESPACE"],
+           UUID(uuidString: namespace) != nil {
+            let persistence = PersistenceService(filename: "companion-ui-\(namespace).json")
+            let defaults = UserDefaults(suiteName: "companion-ui-\(namespace)")!
+            if !FileManager.default.fileExists(atPath: persistence.fileURL.path) {
+                var fixture = PersistedState.default
+                fixture.unlockedAchievements = Dictionary(uniqueKeysWithValues: AchievementCatalog.all.map { ($0.id, Date()) })
+                persistence.saveLocalOnly(fixture)
+            }
+            let testStore = HydrationStore(persistence: persistence, companionDefaults: defaults)
+            testStore.updateProfile {
+                $0.prefersHealthKit = false
+                $0.prefersWeatherGoal = false
+                $0.remindersEnabled = false
+            }
+            _store = StateObject(wrappedValue: testStore)
+        }
+#endif
         NotificationCategories.registerAll()
         UNUserNotificationCenter.current().delegate = NotificationHandler.shared
         let location = LocationManager()

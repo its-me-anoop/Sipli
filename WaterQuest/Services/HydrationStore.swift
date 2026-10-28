@@ -3,6 +3,7 @@ import WidgetKit
 
 @MainActor
 final class HydrationStore: ObservableObject {
+    @Published private(set) var companion: BottleCompanion?
     @Published var entries: [HydrationEntry]
     @Published var profile: UserProfile
     @Published var lastWeather: WeatherSnapshot?
@@ -41,13 +42,17 @@ final class HydrationStore: ObservableObject {
     /// of queueing a dozen overlays on first launch.
     private var celebratesUnlocks = false
 
-    private let persistence = PersistenceService.shared
+    private let persistence: PersistenceService
+    private let companionDefaults: UserDefaults
 
     /// Set by the app after both objects are created so the store can notify
     /// the scheduler when new intake is logged.
     weak var notificationScheduler: NotificationScheduler?
 
-    init() {
+    init(persistence: PersistenceService = .shared, companionDefaults: UserDefaults = .standard) {
+        self.persistence = persistence
+        self.companionDefaults = companionDefaults
+        self.companion = BottleCompanion.load(defaults: companionDefaults)
         let state = persistence.load(PersistedState.self, fallback: .default)
         self.entries = state.entries
         self.profile = state.profile
@@ -98,6 +103,59 @@ final class HydrationStore: ObservableObject {
             persist()
         }
         celebratesUnlocks = true
+        reconcileCompanionReceipt()
+    }
+
+    func startCompanion(capacityML: Double) {
+        guard companion == nil, let bottle = BottleCompanion(capacityML: capacityML) else { return }
+        companion = bottle
+        bottle.save(defaults: companionDefaults)
+    }
+
+    @discardableResult
+    func changeCompanion(_ action: BottleCompanion.Action) -> HydrationEntry? {
+        reloadFromDisk() // Preserve Siri/widget entries written while this screen was open.
+        reconcileCompanionReceipt()
+        guard var bottle = companion else { return nil }
+        let entry = bottle.apply(action)
+        companion = bottle
+        bottle.save(defaults: companionDefaults) // Journal before writing intake; receipt has a stable UUID.
+        reconcileCompanionReceipt()
+        return entry
+    }
+
+    private func reconcileCompanionReceipt() {
+        guard var bottle = companion, let entry = bottle.pendingEntry else { return }
+        if !entries.contains(where: { $0.id == entry.id }), removedEntryIDs[entry.id] == nil {
+            entries.append(entry)
+            notificationScheduler?.onIntakeLogged(entry: entry, context: buildNotificationContext())
+            checkGoalCompletion()
+            persist()
+        }
+        bottle.pendingEntry = nil
+        companion = bottle
+        bottle.save(defaults: companionDefaults)
+    }
+
+    func undoCompanion() -> HydrationEntry? {
+        reloadFromDisk()
+        guard var bottle = companion, let undo = bottle.undo else { return nil }
+        let entry = entries.first { $0.id == undo.entryID }
+        // Delete by identity, never subtract from today's total. This also works after midnight.
+        if let id = undo.entryID {
+            entries.removeAll { $0.id == id }
+            recordRemoval(of: [id])
+            persist()
+        }
+        _ = bottle.restore()
+        companion = bottle
+        bottle.save(defaults: companionDefaults)
+        return entry
+    }
+
+    func stopCompanion() {
+        companion = nil
+        companionDefaults.removeObject(forKey: BottleCompanion.storageKey)
     }
 
     var dailyGoal: GoalBreakdown {
