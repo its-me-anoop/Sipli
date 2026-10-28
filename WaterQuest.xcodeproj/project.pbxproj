@@ -1386,7 +1386,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.1.1;
+				MARKETING_VERSION = 6.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration;
 				PRODUCT_NAME = Sipli;
 				SDKROOT = iphoneos;
@@ -1516,7 +1516,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.1.1;
+				MARKETING_VERSION = 6.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration;
 				PRODUCT_NAME = Sipli;
 				SDKROOT = iphoneos;
@@ -1550,7 +1550,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 6.1.1;
+				MARKETING_VERSION = 6.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.watchapp.SipliWatchWidgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -1588,7 +1588,7 @@
 					"@executable_path/../../../../Frameworks",
 				);
 				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
-				MARKETING_VERSION = 6.1.1;
+				MARKETING_VERSION = 6.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.watchapp.SipliWatchWidgets;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -1705,7 +1705,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 6.1.1;
+				MARKETING_VERSION = 6.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1733,7 +1733,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 6.1.1;
+				MARKETING_VERSION = 6.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.widget;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
@@ -1760,7 +1760,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.1.1;
+				MARKETING_VERSION = 6.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.watchapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
@@ -1788,7 +1788,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 6.1.1;
+				MARKETING_VERSION = 6.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.waterquest.hydration.watchapp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = watchos;
