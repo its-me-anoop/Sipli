@@ -71,7 +71,7 @@ struct TrophyRoomView: View {
     private var header: some View {
         VStack(alignment: .leading, spacing: 8) {
             HStack(spacing: 16) {
-                // The droplet evolves with the streak (aura at 7, sparkles at
+                // The bottle evolves with the streak (aura at 7, sparkles at
                 // 30, crown at 100) — the Trophy Room is where it shows off.
                 MascotView(size: 56, animated: true, streak: store.currentStreak)
 
@@ -110,14 +110,14 @@ struct TrophyRoomView: View {
         .accessibilityLabel("\(earnedCount) of \(visibleCatalog.count) achievements earned")
     }
 
-    /// What the droplet's current tier means, and what comes next.
+    /// What the bottle's current tier means, and what comes next.
     private var streakTierLine: String {
         let streak = store.currentStreak
         switch streak {
-        case ..<7: return "Reach a 7-day streak to give your droplet an aura"
+        case ..<7: return "Reach a 7-day streak to give your bottle an aura"
         case ..<30: return "Aura earned — sparkles arrive at a 30-day streak"
         case ..<100: return "Sparkles earned — the crown waits at 100 days"
-        default: return "Crowned. Your droplet has seen things."
+        default: return "Crowned. Your bottle has seen things."
         }
     }
 

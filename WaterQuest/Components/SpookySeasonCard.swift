@@ -208,11 +208,20 @@ private struct SpookyThemeProvider: ViewModifier {
     @Environment(\.scenePhase) private var scenePhase
     @State private var now = Date()
 
+    private var active: Bool { enabled && SpookySeason.isActive(on: now) }
+
     func body(content: Content) -> some View {
         content
-            .environment(\.spookyTheme, enabled && SpookySeason.isActive(on: now))
+            .environment(\.spookyTheme, active)
+            // The Home Screen icon follows along: Spooky while in the event,
+            // back to the user's pick when they leave or the season ends.
+            .onAppear { AppIconManager.sync(spooky: active) }
+            .onChange(of: active) { _, isActive in AppIconManager.sync(spooky: isActive) }
             .onChange(of: scenePhase) { _, phase in
-                if phase == .active { now = Date() }
+                if phase == .active {
+                    now = Date()
+                    AppIconManager.sync(spooky: active)
+                }
             }
     }
 }

@@ -47,6 +47,7 @@ struct SettingsView: View {
                     SpookySeasonSettingsCard()
                 }
                 appearanceCard
+                AppIconPickerCard()
                 premiumGoalCard
                 goalCard
             }
@@ -66,6 +67,7 @@ struct SettingsView: View {
                     SpookySeasonSettingsCard()
                 }
                 appearanceCard
+                AppIconPickerCard()
                 premiumGoalCard
                 goalCard
                 scheduleCard

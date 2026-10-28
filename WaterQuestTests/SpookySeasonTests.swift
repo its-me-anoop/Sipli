@@ -60,6 +60,15 @@ final class SpookySeasonTests: XCTestCase {
         XCTAssertFalse(SpookySeason.showsTheme(on: date(2026, 12, 1), defaults: defaults))
     }
 
+    // MARK: - App icon
+
+    func test_appIcon_spookyOverridesPreference_andClassicIsPrimary() {
+        XCTAssertEqual(AppIconManager.desiredIconName(spooky: true, preferred: .ocean), "AppIcon-Spooky")
+        XCTAssertEqual(AppIconManager.desiredIconName(spooky: false, preferred: .ocean), "AppIcon-Ocean")
+        XCTAssertNil(AppIconManager.desiredIconName(spooky: false, preferred: .classic))
+        XCTAssertEqual(Set(AppIconChoice.allCases.compactMap(\.alternateName)).count, AppIconChoice.allCases.count - 1)
+    }
+
     // MARK: - Phases
 
     func test_phase_goalMetIsBrewed() {

@@ -11,6 +11,7 @@
 		0252DDA30195EA614A439A3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9FC934C6863AFC8E01D302CE /* Assets.xcassets */; };
 		0A6AF1AF6B3D3222F30C3E85 /* WeatherSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */; };
 		0A98E6835256CBC9D3B2DF65 /* HydrationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */; };
+		1C0A17000000000000000B99 /* AppIconManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1C0A17000000000000000F99 /* AppIconManager.swift */; };
 		0C93F570D7DFBA18FF035984 /* ActivityStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84831A8CDF761270D25F9BE2 /* ActivityStep.swift */; };
 		0E54D9CCCA944AAEB6EA20F8 /* HydrationEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */; };
 		11DFD61DBBED6087CAF037CC /* WeatherClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8C2DDAD6DD4B924CCA0509D0 /* WeatherClient.swift */; };
@@ -53,6 +54,12 @@
 		6BA043C42FE5DAB800FF4C45 /* OnboardingVesselModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA043C32FE5DAB800FF4C45 /* OnboardingVesselModelTests.swift */; };
 		6BA043C62FE5DC3300FF4C45 /* OnboardingVessel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6BA043C52FE5DC3300FF4C45 /* OnboardingVessel.swift */; };
 		6BBC3B922F4F6AC100F5525A /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = 6BBC3B912F4F6AC100F5525A /* AppIcon.icon */; };
+		1C0A1700000000000000B000 /* AppIcon-Midnight.icon in Resources */ = {isa = PBXBuildFile; fileRef = 1C0A1700000000000000F000 /* AppIcon-Midnight.icon */; };
+		1C0A1700000000000000B001 /* AppIcon-Ocean.icon in Resources */ = {isa = PBXBuildFile; fileRef = 1C0A1700000000000000F001 /* AppIcon-Ocean.icon */; };
+		1C0A1700000000000000B002 /* AppIcon-Mint.icon in Resources */ = {isa = PBXBuildFile; fileRef = 1C0A1700000000000000F002 /* AppIcon-Mint.icon */; };
+		1C0A1700000000000000B003 /* AppIcon-Sunrise.icon in Resources */ = {isa = PBXBuildFile; fileRef = 1C0A1700000000000000F003 /* AppIcon-Sunrise.icon */; };
+		1C0A1700000000000000B004 /* AppIcon-Berry.icon in Resources */ = {isa = PBXBuildFile; fileRef = 1C0A1700000000000000F004 /* AppIcon-Berry.icon */; };
+		1C0A1700000000000000B005 /* AppIcon-Spooky.icon in Resources */ = {isa = PBXBuildFile; fileRef = 1C0A1700000000000000F005 /* AppIcon-Spooky.icon */; };
 		7077C5CF3469D64E94804983 /* FluidType.swift in Sources */ = {isa = PBXBuildFile; fileRef = A139EF313607077443D4FCFE /* FluidType.swift */; };
 		71068784F139C3C926C0B903 /* DoneStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = B71BF6FC4700645993778AA0 /* DoneStep.swift */; };
 		7125C3F0F64E214D1C3BEC5E /* ShareCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F8D33FA3189E25D6F97DDEE /* ShareCardView.swift */; };
@@ -293,6 +300,7 @@
 		31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationEntry.swift; sourceTree = "<group>"; };
 		32666279C657FCC433303B6A /* OnboardingStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = OnboardingStep.swift; sourceTree = "<group>"; };
 		32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationStore.swift; sourceTree = "<group>"; };
+		1C0A17000000000000000F99 /* AppIconManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppIconManager.swift; sourceTree = "<group>"; };
 		3834593BE0BDE1EF6B965E24 /* HydrationMerge.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HydrationMerge.swift; sourceTree = "<group>"; };
 		39EF82B8B03A482B4BC8CBF9 /* LaunchScreen.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3ABC282C313B061E1E34EDF7 /* StatPill.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatPill.swift; sourceTree = "<group>"; };
@@ -320,6 +328,12 @@
 		6BA043C32FE5DAB800FF4C45 /* OnboardingVesselModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingVesselModelTests.swift; sourceTree = "<group>"; };
 		6BA043C52FE5DC3300FF4C45 /* OnboardingVessel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingVessel.swift; sourceTree = "<group>"; };
 		6BBC3B912F4F6AC100F5525A /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
+		1C0A1700000000000000F000 /* AppIcon-Midnight.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-Midnight.icon"; sourceTree = "<group>"; };
+		1C0A1700000000000000F001 /* AppIcon-Ocean.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-Ocean.icon"; sourceTree = "<group>"; };
+		1C0A1700000000000000F002 /* AppIcon-Mint.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-Mint.icon"; sourceTree = "<group>"; };
+		1C0A1700000000000000F003 /* AppIcon-Sunrise.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-Sunrise.icon"; sourceTree = "<group>"; };
+		1C0A1700000000000000F004 /* AppIcon-Berry.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-Berry.icon"; sourceTree = "<group>"; };
+		1C0A1700000000000000F005 /* AppIcon-Spooky.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = "AppIcon-Spooky.icon"; sourceTree = "<group>"; };
 		6BDAF0F12F6375DE009ADC09 /* Products.storekit */ = {isa = PBXFileReference; lastKnownFileType = text; path = Products.storekit; sourceTree = "<group>"; };
 		6D8C127CF4F113AB2D5DB40D /* NotificationMessageTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = NotificationMessageTests.swift; sourceTree = "<group>"; };
 		6F8D33FA3189E25D6F97DDEE /* ShareCardView.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = ShareCardView.swift; sourceTree = "<group>"; };
@@ -508,6 +522,19 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		1C0A17000000000000000G01 /* AppIcons */ = {
+			isa = PBXGroup;
+			children = (
+				1C0A1700000000000000F000 /* AppIcon-Midnight.icon */,
+				1C0A1700000000000000F001 /* AppIcon-Ocean.icon */,
+				1C0A1700000000000000F002 /* AppIcon-Mint.icon */,
+				1C0A1700000000000000F003 /* AppIcon-Sunrise.icon */,
+				1C0A1700000000000000F004 /* AppIcon-Berry.icon */,
+				1C0A1700000000000000F005 /* AppIcon-Spooky.icon */,
+			);
+			path = AppIcons;
+			sourceTree = "<group>";
+		};
 		09D70531E90E903449DDD869 /* WaterQuestUITests */ = {
 			isa = PBXGroup;
 			children = (
@@ -537,6 +564,7 @@
 			isa = PBXGroup;
 			children = (
 				6BBC3B912F4F6AC100F5525A /* AppIcon.icon */,
+				1C0A17000000000000000G01 /* AppIcons */,
 				9FC934C6863AFC8E01D302CE /* Assets.xcassets */,
 				B34C79C5F2BC714D04DBDF95 /* App */,
 				6676ED6B664E8F56F653FFFF /* AppIcon.icon */,
@@ -809,6 +837,7 @@
 				63F661B4016F8BE1E8DDA5B5 /* HealthKitManager.swift */,
 				55B57443B7032DDCF70ACB8C /* HydrationAIService.swift */,
 				32F4A1403ABF41DCCE395C3D /* HydrationStore.swift */,
+				1C0A17000000000000000F99 /* AppIconManager.swift */,
 				6862392928A13FBD5E45D6E3 /* LocationManager.swift */,
 				E4A8068B4418852446BD78E6 /* MotionManager.swift */,
 				BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */,
@@ -1031,6 +1060,12 @@
 				B67E99532D94983258FFDC94 /* LaunchScreen.storyboard in Resources */,
 				D1A2B3C4E5F60718293A4B5C /* PrivacyInfo.xcprivacy in Resources */,
 				6BBC3B922F4F6AC100F5525A /* AppIcon.icon in Resources */,
+				1C0A1700000000000000B000 /* AppIcon-Midnight.icon in Resources */,
+				1C0A1700000000000000B001 /* AppIcon-Ocean.icon in Resources */,
+				1C0A1700000000000000B002 /* AppIcon-Mint.icon in Resources */,
+				1C0A1700000000000000B003 /* AppIcon-Sunrise.icon in Resources */,
+				1C0A1700000000000000B004 /* AppIcon-Berry.icon in Resources */,
+				1C0A1700000000000000B005 /* AppIcon-Spooky.icon in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1156,6 +1191,7 @@
 				7C578D3D8C788EDEDD9F383C /* HydrationAIService.swift in Sources */,
 				0E54D9CCCA944AAEB6EA20F8 /* HydrationEntry.swift in Sources */,
 				0A98E6835256CBC9D3B2DF65 /* HydrationStore.swift in Sources */,
+				1C0A17000000000000000B99 /* AppIconManager.swift in Sources */,
 				D1B2C3D4E5F6071829A3B4C5 /* DiaryView.swift in Sources */,
 				C0AC658494F0FF61381C286D /* InsightsView.swift in Sources */,
 				2CA08ED2F08EB233538DC4D5 /* LiquidGlassCard.swift in Sources */,
@@ -1331,6 +1367,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_ALTERNATE_APP_ICON_NAMES = "AppIcon-Midnight AppIcon-Ocean AppIcon-Mint AppIcon-Sunrise AppIcon-Berry AppIcon-Spooky";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = WaterQuest/Supporting/WaterQuest.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 20;
@@ -1459,6 +1497,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_ALTERNATE_APP_ICON_NAMES = "AppIcon-Midnight AppIcon-Ocean AppIcon-Mint AppIcon-Sunrise AppIcon-Berry AppIcon-Spooky";
+				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
 				CODE_SIGN_ENTITLEMENTS = WaterQuest/Supporting/WaterQuest.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CURRENT_PROJECT_VERSION = 20;
