@@ -1,0 +1,18 @@
+{
+  "type": "builds",
+  "id": "4f2ffe0e-f00b-4dfe-9577-75536dfa6f39",
+  "attributes": {
+    "version": "24",
+    "processingState": "VALID",
+    "qcState": "BETA_INTERNAL_TESTING",
+    "uploadedDate": "2026-10-28T10:56:28-07:00",
+    "usesNonExemptEncryption": false
+  },
+  "appID": "6758851574",
+  "bundleID": "com.waterquest.hydration",
+  "marketingVersion": "6.2",
+  "verifiedAt": "2026-10-28T18:00:05Z",
+  "uploadCompletedAt": "2026-10-28T17:54:54Z",
+  "sourceCommit": "fbd010d2279e4026b428e86627fdd19a5461581b",
+  "source": "Sanitized Apple build lookup through the existing authorized Xcode account"
+}
