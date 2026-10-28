@@ -32,6 +32,11 @@ struct WaterQuestApp: App {
                 fixture.profile.remindersEnabled = false
                 fixture.profile.customGoalML = 2000
                 fixture.unlockedAchievements = Dictionary(uniqueKeysWithValues: AchievementCatalog.all.map { ($0.id, Date()) })
+                if ProcessInfo.processInfo.environment["SIPLI_ACHIEVEMENT_UI_PREVIEW"] == "1" {
+                    // ISO-8601 persistence rounds fractional seconds; keep the fixture's latest badge unambiguous.
+                    fixture.unlockedAchievements = fixture.unlockedAchievements.mapValues { $0.addingTimeInterval(-60) }
+                    fixture.unlockedAchievements["spooky.first"] = Date()
+                }
                 fixture.entries = [HydrationEntry(date: Date().addingTimeInterval(-5 * 3600), volumeML: 500, source: .manual)]
                 persistence.saveLocalOnly(fixture)
             }

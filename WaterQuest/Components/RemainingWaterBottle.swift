@@ -108,6 +108,22 @@ struct RemainingWaterBottle: View {
     }
 }
 
+/// A frozen still life for exported cards. Reuses Home's glass and liquid
+/// geometry without motion sensors, display links, text gauges or a face.
+struct StaticBottleArtwork: View {
+    let fill: Double
+    let tint: Color
+    var body: some View {
+        ZStack {
+            BottleWaterCanvas(water: BottleWaterModel(progress: 1 - min(1, max(0, fill))), tint: tint)
+                .aspectRatio(1240.0 / 1748.0, contentMode: .fit)
+            Image("bottle").resizable().scaledToFit()
+        }
+        .aspectRatio(1240.0 / 1748.0, contentMode: .fit)
+        .accessibilityHidden(true)
+    }
+}
+
 private enum BottleOptics {
     // Light passing through the glass stays pale in either appearance.
     // OKLCH (0.981, 0.006, 240) and (0.205, 0.034, 250), converted to sRGB.

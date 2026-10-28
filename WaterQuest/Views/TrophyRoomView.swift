@@ -147,7 +147,7 @@ struct TrophyRoomView: View {
                 ShareLink(
                     item: payload,
                     message: Text(payload.caption),
-                    preview: SharePreview(achievement.title, image: Image(systemName: achievement.symbol))
+                    preview: SharePreview(achievement.title, image: payload.previewImage)
                 ) {
                     Image(systemName: "square.and.arrow.up")
                         .font(.system(size: 17, weight: .semibold))

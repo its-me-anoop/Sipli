@@ -32,6 +32,10 @@ struct ShareCardPayload: Transferable, Identifiable {
     let pngData: Data
     let caption: String
 
+    @MainActor var previewImage: Image {
+        UIImage(data: pngData).map { Image(uiImage: $0) } ?? Image("sipliIcon")
+    }
+
     static var transferRepresentation: some TransferRepresentation {
         DataRepresentation(exportedContentType: .png) { payload in
             payload.pngData
@@ -43,14 +47,18 @@ struct ShareCardPayload: Transferable, Identifiable {
 
 @MainActor
 enum ShareCardRenderer {
-    /// Renders a card at 3× (1080 × 1350 px — a 4:5 feed-friendly frame).
-    static func render(_ content: ShareCardContent, colorScheme: ColorScheme = .light) -> ShareCardPayload? {
+    /// Renders at 3×. Catalog cards are 1080 × 1350; unusually long
+    /// localized achievement copy gets a taller canvas instead of cropping.
+    static func render(_ content: ShareCardContent, colorScheme: ColorScheme = .light, locale: Locale = .current) -> ShareCardPayload? {
+        let size = ShareCardView.exportSize(for: content)
         let renderer = ImageRenderer(
             content: ShareCardView(content: content)
                 .environment(\.colorScheme, colorScheme)
+                .environment(\.locale, locale)
+                .environment(\.dynamicTypeSize, .large)
         )
         renderer.scale = 3
-        renderer.proposedSize = ProposedViewSize(width: 360, height: 450)
+        renderer.proposedSize = ProposedViewSize(width: size.width, height: size.height)
         guard let data = renderer.uiImage?.pngData() else { return nil }
         return ShareCardPayload(pngData: data, caption: content.caption)
     }
@@ -81,20 +89,36 @@ struct ActivityShareSheet: UIViewControllerRepresentable {
 struct ShareCardView: View {
     let content: ShareCardContent
 
-    var body: some View {
-        ZStack {
-            background
+    @Environment(\.locale) private var locale
+    @Environment(\.calendar) private var calendar
+    @Environment(\.timeZone) private var timeZone
 
-            VStack(spacing: 0) {
-                header
-                Spacer(minLength: 0)
-                centerpiece
-                Spacer(minLength: 0)
-                footer
-            }
-            .padding(28)
+    static func exportSize(for content: ShareCardContent) -> CGSize {
+        if case .achievement(let achievement, _) = content {
+            return CGSize(width: 360, height: AchievementShareMetrics(achievement: achievement).height)
         }
-        .frame(width: 360, height: 450)
+        return CGSize(width: 360, height: 450)
+    }
+
+    var body: some View {
+        Group {
+            if case .achievement(let achievement, _) = content {
+                AchievementSharePoster(achievement: achievement, dateLine: dateLine)
+            } else {
+                VStack(spacing: 0) {
+                    header
+                    Spacer(minLength: 0)
+                    centerpiece
+                    Spacer(minLength: 0)
+                    footer
+                }
+                .padding(28)
+                .frame(width: 360, height: 450)
+                // Decoration is paint, never an intrinsic-size participant.
+                .background { background.frame(width: 360, height: 450).clipped() }
+            }
+        }
+        .environment(\.dynamicTypeSize, .large)
     }
 
     // MARK: Sections
@@ -175,28 +199,8 @@ struct ShareCardView: View {
                 }
             }
 
-        case .achievement(let achievement, _):
-            VStack(spacing: 18) {
-                ZStack {
-                    Circle()
-                        .fill(Theme.glowGradient)
-                        .frame(width: 130, height: 130)
-                        .shadow(color: Theme.lagoon.opacity(0.35), radius: 22, x: 0, y: 10)
-                    Image(systemName: achievement.symbol)
-                        .font(.system(size: 54, weight: .semibold))
-                        .foregroundStyle(.white)
-                }
-                VStack(spacing: 4) {
-                    Text(achievement.title)
-                        .font(Theme.editorialSerif(30, weight: .semibold, relativeTo: .title))
-                        .foregroundStyle(Theme.ink)
-                        .multilineTextAlignment(.center)
-                    Text(achievement.detail)
-                        .font(Theme.sipliMono(12, relativeTo: .caption))
-                        .foregroundStyle(Theme.textSecondary)
-                        .multilineTextAlignment(.center)
-                }
-            }
+        case .achievement:
+            EmptyView() // Routed through AchievementSharePoster above.
         }
     }
 
@@ -249,12 +253,189 @@ struct ShareCardView: View {
 
     private var dateLine: String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "d MMMM"
+        formatter.locale = locale
+        formatter.calendar = calendar
+        formatter.timeZone = timeZone
+        formatter.setLocalizedDateFormatFromTemplate("dMMMMyyyy")
         switch content {
         case .daily(_, _, _, _, let date): return formatter.string(from: date)
         case .weekly(_, _, _, _, let end): return "Week ending \(formatter.string(from: end))"
         case .achievement(_, let date): return formatter.string(from: date)
         }
+    }
+}
+
+/// Static export typography has fixed point sizes; accessibility settings on the
+/// sender's phone must not resize and crop the recipient's image.
+@MainActor
+struct AchievementShareMetrics {
+    let titleSize: CGFloat
+    let detailSize: CGFloat
+    let titleHeight: CGFloat
+    let detailHeight: CGFloat
+    let artworkHeight: CGFloat
+    let height: CGFloat
+    static let inset: CGFloat = 28
+    static let textWidth: CGFloat = 304
+
+    static func displayFont(_ size: CGFloat) -> UIFont {
+        let font = UIFont.systemFont(ofSize: size, weight: .semibold)
+        return font.fontDescriptor.withDesign(.serif).map { UIFont(descriptor: $0, size: size) } ?? font
+    }
+    static func measure(_ text: String, font: UIFont) -> CGFloat {
+        let style = NSMutableParagraphStyle()
+        style.lineBreakMode = .byWordWrapping
+        return ceil((text as NSString).boundingRect(with: CGSize(width: textWidth, height: .greatestFiniteMagnitude),
+            options: [.usesLineFragmentOrigin, .usesFontLeading], attributes: [.font: font, .paragraphStyle: style], context: nil).height) + 4
+    }
+    init(achievement: Achievement) {
+        // Header, footer, category line, safe margins and inter-section gaps.
+        let fixed: CGFloat = 28 * 2 + 34 + 30 + 14 + 8 + 8 + 12 + 12 + 14
+        var result: (CGFloat, CGFloat, CGFloat, CGFloat) = (24, 12, 0, 0)
+        for (title, detail): (CGFloat, CGFloat) in [(36, 14), (32, 14), (28, 13), (24, 12)] {
+            let th = Self.measure(achievement.title, font: Self.displayFont(title))
+            let dh = Self.measure(achievement.detail, font: .systemFont(ofSize: detail))
+            result = (title, detail, th, dh)
+            if 450 - fixed - th - dh >= 115 { break }
+        }
+        titleSize = result.0; detailSize = result.1
+        titleHeight = result.2; detailHeight = result.3
+        artworkHeight = min(180, max(100, 450 - fixed - titleHeight - detailHeight))
+        // Code-defined catalog entries remain 4:5. Unusually long localized
+        // copy gets a taller keepsake rather than ellipses or clipped text.
+        height = max(450, fixed + artworkHeight + titleHeight + detailHeight)
+    }
+}
+
+private struct AchievementSharePoster: View {
+    let achievement: Achievement
+    let dateLine: String
+    @Environment(\.colorScheme) private var scheme
+    private var metrics: AchievementShareMetrics { AchievementShareMetrics(achievement: achievement) }
+    private var spooky: Bool { achievement.id.hasPrefix("spooky.") }
+    private var foreground: Color { Theme.ink }
+    private var accent: Color {
+        if spooky { return SpookySeason.Palette.accent }
+        switch achievement.category {
+        case .consistency: return Theme.lagoon
+        case .volume: return Theme.mint
+        case .explorer: return Theme.coral
+        case .dedication: return Theme.sun
+        case .season, .secret: return Theme.lavender
+        }
+    }
+    private var collection: String {
+        if spooky { return "Spooky Season" }
+        if achievement.id.hasPrefix("matchday.") { return "Match Day" }
+        return achievement.category.displayName
+    }
+    var body: some View {
+        VStack(spacing: 0) {
+            VStack(spacing: 5) {
+                Text("Achievement unlocked")
+                    .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                    .tracking(1.5)
+                    .textCase(.uppercase)
+                Text(dateLine).font(.system(size: 11))
+                    .foregroundStyle(foreground.opacity(0.65))
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            .frame(height: 34)
+            Spacer(minLength: 12)
+            AchievementShareArtwork(achievement: achievement, accent: accent)
+                .frame(height: metrics.artworkHeight)
+            Spacer(minLength: 12)
+            Text(collection)
+                .font(.system(size: 10, weight: .semibold, design: .monospaced))
+                .tracking(1.3).textCase(.uppercase)
+                .foregroundStyle(foreground.opacity(0.65))
+                .frame(height: 14)
+            Color.clear.frame(height: 8)
+            Text(achievement.title)
+                .font(Font(AchievementShareMetrics.displayFont(metrics.titleSize)))
+                .multilineTextAlignment(.center)
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(height: metrics.titleHeight)
+            Color.clear.frame(height: 8)
+            Text(achievement.detail)
+                .font(.system(size: metrics.detailSize))
+                .multilineTextAlignment(.center)
+                .foregroundStyle(foreground.opacity(0.75))
+                .fixedSize(horizontal: false, vertical: true)
+                .frame(height: metrics.detailHeight)
+            Spacer(minLength: 14)
+            HStack(spacing: 5) {
+                Image(systemName: "drop.fill").font(.system(size: 9))
+                Text("Sipli").font(.system(size: 17, weight: .semibold, design: .serif))
+            }
+            .frame(height: 30)
+            .foregroundStyle(foreground)
+        }
+        .foregroundStyle(foreground)
+        .padding(AchievementShareMetrics.inset)
+        .frame(width: 360, height: metrics.height)
+        .background {
+            ZStack {
+                if spooky && scheme == .dark { SpookySeason.Palette.midnight } else { Theme.paper }
+                RadialGradient(colors: [accent.opacity(scheme == .dark ? 0.18 : 0.10), .clear],
+                               center: .init(x: 0.5, y: 0.36), startRadius: 5, endRadius: 240)
+                RoundedRectangle(cornerRadius: 4)
+                    .stroke(foreground.opacity(0.10), lineWidth: 0.75)
+                    .padding(12)
+            }
+            .frame(width: 360, height: metrics.height).clipped()
+        }
+    }
+}
+
+private struct AchievementShareArtwork: View {
+    let achievement: Achievement
+    let accent: Color
+    private var spooky: Bool { achievement.id.hasPrefix("spooky.") }
+    var body: some View {
+        GeometryReader { proxy in
+            let h = proxy.size.height
+            let w = proxy.size.width
+            ZStack {
+                Circle().fill(accent.opacity(0.10)).frame(width: h * 0.88, height: h * 0.88)
+                    .overlay { Circle().stroke(accent.opacity(0.28), lineWidth: 0.8).padding(4) }
+                // Small radial marks evoke an earned seal without a generic gradient badge.
+                ForEach(0..<12, id: \.self) { index in
+                    Capsule().fill(accent.opacity(index.isMultiple(of: 3) ? 0.65 : 0.25))
+                        .frame(width: 1.3, height: index.isMultiple(of: 3) ? 7 : 3)
+                        .offset(y: -h * 0.48).rotationEffect(.degrees(Double(index) * 30))
+                }
+                if spooky {
+                    Image(systemName: "moon.fill")
+                        .font(.system(size: h * 0.41)).foregroundStyle(SpookySeason.Palette.pumpkin.opacity(0.35))
+                        .offset(x: -h * 0.20, y: -h * 0.13)
+                    BatShape().fill(SpookySeason.Palette.accent)
+                        .frame(width: h * 0.24, height: h * 0.12).rotationEffect(.degrees(-12))
+                        .offset(x: -h * 0.43, y: -h * 0.20)
+                    BatShape().fill(SpookySeason.Palette.accent.opacity(0.65))
+                        .frame(width: h * 0.15, height: h * 0.075).rotationEffect(.degrees(15))
+                        .offset(x: h * 0.40, y: -h * 0.34)
+                }
+                StaticBottleArtwork(fill: 0.74, tint: spooky ? SpookySeason.Palette.potion : Theme.lagoon)
+                    .frame(width: h * 0.64, height: h * 0.91)
+                    .rotationEffect(.degrees(-7))
+                    .offset(x: -h * 0.025, y: h * 0.01)
+                if spooky && achievement.id == "spooky.first" {
+                    PumpkinView().frame(width: h * 0.27, height: h * 0.23)
+                        .offset(x: h * 0.28, y: h * 0.28)
+                } else {
+                    Image(systemName: achievement.symbol)
+                        .font(.system(size: h * 0.19, weight: .semibold))
+                        .foregroundStyle(Theme.ink)
+                        .frame(width: h * 0.34, height: h * 0.34)
+                        .background(Theme.paper, in: Circle())
+                        .overlay { Circle().stroke(accent.opacity(0.7), lineWidth: 1.3) }
+                        .offset(x: h * 0.29, y: h * 0.25)
+                }
+            }
+            .frame(width: w, height: h)
+        }
+        .accessibilityHidden(true)
     }
 }
 

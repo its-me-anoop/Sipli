@@ -122,6 +122,25 @@ final class BottleFlowTests: XCTestCase {
         app.terminate()
     }
 
+    @MainActor
+    func testAchievementShareCardPreview() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-hasOnboarded", "YES", "-spookySeason2026InvitePrompted", "YES"]
+        app.launchEnvironment = ["SIPLI_LIVING_UI_NAMESPACE": UUID().uuidString, "SIPLI_ACHIEVEMENT_UI_PREVIEW": "1",
+                                 "SIPLI_BOTTLE_REDUCE_MOTION": "1", "SIPLI_LIVING_REDUCE_MOTION": "1"]
+        app.launch()
+        XCTAssertTrue(bottle(in: app).waitForExistence(timeout: 30))
+        let trophy = app.buttons.matching(NSPredicate(format: "label BEGINSWITH %@", "Trophy Room,")).firstMatch
+        XCTAssertTrue(trophy.waitForExistence(timeout: 10))
+        if !trophy.isHittable { app.swipeUp() }
+        trophy.tap()
+        XCTAssertTrue(app.buttons["Share First Brew"].waitForExistence(timeout: 10), app.debugDescription)
+        app.buttons["Share First Brew"].tap()
+        XCTAssertTrue(app.otherElements["ActivityListView"].waitForExistence(timeout: 10), app.debugDescription)
+        capture(app, "achievement-native-share-sheet")
+        app.terminate()
+    }
+
     override func setUp() {
         super.setUp()
         continueAfterFailure = false

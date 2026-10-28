@@ -213,6 +213,7 @@
 		9D77F22E5AAB4532AB73CB7F /* LivingBottleCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004532E50CA6481B94E24C35 /* LivingBottleCoordinator.swift */; };
 		40FE20803B7B47A594A1D168 /* LivingBottleNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEACC9E6A60F4563BE13518C /* LivingBottleNotice.swift */; };
 		6E86FBE2FEE543C98D8EF648 /* LivingInsightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E722F69E5D284F35B63A3743 /* LivingInsightTests.swift */; };
+		69FAEF3769E7411190A714C2 /* ShareCardRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C359D0967E142BC88E226F0 /* ShareCardRendererTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -462,6 +463,7 @@
 		004532E50CA6481B94E24C35 /* LivingBottleCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivingBottleCoordinator.swift; sourceTree = "<group>"; };
 		BEACC9E6A60F4563BE13518C /* LivingBottleNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivingBottleNotice.swift; sourceTree = "<group>"; };
 		E722F69E5D284F35B63A3743 /* LivingInsightTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivingInsightTests.swift; sourceTree = "<group>"; };
+		9C359D0967E142BC88E226F0 /* ShareCardRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardRendererTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -734,6 +736,7 @@
 				4E1C527AF0BCC9ABC2C35DEB /* SipliV5IntentsTests.swift */,
 				02A8E333B2651E91E651308D /* BottleWaterModelTests.swift */,
 				E722F69E5D284F35B63A3743 /* LivingInsightTests.swift */,
+				9C359D0967E142BC88E226F0 /* ShareCardRendererTests.swift */,
 			);
 			path = WaterQuestTests;
 			sourceTree = "<group>";
@@ -1319,6 +1322,7 @@
 				87E6869DA83072CDD47ED555 /* SipliV5IntentsTests.swift in Sources */,
 				18CBB0D62D19FE8B95C041B0 /* BottleWaterModelTests.swift in Sources */,
 				6E86FBE2FEE543C98D8EF648 /* LivingInsightTests.swift in Sources */,
+				69FAEF3769E7411190A714C2 /* ShareCardRendererTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

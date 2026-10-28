@@ -83,7 +83,7 @@ struct AchievementUnlockOverlay: View {
                     ShareLink(
                         item: payload,
                         message: Text(payload.caption),
-                        preview: SharePreview(achievement.title, image: Image(systemName: achievement.symbol))
+                        preview: SharePreview(achievement.title, image: payload.previewImage)
                     ) {
                         Label("Share", systemImage: "square.and.arrow.up")
                             .font(Theme.titleFont(.body))

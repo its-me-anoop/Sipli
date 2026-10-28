@@ -12,11 +12,11 @@ typography:
   mono:
     fontFamily: SF Mono
 rounded:
-  card: 20pt
-  control: capsule
+  card: 20px
+  control: 9999px
 spacing:
-  page-inset: 16pt
-  onboarding-inset: 24pt
+  page-inset: 16px
+  onboarding-inset: 24px
 components:
   button: {}
   card: {}
@@ -132,3 +132,13 @@ fold bands test layout resolution; Device Hub controls test native open/partial/
 closed display changes separately. Passing screenshots cannot prove universal
 accessibility or the absence of every possible UI bug. See the dated QA report
 for exact coverage and remaining platform boundaries.
+
+## Share exports
+
+`ShareCardRenderer` and `ShareCardView` own daily, weekly and achievement PNG exports. The normal export is a 360 × 450 point poster at 3× (1080 × 1350 pixels). The content canvas owns its size; backgrounds and off-canvas decoration are paint and must not contribute intrinsic layout width. Keep text and branding at least 28 points inside the canvas. Fixed poster typography is independent of the sender’s Dynamic Type setting; the app’s interactive UI continues to follow accessibility settings.
+
+Achievement keepsakes use the same glass bottle and liquid geometry as Home, SF Serif display type, a quiet Sipli wordmark and the catalog’s actual title/detail. Artwork uses category colors from Theme and each achievement’s symbol. Spooky badges retain the established potion/pumpkin palette, bats, moon and pumpkin shapes from SpookySeason; their identity follows the earned badge, not today’s event switch. No new raster assets or character faces are introduced. Catalog cards stay 4:5 in light and dark. Long localized copy first reduces poster type/art proportionately; unusually long copy expands the export height rather than truncating content. DateFormatter follows the render locale, calendar and timezone. Native SharePreview uses the actual rendered PNG.
+
+Token path: Theme and SpookySeason.Palette remain canonical → shared poster/artwork → ImageRenderer export. `StaticBottleArtwork` reuses BottleWaterCanvas and the existing bottle asset without sensors or animation. Verification combines native PNG render/OCR margin tests, catalog light/dark coverage, long text/locale cases and the native iOS share-sheet flow. Achievement eligibility and persisted awards are separate and unchanged.
+
+Design metadata uses CSS `px` lengths for schema compatibility; these document equivalent UIKit logical points, not image pixels. `rounded.control: 9999px` denotes the existing native Capsule shape. Runtime Theme and native geometry remain canonical; no app spacing or corner styling changed in this metadata cleanup.
