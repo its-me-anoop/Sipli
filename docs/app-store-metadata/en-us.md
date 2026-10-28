@@ -1,6 +1,6 @@
-# App Store Metadata — Sipli 3.0 (en-US)
+# Historical App Store Metadata — Sipli 3.0 (en-US)
 
-**Status:** Source of truth. Paste these strings verbatim into App Store Connect → App Information → Localizable Information (English (US)) for the v3.0 listing.
+**Status:** Historical 3.0 reference only. Do not paste into the 6.2 submission. Current preparation is in `6.2-submission.md`, with the description in `../appstore-description.txt`; saved App Store Connect fields still require authenticated verification.
 
 **Generated from:** `~/.claude/plans/whimsical-tickling-parnas.md` (competitor-informed v3.0 rewrite, approved 2026-04-16)
 

@@ -1,4 +1,6 @@
-# App Review Information — Sipli 3.0
+# Historical App Review Information — Sipli 3.0
+
+**Status:** Historical reference, not valid for 6.2. Its Private Cloud Compute statement is obsolete: the current app uses the on-device model only. Do not reuse old prices, contact placeholders or testing instructions without verification. See `6.2-submission.md` for current review preparation.
 
 **Purpose:** reviewer-facing copy for App Store Connect → App Information → App Review Information (and the version-specific review info panel on v3.0). Not user-facing.
 

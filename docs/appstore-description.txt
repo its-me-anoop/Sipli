@@ -2,7 +2,7 @@ See how much is left to reach your daily water goal. Sipli makes logging a drink
 
 A BOTTLE THAT FOLLOWS YOUR DAY
 
-The Home bottle starts full and drains as you log drinks. Its percentage shows how much of your daily goal is left. Tilt your phone and the water moves with it, then settles. With Reduce Motion enabled, the level updates without the motion effects.
+The Home bottle starts full and drains as you log drinks. Its percentage shows how much of your daily goal is left. Tilt your phone and the water moves with it, then settles. With Reduce Motion enabled, the level updates without the motion effects. A gentle welcome when you return and a little encouragement after logging help you keep going.
 
 MADE FOR IPHONE DUO
 
@@ -18,7 +18,7 @@ QUICK TO LOG, EASY TO CORRECT
 
 SMALL REASONS TO KEEP GOING
 
-Build a streak, take on weekly quests, and discover 31 badges in the Trophy Room. Share a daily summary, a week of progress, or a badge you've earned. Ask Siri to log a drink by name and amount, like “Log 350 ml of latte in Sipli”, and hear how much is left without opening the app.
+Build a streak, take on weekly quests, and discover badges in the Trophy Room. Share a daily summary, a week of progress, or a beautifully illustrated card for a badge you've earned. Ask Siri to log a drink by name and amount, like “Log 350 ml of latte in Sipli”, and hear how much is left without opening the app.
 
 FREE TO START
 
@@ -32,7 +32,7 @@ An optional subscription adds:
 • Apple Health sync for water intake, workouts, and active energy, with your permission.
 • Daily goal adjustments for local temperature, humidity, workouts, and active days.
 • Smart reminders that respond to your schedule and progress.
-• Hydration tips and insight summaries, with on-device Apple Intelligence on supported devices. Built-in guidance is available when on-device AI is unavailable.
+• Hydration tips and insight summaries that respond to your logs and goals, with Apple Intelligence on supported devices.
 
 Monthly and annual plans are available. Prices, billing periods, and any eligible trial offers are shown before purchase. Subscriptions renew automatically unless canceled at least 24 hours before the current period ends. Payment is charged to your Apple Account. Manage or cancel your subscription in your App Store account settings.
 
