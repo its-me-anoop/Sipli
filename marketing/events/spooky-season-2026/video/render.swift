@@ -565,6 +565,15 @@ func writeVideo(width W: Int, height H: Int, audio: URL, to finalURL: URL) throw
     let writer = try AVAssetWriter(outputURL: tmp, fileType: .mov)
     let input = AVAssetWriterInput(mediaType: .video, outputSettings: [
         AVVideoCodecKey: AVVideoCodecType.h264, AVVideoWidthKey: W, AVVideoHeightKey: H,
+        // Explicit square pixels, full clean aperture and HD colour, which
+        // App Store Connect's media checker expects.
+        AVVideoPixelAspectRatioKey: [AVVideoPixelAspectRatioHorizontalSpacingKey: 1,
+                                     AVVideoPixelAspectRatioVerticalSpacingKey: 1],
+        AVVideoCleanApertureKey: [AVVideoCleanApertureWidthKey: W, AVVideoCleanApertureHeightKey: H,
+                                  AVVideoCleanApertureHorizontalOffsetKey: 0, AVVideoCleanApertureVerticalOffsetKey: 0],
+        AVVideoColorPropertiesKey: [AVVideoColorPrimariesKey: AVVideoColorPrimaries_ITU_R_709_2,
+                                    AVVideoTransferFunctionKey: AVVideoTransferFunction_ITU_R_709_2,
+                                    AVVideoYCbCrMatrixKey: AVVideoYCbCrMatrix_ITU_R_709_2],
         AVVideoCompressionPropertiesKey: [AVVideoAverageBitRateKey: 16_000_000,
                                           AVVideoProfileLevelKey: AVVideoProfileLevelH264HighAutoLevel,
                                           AVVideoExpectedSourceFrameRateKey: fps,
