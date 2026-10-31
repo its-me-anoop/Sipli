@@ -4,6 +4,7 @@ import StoreKit
 struct RootView: View {
     @AppStorage("hasOnboarded") private var hasOnboarded: Bool = false
     @EnvironmentObject private var subscriptionManager: SubscriptionManager
+    @EnvironmentObject private var store: HydrationStore
 
     @State private var showSplash = true
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
@@ -21,7 +22,13 @@ struct RootView: View {
                 OnboardingView {
                     hasOnboarded = true
                     if !subscriptionManager.isSubscribed {
-                        subscriptionManager.presentPaywall()
+                        let goal = Formatters.volumeString(
+                            ml: store.dailyGoal.totalML,
+                            unit: store.profile.unitSystem
+                        )
+                        subscriptionManager.presentPaywall(
+                            .planReady(name: store.profile.name, goal: goal)
+                        )
                     }
                 }
             }
@@ -93,6 +100,29 @@ struct PremiumPaywallView: View {
     @State private var selectedProductID: ProductID = .annual
     @State private var isPurchasing = false
     @State private var purchaseError: String?
+    /// Products this Apple ID can still start a free trial on.
+    @State private var trialEligibleIDs: Set<ProductID> = []
+    @State private var reminderAvailability: TrialReminderAvailability = .notDetermined
+    @State private var openedAt = Date()
+
+    private let reminderScheduler: TrialReminderScheduling = TrialReminderScheduler()
+
+    /// The free trial on the selected plan, only when this user can redeem it.
+    private var selectedTrial: TrialLength? {
+        guard let product = selectedProduct,
+              trialEligibleIDs.contains(selectedProductID) else { return nil }
+        return SubscriptionManager.freeTrial(of: product)
+    }
+
+    private var trialTimeline: TrialTimeline? {
+        guard let trial = selectedTrial, let product = selectedProduct else { return nil }
+        return TrialTimeline.make(
+            trial: trial,
+            startingAt: openedAt,
+            renewalPrice: "\(product.displayPrice)\(selectedProductID.billingSuffix)",
+            canRemind: reminderAvailability.canRemind
+        )
+    }
 
     private var selectedProduct: Product? {
         subscriptionManager.product(for: selectedProductID)
@@ -152,6 +182,7 @@ struct PremiumPaywallView: View {
 
     private var introOfferText: String? {
         guard let product = selectedProduct,
+              trialEligibleIDs.contains(selectedProductID),
               let offer = product.subscription?.introductoryOffer else { return nil }
 
         let unitLabel = trialDurationLabel(for: offer.period)
@@ -216,10 +247,8 @@ struct PremiumPaywallView: View {
     private var purchaseButtonText: String {
         guard let product = selectedProduct else { return selectedProductID.callToAction }
 
-        if let offer = product.subscription?.introductoryOffer,
-           offer.paymentMode == .freeTrial {
-            let trialDuration = trialDurationLabel(for: offer.period)
-            return "Try free for \(trialDuration), then \(product.displayPrice)\(selectedProductID.billingSuffix)"
+        if let trial = selectedTrial {
+            return trial.callToAction
         }
         // For annual-monthly, the CTA reads in per-month terms even though
         // the product price is the yearly total.
@@ -273,7 +302,13 @@ struct PremiumPaywallView: View {
                             .padding(.horizontal, 20)
                     }
 
-                    PremiumFeaturesCard(features: premiumFeatures)
+                    if let trialTimeline {
+                        TrialTimelineCard(timeline: trialTimeline)
+                            .transition(.opacity)
+                    } else {
+                        PremiumFeaturesCard(features: premiumFeatures)
+                            .transition(.opacity)
+                    }
 
                     if isLoadingProducts {
                         ProgressView()
@@ -297,6 +332,7 @@ struct PremiumPaywallView: View {
                                 PlanOptionCard(
                                     productID: option.id,
                                     display: display(for: option.product),
+                                    freeTrialLabel: freeTrialLabel(for: option),
                                     isSelected: selectedProductID == option.id,
                                     isAvailable: option.product != nil
                                 ) {
@@ -322,47 +358,6 @@ struct PremiumPaywallView: View {
                         .foregroundStyle(.secondary)
                         .multilineTextAlignment(.center)
                         .padding(.horizontal, 8)
-
-                    if let product = selectedProduct {
-                        Button {
-                            doPurchase(product)
-                        } label: {
-                            HStack(spacing: 10) {
-                                if isPurchasing {
-                                    ProgressView().tint(.white)
-                                    Text("Processing…")
-                                } else {
-                                    Text(purchaseButtonText)
-                                        .multilineTextAlignment(.center)
-                                }
-                                if !isPurchasing {
-                                    ZStack {
-                                        Circle()
-                                            .fill(Color.white)
-                                            .frame(width: 28, height: 28)
-                                        Image(systemName: "arrow.right")
-                                            .font(.system(size: 13, weight: .bold))
-                                            .foregroundStyle(Theme.lagoon)
-                                    }
-                                }
-                            }
-                            .font(.system(size: 16, weight: .semibold))
-                            .foregroundStyle(Color.white)
-                            .padding(.horizontal, 18)
-                            .padding(.vertical, 12)
-                            .frame(maxWidth: .infinity, minHeight: 60)
-                            .background(Capsule(style: .continuous).fill(Theme.lagoon))
-                        }
-                        .buttonStyle(SipliPressStyle())
-                        .disabled(isPurchasing)
-                    }
-
-                    if let error = purchaseError {
-                        Text(error)
-                            .font(.footnote)
-                            .foregroundStyle(.red)
-                            .multilineTextAlignment(.center)
-                    }
 
                     Button("Restore Purchase") {
                         doRestore()
@@ -403,11 +398,105 @@ struct PremiumPaywallView: View {
             .padding(.horizontal, 16)
             .background(.ultraThinMaterial)
         }
+        .safeAreaInset(edge: .bottom, spacing: 0) {
+            purchaseFooter
+        }
+        .animation(reduceMotion ? nil : Theme.quickSpring, value: trialTimeline != nil)
         .onAppear {
             syncSelectedPlan()
         }
         .onChange(of: subscriptionManager.products.count) { _, _ in
             syncSelectedPlan()
+        }
+        .task(id: subscriptionManager.products.count) {
+            await loadTrialEligibility()
+        }
+    }
+
+    /// Sticky purchase area: the call to action never scrolls out of reach.
+    @ViewBuilder
+    private var purchaseFooter: some View {
+        if let product = selectedProduct {
+            VStack(spacing: 8) {
+                if let error = purchaseError {
+                    Text(error)
+                        .font(.footnote)
+                        .foregroundStyle(.red)
+                        .multilineTextAlignment(.center)
+                }
+
+                Button {
+                    doPurchase(product)
+                } label: {
+                    HStack(spacing: 10) {
+                        if isPurchasing {
+                            ProgressView().tint(.white)
+                            Text("Processing…")
+                        } else {
+                            Text(purchaseButtonText)
+                                .multilineTextAlignment(.center)
+                        }
+                        if !isPurchasing {
+                            ZStack {
+                                Circle()
+                                    .fill(Color.white)
+                                    .frame(width: 28, height: 28)
+                                Image(systemName: "arrow.right")
+                                    .font(.system(size: 13, weight: .bold))
+                                    .foregroundStyle(Theme.lagoon)
+                            }
+                        }
+                    }
+                    .font(.system(size: 17, weight: .semibold))
+                    .foregroundStyle(Color.white)
+                    .padding(.horizontal, 18)
+                    .padding(.vertical, 12)
+                    .frame(maxWidth: .infinity, minHeight: 60)
+                    .background(Capsule(style: .continuous).fill(Theme.lagoon))
+                }
+                .buttonStyle(SipliPressStyle())
+                .disabled(isPurchasing)
+
+                if selectedTrial != nil {
+                    Text("Then \(product.displayPrice)\(selectedProductID.billingSuffix). Cancel anytime.")
+                        .font(.footnote)
+                        .foregroundStyle(Theme.textSecondary)
+                        .multilineTextAlignment(.center)
+                }
+            }
+            .padding(.horizontal, 24)
+            .padding(.top, 12)
+            .padding(.bottom, 8)
+            .frame(maxWidth: 620)
+            .frame(maxWidth: .infinity)
+            .background(.ultraThinMaterial)
+        }
+    }
+
+    private func freeTrialLabel(for option: (id: ProductID, product: Product?)) -> String? {
+        guard trialEligibleIDs.contains(option.id),
+              let product = option.product,
+              let trial = SubscriptionManager.freeTrial(of: product) else { return nil }
+        return trial.value == 1 ? "1 \(trial.phrase) free" : "\(trial.phrase) free"
+    }
+
+    private func loadTrialEligibility() async {
+        reminderAvailability = await reminderScheduler.reminderAvailability()
+        var eligible: Set<ProductID> = []
+        for id in ProductID.allCases {
+            guard let product = subscriptionManager.product(for: id) else { continue }
+            if await subscriptionManager.isEligibleForFreeTrial(product) {
+                eligible.insert(id)
+            }
+        }
+        trialEligibleIDs = eligible
+    }
+
+    /// Keeps the timeline's promise: a reminder before the trial ends.
+    private func scheduleTrialReminderIfNeeded(for timeline: TrialTimeline?) {
+        guard let timeline, let reminderDate = timeline.reminderDate else { return }
+        Task {
+            await reminderScheduler.scheduleReminder(at: reminderDate, trialEnd: timeline.trialEnd)
         }
     }
 
@@ -428,6 +517,7 @@ struct PremiumPaywallView: View {
     private func doPurchase(_ product: Product) {
         isPurchasing = true
         purchaseError = nil
+        let timelineAtPurchase = trialTimeline
 
         Task {
             let result = await subscriptionManager.purchase(product)
@@ -436,6 +526,7 @@ struct PremiumPaywallView: View {
             switch result {
             case .success:
                 Haptics.success()
+                scheduleTrialReminderIfNeeded(for: timelineAtPurchase)
                 closePaywall()
             case .cancelled:
                 break
@@ -520,9 +611,86 @@ private struct PremiumFeaturesCard: View {
     }
 }
 
+/// Vertical "what happens next" timeline for a free trial. Answers the
+/// biggest reason people hesitate on a trial: "will I be charged without
+/// warning?"
+private struct TrialTimelineCard: View {
+    let timeline: TrialTimeline
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("How your free \(timeline.trial.phrase) works")
+                .font(.headline)
+                .foregroundStyle(Theme.ink)
+                .padding(.bottom, 16)
+
+            ForEach(Array(timeline.milestones.enumerated()), id: \.element.id) { index, milestone in
+                let isLast = index == timeline.milestones.count - 1
+                HStack(alignment: .top, spacing: 14) {
+                    VStack(spacing: 0) {
+                        ZStack {
+                            Circle()
+                                .fill(index == 0 ? Theme.lagoon : Theme.lagoon.opacity(0.14))
+                                .frame(width: 36, height: 36)
+                            Image(systemName: milestone.kind.symbol)
+                                .font(.system(size: 15, weight: .semibold))
+                                .foregroundStyle(index == 0 ? Color.white : Theme.lagoon)
+                        }
+                        if !isLast {
+                            Rectangle()
+                                .fill(
+                                    LinearGradient(
+                                        colors: [Theme.lagoon.opacity(0.6), Theme.lagoon.opacity(0.15)],
+                                        startPoint: .top,
+                                        endPoint: .bottom
+                                    )
+                                )
+                                .frame(width: 3)
+                                .frame(minHeight: 24, maxHeight: .infinity)
+                        }
+                    }
+                    .frame(width: 36)
+
+                    VStack(alignment: .leading, spacing: 4) {
+                        HStack(alignment: .firstTextBaseline) {
+                            Text(milestone.title)
+                                .font(.subheadline.weight(.semibold))
+                                .foregroundStyle(Theme.ink)
+                            Spacer(minLength: 8)
+                            if index > 0 {
+                                Text(milestone.date, format: .dateTime.month(.abbreviated).day())
+                                    .font(.caption.weight(.semibold).monospacedDigit())
+                                    .foregroundStyle(Theme.lagoon)
+                            }
+                        }
+                        Text(milestone.detail)
+                            .font(.footnote)
+                            .foregroundStyle(Theme.textSecondary)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                    .padding(.top, 7)
+                    .padding(.bottom, isLast ? 0 : 18)
+                }
+                .accessibilityElement(children: .combine)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(18)
+        .background(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(.ultraThinMaterial)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .stroke(Theme.glassBorder.opacity(0.35), lineWidth: 1)
+        )
+    }
+}
+
 private struct PlanOptionCard: View {
     let productID: ProductID
     let display: SubscriptionDisplay?
+    var freeTrialLabel: String? = nil
     let isSelected: Bool
     let isAvailable: Bool
     let action: () -> Void
@@ -562,6 +730,12 @@ private struct PlanOptionCard: View {
                     Text(productID.shortDescription)
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
+
+                    if let freeTrialLabel {
+                        Label(freeTrialLabel, systemImage: "gift.fill")
+                            .font(.caption.weight(.semibold))
+                            .foregroundStyle(Theme.lagoon)
+                    }
 
                     if let commitment = display?.commitment {
                         // Mandatory 12-month commitment disclosure for the

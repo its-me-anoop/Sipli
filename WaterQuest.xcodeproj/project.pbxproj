@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		D24EAB2EB2A4408BA058BE3F /* PaywallTrialUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 060A2B9EF7484857A99BB679 /* PaywallTrialUITests.swift */; };
+		819BDE26278A4E5D8B6BB4F2 /* TrialReminderSchedulerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4B9C90D3893D4F36AAAFBC53 /* TrialReminderSchedulerTests.swift */; };
+		30E159AFA83D498C900DA494 /* TrialTimelineTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 55C407FB127546C5963E037B /* TrialTimelineTests.swift */; };
+		65BBE10FA116426FAA00433C /* TrialReminderScheduler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DA12A2487594591A4E03CF1 /* TrialReminderScheduler.swift */; };
+		FA9F696ACAD74DD99C057F62 /* TrialTimeline.swift in Sources */ = {isa = PBXBuildFile; fileRef = 380436B8E4014083B1884BCC /* TrialTimeline.swift */; };
 		00E5359EB56D89B045DDBDF1 /* AddIntakeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9FBC0C7A2F89C0FD52822D48 /* AddIntakeView.swift */; };
 		0252DDA30195EA614A439A3C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9FC934C6863AFC8E01D302CE /* Assets.xcassets */; };
 		0A6AF1AF6B3D3222F30C3E85 /* WeatherSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7ADBD4C5BD2E2C34CE93AC27 /* WeatherSnapshot.swift */; };
@@ -286,6 +291,11 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		060A2B9EF7484857A99BB679 /* PaywallTrialUITests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = PaywallTrialUITests.swift; sourceTree = "<group>"; };
+		4B9C90D3893D4F36AAAFBC53 /* TrialReminderSchedulerTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TrialReminderSchedulerTests.swift; sourceTree = "<group>"; };
+		55C407FB127546C5963E037B /* TrialTimelineTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TrialTimelineTests.swift; sourceTree = "<group>"; };
+		3DA12A2487594591A4E03CF1 /* TrialReminderScheduler.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TrialReminderScheduler.swift; sourceTree = "<group>"; };
+		380436B8E4014083B1884BCC /* TrialTimeline.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = TrialTimeline.swift; sourceTree = "<group>"; };
 		027694A88893F168D4648666 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		02A8E333B2651E91E651308D /* BottleWaterModelTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BottleWaterModelTests.swift; sourceTree = "<group>"; };
 		032684376DE05B0CC4838664 /* UnitSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitSystem.swift; sourceTree = "<group>"; };
@@ -543,6 +553,7 @@
 			isa = PBXGroup;
 			children = (
 				ECD30C6F35167265A33C9555 /* BottleFlowTests.swift */,
+				060A2B9EF7484857A99BB679 /* PaywallTrialUITests.swift */,
 				A1F0D0000000000000000004 /* DuoLayoutTests.swift */,
 			);
 			name = WaterQuestUITests;
@@ -707,6 +718,8 @@
 				FE11AA0011AA22BB33CC44DD /* FluidTypeRankingTests.swift */,
 				A29B76655AD8F5DD3EE3B27E /* OnboardingStateTests.swift */,
 				CF3A93D59223C4765C1FE4A7 /* SubscriptionDisplayFormatterTests.swift */,
+				4B9C90D3893D4F36AAAFBC53 /* TrialReminderSchedulerTests.swift */,
+				55C407FB127546C5963E037B /* TrialTimelineTests.swift */,
 				B1C2D3E4F5061728394A5B6C /* SubscriptionManagerTests.swift */,
 				B2D3E4F5061728394A5B6C7D /* PaywallContextTests.swift */,
 				7978691325DF06C649CACAE7 /* SipliAppIntentsTests.swift */,
@@ -857,6 +870,8 @@
 				5E73BC8B42AADA53E70C6538 /* NotificationCategories.swift */,
 				ADB248542D61873060DDABFF /* NotificationHandler.swift */,
 				E9FF56BC52EB7ECE5A520179 /* SubscriptionDisplayFormatter.swift */,
+				3DA12A2487594591A4E03CF1 /* TrialReminderScheduler.swift */,
+				380436B8E4014083B1884BCC /* TrialTimeline.swift */,
 				3834593BE0BDE1EF6B965E24 /* HydrationMerge.swift */,
 				A734C7C795F2EC61478EC95B /* AchievementEngine.swift */,
 			);
@@ -1144,6 +1159,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F3097543BEB1A10A01727658 /* BottleFlowTests.swift in Sources */,
+				D24EAB2EB2A4408BA058BE3F /* PaywallTrialUITests.swift in Sources */,
 				A1F0D0000000000000000003 /* DuoLayoutTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1258,6 +1274,8 @@
 				57F94F846C1A4A60E68FF4E3 /* OnboardingView.swift in Sources */,
 				30FBAE8C1E7C2BD70CE4F8B0 /* PremiumBadge.swift in Sources */,
 				E31DC5693E50663B56EC315C /* SubscriptionDisplayFormatter.swift in Sources */,
+				65BBE10FA116426FAA00433C /* TrialReminderScheduler.swift in Sources */,
+				FA9F696ACAD74DD99C057F62 /* TrialTimeline.swift in Sources */,
 				2AF9FFFF48921B933CD53585 /* InsightsViewModel.swift in Sources */,
 				4DCCF183142A9E5C162039A3 /* HydrationIntentCore.swift in Sources */,
 				E2C7AEE23434DB640ED8DE07 /* HydrationMerge.swift in Sources */,
@@ -1288,6 +1306,8 @@
 				6BA043C42FE5DAB800FF4C45 /* OnboardingVesselModelTests.swift in Sources */,
 				3EE732F838BF314BAEB04DEB /* OnboardingStateTests.swift in Sources */,
 				3599E158C34156D35BBEDDAB /* SubscriptionDisplayFormatterTests.swift in Sources */,
+				819BDE26278A4E5D8B6BB4F2 /* TrialReminderSchedulerTests.swift in Sources */,
+				30E159AFA83D498C900DA494 /* TrialTimelineTests.swift in Sources */,
 				A1C2D3E4F5061728394A5B6C /* SubscriptionManagerTests.swift in Sources */,
 				A2D3E4F5061728394A5B6C7D /* PaywallContextTests.swift in Sources */,
 				D9B159F3F6641A2604E3BA34 /* SipliAppIntentsTests.swift in Sources */,

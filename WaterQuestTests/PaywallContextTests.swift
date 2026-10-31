@@ -87,3 +87,37 @@ struct PaywallContextTests {
         }
     }
 }
+
+// MARK: - Plan-ready paywall (after onboarding)
+
+@MainActor
+@Suite("PaywallContext plan ready", .tags(.subscription))
+struct PlanReadyPaywallContextTests {
+
+    @Test("Plan-ready title celebrates the finished plan")
+    func planReady_title() {
+        let context = PaywallContext.planReady(name: "Anoop", goal: "2,400 ml")
+        #expect(context.title == "Your plan is ready")
+        #expect(context.feature == nil)
+    }
+
+    @Test("Plan-ready message greets the user by first name with their goal")
+    func planReady_message_personalised() {
+        let context = PaywallContext.planReady(name: "Anoop Jose", goal: "2,400 ml")
+        #expect(context.message.hasPrefix("Anoop, your 2,400 ml daily goal is set."))
+    }
+
+    @Test("Plan-ready message still reads well without a name")
+    func planReady_message_noName() {
+        let context = PaywallContext.planReady(name: "  ", goal: "81 oz")
+        #expect(context.message.hasPrefix("Your 81 oz daily goal is set."))
+    }
+
+    @Test("presentPaywall(_:) shows the given context")
+    func presentContext() {
+        let manager = SubscriptionManager()
+        let context = PaywallContext.planReady(name: "Anoop", goal: "2,400 ml")
+        manager.presentPaywall(context)
+        #expect(manager.presentedPaywall == context)
+    }
+}

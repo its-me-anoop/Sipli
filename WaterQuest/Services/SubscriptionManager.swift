@@ -146,16 +146,42 @@ enum PremiumFeature: String, CaseIterable, Identifiable {
 struct PaywallContext: Identifiable, Equatable {
     let id = UUID()
     let feature: PremiumFeature?
+    private let customTitle: String?
+    private let customMessage: String?
 
     init(feature: PremiumFeature? = nil) {
         self.feature = feature
+        self.customTitle = nil
+        self.customMessage = nil
+    }
+
+    private init(title: String, message: String) {
+        self.feature = nil
+        self.customTitle = title
+        self.customMessage = message
+    }
+
+    /// Shown straight after onboarding: the user has just built a plan, so
+    /// the paywall leads with that plan rather than a generic upsell.
+    static func planReady(name: String, goal: String) -> PaywallContext {
+        let firstName = name
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+            .split(separator: " ")
+            .first
+            .map(String.init)
+        let lead = firstName.map { "\($0), your" } ?? "Your"
+        return PaywallContext(
+            title: "Your plan is ready",
+            message: "\(lead) \(goal) daily goal is set. Premium keeps it adapting to your weather, workouts, and day."
+        )
     }
 
     var title: String {
-        feature?.paywallTitle ?? "Unlock Sipli Premium"
+        customTitle ?? feature?.paywallTitle ?? "Unlock Sipli Premium"
     }
 
     var message: String {
+        if let customMessage { return customMessage }
         if let feature {
             return feature.shortDescription
         }
@@ -302,6 +328,30 @@ final class SubscriptionManager: ObservableObject {
         )
     }
 
+    /// The free trial a product offers, if its introductory offer is free.
+    /// Eligibility is checked separately (see `isEligibleForFreeTrial`).
+    static func freeTrial(of product: Product) -> TrialLength? {
+        guard let offer = product.subscription?.introductoryOffer,
+              offer.paymentMode == .freeTrial else { return nil }
+        let unit: TrialLength.Unit
+        switch offer.period.unit {
+        case .day: unit = .day
+        case .week: unit = .week
+        case .month: unit = .month
+        case .year: unit = .year
+        @unknown default: return nil
+        }
+        return TrialLength(value: offer.period.value, unit: unit)
+    }
+
+    /// Whether this Apple ID can still redeem the product's introductory
+    /// offer. People who already used a trial must not be shown one.
+    func isEligibleForFreeTrial(_ product: Product) async -> Bool {
+        guard Self.freeTrial(of: product) != nil,
+              let subscription = product.subscription else { return false }
+        return await subscription.isEligibleForIntroOffer
+    }
+
     var currentPlanName: String {
         activeProductID?.displayName ?? "Premium"
     }
@@ -320,6 +370,11 @@ final class SubscriptionManager: ObservableObject {
     func presentPaywall(for feature: PremiumFeature? = nil) {
         guard !isSubscribed else { return }
         presentedPaywall = PaywallContext(feature: feature)
+    }
+
+    func presentPaywall(_ context: PaywallContext) {
+        guard !isSubscribed else { return }
+        presentedPaywall = context
     }
 
     func dismissPaywall() {
