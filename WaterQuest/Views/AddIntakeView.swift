@@ -414,8 +414,8 @@ private struct SavedBanner: View {
         .background(
             Capsule(style: .continuous)
                 .fill(Theme.card)
+                .shadow(color: Theme.shadowColor, radius: 8, x: 0, y: 4)
         )
-        .shadow(color: Theme.shadowColor, radius: 8, x: 0, y: 4)
     }
 }
 

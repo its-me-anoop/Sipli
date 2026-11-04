@@ -23,16 +23,18 @@ struct LiquidGlassCard<Content: View>: View {
     var body: some View {
         let shape = RoundedRectangle(cornerRadius: cornerRadius, style: .continuous)
 
+        // Clip the content, then shadow only the card's shape underneath it,
+        // so scrolling never re-renders a shadow from the card's content.
         content
+            .clipShape(shape)
             .background(
                 shape.fill(Theme.card)
+                    .shadow(color: Theme.shadowColor.opacity(0.5), radius: 14, x: 0, y: 8)
             )
+            // The inner half of a 1 pt stroke: what the old clip left visible.
             .overlay(
-                shape.stroke(Theme.glassBorder, lineWidth: 1)
+                shape.strokeBorder(Theme.glassBorder, lineWidth: 0.5)
             )
-            .opacity(isInteractive ? 1 : 0.98)
-            .clipShape(shape)
-            .shadow(color: Theme.shadowColor.opacity(0.5), radius: 14, x: 0, y: 8)
     }
 }
 
@@ -135,12 +137,12 @@ struct LiquidGlassButton: View {
             .background(
                 Capsule()
                     .fill(style.tintColor)
+                    .shadow(color: style.shadowColor, radius: 10, x: 0, y: 5)
                     .overlay(
                         Capsule()
                             .strokeBorder(style.borderColor, lineWidth: 1)
                     )
             )
-            .shadow(color: style.shadowColor, radius: 10, x: 0, y: 5)
             .scaleEffect(isPressed ? 0.96 : 1.0)
         }
         .buttonStyle(.plain)
@@ -251,12 +253,12 @@ struct QuickAddPill: View {
                     .background(
                         Capsule()
                             .fill(Theme.card)
+                            .shadow(color: Theme.shadowColor.opacity(0.60), radius: 8, x: 0, y: 4)
                             .overlay(
                                 Capsule()
                                     .fill(Theme.lagoon.opacity(0.26))
                             )
                     )
-                    .shadow(color: Theme.shadowColor.opacity(0.60), radius: 8, x: 0, y: 4)
             }
         }
         .buttonStyle(.plain)

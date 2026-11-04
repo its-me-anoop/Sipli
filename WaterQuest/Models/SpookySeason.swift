@@ -275,15 +275,13 @@ struct SpookyNightSky: View {
         GeometryReader { geo in
             let w = geo.size.width, h = geo.size.height
             ZStack {
-                Circle()
-                    .fill(SpookySeason.Palette.potion.opacity(isLight ? 0.08 : 0.20))
-                    .frame(width: w * 0.8, height: w * 0.8)
-                    .blur(radius: 70)
+                // Gradient blobs instead of blurred circles: no blur pass
+                // behind every scrolling screen.
+                SoftBlob(color: SpookySeason.Palette.potion.opacity(isLight ? 0.08 : 0.20),
+                         width: w * 0.8, height: w * 0.8, blur: 70)
                     .position(x: w * 0.85, y: h * 0.08)
-                Circle()
-                    .fill(SpookySeason.Palette.pumpkin.opacity(isLight ? 0.07 : 0.10))
-                    .frame(width: w * 0.9, height: w * 0.7)
-                    .blur(radius: 80)
+                SoftBlob(color: SpookySeason.Palette.pumpkin.opacity(isLight ? 0.07 : 0.10),
+                         width: w * 0.9, height: w * 0.7, blur: 80)
                     .position(x: w * 0.1, y: h * 0.92)
 
                 ForEach(0..<3, id: \.self) { index in

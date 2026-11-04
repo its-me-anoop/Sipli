@@ -249,8 +249,7 @@ struct PremiumPaywallView: View {
 
     var body: some View {
         ZStack {
-            AppWaterBackground().ignoresSafeArea()
-
+            // The presenter's `avoidingFold()` draws the shared backdrop.
             ScrollView {
                 VStack(spacing: 24) {
 
@@ -598,16 +597,16 @@ private struct PlanOptionCard: View {
             .background(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
                     .fill(Theme.card)
+                    .shadow(
+                        color: isSelected ? Theme.lagoon.opacity(reduceMotion ? 0 : 0.18) : .clear,
+                        radius: 8,
+                        x: 0,
+                        y: 4
+                    )
             )
             .overlay(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
                     .stroke(isSelected ? Theme.lagoon : Theme.glassBorder.opacity(0.6), lineWidth: isSelected ? 2 : 1)
-            )
-            .shadow(
-                color: isSelected ? Theme.lagoon.opacity(reduceMotion ? 0 : 0.18) : .clear,
-                radius: 8,
-                x: 0,
-                y: 4
             )
         }
         .buttonStyle(.plain)

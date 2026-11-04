@@ -31,15 +31,17 @@ struct DashboardCard<Content: View>: View {
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
+            // Shadow the card's shape, not the whole card: a shadow on the
+            // content is re-rendered offscreen for every scrolled frame.
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .fill(backgroundGradient)
+                .shadow(color: Theme.shadowColor.opacity(0.5), radius: 14, x: 0, y: 8)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .stroke(Theme.glassBorder, lineWidth: 1)
         )
         .spookyCobweb(cornerRadius: 24)
-        .shadow(color: Theme.shadowColor.opacity(0.5), radius: 14, x: 0, y: 8)
     }
 }
 

@@ -169,7 +169,6 @@ struct DashboardView: View {
             }
             .scrollIndicators(.automatic)
         }
-        .background { AppWaterBackground().ignoresSafeArea() }
     }
 
     /// Fold / landscape pane 1: the bottle and today's numbers.
@@ -389,7 +388,6 @@ struct DashboardView: View {
                 .frame(maxWidth: 1200)
                 .frame(maxWidth: .infinity)
             }
-            .background { AppWaterBackground().ignoresSafeArea() }
         }
     }
 
@@ -898,7 +896,6 @@ private struct HydrationSummaryCard<Accessories: View>: View {
         .padding(isRegular ? 24 : 20)
         .frame(minHeight: availableHeight == nil ? (isRegular ? 380 : 330) : nil)
         .background(cardBackground)
-        .shadow(color: Theme.shadowColor.opacity(0.6), radius: 15, x: 0, y: 8)
         // Press-ripple removed: `onPressingChanged` installs a
         // `DragGesture(minimumDistance: 0)` that intercepts vertical swipes
         // and prevents the parent ScrollView from scrolling when the touch
@@ -1004,8 +1001,11 @@ private struct HydrationSummaryCard<Accessories: View>: View {
         // Onboarding-style clean opaque card. The summaryCard gradient
         // (sky → cream) carries the warmth; we add only a single soft border
         // matching the onboarding's `glassBorder` to define the edge.
+        // The shadow belongs to the card shape. On the whole card it would be
+        // re-rendered for every frame of the animated bottle and every scroll.
         return shape
             .fill(Theme.summaryCard)
+            .shadow(color: Theme.shadowColor.opacity(0.6), radius: 15, x: 0, y: 8)
             .overlay(
                 shape
                     .stroke(Theme.glassBorder, lineWidth: 1)

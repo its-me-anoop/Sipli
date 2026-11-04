@@ -15,9 +15,10 @@ struct LiquidProgressView: View {
     @StateObject private var motionManager = MotionManager()
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
 
-    // Animate a constant wave
+    // Animate a constant wave. 30 fps is plenty for a slow wave and halves the
+    // redraws competing with scrolling and transitions.
     @State private var phase: CGFloat = 0
-    private let waveTimer = Timer.publish(every: 1 / 60, on: .main, in: .common).autoconnect()
+    private let waveTimer = Timer.publish(every: 1 / 30, on: .main, in: .common).autoconnect()
 
     var body: some View {
         let width = bottleWidth ?? (isRegular ? 280 : 220)
@@ -129,12 +130,24 @@ struct LiquidProgressView: View {
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("Hydration progress")
         .accessibilityValue("\(Int(clampedProgress * 100)) percent of daily goal")
+        // Sensors run only while the bottle is on screen and allowed to move.
+        .onAppear { updateMotionTracking() }
+        .onDisappear { motionManager.stopTracking() }
+        .onChange(of: reduceMotion) { updateMotionTracking() }
         .onReceive(waveTimer) { _ in
             guard !reduceMotion else { return }
-            phase += 0.05
+            phase += 0.1
             if phase > (.pi * 200) {
                 phase = 0
             }
+        }
+    }
+
+    private func updateMotionTracking() {
+        if reduceMotion {
+            motionManager.stopTracking()
+        } else {
+            motionManager.startTracking()
         }
     }
 }

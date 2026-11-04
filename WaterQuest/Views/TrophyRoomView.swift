@@ -56,7 +56,7 @@ struct TrophyRoomView: View {
             .padding(.horizontal, 20)
             .padding(.bottom, 32)
         }
-        .background { AppWaterBackground().ignoresSafeArea() }
+        // `avoidingFold()` draws the shared backdrop behind this screen.
         .avoidingFold()
         .navigationTitle("Trophy Room")
         .navigationBarTitleDisplayMode(.large)

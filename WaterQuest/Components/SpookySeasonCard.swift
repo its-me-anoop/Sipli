@@ -84,7 +84,7 @@ private struct PotionProgressBar: View {
                     .frame(width: fill)
                     .overlay(alignment: .leading) {
                         if fill > 24 {
-                            TimelineView(.animation(paused: reduceMotion)) { context in
+                            TimelineView(.animation(minimumInterval: 1.0 / 30, paused: reduceMotion)) { context in
                                 bubbles(width: fill, time: context.date.timeIntervalSinceReferenceDate)
                             }
                         }
@@ -433,12 +433,14 @@ struct SpookySeasonSettingsCard: View {
         .padding(20)
         .frame(maxWidth: .infinity, alignment: .leading)
         .foregroundStyle(.white)
-        .background(background)
+        .background(
+            background
+                .shadow(color: SpookySeason.Palette.potion.opacity(0.25), radius: 16, x: 0, y: 8)
+        )
         .overlay(
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .stroke(SpookySeason.Palette.potion.opacity(0.45), lineWidth: 1)
         )
-        .shadow(color: SpookySeason.Palette.potion.opacity(0.25), radius: 16, x: 0, y: 8)
         .animation(Theme.fluidSpring, value: enabled)
         .environment(\.colorScheme, .dark)
     }
@@ -592,17 +594,13 @@ struct SpookySeasonSettingsCard: View {
                 startPoint: .topLeading, endPoint: .bottomTrailing
             ))
             .overlay(alignment: .bottomLeading) {
-                Circle()
-                    .fill(SpookySeason.Palette.pumpkin.opacity(0.22))
-                    .frame(width: 180, height: 180)
-                    .blur(radius: 50)
+                SoftBlob(color: SpookySeason.Palette.pumpkin.opacity(0.22),
+                         width: 180, height: 180, blur: 50)
                     .offset(x: -40, y: 60)
             }
             .overlay(alignment: .topTrailing) {
-                Circle()
-                    .fill(SpookySeason.Palette.potion.opacity(0.35))
-                    .frame(width: 160, height: 160)
-                    .blur(radius: 45)
+                SoftBlob(color: SpookySeason.Palette.potion.opacity(0.35),
+                         width: 160, height: 160, blur: 45)
                     .offset(x: 30, y: -40)
             }
             .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))

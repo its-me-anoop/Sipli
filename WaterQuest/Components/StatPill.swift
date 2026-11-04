@@ -32,8 +32,8 @@ struct StatPill: View {
         .background(
             RoundedRectangle(cornerRadius: 16)
                 .fill(Theme.card)
+                .shadow(color: Theme.shadowColor.opacity(0.58), radius: 7, x: 0, y: 3)
         )
-        .shadow(color: Theme.shadowColor.opacity(0.58), radius: 7, x: 0, y: 3)
         .onAppear {
             animatedValue = value
         }
