@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 enum Legal {
     // swiftlint:disable force_unwrapping
@@ -410,6 +411,9 @@ struct AppWaterBackground: View {
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.spookyTheme) private var spookyTheme
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    @Environment(\.scenePhase) private var scenePhase
+    @State private var isVisible = false
+    @State private var isLowPowerMode = ProcessInfo.processInfo.isLowPowerModeEnabled
 
     private var usesStaticBackground: Bool {
         #if DEBUG
@@ -420,75 +424,82 @@ struct AppWaterBackground: View {
         return reduceMotion
     }
 
+    private var policy: AmbientBackdropPolicy {
+        AmbientBackdropPolicy(
+            reduceMotion: usesStaticBackground,
+            isLowPowerMode: isLowPowerMode,
+            isSceneActive: scenePhase == .active,
+            isVisible: isVisible
+        )
+    }
+
     var body: some View {
-        if usesStaticBackground {
+        let mode = policy.mode
+
+        // Every tab and sheet has its own backdrop. Each one redraws at a low
+        // rate, and only while it's on screen in the active app.
+        return TimelineView(.animation(minimumInterval: AmbientBackdropPolicy.frameInterval, paused: mode != .animated)) { timeline in
             GeometryReader { geo in
-                shaderBackground(size: geo.size, time: 0)
+                shaderBackground(
+                    size: geo.size,
+                    time: mode == .still ? 0 : timeline.date.timeIntervalSinceReferenceDate
+                )
             }
-            .allowsHitTesting(false)
-            .accessibilityHidden(true)
-            .ignoresSafeArea()
-        } else {
-            TimelineView(.animation) { timeline in
-                GeometryReader { geo in
-                    shaderBackground(
-                        size: geo.size,
-                        time: timeline.date.timeIntervalSinceReferenceDate
-                    )
-                }
-            }
-            .allowsHitTesting(false)
-            .accessibilityHidden(true)
-            .ignoresSafeArea()
+        }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
+        .ignoresSafeArea()
+        .onAppear { isVisible = true }
+        .onDisappear { isVisible = false }
+        .onReceive(
+            NotificationCenter.default
+                .publisher(for: .NSProcessInfoPowerStateDidChange)
+                .receive(on: DispatchQueue.main)
+        ) { _ in
+            isLowPowerMode = ProcessInfo.processInfo.isLowPowerModeEnabled
         }
     }
 
     private func shaderBackground(size: CGSize, time: TimeInterval) -> some View {
         let palette = WaterPalette(isLight: colorScheme == .light)
+        let motion = AmbientBackdropMotion(time: time)
 
+        // Blobs are radial gradients, not blurred circles: same look, but no
+        // full-screen blur pass for every frame the screen scrolls.
         return Rectangle()
             .fill(
                 LinearGradient(
                     colors: [palette.topColor, palette.bottomColor],
-                    startPoint: UnitPoint(
-                        x: 0.18 + 0.12 * sin(time * 0.14),
-                        y: 0.02 + 0.06 * cos(time * 0.12)
-                    ),
-                    endPoint: UnitPoint(
-                        x: 0.82 + 0.1 * cos(time * 0.1),
-                        y: 0.98 + 0.04 * sin(time * 0.16)
-                    )
+                    startPoint: motion.gradientStart,
+                    endPoint: motion.gradientEnd
                 )
             )
             .overlay(
-                Circle()
-                    .fill(palette.blobA)
-                    .frame(width: max(320, size.width * 0.72), height: max(280, size.width * 0.62))
-                    .blur(radius: 70)
-                    .offset(
-                        x: -120 + cos(time * 0.22) * 48,
-                        y: -140 + sin(time * 0.18) * 38
-                    )
+                SoftBlob(
+                    color: palette.blobA,
+                    width: max(320, size.width * 0.72),
+                    height: max(280, size.width * 0.62),
+                    blur: 70
+                )
+                .offset(motion.blobA)
             )
             .overlay(
-                Circle()
-                    .fill(palette.blobB)
-                    .frame(width: max(300, size.width * 0.68), height: max(240, size.width * 0.58))
-                    .blur(radius: 64)
-                    .offset(
-                        x: 120 + sin(time * 0.2) * 56,
-                        y: 42 + cos(time * 0.16) * 36
-                    )
+                SoftBlob(
+                    color: palette.blobB,
+                    width: max(300, size.width * 0.68),
+                    height: max(240, size.width * 0.58),
+                    blur: 64
+                )
+                .offset(motion.blobB)
             )
             .overlay(
-                Circle()
-                    .fill(palette.blobC)
-                    .frame(width: max(360, size.width * 0.82), height: max(250, size.width * 0.62))
-                    .blur(radius: 72)
-                    .offset(
-                        x: 0 + sin(time * 0.15) * 44,
-                        y: 340 + cos(time * 0.14) * 30
-                    )
+                SoftBlob(
+                    color: palette.blobC,
+                    width: max(360, size.width * 0.82),
+                    height: max(250, size.width * 0.62),
+                    blur: 72
+                )
+                .offset(motion.blobC)
             )
             .overlay(
                 LinearGradient(
@@ -502,6 +513,7 @@ struct AppWaterBackground: View {
                     SpookyNightSky(time: time, isLight: colorScheme == .light)
                 }
             }
+            .clipped()
             .ignoresSafeArea()
     }
 

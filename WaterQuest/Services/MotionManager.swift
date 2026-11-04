@@ -17,9 +17,10 @@ class MotionManager: ObservableObject {
     }
     
     func startTracking() {
-        guard motionManager.isDeviceMotionAvailable else { return }
+        guard motionManager.isDeviceMotionAvailable, !motionManager.isDeviceMotionActive else { return }
         
-        motionManager.deviceMotionUpdateInterval = 1.0 / 60.0 // 60 Hz for smooth animation
+        // 30 Hz: the slosh is spring-animated, so faster samples only add main-thread work.
+        motionManager.deviceMotionUpdateInterval = 1.0 / 30.0
         motionManager.startDeviceMotionUpdates(to: .main) { [weak self] (data, error) in
             guard let data = data, error == nil else { return }
             

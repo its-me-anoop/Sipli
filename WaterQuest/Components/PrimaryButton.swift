@@ -13,6 +13,7 @@ struct PrimaryButtonStyle: ButtonStyle {
             .background(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
                     .fill(Theme.lagoon)
+                    .shadow(color: Theme.lagoon.opacity(configuration.isPressed ? 0.16 : 0.30), radius: configuration.isPressed ? 5 : 12, x: 0, y: configuration.isPressed ? 3 : 6)
                     .overlay(
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
                             .strokeBorder(Theme.lagoon.opacity(0.65), lineWidth: 1)
@@ -20,7 +21,6 @@ struct PrimaryButtonStyle: ButtonStyle {
             )
             .foregroundStyle(Color.white.opacity(0.95))
             .scaleEffect(configuration.isPressed && !reduceMotion ? 0.98 : 1.0)
-            .shadow(color: Theme.lagoon.opacity(configuration.isPressed ? 0.16 : 0.30), radius: configuration.isPressed ? 5 : 12, x: 0, y: configuration.isPressed ? 3 : 6)
             .animation(reduceMotion ? nil : Theme.quickSpring, value: configuration.isPressed)
     }
 }
@@ -79,6 +79,7 @@ struct GlowingIconButton: View {
             .background(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
                     .fill(Theme.card)
+                    .shadow(color: Theme.shadowColor.opacity(0.60), radius: 8, x: 0, y: 4)
             )
             .overlay(
                 Group {
@@ -88,7 +89,6 @@ struct GlowingIconButton: View {
                     }
                 }
             )
-            .shadow(color: Theme.shadowColor.opacity(0.60), radius: 8, x: 0, y: 4)
             .animation(Theme.quickSpring, value: isActive)
         }
         .buttonStyle(.plain)

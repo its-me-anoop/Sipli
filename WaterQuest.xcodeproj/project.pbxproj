@@ -21,6 +21,7 @@
 		13ACB4C25781C589681A49D9 /* WeeklyQuest.swift in Sources */ = {isa = PBXBuildFile; fileRef = C19D18B651B6C71F301C911D /* WeeklyQuest.swift */; };
 		145E47AF20C5FE4874944743 /* WaterQuestTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A0A71028244F753823101D35 /* WaterQuestTests.swift */; };
 		18CBB0D62D19FE8B95C041B0 /* BottleWaterModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A8E333B2651E91E651308D /* BottleWaterModelTests.swift */; };
+		AB0D0000000000000000B010 /* AmbientBackdropTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0D0000000000000000F002 /* AmbientBackdropTests.swift */; };
 		1DCE9DE6A19E823BA1E5079B /* DashboardCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97414883E4C0F357148B7EC7 /* DashboardCard.swift */; };
 		2478B6682ECF9BC073380F5D /* WeightStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = FCAC93043D1BF833574E34AC /* WeightStep.swift */; };
 		289CD9C4C7D7FC94DDA3DEB7 /* GoalBreakdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */; };
@@ -45,6 +46,7 @@
 		4DCCF183142A9E5C162039A3 /* HydrationIntentCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 67CD0AB04469C87B7D8FD4A1 /* HydrationIntentCore.swift */; };
 		4E93E1598D092FFCC6C6381F /* RootView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22C158CF127D3436999E3C2B /* RootView.swift */; };
 		524BE8DF8217231DA89BF9FE /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CBD2C7DC27199FF61EB613 /* Theme.swift */; };
+		AB0D0000000000000000B001 /* AmbientBackdrop.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0D0000000000000000F001 /* AmbientBackdrop.swift */; };
 		5315257190E860C18C6545B0 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6862392928A13FBD5E45D6E3 /* LocationManager.swift */; };
 		558DDA4E4B4219CDD1EB1C9E /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 027694A88893F168D4648666 /* PrivacyInfo.xcprivacy */; };
 		57F94F846C1A4A60E68FF4E3 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5162AEA3445DA53E4A567A99 /* OnboardingView.swift */; };
@@ -135,6 +137,7 @@
 		CCD1111111111111111111D1 /* WorkoutSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE15D5810B84C7C96E0EA4C /* WorkoutSummary.swift */; };
 		CCD2222222222222222222D2 /* PersistedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8888888888888888888888 /* PersistedState.swift */; };
 		CCD3333333333333333333D3 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CBD2C7DC27199FF61EB613 /* Theme.swift */; };
+		AB0D0000000000000000B002 /* AmbientBackdrop.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0D0000000000000000F001 /* AmbientBackdrop.swift */; };
 		CCD4444444444444444444D4 /* PersistedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8888888888888888888888 /* PersistedState.swift */; };
 		CCDDDDDDDDDDDDDDDDDDDD /* GoalBreakdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */; };
 		CCEEEEEEEEEEEEEEEEEEEEEE /* UnitSystem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 032684376DE05B0CC4838664 /* UnitSystem.swift */; };
@@ -185,6 +188,7 @@
 		WA001A000000000000000001 /* Formatters.swift in Sources */ = {isa = PBXBuildFile; fileRef = F021A59BB7CB33328B5ABBC4 /* Formatters.swift */; };
 		WA001B000000000000000001 /* DateExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 161A82CD61225A1F302ECA9D /* DateExtensions.swift */; };
 		WA001C000000000000000001 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CBD2C7DC27199FF61EB613 /* Theme.swift */; };
+		AB0D0000000000000000B003 /* AmbientBackdrop.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0D0000000000000000F001 /* AmbientBackdrop.swift */; };
 		WA001D000000000000000001 /* WatchHaptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA001D000000000000000002 /* WatchHaptics.swift */; };
 		WA001E000000000000000001 /* WatchHydrationStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA001E000000000000000002 /* WatchHydrationStore.swift */; };
 		WA001F000000000000000001 /* WatchProgressRing.swift in Sources */ = {isa = PBXBuildFile; fileRef = WA001F000000000000000002 /* WatchProgressRing.swift */; };
@@ -208,6 +212,7 @@
 		WWEXT011000000000000001 /* WorkoutSummary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3BE15D5810B84C7C96E0EA4C /* WorkoutSummary.swift */; };
 		WWEXT012000000000000001 /* PersistedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA8888888888888888888888 /* PersistedState.swift */; };
 		WWEXT013000000000000001 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = B9CBD2C7DC27199FF61EB613 /* Theme.swift */; };
+		AB0D0000000000000000B004 /* AmbientBackdrop.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0D0000000000000000F001 /* AmbientBackdrop.swift */; };
 		WWICON00000000000000001 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = WWICON00000000000000002 /* AppIcon.icon */; };
 /* End PBXBuildFile section */
 
@@ -288,6 +293,7 @@
 /* Begin PBXFileReference section */
 		027694A88893F168D4648666 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		02A8E333B2651E91E651308D /* BottleWaterModelTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = BottleWaterModelTests.swift; sourceTree = "<group>"; };
+		AB0D0000000000000000F002 /* AmbientBackdropTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AmbientBackdropTests.swift; sourceTree = "<group>"; };
 		032684376DE05B0CC4838664 /* UnitSystem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitSystem.swift; sourceTree = "<group>"; };
 		048A92B8C02660676EB65482 /* WelcomeStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = WelcomeStep.swift; sourceTree = "<group>"; };
 		161A82CD61225A1F302ECA9D /* DateExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateExtensions.swift; sourceTree = "<group>"; };
@@ -392,6 +398,7 @@
 		B71BF6FC4700645993778AA0 /* DoneStep.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DoneStep.swift; sourceTree = "<group>"; };
 		B778ABD25FE0AC8D415F3B6C /* AnswerChipStack.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = AnswerChipStack.swift; sourceTree = "<group>"; };
 		B9CBD2C7DC27199FF61EB613 /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		AB0D0000000000000000F001 /* AmbientBackdrop.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AmbientBackdrop.swift; sourceTree = "<group>"; };
 		BA6BBE42CB2309F2A4A2380A /* NotificationScheduler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationScheduler.swift; sourceTree = "<group>"; };
 		BD59861660551CCD42B40E5D /* DropletConfetti.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DropletConfetti.swift; sourceTree = "<group>"; };
 		BD7043107E62B2C04F4C58EB /* DashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardView.swift; sourceTree = "<group>"; };
@@ -655,6 +662,7 @@
 				B2C3D4E5F6A7B8C9D0E1F2A3 /* RippleEffect.swift */,
 				3ABC282C313B061E1E34EDF7 /* StatPill.swift */,
 				B9CBD2C7DC27199FF61EB613 /* Theme.swift */,
+				AB0D0000000000000000F001 /* AmbientBackdrop.swift */,
 				9728B3EA3CEC0654348AC8A3 /* WaveView.swift */,
 				BD59861660551CCD42B40E5D /* DropletConfetti.swift */,
 				6F8D33FA3189E25D6F97DDEE /* ShareCardView.swift */,
@@ -723,6 +731,7 @@
 				82F04F63618B8784AE3A769E /* WeeklyQuestTests.swift */,
 				4E1C527AF0BCC9ABC2C35DEB /* SipliV5IntentsTests.swift */,
 				02A8E333B2651E91E651308D /* BottleWaterModelTests.swift */,
+				AB0D0000000000000000F002 /* AmbientBackdropTests.swift */,
 			);
 			path = WaterQuestTests;
 			sourceTree = "<group>";
@@ -1135,6 +1144,7 @@
 				WWEXT011000000000000001 /* WorkoutSummary.swift in Sources */,
 				WWEXT012000000000000001 /* PersistedState.swift in Sources */,
 				WWEXT013000000000000001 /* Theme.swift in Sources */,
+				AB0D0000000000000000B004 /* AmbientBackdrop.swift in Sources */,
 				5B00C5EA50000000000000B4 /* SpookySeason.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1173,6 +1183,7 @@
 				CCD1111111111111111111D1 /* WorkoutSummary.swift in Sources */,
 				CCD2222222222222222222D2 /* PersistedState.swift in Sources */,
 				CCD3333333333333333333D3 /* Theme.swift in Sources */,
+				AB0D0000000000000000B002 /* AmbientBackdrop.swift in Sources */,
 				5B00C5EA50000000000000B2 /* SpookySeason.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1229,6 +1240,7 @@
 				368738D16B3E40D6E50CF1D8 /* StatPill.swift in Sources */,
 				371AD185C88F6CB932BDEF79 /* SubscriptionManager.swift in Sources */,
 				524BE8DF8217231DA89BF9FE /* Theme.swift in Sources */,
+				AB0D0000000000000000B001 /* AmbientBackdrop.swift in Sources */,
 				5B00C5EA50000000000000B1 /* SpookySeason.swift in Sources */,
 				5B00C5EA50000000000000B5 /* SpookySeasonCard.swift in Sources */,
 				8CE43E783BB223277701CF7E /* UnitSystem.swift in Sources */,
@@ -1303,6 +1315,7 @@
 				342229A71BB2678A2FB14D9B /* WeeklyQuestTests.swift in Sources */,
 				87E6869DA83072CDD47ED555 /* SipliV5IntentsTests.swift in Sources */,
 				18CBB0D62D19FE8B95C041B0 /* BottleWaterModelTests.swift in Sources */,
+				AB0D0000000000000000B010 /* AmbientBackdropTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1324,6 +1337,7 @@
 				WA001A000000000000000001 /* Formatters.swift in Sources */,
 				WA001B000000000000000001 /* DateExtensions.swift in Sources */,
 				WA001C000000000000000001 /* Theme.swift in Sources */,
+				AB0D0000000000000000B003 /* AmbientBackdrop.swift in Sources */,
 				5B00C5EA50000000000000B3 /* SpookySeason.swift in Sources */,
 				WA001D000000000000000001 /* WatchHaptics.swift in Sources */,
 				WA001E000000000000000001 /* WatchHydrationStore.swift in Sources */,
