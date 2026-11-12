@@ -17,6 +17,7 @@ enum IntentEffects {
         WidgetCenter.shared.reloadAllTimelines()
         Task { @MainActor in
             NotificationCenter.default.post(name: .sipliHydrationDataChanged, object: nil)
+            SiriAIEffects.hydrationLogChanged()
         }
     }
 }
@@ -165,15 +166,26 @@ enum FluidTypeAppEnum: String, AppEnum {
 
 // MARK: - LogWaterIntent
 
+#if SIRI_AI_PREVIEW
+@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
+#endif
 struct LogWaterIntent: AppIntent {
     static var title: LocalizedStringResource = "Log Water"
-    static var description = IntentDescription("Logs a water intake to Sipli.")
+    static var description = IntentDescription("Adds a drink of a given size to the person's Sipli hydration log. Logs water unless a fluid type is given.")
     static var openAppWhenRun: Bool = false
 
-    @Parameter(title: "Amount (mL)", default: 250, inclusiveRange: (50, 2000))
+    @Parameter(
+        title: "Amount (mL)",
+        description: "How much the person drank, in millilitres, from 50 to 2000. 1 US fl oz is about 30 mL and a cup is about 240 mL.",
+        default: 250,
+        inclusiveRange: (50, 2000)
+    )
     var amountInMilliliters: Int
 
-    @Parameter(title: "Fluid Type")
+    @Parameter(
+        title: "Fluid Type",
+        description: "The kind of drink, such as coffee or green tea. Leave empty for water."
+    )
     var fluidType: FluidTypeAppEnum?
 
     init() {}
@@ -247,12 +259,19 @@ struct LogWaterIntent: AppIntent {
 /// "Log a latte in Sipli": logs a named drink at the user's usual size for
 /// it (their last amount of that drink, else its typical serving), so Siri
 /// never has to ask "how much?".
+#if SIRI_AI_PREVIEW
+@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
+#endif
 struct LogDrinkIntent: AppIntent {
     static var title: LocalizedStringResource = "Log a Drink"
-    static var description = IntentDescription("Logs a drink at the size you usually have it.")
+    static var description = IntentDescription("Logs one drink of a named kind, such as a latte, at the size the person usually has it, so they don't need to say an amount.")
     static var openAppWhenRun: Bool = false
 
-    @Parameter(title: "Drink", requestValueDialog: "Which drink?")
+    @Parameter(
+        title: "Drink",
+        description: "The kind of drink the person had, such as latte, tea or water.",
+        requestValueDialog: "Which drink?"
+    )
     var fluidType: FluidTypeAppEnum
 
     init() {}
@@ -339,12 +358,19 @@ struct DrinkAmountQuery: EntityStringQuery {
 }
 
 /// "Log 350 ml of latte in Sipli", "I had 12 oz in Sipli".
+#if SIRI_AI_PREVIEW
+@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
+#endif
 struct LogAmountIntent: AppIntent {
     static var title: LocalizedStringResource = "Log an Amount"
     static var description = IntentDescription("Logs a specific amount of water or another drink, like 350 ml of latte.")
     static var openAppWhenRun: Bool = false
 
-    @Parameter(title: "Amount", requestValueDialog: "How much did you drink?")
+    @Parameter(
+        title: "Amount",
+        description: "The amount and, optionally, the drink as the person said it, such as '350 ml' or '12 oz of coffee'.",
+        requestValueDialog: "How much did you drink?"
+    )
     var amount: DrinkAmountEntity
 
     init() {}
@@ -397,9 +423,12 @@ struct LogAmountIntent: AppIntent {
 
 // MARK: - GetTodaysHydrationIntent
 
+#if SIRI_AI_PREVIEW
+@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
+#endif
 struct GetTodaysHydrationIntent: AppIntent {
     static var title: LocalizedStringResource = "Get Today's Hydration"
-    static var description = IntentDescription("Returns today's water intake and goal progress.")
+    static var description = IntentDescription("Tells the person how much they have drunk today in Sipli and what percentage of their daily hydration goal that is.")
     static var openAppWhenRun: Bool = false
 
     #if compiler(>=6.4)
@@ -443,9 +472,12 @@ struct OpenSipliIntent: AppIntent {
 
 // MARK: - GetStreakIntent
 
+#if SIRI_AI_PREVIEW
+@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
+#endif
 struct GetStreakIntent: AppIntent {
     static var title: LocalizedStringResource = "Get My Streak"
-    static var description = IntentDescription("Returns your current hydration goal streak.")
+    static var description = IntentDescription("Tells the person how many days in a row they have reached their daily hydration goal in Sipli.")
     static var openAppWhenRun: Bool = false
 
     #if compiler(>=6.4)
@@ -469,9 +501,12 @@ struct GetStreakIntent: AppIntent {
 
 // MARK: - GetRemainingIntent
 
+#if SIRI_AI_PREVIEW
+@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
+#endif
 struct GetRemainingIntent: AppIntent {
     static var title: LocalizedStringResource = "How Much More Do I Need"
-    static var description = IntentDescription("Tells you how much more you need to drink to reach today's goal.")
+    static var description = IntentDescription("Tells the person how much more they need to drink today to reach their Sipli hydration goal.")
     static var openAppWhenRun: Bool = false
 
     #if compiler(>=6.4)
@@ -499,9 +534,12 @@ struct GetRemainingIntent: AppIntent {
 
 // MARK: - RepeatLastDrinkIntent
 
+#if SIRI_AI_PREVIEW
+@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
+#endif
 struct RepeatLastDrinkIntent: AppIntent {
     static var title: LocalizedStringResource = "Log My Usual"
-    static var description = IntentDescription("Logs the same drink as your most recent entry.")
+    static var description = IntentDescription("Logs the same drink, at the same size, as the person's most recent entry in Sipli. Use it for 'my usual' or 'same again'.")
     static var openAppWhenRun: Bool = false
 
     #if compiler(>=6.4)
@@ -546,9 +584,12 @@ extension Notification.Name {
     static let sipliOpenTrophyRoom = Notification.Name("sipliOpenTrophyRoom")
 }
 
+#if SIRI_AI_PREVIEW
+@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
+#endif
 struct OpenTrophyRoomIntent: AppIntent {
     static var title: LocalizedStringResource = "Show My Achievements"
-    static var description = IntentDescription("Opens Sipli's Trophy Room with your earned badges.")
+    static var description = IntentDescription("Opens Sipli's Trophy Room, which shows the achievement badges the person has earned.")
     /// Foregrounds the app first; perform() then runs in the app process,
     /// so a NotificationCenter post reaches the live SwiftUI scene.
     static var openAppWhenRun: Bool = true
@@ -574,9 +615,12 @@ struct OpenTrophyRoomIntent: AppIntent {
 
 // MARK: - UndoLastIntakeIntent
 
+#if SIRI_AI_PREVIEW
+@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
+#endif
 struct UndoLastIntakeIntent: AppIntent {
     static var title: LocalizedStringResource = "Undo Last Drink"
-    static var description = IntentDescription("Removes the most recent drink you logged today in Sipli.")
+    static var description = IntentDescription("Removes the most recent drink the person logged today in Sipli.")
     static var openAppWhenRun: Bool = false
 
     #if compiler(>=6.4)

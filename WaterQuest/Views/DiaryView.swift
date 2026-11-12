@@ -222,6 +222,7 @@ struct DiaryView: View {
                         )
                     }
                     .buttonStyle(.plain)
+                    .siriDrinkEntry(entry.id)
                     .contextMenu {
                         Button(role: .destructive) {
                             entryToDelete = entry

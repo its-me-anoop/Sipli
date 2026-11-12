@@ -219,6 +219,12 @@
 		40FE20803B7B47A594A1D168 /* LivingBottleNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEACC9E6A60F4563BE13518C /* LivingBottleNotice.swift */; };
 		6E86FBE2FEE543C98D8EF648 /* LivingInsightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E722F69E5D284F35B63A3743 /* LivingInsightTests.swift */; };
 		69FAEF3769E7411190A714C2 /* ShareCardRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C359D0967E142BC88E226F0 /* ShareCardRendererTests.swift */; };
+		AB50C24EF2AD4489B13827D7 /* HydrationAssistantCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6A6404038B340D39A473812 /* HydrationAssistantCore.swift */; };
+		E0566EA78AAA46B09103A3F6 /* DrinkEntryEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA318E77512F42F88E8BBD4A /* DrinkEntryEntity.swift */; };
+		6619300DD0F64E2EA3221E23 /* SiriAIToolIntents.swift in Sources */ = {isa = PBXBuildFile; fileRef = D7863C7DE29F4FA18225DE96 /* SiriAIToolIntents.swift */; };
+		4544F0627C514DC3909E51F3 /* SiriOnscreenContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31DF34B266743E9B1BDA3C5 /* SiriOnscreenContext.swift */; };
+		E9D5C76DE1EA42D4828E8C48 /* HydrationAssistantCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AD1524BA5B43F1A24A5C62 /* HydrationAssistantCoreTests.swift */; };
+		41E5107F1CE14AC98E086C47 /* SipliSiriEvaluations.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA8B86D659E45909864B0BE /* SipliSiriEvaluations.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -471,6 +477,12 @@
 		BEACC9E6A60F4563BE13518C /* LivingBottleNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivingBottleNotice.swift; sourceTree = "<group>"; };
 		E722F69E5D284F35B63A3743 /* LivingInsightTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivingInsightTests.swift; sourceTree = "<group>"; };
 		9C359D0967E142BC88E226F0 /* ShareCardRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardRendererTests.swift; sourceTree = "<group>"; };
+		E6A6404038B340D39A473812 /* HydrationAssistantCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HydrationAssistantCore.swift; sourceTree = "<group>"; };
+		CA318E77512F42F88E8BBD4A /* DrinkEntryEntity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DrinkEntryEntity.swift; sourceTree = "<group>"; };
+		D7863C7DE29F4FA18225DE96 /* SiriAIToolIntents.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SiriAIToolIntents.swift; sourceTree = "<group>"; };
+		D31DF34B266743E9B1BDA3C5 /* SiriOnscreenContext.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SiriOnscreenContext.swift; sourceTree = "<group>"; };
+		88AD1524BA5B43F1A24A5C62 /* HydrationAssistantCoreTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HydrationAssistantCoreTests.swift; sourceTree = "<group>"; };
+		ADA8B86D659E45909864B0BE /* SipliSiriEvaluations.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SipliSiriEvaluations.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -559,6 +571,7 @@
 		09D70531E90E903449DDD869 /* WaterQuestUITests */ = {
 			isa = PBXGroup;
 			children = (
+				ADA8B86D659E45909864B0BE /* SipliSiriEvaluations.swift */,
 				ECD30C6F35167265A33C9555 /* BottleFlowTests.swift */,
 				A1F0D0000000000000000004 /* DuoLayoutTests.swift */,
 			);
@@ -702,9 +715,11 @@
 		AI000000000000000000001 /* AppIntents */ = {
 			isa = PBXGroup;
 			children = (
+				E6A6404038B340D39A473812 /* HydrationAssistantCore.swift */,
 				AI001000000000000000002 /* SipliAppIntents.swift */,
 				AI002000000000000000002 /* SipliAppShortcuts.swift */,
 				67CD0AB04469C87B7D8FD4A1 /* HydrationIntentCore.swift */,
+				69D9D1A2B11F4FDF91C3EC33 /* SiriAI */,
 			);
 			path = AppIntents;
 			sourceTree = "<group>";
@@ -720,6 +735,7 @@
 		B8448B27DB729B6EE2A846DE /* WaterQuestTests */ = {
 			isa = PBXGroup;
 			children = (
+				88AD1524BA5B43F1A24A5C62 /* HydrationAssistantCoreTests.swift */,
 				A0A71028244F753823101D35 /* WaterQuestTests.swift */,
 				1C049D1800E773480DC7E47B /* NotificationContextTests.swift */,
 				6D8C127CF4F113AB2D5DB40D /* NotificationMessageTests.swift */,
@@ -916,6 +932,16 @@
 				WA0023000000000000000002 /* WatchFluidPickerView.swift */,
 			);
 			path = Views;
+			sourceTree = "<group>";
+		};
+		69D9D1A2B11F4FDF91C3EC33 /* SiriAI */ = {
+			isa = PBXGroup;
+			children = (
+				D31DF34B266743E9B1BDA3C5 /* SiriOnscreenContext.swift */,
+				D7863C7DE29F4FA18225DE96 /* SiriAIToolIntents.swift */,
+				CA318E77512F42F88E8BBD4A /* DrinkEntryEntity.swift */,
+			);
+			path = SiriAI;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -1168,6 +1194,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				41E5107F1CE14AC98E086C47 /* SipliSiriEvaluations.swift in Sources */,
 				F3097543BEB1A10A01727658 /* BottleFlowTests.swift in Sources */,
 				A1F0D0000000000000000003 /* DuoLayoutTests.swift in Sources */,
 			);
@@ -1207,6 +1234,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				4544F0627C514DC3909E51F3 /* SiriOnscreenContext.swift in Sources */,
+				6619300DD0F64E2EA3221E23 /* SiriAIToolIntents.swift in Sources */,
+				E0566EA78AAA46B09103A3F6 /* DrinkEntryEntity.swift in Sources */,
+				AB50C24EF2AD4489B13827D7 /* HydrationAssistantCore.swift in Sources */,
 				AI001000000000000000001 /* SipliAppIntents.swift in Sources */,
 				AI002000000000000000001 /* SipliAppShortcuts.swift in Sources */,
 				AI003000000000000000001 /* IntentDonationService.swift in Sources */,
@@ -1310,6 +1341,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				E9D5C76DE1EA42D4828E8C48 /* HydrationAssistantCoreTests.swift in Sources */,
 				145E47AF20C5FE4874944743 /* WaterQuestTests.swift in Sources */,
 				76BC1045791BD2737D00FCD6 /* NotificationContextTests.swift in Sources */,
 				F61E51CCFB80BD3F264454D4 /* NotificationMessageTests.swift in Sources */,
@@ -1408,6 +1440,14 @@
 		20E2B65A66C386AFC42D1A24 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.3*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.3*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.4*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.4*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.5*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.5*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.6*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.6*]" = "$(inherited) SIRI_AI_PREVIEW";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_ALTERNATE_APP_ICON_NAMES = "AppIcon-Midnight AppIcon-Ocean AppIcon-Mint AppIcon-Sunrise AppIcon-Berry AppIcon-Spooky";
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -1523,6 +1563,14 @@
 		348828D7E75E5D4A717526FF /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.3*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.3*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.4*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.4*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.5*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.5*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.6*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.6*]" = "$(inherited) SIRI_AI_PREVIEW";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				GENERATE_INFOPLIST_FILE = YES;
@@ -1538,6 +1586,14 @@
 		59E4C3849D114E63DD2217AF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.3*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.3*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.4*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.4*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.5*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.5*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.6*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.6*]" = "$(inherited) SIRI_AI_PREVIEW";
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_ALTERNATE_APP_ICON_NAMES = "AppIcon-Midnight AppIcon-Ocean AppIcon-Mint AppIcon-Sunrise AppIcon-Berry AppIcon-Spooky";
 				ASSETCATALOG_COMPILER_INCLUDE_ALL_APPICON_ASSETS = YES;
@@ -1641,6 +1697,14 @@
 		77AB64292CDB6D38DF4EDBB2 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.3*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.3*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.4*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.4*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.5*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.5*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.6*]" = "$(inherited) SIRI_AI_PREVIEW";
+				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.6*]" = "$(inherited) SIRI_AI_PREVIEW";
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ENABLE_OBJC_WEAK = NO;
 				GENERATE_INFOPLIST_FILE = YES;
