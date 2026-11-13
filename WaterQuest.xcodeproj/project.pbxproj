@@ -1444,6 +1444,15 @@
 		20E2B65A66C386AFC42D1A24 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				EXCLUDED_SOURCE_FILE_NAMES = Skills.skillsbundle;
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphoneos27.3*]" = "";
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphonesimulator27.3*]" = "";
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphoneos27.4*]" = "";
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphonesimulator27.4*]" = "";
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphoneos27.5*]" = "";
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphonesimulator27.5*]" = "";
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphoneos27.6*]" = "";
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphonesimulator27.6*]" = "";
 				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.3*]" = "$(inherited) SIRI_AI_PREVIEW";
 				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.3*]" = "$(inherited) SIRI_AI_PREVIEW";
 				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.4*]" = "$(inherited) SIRI_AI_PREVIEW";
@@ -1590,6 +1599,15 @@
 		59E4C3849D114E63DD2217AF /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				EXCLUDED_SOURCE_FILE_NAMES = Skills.skillsbundle;
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphoneos27.3*]" = "";
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphonesimulator27.3*]" = "";
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphoneos27.4*]" = "";
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphonesimulator27.4*]" = "";
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphoneos27.5*]" = "";
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphonesimulator27.5*]" = "";
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphoneos27.6*]" = "";
+				"EXCLUDED_SOURCE_FILE_NAMES[sdk=iphonesimulator27.6*]" = "";
 				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.3*]" = "$(inherited) SIRI_AI_PREVIEW";
 				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphonesimulator27.3*]" = "$(inherited) SIRI_AI_PREVIEW";
 				"SWIFT_ACTIVE_COMPILATION_CONDITIONS[sdk=iphoneos27.4*]" = "$(inherited) SIRI_AI_PREVIEW";
