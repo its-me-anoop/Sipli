@@ -166,9 +166,6 @@ enum FluidTypeAppEnum: String, AppEnum {
 
 // MARK: - LogWaterIntent
 
-#if SIRI_AI_PREVIEW
-@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
-#endif
 struct LogWaterIntent: AppIntent {
     static var title: LocalizedStringResource = "Log Water"
     static var description = IntentDescription("Adds a drink of a given size to the person's Sipli hydration log. Logs water unless a fluid type is given.")
@@ -259,9 +256,6 @@ struct LogWaterIntent: AppIntent {
 /// "Log a latte in Sipli": logs a named drink at the user's usual size for
 /// it (their last amount of that drink, else its typical serving), so Siri
 /// never has to ask "how much?".
-#if SIRI_AI_PREVIEW
-@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
-#endif
 struct LogDrinkIntent: AppIntent {
     static var title: LocalizedStringResource = "Log a Drink"
     static var description = IntentDescription("Logs one drink of a named kind, such as a latte, at the size the person usually has it, so they don't need to say an amount.")
@@ -358,9 +352,6 @@ struct DrinkAmountQuery: EntityStringQuery {
 }
 
 /// "Log 350 ml of latte in Sipli", "I had 12 oz in Sipli".
-#if SIRI_AI_PREVIEW
-@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
-#endif
 struct LogAmountIntent: AppIntent {
     static var title: LocalizedStringResource = "Log an Amount"
     static var description = IntentDescription("Logs a specific amount of water or another drink, like 350 ml of latte.")
@@ -423,9 +414,6 @@ struct LogAmountIntent: AppIntent {
 
 // MARK: - GetTodaysHydrationIntent
 
-#if SIRI_AI_PREVIEW
-@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
-#endif
 struct GetTodaysHydrationIntent: AppIntent {
     static var title: LocalizedStringResource = "Get Today's Hydration"
     static var description = IntentDescription("Tells the person how much they have drunk today in Sipli and what percentage of their daily hydration goal that is.")
@@ -472,9 +460,6 @@ struct OpenSipliIntent: AppIntent {
 
 // MARK: - GetStreakIntent
 
-#if SIRI_AI_PREVIEW
-@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
-#endif
 struct GetStreakIntent: AppIntent {
     static var title: LocalizedStringResource = "Get My Streak"
     static var description = IntentDescription("Tells the person how many days in a row they have reached their daily hydration goal in Sipli.")
@@ -501,9 +486,6 @@ struct GetStreakIntent: AppIntent {
 
 // MARK: - GetRemainingIntent
 
-#if SIRI_AI_PREVIEW
-@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
-#endif
 struct GetRemainingIntent: AppIntent {
     static var title: LocalizedStringResource = "How Much More Do I Need"
     static var description = IntentDescription("Tells the person how much more they need to drink today to reach their Sipli hydration goal.")
@@ -534,9 +516,6 @@ struct GetRemainingIntent: AppIntent {
 
 // MARK: - RepeatLastDrinkIntent
 
-#if SIRI_AI_PREVIEW
-@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
-#endif
 struct RepeatLastDrinkIntent: AppIntent {
     static var title: LocalizedStringResource = "Log My Usual"
     static var description = IntentDescription("Logs the same drink, at the same size, as the person's most recent entry in Sipli. Use it for 'my usual' or 'same again'.")
@@ -584,9 +563,6 @@ extension Notification.Name {
     static let sipliOpenTrophyRoom = Notification.Name("sipliOpenTrophyRoom")
 }
 
-#if SIRI_AI_PREVIEW
-@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
-#endif
 struct OpenTrophyRoomIntent: AppIntent {
     static var title: LocalizedStringResource = "Show My Achievements"
     static var description = IntentDescription("Opens Sipli's Trophy Room, which shows the achievement badges the person has earned.")
@@ -615,9 +591,6 @@ struct OpenTrophyRoomIntent: AppIntent {
 
 // MARK: - UndoLastIntakeIntent
 
-#if SIRI_AI_PREVIEW
-@AppIntent(.tool) // iOS 27.3 Siri AI: callable as a tool from natural requests.
-#endif
 struct UndoLastIntakeIntent: AppIntent {
     static var title: LocalizedStringResource = "Undo Last Drink"
     static var description = IntentDescription("Removes the most recent drink the person logged today in Sipli.")

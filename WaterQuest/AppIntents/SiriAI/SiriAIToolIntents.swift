@@ -49,6 +49,22 @@ enum SiriAIState {
     }
 }
 
+// MARK: - Existing intents as tools
+
+// The `@AppIntent(.tool)` macro is iOS 27.3-only, and these intents also
+// ship on iOS 17–27.2, so the tool conformance is added in availability-
+// gated extensions instead. Xcode's metadata extractor still records them
+// as ToolIntent. OpenSipliIntent stays out: it only opens the app.
+@available(iOS 27.3, *) extension LogWaterIntent: ToolIntent {}
+@available(iOS 27.3, *) extension LogDrinkIntent: ToolIntent {}
+@available(iOS 27.3, *) extension LogAmountIntent: ToolIntent {}
+@available(iOS 27.3, *) extension GetTodaysHydrationIntent: ToolIntent {}
+@available(iOS 27.3, *) extension GetStreakIntent: ToolIntent {}
+@available(iOS 27.3, *) extension GetRemainingIntent: ToolIntent {}
+@available(iOS 27.3, *) extension RepeatLastDrinkIntent: ToolIntent {}
+@available(iOS 27.3, *) extension OpenTrophyRoomIntent: ToolIntent {}
+@available(iOS 27.3, *) extension UndoLastIntakeIntent: ToolIntent {}
+
 // MARK: - Generable drink
 
 /// One drink as Siri understands it from a request. Generable, so Siri
@@ -78,10 +94,8 @@ struct DrinkToLog: TransientAppEntity {
     var loggedAt: Date?
 
     var displayRepresentation: DisplayRepresentation {
-        if let amountML {
-            return "\(amountML) mL \(drink.localizedTitle)"
-        }
-        return "\(drink.localizedTitle)"
+        let title = amountML.map { "\($0) mL \(drink.localizedTitle)" } ?? drink.localizedTitle
+        return DisplayRepresentation(title: LocalizedStringResource(stringLiteral: title))
     }
 
     init() {}
@@ -257,7 +271,7 @@ struct DeleteDrinkIntent: AppIntent {
     func perform() async throws -> some IntentResult & ProvidesDialog {
         // Deleting can't be undone from Siri, so confirm the exact drink first.
         try await requestConfirmation(
-            result: .result(dialog: "Delete \(entry.amountText) of \(entry.drink.localizedTitle.lowercased()) from \(entry.loggedAt.formatted(date: .abbreviated, time: .shortened))?")
+            dialog: IntentDialog(stringLiteral: "Delete \(entry.amountText) of \(entry.drink.localizedTitle.lowercased()) from \(entry.loggedAt.formatted(date: .abbreviated, time: .shortened))?")
         )
         let now = Date()
         let id = entry.id

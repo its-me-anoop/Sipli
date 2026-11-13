@@ -225,6 +225,7 @@
 		4544F0627C514DC3909E51F3 /* SiriOnscreenContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = D31DF34B266743E9B1BDA3C5 /* SiriOnscreenContext.swift */; };
 		E9D5C76DE1EA42D4828E8C48 /* HydrationAssistantCoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 88AD1524BA5B43F1A24A5C62 /* HydrationAssistantCoreTests.swift */; };
 		41E5107F1CE14AC98E086C47 /* SipliSiriEvaluations.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADA8B86D659E45909864B0BE /* SipliSiriEvaluations.swift */; };
+		B5311AAAB2B54B61897B3211 /* Skills.skillsbundle in Resources */ = {isa = PBXBuildFile; fileRef = 0F14580472A34D1191338D34 /* Skills.skillsbundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -483,6 +484,7 @@
 		D31DF34B266743E9B1BDA3C5 /* SiriOnscreenContext.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SiriOnscreenContext.swift; sourceTree = "<group>"; };
 		88AD1524BA5B43F1A24A5C62 /* HydrationAssistantCoreTests.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HydrationAssistantCoreTests.swift; sourceTree = "<group>"; };
 		ADA8B86D659E45909864B0BE /* SipliSiriEvaluations.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = SipliSiriEvaluations.swift; sourceTree = "<group>"; };
+		0F14580472A34D1191338D34 /* Skills.skillsbundle */ = {isa = PBXFileReference; lastKnownFileType = wrapper.skillsbundle; path = Skills.skillsbundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -597,6 +599,7 @@
 		120E9D2B9013FCD931926A20 /* WaterQuest */ = {
 			isa = PBXGroup;
 			children = (
+				0F14580472A34D1191338D34 /* Skills.skillsbundle */,
 				6BBC3B912F4F6AC100F5525A /* AppIcon.icon */,
 				1C0A17000000000000000G01 /* AppIcons */,
 				9FC934C6863AFC8E01D302CE /* Assets.xcassets */,
@@ -1112,6 +1115,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B5311AAAB2B54B61897B3211 /* Skills.skillsbundle in Resources */,
 				0252DDA30195EA614A439A3C /* Assets.xcassets in Resources */,
 				B67E99532D94983258FFDC94 /* LaunchScreen.storyboard in Resources */,
 				D1A2B3C4E5F60718293A4B5C /* PrivacyInfo.xcprivacy in Resources */,
