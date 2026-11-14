@@ -215,9 +215,11 @@
 		AB0D0000000000000000B004 /* AmbientBackdrop.swift in Sources */ = {isa = PBXBuildFile; fileRef = AB0D0000000000000000F001 /* AmbientBackdrop.swift */; };
 		WWICON00000000000000001 /* AppIcon.icon in Resources */ = {isa = PBXBuildFile; fileRef = WWICON00000000000000002 /* AppIcon.icon */; };
 		C5725E1B4AC2464CAC5EE952 /* LivingInsight.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37B02C81CCB842489236BC65 /* LivingInsight.swift */; };
+		D49F3B1FC1EE49F1ABA94F7F /* HydrationPatterns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A721BCD534A48CD81C64E68 /* HydrationPatterns.swift */; };
 		9D77F22E5AAB4532AB73CB7F /* LivingBottleCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004532E50CA6481B94E24C35 /* LivingBottleCoordinator.swift */; };
 		40FE20803B7B47A594A1D168 /* LivingBottleNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEACC9E6A60F4563BE13518C /* LivingBottleNotice.swift */; };
 		6E86FBE2FEE543C98D8EF648 /* LivingInsightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E722F69E5D284F35B63A3743 /* LivingInsightTests.swift */; };
+		A524F37380D146FDBA470631 /* HydrationPatternsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9625C5B93EFE4C4FB492ECD1 /* HydrationPatternsTests.swift */; };
 		69FAEF3769E7411190A714C2 /* ShareCardRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C359D0967E142BC88E226F0 /* ShareCardRendererTests.swift */; };
 		AB50C24EF2AD4489B13827D7 /* HydrationAssistantCore.swift in Sources */ = {isa = PBXBuildFile; fileRef = E6A6404038B340D39A473812 /* HydrationAssistantCore.swift */; };
 		E0566EA78AAA46B09103A3F6 /* DrinkEntryEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA318E77512F42F88E8BBD4A /* DrinkEntryEntity.swift */; };
@@ -474,9 +476,11 @@
 		WS001000000000000000001 /* WatchSessionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatchSessionManager.swift; sourceTree = "<group>"; };
 		WWICON00000000000000002 /* AppIcon.icon */ = {isa = PBXFileReference; lastKnownFileType = folder.iconcomposer.icon; path = AppIcon.icon; sourceTree = "<group>"; };
 		37B02C81CCB842489236BC65 /* LivingInsight.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivingInsight.swift; sourceTree = "<group>"; };
+		9A721BCD534A48CD81C64E68 /* HydrationPatterns.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationPatterns.swift; sourceTree = "<group>"; };
 		004532E50CA6481B94E24C35 /* LivingBottleCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivingBottleCoordinator.swift; sourceTree = "<group>"; };
 		BEACC9E6A60F4563BE13518C /* LivingBottleNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivingBottleNotice.swift; sourceTree = "<group>"; };
 		E722F69E5D284F35B63A3743 /* LivingInsightTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivingInsightTests.swift; sourceTree = "<group>"; };
+		9625C5B93EFE4C4FB492ECD1 /* HydrationPatternsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationPatternsTests.swift; sourceTree = "<group>"; };
 		9C359D0967E142BC88E226F0 /* ShareCardRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardRendererTests.swift; sourceTree = "<group>"; };
 		E6A6404038B340D39A473812 /* HydrationAssistantCore.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = HydrationAssistantCore.swift; sourceTree = "<group>"; };
 		CA318E77512F42F88E8BBD4A /* DrinkEntryEntity.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; path = DrinkEntryEntity.swift; sourceTree = "<group>"; };
@@ -634,6 +638,7 @@
 				FA3274E7BB562AF2F4517F9D /* GoalBreakdown.swift */,
 				31A39E6DE51615F50BDEF6AD /* HydrationEntry.swift */,
 				37B02C81CCB842489236BC65 /* LivingInsight.swift */,
+				9A721BCD534A48CD81C64E68 /* HydrationPatterns.swift */,
 				AA8888888888888888888888 /* PersistedState.swift */,
 				F1A2B3C4D5E6F70000000003 /* MatchDay.swift */,
 				5B00C5EA50000000000000F1 /* SpookySeason.swift */,
@@ -763,6 +768,7 @@
 				4E1C527AF0BCC9ABC2C35DEB /* SipliV5IntentsTests.swift */,
 				02A8E333B2651E91E651308D /* BottleWaterModelTests.swift */,
 				E722F69E5D284F35B63A3743 /* LivingInsightTests.swift */,
+				9625C5B93EFE4C4FB492ECD1 /* HydrationPatternsTests.swift */,
 				9C359D0967E142BC88E226F0 /* ShareCardRendererTests.swift */,
 				AB0D0000000000000000F002 /* AmbientBackdropTests.swift */,
 			);
@@ -1258,6 +1264,7 @@
 				7C578D3D8C788EDEDD9F383C /* HydrationAIService.swift in Sources */,
 				0E54D9CCCA944AAEB6EA20F8 /* HydrationEntry.swift in Sources */,
 				C5725E1B4AC2464CAC5EE952 /* LivingInsight.swift in Sources */,
+				D49F3B1FC1EE49F1ABA94F7F /* HydrationPatterns.swift in Sources */,
 				0A98E6835256CBC9D3B2DF65 /* HydrationStore.swift in Sources */,
 				9D77F22E5AAB4532AB73CB7F /* LivingBottleCoordinator.swift in Sources */,
 				1C0A17000000000000000B99 /* AppIconManager.swift in Sources */,
@@ -1370,6 +1377,7 @@
 				87E6869DA83072CDD47ED555 /* SipliV5IntentsTests.swift in Sources */,
 				18CBB0D62D19FE8B95C041B0 /* BottleWaterModelTests.swift in Sources */,
 				6E86FBE2FEE543C98D8EF648 /* LivingInsightTests.swift in Sources */,
+				A524F37380D146FDBA470631 /* HydrationPatternsTests.swift in Sources */,
 				69FAEF3769E7411190A714C2 /* ShareCardRendererTests.swift in Sources */,
 				AB0D0000000000000000B010 /* AmbientBackdropTests.swift in Sources */,
 			);
