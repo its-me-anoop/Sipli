@@ -119,4 +119,18 @@ final class WeeklyStatsTests: XCTestCase {
         throw XCTSkip("FoundationModels unavailable")
         #endif
     }
+
+    func test_digestPromptBuilder_includesPatternFactsAsData() throws {
+        #if canImport(FoundationModels)
+        guard #available(iOS 26.0, *) else { throw XCTSkip("Requires iOS 26") }
+        let stats = WeeklyStats.compute(entries: [entry(2000, dayOffset: 0)], goalML: 2000, now: now)
+        let facts = ["Weekends run lighter. a", "Up 20% on last week. b", "Your quiet stretch: 1 PM–4 PM. c", "Fourth. d"]
+        let prompt = SipliIntelligence.digestPrompt(stats: stats, patternFacts: facts)
+        XCTAssertTrue(prompt.contains("Patterns noticed (data):"))
+        XCTAssertTrue(prompt.contains("- Weekends run lighter. a"))
+        XCTAssertFalse(prompt.contains("Fourth"), "Only the top three patterns go to the model")
+        #else
+        throw XCTSkip("FoundationModels unavailable")
+        #endif
+    }
 }

@@ -93,7 +93,10 @@ final class NotificationScheduler: ObservableObject {
             // will do its own clear+schedule. Bail so batches never stack.
             guard generation == self.scheduleGeneration else { return }
 
-            guard context.profile.remindersEnabled else { return }
+            guard context.profile.remindersEnabled else {
+                UNUserNotificationCenter.current().removePendingNotificationRequests(withIdentifiers: [WeeklyRecapNudge.identifier])
+                return
+            }
 
             if context.profile.smartRemindersEnabled {
                 #if canImport(FoundationModels)
@@ -111,6 +114,7 @@ final class NotificationScheduler: ObservableObject {
             // Anchor reminders (morning wake, pre-bedtime) fire regardless of
             // smart/classic mode. Available to free and premium users.
             self.scheduleAnchorReminders(context: context)
+            self.scheduleWeeklyRecap(context: context)
         }
     }
 
@@ -194,13 +198,24 @@ final class NotificationScheduler: ObservableObject {
             nextFireDate = now.addingTimeInterval(60)
         }
 
-        // Pre-loop snapshot of the first-fire time, before the while loop mutates the iterator.
-        let firstFireDate = nextFireDate
+        // First fire time actually scheduled (the loop may skip slots near the
+        // pattern nudge); the AI replacement targets this request.
+        var firstFireDate = nextFireDate
 
         // End of awake window today.
         guard let sleepDate = calendar.date(bySettingHour: profile.sleepMinutes / 60,
                                              minute: profile.sleepMinutes % 60,
                                              second: 0, of: now) else { return }
+
+        // Proactive pattern nudge (premium): one reminder at the start of the
+        // person's usual quiet stretch, replacing any generic reminder near it.
+        let patternNudge = context.hasPremiumAccess ? context.patterns.proactiveNudge(now: now) : nil
+        if let patternNudge, patternNudge.fireDate < sleepDate {
+            let content = hydrationReminderContent(body: patternNudge.body)
+            let trigger = UNTimeIntervalNotificationTrigger(timeInterval: max(1, patternNudge.fireDate.timeIntervalSince(now)), repeats: false)
+            UNUserNotificationCenter.current().add(UNNotificationRequest(
+                identifier: "\(smartIdentifierPrefix)pattern.\(batchID)", content: content, trigger: trigger))
+        }
 
         // Pre-schedule reminders until sleep time (capped at 20).
         var index = 0
@@ -212,7 +227,12 @@ final class NotificationScheduler: ObservableObject {
                 fireDate = fireDate.addingTimeInterval(intervalSeconds)
                 continue
             }
+            if let patternNudge, abs(fireDate.timeIntervalSince(patternNudge.fireDate)) < 30 * 60 {
+                fireDate = fireDate.addingTimeInterval(intervalSeconds)
+                continue
+            }
 
+            if index == 0 { firstFireDate = fireDate }
             let slot = slotFor(context: context)
             let body = messageFor(context: context, slot: slot)
 
@@ -273,9 +293,11 @@ final class NotificationScheduler: ObservableObject {
             ? "\nCurrent streak: \(context.currentStreak) days"
             : ""
 
+        let patternLine = context.patterns.top.map { "\nTheir pattern (data): \($0.title). \($0.detail)" } ?? ""
+
         let prompt = """
-            The user has completed \(percentText)% of their daily water goal (\(Int(context.todayTotalML)) of \(Int(context.goalML)) ml).\(streakLine)
-            Write their next hydration nudge.
+            The user has completed \(percentText)% of their daily water goal (\(Int(context.todayTotalML)) of \(Int(context.goalML)) ml).\(streakLine)\(patternLine)
+            Write their next hydration nudge. If a pattern is given, make the nudge about it.
             """
 
         // Guided generation with a tight token cap so the response reliably
@@ -439,6 +461,26 @@ final class NotificationScheduler: ObservableObject {
             let request = UNNotificationRequest(identifier: "sipli.classic.\(index)", content: content, trigger: trigger)
             UNUserNotificationCenter.current().add(request)
         }
+    }
+
+    // MARK: - Weekly recap (premium, Sunday evening)
+
+    /// One-off request for the next Sunday evening, refreshed on every pass
+    /// under a stable identifier so it never stacks.
+    private func scheduleWeeklyRecap(context: NotificationContext) {
+        let center = UNUserNotificationCenter.current()
+        guard context.hasPremiumAccess,
+              let fire = WeeklyRecapNudge.nextFireDate(after: Date(), sleepMinutes: context.profile.sleepMinutes) else {
+            center.removePendingNotificationRequests(withIdentifiers: [WeeklyRecapNudge.identifier])
+            return
+        }
+        let content = UNMutableNotificationContent()
+        content.title = "Your week in water"
+        content.body = WeeklyRecapNudge.body
+        content.sound = .default
+        content.userInfo = ["deepLink": WeeklyRecapNudge.deepLink]
+        let trigger = UNTimeIntervalNotificationTrigger(timeInterval: max(1, fire.timeIntervalSinceNow), repeats: false)
+        center.add(UNNotificationRequest(identifier: WeeklyRecapNudge.identifier, content: content, trigger: trigger))
     }
 
     // MARK: - Anchor reminders (wake + pre-bedtime, daily repeating)

@@ -43,6 +43,34 @@ struct HydrationTip: Identifiable, Equatable {
     }
 }
 
+// MARK: - Pattern coach bridge
+
+/// Availability-agnostic entry points for pattern-grounded generation. Each
+/// returns nil when the on-device model is unavailable, so callers keep their
+/// deterministic copy.
+@MainActor
+enum PatternCoachGenerator {
+    static func coachTake(for patterns: HydrationPatterns) async -> CoachTake? {
+        #if canImport(FoundationModels)
+        if #available(iOS 26.0, *), SipliIntelligence.shared.isReady, !patterns.insights.isEmpty,
+           let payload = await SipliIntelligence.shared.patternCoach(prompt: patterns.coachPrompt) {
+            return CoachTake(headline: payload.headline, message: payload.message, nextStep: payload.nextStep)
+        }
+        #endif
+        return nil
+    }
+
+    static func weeklyDigest(stats: WeeklyStats, patterns: HydrationPatterns) async -> (headline: String, narrative: String, encouragement: String)? {
+        #if canImport(FoundationModels)
+        if #available(iOS 26.0, *), SipliIntelligence.shared.isReady,
+           let payload = await SipliIntelligence.shared.weeklyDigest(stats: stats, patternFacts: patterns.factLines) {
+            return (payload.headline, payload.narrative, payload.encouragement)
+        }
+        #endif
+        return nil
+    }
+}
+
 // MARK: - Time of Day
 enum TimeOfDay: String {
     case morning = "morning"

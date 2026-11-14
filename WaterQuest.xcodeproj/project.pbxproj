@@ -218,6 +218,7 @@
 		D49F3B1FC1EE49F1ABA94F7F /* HydrationPatterns.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9A721BCD534A48CD81C64E68 /* HydrationPatterns.swift */; };
 		9D77F22E5AAB4532AB73CB7F /* LivingBottleCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 004532E50CA6481B94E24C35 /* LivingBottleCoordinator.swift */; };
 		40FE20803B7B47A594A1D168 /* LivingBottleNotice.swift in Sources */ = {isa = PBXBuildFile; fileRef = BEACC9E6A60F4563BE13518C /* LivingBottleNotice.swift */; };
+		C0AA5F9BB8CF48999CACEE60 /* PatternInsightsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = AE7CB13248A94CD68B7D262B /* PatternInsightsView.swift */; };
 		6E86FBE2FEE543C98D8EF648 /* LivingInsightTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = E722F69E5D284F35B63A3743 /* LivingInsightTests.swift */; };
 		A524F37380D146FDBA470631 /* HydrationPatternsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9625C5B93EFE4C4FB492ECD1 /* HydrationPatternsTests.swift */; };
 		69FAEF3769E7411190A714C2 /* ShareCardRendererTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C359D0967E142BC88E226F0 /* ShareCardRendererTests.swift */; };
@@ -479,6 +480,7 @@
 		9A721BCD534A48CD81C64E68 /* HydrationPatterns.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationPatterns.swift; sourceTree = "<group>"; };
 		004532E50CA6481B94E24C35 /* LivingBottleCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivingBottleCoordinator.swift; sourceTree = "<group>"; };
 		BEACC9E6A60F4563BE13518C /* LivingBottleNotice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivingBottleNotice.swift; sourceTree = "<group>"; };
+		AE7CB13248A94CD68B7D262B /* PatternInsightsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatternInsightsView.swift; sourceTree = "<group>"; };
 		E722F69E5D284F35B63A3743 /* LivingInsightTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LivingInsightTests.swift; sourceTree = "<group>"; };
 		9625C5B93EFE4C4FB492ECD1 /* HydrationPatternsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HydrationPatternsTests.swift; sourceTree = "<group>"; };
 		9C359D0967E142BC88E226F0 /* ShareCardRendererTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareCardRendererTests.swift; sourceTree = "<group>"; };
@@ -705,6 +707,7 @@
 				A1F0D0000000000000000002 /* FoldLayout.swift */,
 				AEC2AB470BEDAC5BE39690F2 /* RemainingWaterBottle.swift */,
 				BEACC9E6A60F4563BE13518C /* LivingBottleNotice.swift */,
+				AE7CB13248A94CD68B7D262B /* PatternInsightsView.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -1345,6 +1348,7 @@
 				A1F0D0000000000000000001 /* FoldLayout.swift in Sources */,
 				2CE48CE32199F64B52765625 /* RemainingWaterBottle.swift in Sources */,
 				40FE20803B7B47A594A1D168 /* LivingBottleNotice.swift in Sources */,
+				C0AA5F9BB8CF48999CACEE60 /* PatternInsightsView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

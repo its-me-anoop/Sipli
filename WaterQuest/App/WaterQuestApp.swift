@@ -142,6 +142,9 @@ struct WaterQuestApp: App {
                     deepLinkAddIntake = true
                 case "trophy-room":
                     deepLinkTrophyRoom = true
+                case "insights":
+                    UserDefaults.standard.set(true, forKey: Notification.Name.pendingOpenInsightsKey)
+                    NotificationCenter.default.post(name: .sipliOpenInsights, object: nil)
                 case "spooky-season":
                     // From the App Store in-app event: show the invite, or
                     // the event card in Settings if they've already joined.

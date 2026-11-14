@@ -46,6 +46,11 @@ struct MainTabView: View {
                       useAI: scenePhase == .active && !living.entryFlowActive && !showAddIntake && subscriptionManager.hasAccess(to: .aiInsights))
     }
     @State private var selectedTab: AppTab = .dashboard
+    private func openPendingInsights() {
+        guard UserDefaults.standard.bool(forKey: Notification.Name.pendingOpenInsightsKey) else { return }
+        UserDefaults.standard.removeObject(forKey: Notification.Name.pendingOpenInsightsKey)
+        selectedTab = .insights
+    }
     @State private var showAddIntake = false
     @State private var showTrophyRoom = false
     @State private var showAchievementCelebration = false
@@ -103,6 +108,8 @@ struct MainTabView: View {
             .onChange(of: selectedTab) {
                 Haptics.selection()
             }
+            .onReceive(NotificationCenter.default.publisher(for: .sipliOpenInsights)) { _ in openPendingInsights() }
+            .onAppear(perform: openPendingInsights)
             .onChange(of: deepLinkAddIntake) {
                 if deepLinkAddIntake {
                     showAddIntake = true

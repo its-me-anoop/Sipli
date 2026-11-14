@@ -49,6 +49,9 @@ struct HydrationPatterns: Equatable {
 
     var top: PatternInsight? { insights.first }
 
+    /// "Title. Detail" lines, highest priority first, for model prompts.
+    var factLines: [String] { insights.map { "\($0.title). \($0.detail)" } }
+
     static let empty = HydrationPatterns(insights: [], quietWindow: nil, usualByNowML: nil,
                                          todayML: 0, goalML: 0, unit: .metric, nowLine: "")
 
@@ -276,7 +279,7 @@ struct HydrationPatterns: Equatable {
 
 /// Plans the Sunday-evening weekly recap notification.
 enum WeeklyRecapNudge {
-    static let identifier = "sipli.smart.weeklyRecap"
+    static let identifier = "sipli.recap.weekly"
 
     /// Next Sunday at 7 pm, or two hours before bedtime when that is earlier.
     static func nextFireDate(after now: Date, sleepMinutes: Int, calendar: Calendar = .current) -> Date? {
@@ -288,8 +291,8 @@ enum WeeklyRecapNudge {
         return calendar.nextDate(after: now, matching: components, matchingPolicy: .nextTime)
     }
 
-    static func body(stats: WeeklyStats) -> String {
-        if stats.activeDays == 0 { return "Your week in water is ready. A fresh week starts tomorrow." }
-        return "Your week in water: \(stats.goalHits) of 7 goal days. Tap to see what stood out."
-    }
+    /// Generic on purpose: the request is scheduled days ahead, so the
+    /// numbers would be stale by Sunday. Insights shows the live recap.
+    static let body = "Your week in water is ready. Tap to see what stood out and what to try next."
+    static let deepLink = "sipli://insights"
 }

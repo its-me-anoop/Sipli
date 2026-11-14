@@ -216,6 +216,13 @@ struct DashboardView: View {
         }
     }
 
+    /// The most useful pattern right now, surfaced on Home without asking.
+    private var topPattern: PatternInsight? {
+        HydrationPatterns.analyze(entries: store.entries, goalML: store.dailyGoal.totalML,
+                                  unit: store.profile.unitSystem, wakeMinutes: store.profile.wakeMinutes,
+                                  sleepMinutes: store.profile.sleepMinutes).top
+    }
+
     @ViewBuilder
     private var cardsContent: some View {
         if MatchDay.isActive() {
@@ -239,7 +246,7 @@ struct DashboardView: View {
 
         if subscriptionManager.hasAccess(to: .aiInsights) {
             DashboardCard(title: "Hydration Coach", icon: "sparkles", backgroundGradient: Theme.coachCard) {
-                LivingInsightCard()
+                CoachCardContent(topPattern: topPattern)
             }
         }
 
@@ -344,7 +351,7 @@ struct DashboardView: View {
                         VStack(spacing: 16) {
                             if subscriptionManager.hasAccess(to: .aiInsights) {
                                 DashboardCard(title: "Hydration Coach", icon: "sparkles", backgroundGradient: Theme.coachCard) {
-                                    LivingInsightCard()
+                                    CoachCardContent(topPattern: topPattern)
                                 }
                             }
                         }

@@ -47,7 +47,15 @@ final class NotificationHandler: NSObject, UNUserNotificationCenterDelegate {
         withCompletionHandler completionHandler: @escaping () -> Void
     ) {
         let actionID = response.actionIdentifier
+        let deepLink = response.notification.request.content.userInfo["deepLink"] as? String
         Task { @MainActor in
+            if actionID == UNNotificationDefaultActionIdentifier, deepLink == WeeklyRecapNudge.deepLink {
+                // Parked for cold launches, where Main tabs aren't listening yet.
+                UserDefaults.standard.set(true, forKey: Notification.Name.pendingOpenInsightsKey)
+                NotificationCenter.default.post(name: .sipliOpenInsights, object: nil)
+                completionHandler()
+                return
+            }
             self.handle(actionID: actionID)
             completionHandler()
         }
@@ -116,4 +124,10 @@ final class NotificationHandler: NSObject, UNUserNotificationCenterDelegate {
             }
         }
     }
+}
+
+extension Notification.Name {
+    /// Switch to the Insights tab (weekly recap notification, `sipli://insights`).
+    static let sipliOpenInsights = Notification.Name("sipliOpenInsights")
+    static let pendingOpenInsightsKey = "sipli.pendingOpenInsights"
 }

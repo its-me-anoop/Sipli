@@ -25,7 +25,7 @@ struct InsightsView: View {
     @State private var selectedDate: Date?
     @State private var timeframe: Timeframe = .weekly
     @State private var heatmapMonthOffset = 0
-    @State private var aiInsight: String?
+    @State private var coachTake: CoachTake?
     @State private var isGeneratingInsight = false
     @EnvironmentObject private var living: LivingBottleCoordinator
     @State private var clock = Date()
@@ -35,6 +35,11 @@ struct InsightsView: View {
                               unit: store.profile.unitSystem, freezeDates: store.streakFreezeDates)
     }
     @State private var weeklyDigest: WeeklyDigestDisplay?
+    private var patterns: HydrationPatterns {
+        HydrationPatterns.analyze(entries: store.entries, goalML: store.dailyGoal.totalML,
+                                  unit: store.profile.unitSystem, wakeMinutes: store.profile.wakeMinutes,
+                                  sleepMinutes: store.profile.sleepMinutes, now: clock)
+    }
     @State private var isGeneratingDigest = false
     @State private var viewModel = InsightsViewModel()
     @State private var streakPopScale: Double = 1.0
@@ -164,7 +169,7 @@ struct InsightsView: View {
         }
         .onChange(of: liveSnapshot) {
             wordingRevision = UUID()
-            aiInsight = nil; weeklyDigest = nil
+            coachTake = nil; weeklyDigest = nil
             viewModel.recompute(
                 entries: store.entries,
                 dailyGoalML: store.dailyGoal.totalML,
@@ -747,6 +752,13 @@ struct InsightsView: View {
         defer { isGeneratingDigest = false }
         let snapshot = liveSnapshot, token = wordingRevision
         let base = staticWeeklyDigest
+        let stats = WeeklyStats.compute(entries: store.entries, goalML: store.dailyGoal.totalML)
+        if let digest = await PatternCoachGenerator.weeklyDigest(stats: stats, patterns: patterns) {
+            guard token == wordingRevision, snapshot == liveSnapshot else { return }
+            weeklyDigest = WeeklyDigestDisplay(headline: digest.headline, narrative: digest.narrative,
+                                               encouragement: digest.encouragement)
+            return
+        }
         let tone = await LivingBottleCoordinator.generateTone(context: snapshot.modelContext)
         guard token == wordingRevision, snapshot == liveSnapshot else { return }
         weeklyDigest = WeeklyDigestDisplay(headline: base.headline, narrative: base.narrative,
@@ -755,32 +767,29 @@ struct InsightsView: View {
 
     // MARK: - AI Insights Section
 
+    /// Patterns are computed from the log and shown straight away; the coach
+    /// note re-voices them on request (opening Insights never starts model work).
     private var aiInsightsSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             if isGeneratingInsight {
                 HStack(spacing: 8) {
                     ProgressView()
-                    Text("Generating insight...")
+                    Text("Reading your patterns...")
                         .font(.subheadline)
                         .foregroundStyle(.secondary)
                 }
             }
-            let insight = aiInsight ?? liveSnapshot.fallback
-            HStack(alignment: .top, spacing: 10) {
-                Image(systemName: "sparkles")
-                    .foregroundStyle(Theme.lavender)
-                    .font(.body)
-                Text(insight)
-                    .font(.subheadline)
-            }
+            PatternInsightsSection(patterns: patterns, take: coachTake)
 
-            Button {
-                Task { await generateAIInsight() }
-            } label: {
-                Label("Refresh insight", systemImage: "sparkles")
-                    .font(.subheadline.weight(.medium))
+            if !patterns.insights.isEmpty {
+                Button {
+                    Task { await generateAIInsight() }
+                } label: {
+                    Label(coachTake == nil ? "Ask your coach" : "Refresh coach note", systemImage: "sparkles")
+                        .font(.subheadline.weight(.medium))
+                }
+                .disabled(isGeneratingInsight || !LivingBottleCoordinator.isModelReady)
             }
-            .disabled(isGeneratingInsight || !LivingBottleCoordinator.isModelReady)
         }
         .padding(.vertical, 6)
     }
@@ -792,12 +801,10 @@ struct InsightsView: View {
         isGeneratingInsight = true
         defer { isGeneratingInsight = false }
         let snapshot = liveSnapshot, token = wordingRevision
-        let tone = await LivingBottleCoordinator.generateTone(context: snapshot.modelContext)
+        let take = await PatternCoachGenerator.coachTake(for: patterns)
         guard token == wordingRevision, snapshot == liveSnapshot else { return }
-        aiInsight = BottleCopy.text(tone: tone ?? .calm, purpose: .insight, snapshot: snapshot)
+        coachTake = take
     }
-
-
 }
 
 // MARK: - Supporting Types

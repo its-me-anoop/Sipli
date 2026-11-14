@@ -34,4 +34,11 @@ struct NotificationContext: Sendable {
         guard goalML > 0 else { return 0 }
         return min(1, todayTotalML / goalML)
     }
+
+    /// Personal patterns from the log at capture time.
+    var patterns: HydrationPatterns {
+        HydrationPatterns.analyze(entries: entries, goalML: goalML, unit: profile.unitSystem,
+                                  wakeMinutes: profile.wakeMinutes, sleepMinutes: profile.sleepMinutes,
+                                  now: capturedAt)
+    }
 }
