@@ -288,6 +288,7 @@ struct DashboardView: View {
                             )
                         }
                         .buttonStyle(.plain)
+                        .siriDrinkEntry(entry.id)
                         .contextMenu {
                             Button(role: .destructive) {
                                 entryToDelete = entry
@@ -414,6 +415,7 @@ struct DashboardView: View {
                     )
                 }
                 .buttonStyle(.plain)
+                .siriDrinkEntry(entry.id)
                 .contextMenu {
                     Button(role: .destructive) {
                         entryToDelete = entry

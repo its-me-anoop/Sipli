@@ -249,7 +249,7 @@ enum HydrationIntentCore {
         state.profile.unitSystem == .metric ? "mL" : "oz"
     }
 
-    private static func label(for fluidType: FluidType) -> String {
+    static func label(for fluidType: FluidType) -> String {
         fluidType == .water ? "water" : fluidType.displayName.lowercased()
     }
 }

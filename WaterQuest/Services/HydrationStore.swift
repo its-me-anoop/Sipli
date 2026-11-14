@@ -458,6 +458,7 @@ final class HydrationStore: ObservableObject {
         }
         PhoneSessionManager.shared.sendState(merged)
         WidgetCenter.shared.reloadAllTimelines()
+        SiriAIEffects.hydrationLogChanged()
     }
 
     /// Called by PhoneSessionManager when Watch sends a new entry via WCSession.
