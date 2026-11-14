@@ -58,6 +58,9 @@ enum ShareCardRenderer {
                 .environment(\.dynamicTypeSize, .large)
         )
         renderer.scale = 3
+        // Shared images are square, opaque posters. An alpha channel lets
+        // share targets treat the edge as transparent and round it off.
+        renderer.isOpaque = true
         renderer.proposedSize = ProposedViewSize(width: size.width, height: size.height)
         guard let data = renderer.uiImage?.pngData() else { return nil }
         return ShareCardPayload(pngData: data, caption: content.caption)
@@ -379,7 +382,8 @@ private struct AchievementSharePoster: View {
                 if spooky && scheme == .dark { SpookySeason.Palette.midnight } else { Theme.paper }
                 RadialGradient(colors: [accent.opacity(scheme == .dark ? 0.18 : 0.10), .clear],
                                center: .init(x: 0.5, y: 0.36), startRadius: 5, endRadius: 240)
-                RoundedRectangle(cornerRadius: 4)
+                // Square keyline: the exported poster has no rounded corners.
+                Rectangle()
                     .stroke(foreground.opacity(0.10), lineWidth: 0.75)
                     .padding(12)
             }

@@ -91,7 +91,7 @@ final class ShareCardRendererTests: XCTestCase {
             .environment(\.locale, Locale(identifier: "en_US"))
             .environment(\.colorScheme, .light)
             .environment(\.dynamicTypeSize, .accessibility5))
-        renderer.scale = 3; renderer.proposedSize = ProposedViewSize(width: 360, height: 450)
+        renderer.scale = 3; renderer.isOpaque = true; renderer.proposedSize = ProposedViewSize(width: 360, height: 450)
         let large = try XCTUnwrap(renderer.uiImage?.pngData())
         XCTAssertTrue(normal.pngData == large, "Static poster should be independent of sender's text-size setting")
     }
@@ -103,6 +103,55 @@ final class ShareCardRendererTests: XCTestCase {
         XCTAssertEqual(image.width, 1080)
         try assertSafe(["remarkable", "together", "celebrate", "sipli"], in: payload)
         capture(payload, "Extra-Long-Achievement")
+    }
+
+    // MARK: Square export corners
+
+    /// RGBA8 sample of one pixel in a rendered card.
+    private func pixel(_ payload: ShareCardPayload, x: Int, y: Int) throws -> (r: Int, g: Int, b: Int, a: Int) {
+        let image = try XCTUnwrap(UIImage(data: payload.pngData)?.cgImage)
+        var data = [UInt8](repeating: 0, count: 4)
+        let context = try XCTUnwrap(CGContext(data: &data, width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4,
+            space: CGColorSpaceCreateDeviceRGB(), bitmapInfo: CGImageAlphaInfo.premultipliedLast.rawValue))
+        context.draw(image, in: CGRect(x: -x, y: -(image.height - 1 - y), width: image.width, height: image.height))
+        return (Int(data[0]), Int(data[1]), Int(data[2]), Int(data[3]))
+    }
+
+    private var allCards: [ShareCardContent] {
+        [.daily(totalML: 1850, goalML: 2200, streak: 6, unitSystem: .metric, date: earned),
+         .weekly(dayFractions: [1, 0.8, 1, 0.4, 1, 1, 0.9], goalDays: 4, totalML: 13400, unitSystem: .metric, weekEnding: earned),
+         .achievement(AchievementCatalog.all[1], earnedOn: earned),
+         .achievement(AchievementCatalog.byID["spooky.first"]!, earnedOn: earned)]
+    }
+
+    /// Shared images are square-cornered and fully opaque: no transparent
+    /// corners that messaging apps or photo viewers would show as rounding.
+    func testSharedImagesHaveOpaqueSquareCorners() throws {
+        for content in allCards {
+            for scheme in [ColorScheme.light, .dark] {
+                let payload = try XCTUnwrap(ShareCardRenderer.render(content, colorScheme: scheme))
+                let image = try XCTUnwrap(UIImage(data: payload.pngData)?.cgImage)
+                XCTAssertTrue([.none, .noneSkipFirst, .noneSkipLast].contains(image.alphaInfo),
+                              "Export should carry no alpha channel (\(image.alphaInfo.rawValue))")
+                let w = image.width - 1, h = image.height - 1
+                for (x, y) in [(0, 0), (w, 0), (0, h), (w, h)] {
+                    XCTAssertEqual(try pixel(payload, x: x, y: y).a, 255, "Corner (\(x),\(y)) must be opaque")
+                }
+            }
+        }
+    }
+
+    /// The achievement poster's inner keyline is a square frame: its corner
+    /// pixel matches the keyline colour along the straight edge.
+    func testAchievementKeylineHasSquareCorners() throws {
+        let payload = try XCTUnwrap(ShareCardRenderer.render(.achievement(AchievementCatalog.all[1], earnedOn: earned)))
+        let inset = 36 // 12 pt keyline inset at 3x
+        let corner = try pixel(payload, x: inset, y: inset)
+        let edge = try pixel(payload, x: inset, y: 675)
+        let paper = try pixel(payload, x: 10, y: 10)
+        XCTAssertNotEqual(edge.r, paper.r, "Edge sample should sit on the keyline")
+        XCTAssertLessThanOrEqual(abs(corner.r - edge.r) + abs(corner.g - edge.g) + abs(corner.b - edge.b), 24,
+                                 "Keyline corner should be square (corner \(corner) vs edge \(edge))")
     }
 
 }
